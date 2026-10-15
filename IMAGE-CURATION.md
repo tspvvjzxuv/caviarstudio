@@ -7,11 +7,12 @@
 | Asset | File | Notes |
 |-------|------|--------|
 | Hero (LCP) | `img/hero.webp` + `img/hero.jpg` | Editorial still, grayscale, cinematic crop |
-| Work editorial | `img/work-editorial.webp` | Style sample, not a client reference |
-| Work metal | `img/work-metal.webp` | Silver material study |
-| Work motion | `img/work-motion.webp` | Desaturated light study |
-| Everlight sample | `img/work-everlight.webp` | Linked to thedesigns.org/foto — labelled Everlight, not a Caviar client |
-| Coming-soon tiles | CSS | Dark silver art-directed fields, no “TODO” / “Placeholder” |
+| Work editorial | `media/editorial.webp` | Style sample, not a client reference. Swap via `WORK` in `index.html`. |
+| Work metal | `media/metal.webp` | Silver material study |
+| Work motion | `media/motion.webp` | Desaturated light study |
+| Everlight sample | `media/everlight.webp` | Linked to thedesigns.org/foto — labelled Everlight, not a Caviar client |
+| Hover films | `media/<id>.mp4` | Optional muted loops; leave `video: ""` until a file exists |
+| Coming-soon tiles | CSS `kind: "silver"` | Dark silver art-directed fields |
 | Founders | CSS monograms | MK · SK until portraits exist |
 
 *Document version: 2026-10-15 · Caviar / caviarstudio.sk*

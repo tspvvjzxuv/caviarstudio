@@ -70,7 +70,15 @@
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
-  <div class="cursor-aura" aria-hidden="true"></div>
+  <div class="intro" aria-hidden="true">
+    <p class="intro-mark">Caviar</p>
+    <span class="intro-line"></span>
+  </div>
+  <div class="cursor" aria-hidden="true">
+    <span class="cursor-ring"></span>
+    <span class="cursor-dot"></span>
+    <span class="cursor-label"></span>
+  </div>
   <a class="skip" href="#obsah" data-i18n="skip">Preskočiť na obsah</a>
 
   <header class="site-header">
@@ -244,39 +252,25 @@
       </div>
     </section>
 
-    <section id="praca">
+    <section id="praca" class="work-sec">
       <div class="wrap">
         <div class="sec-head wide reveal">
           <p class="kicker"><span class="pearl" aria-hidden="true"></span> <span data-i18n="workKicker">Práca</span></p>
           <h2 data-i18n="workTitle">Portfólio čoskoro.</h2>
           <p data-i18n="workLead">Ukážky vizuálneho jazyka. Klientské práce sem pribudnú.</p>
         </div>
-        <div class="work-grid">
-          <figure class="tile span-2">
-            <img src="./img/work-editorial.webp" alt="" data-i18n-alt="w1alt" loading="lazy" width="1200" height="1800">
-            <figcaption data-i18n="w1cap">Editoriál</figcaption>
-          </figure>
-          <figure class="tile">
-            <img src="./img/work-metal.webp" alt="" data-i18n-alt="w2alt" loading="lazy" width="1200" height="900">
-            <figcaption data-i18n="w2cap">Kov</figcaption>
-          </figure>
-          <figure class="tile silver silver-a" role="img" data-i18n-aria="soonAria">
-            <figcaption data-i18n="soonCap">Čoskoro</figcaption>
-          </figure>
-          <figure class="tile silver silver-b" role="img" data-i18n-aria="soonAria">
-            <figcaption data-i18n="folioCap">Portfólio</figcaption>
-          </figure>
-          <figure class="tile">
-            <img src="./img/work-motion.webp" alt="" data-i18n-alt="w4alt" loading="lazy" width="1400" height="780">
-            <figcaption data-i18n="w4cap">Svetlo</figcaption>
-          </figure>
-          <figure class="tile">
-            <a href="https://thedesigns.org/foto/">
-              <img src="./img/work-everlight.webp" alt="" data-i18n-alt="w5alt" loading="lazy" width="1400" height="930">
-              <figcaption data-i18n="w5cap">Everlight</figcaption>
-            </a>
-          </figure>
+      </div>
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <span data-i18n="marquee">Web · Video · Foto · Trnava · Caviar · </span>
+          <span data-i18n="marquee">Web · Video · Foto · Trnava · Caviar · </span>
         </div>
+      </div>
+      <div class="work-shell">
+        <p class="work-rail kicker"><span class="pearl" aria-hidden="true"></span> <span data-i18n="workKicker">Práca</span></p>
+        <div class="work-stage" id="work-stage"></div>
+      </div>
+      <div class="work-foot">
         <a class="everlight-link" href="https://thedesigns.org/foto/" data-i18n="everLink">Pozrieť foto a video prácu na Everlight</a>
       </div>
     </section>
@@ -415,10 +409,21 @@
       }
     };
 
+    /* Drop stills/films in /media and point them here. kind: image | video | silver */
+    const WORK = [
+      { id: "editorial", kind: "image", layout: "feature", image: "./media/editorial.webp", video: "", href: "", titleKey: "wEditorialTitle", lineKey: "wEditorialLine", tags: ["tagFoto"], altKey: "w1alt", silver: "a" },
+      { id: "metal", kind: "image", layout: "pair", image: "./media/metal.webp", video: "", href: "", titleKey: "wMetalTitle", lineKey: "wMetalLine", tags: ["tagFoto"], altKey: "w2alt", silver: "c" },
+      { id: "soon", kind: "silver", layout: "pair", image: "", video: "", href: "", titleKey: "wSoonTitle", lineKey: "wSoonLine", tags: ["tagSoon"], altKey: "soonAria", silver: "a" },
+      { id: "motion", kind: "image", layout: "feature", image: "./media/motion.webp", video: "", href: "", titleKey: "wLightTitle", lineKey: "wLightLine", tags: ["tagVideo"], altKey: "w4alt", silver: "b" },
+      { id: "everlight", kind: "image", layout: "pair", image: "./media/everlight.webp", video: "", href: "https://thedesigns.org/foto/", titleKey: "wEverTitle", lineKey: "wEverLine", tags: ["tagFoto", "tagVideo"], altKey: "w5alt", silver: "c" },
+      { id: "folio", kind: "silver", layout: "pair", image: "", video: "", href: "", titleKey: "wFolioTitle", lineKey: "wFolioLine", tags: ["tagSoon"], altKey: "soonAria", silver: "b" }
+    ];
+
     const dictionary = {
       sk: {
         skip: "Preskočiť na obsah",
         menu: "Menu",
+        close: "Zavrieť",
         navServices: "Čo robíme", navPricing: "Cenník", navWork: "Práca", navFaq: "FAQ", navContact: "Kontakt",
         navHub: "thedesigns.org",
         ctaQuote: "Chcem cenovú ponuku", ctaPricing: "Pozrieť cenník",
@@ -465,6 +470,15 @@
         workKicker: "Práca",
         workTitle: "Portfólio čoskoro.",
         workLead: "Ukážky vizuálneho jazyka. Klientské práce sem pribudnú.",
+        marquee: "Web · Video · Foto · Trnava · Caviar · ",
+        wEditorialTitle: "Editoriál", wEditorialLine: "Ukážka vizuálneho jazyka.",
+        wMetalTitle: "Kov", wMetalLine: "Striebro a materiál.",
+        wSoonTitle: "Čoskoro", wSoonLine: "Klientská práca sem pribudne.",
+        wLightTitle: "Svetlo", wLightLine: "Pohyb a svetlo.",
+        wEverTitle: "Everlight", wEverLine: "Foto a video na Everlight.",
+        wFolioTitle: "Portfólio", wFolioLine: "Pripravujeme ďalšie zábery.",
+        tagFoto: "Foto", tagVideo: "Video", tagWeb: "Web", tagSoon: "Čoskoro",
+        cursorView: "Pozrieť", cursorSoon: "Čoskoro",
         w1cap: "Editoriál", w2cap: "Kov", w4cap: "Svetlo", w5cap: "Everlight",
         soonCap: "Čoskoro", folioCap: "Portfólio",
         w1alt: "Čiernobiely editoriálny portrét — ukážka vizuálneho jazyka",
@@ -503,6 +517,7 @@
       en: {
         skip: "Skip to content",
         menu: "Menu",
+        close: "Close",
         navServices: "What we do", navPricing: "Pricing", navWork: "Work", navFaq: "FAQ", navContact: "Contact",
         navHub: "thedesigns.org",
         ctaQuote: "Request a quote", ctaPricing: "See pricing",
@@ -549,6 +564,15 @@
         workKicker: "Work",
         workTitle: "Portfolio coming soon.",
         workLead: "Samples of the visual language. Client work will appear here.",
+        marquee: "Web · Video · Photo · Trnava · Caviar · ",
+        wEditorialTitle: "Editorial", wEditorialLine: "A sample of the visual language.",
+        wMetalTitle: "Metal", wMetalLine: "Silver and material.",
+        wSoonTitle: "Soon", wSoonLine: "Client work will appear here.",
+        wLightTitle: "Light", wLightLine: "Motion and light.",
+        wEverTitle: "Everlight", wEverLine: "Photo and video on Everlight.",
+        wFolioTitle: "Portfolio", wFolioLine: "Further frames in preparation.",
+        tagFoto: "Photo", tagVideo: "Video", tagWeb: "Web", tagSoon: "Soon",
+        cursorView: "View", cursorSoon: "Soon",
         w1cap: "Editorial", w2cap: "Metal", w4cap: "Light", w5cap: "Everlight",
         soonCap: "Soon", folioCap: "Portfolio",
         w1alt: "Black-and-white editorial portrait — sample of the visual language",
@@ -587,6 +611,7 @@
       de: {
         skip: "Zum Inhalt springen",
         menu: "Menü",
+        close: "Schließen",
         navServices: "Was wir tun", navPricing: "Preise", navWork: "Arbeit", navFaq: "FAQ", navContact: "Kontakt",
         navHub: "thedesigns.org",
         ctaQuote: "Angebot anfordern", ctaPricing: "Preise ansehen",
@@ -633,6 +658,15 @@
         workKicker: "Arbeit",
         workTitle: "Portfolio folgt.",
         workLead: "Proben der Bildsprache. Kundenarbeiten folgen.",
+        marquee: "Web · Video · Foto · Trnava · Caviar · ",
+        wEditorialTitle: "Editorial", wEditorialLine: "Eine Probe der Bildsprache.",
+        wMetalTitle: "Metall", wMetalLine: "Silber und Material.",
+        wSoonTitle: "Demnächst", wSoonLine: "Kundenarbeiten folgen.",
+        wLightTitle: "Licht", wLightLine: "Bewegung und Licht.",
+        wEverTitle: "Everlight", wEverLine: "Foto und Video auf Everlight.",
+        wFolioTitle: "Portfolio", wFolioLine: "Weitere Bilder in Vorbereitung.",
+        tagFoto: "Foto", tagVideo: "Video", tagWeb: "Web", tagSoon: "Demnächst",
+        cursorView: "Ansehen", cursorSoon: "Demnächst",
         w1cap: "Editorial", w2cap: "Metall", w4cap: "Licht", w5cap: "Everlight",
         soonCap: "Demnächst", folioCap: "Portfolio",
         w1alt: "Editoriales Schwarz-Weiß-Porträt — Beispiel der Bildsprache",
@@ -784,6 +818,7 @@
         btn.setAttribute("aria-pressed", on ? "true" : "false");
       });
       applyConfig(pack);
+      if (typeof syncMenuLabel === "function") syncMenuLabel();
       try { localStorage.setItem("td-weby-lang", lang); } catch (_) {}
       const url = new URL(location.href);
       if (url.searchParams.get("lang") !== lang) {
@@ -836,14 +871,22 @@
     function closeMenu() {
       header.classList.remove("nav-open");
       document.body.classList.remove("nav-lock");
-      if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+      syncMenuLabel();
+    }
+
+    function syncMenuLabel() {
+      if (!menuBtn) return;
+      const open = header.classList.contains("nav-open");
+      const pack = dictionary[currentLang];
+      menuBtn.textContent = open ? pack.close : pack.menu;
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
     }
 
     if (menuBtn) {
       menuBtn.addEventListener("click", () => {
         const open = header.classList.toggle("nav-open");
         document.body.classList.toggle("nav-lock", open);
-        menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        syncMenuLabel();
       });
     }
     document.querySelectorAll(".nav a").forEach((a) => a.addEventListener("click", closeMenu));
@@ -851,38 +894,188 @@
       if (e.key === "Escape") closeMenu();
     });
 
+    function workCard(item, index) {
+      const pack = dictionary.sk;
+      const n = String(index + 1).padStart(2, "0");
+      const tags = (item.tags || []).map((key) => '<li data-i18n="' + key + '">' + (pack[key] || key) + "</li>").join("");
+      const isSilver = item.kind === "silver" || !item.image;
+      const mediaClass = "project-media" + (isSilver ? " silver silver-" + (item.silver || "a") : "");
+      let media = "";
+      if (!isSilver) {
+        media += '<img src="' + item.image + '" alt="" data-i18n-alt="' + item.altKey + '" loading="lazy" decoding="async">';
+        if (item.video) {
+          media += '<video muted loop playsinline preload="none" poster="' + item.image + '"><source src="' + item.video + '"></video>';
+        }
+      }
+      const open = item.href
+        ? '<a class="project-hit" href="' + item.href + '"' + (item.href.indexOf("http") === 0 ? ' target="_blank" rel="noopener"' : "") + "></a>"
+        : '<div class="project-hit"></div>';
+      return (
+        '<article class="project reveal is-' + item.layout + '" data-id="' + item.id + '" data-cursor="' + (item.href ? "view" : "soon") + '">' +
+          open +
+          '<div class="' + mediaClass + '">' + media + "</div>" +
+          '<div class="project-meta">' +
+            '<span class="project-index">' + n + "</span>" +
+            "<h3 data-i18n=\"" + item.titleKey + "\">" + (pack[item.titleKey] || "") + "</h3>" +
+            "<p data-i18n=\"" + item.lineKey + "\">" + (pack[item.lineKey] || "") + "</p>" +
+            (tags ? '<ul class="project-tags">' + tags + "</ul>" : "") +
+          "</div>" +
+        "</article>"
+      );
+    }
+
+    function renderWork() {
+      const stage = document.getElementById("work-stage");
+      if (!stage) return;
+      let html = "";
+      for (let i = 0; i < WORK.length; i++) {
+        const item = WORK[i];
+        const next = WORK[i + 1];
+        if (item.layout === "pair" && next && next.layout === "pair") {
+          html += '<div class="work-pair">' + workCard(item, i) + workCard(next, i + 1) + "</div>";
+          i += 1;
+        } else {
+          html += workCard(item, i);
+        }
+      }
+      stage.innerHTML = html;
+      stage.querySelectorAll("img").forEach((img) => {
+        img.addEventListener("error", () => {
+          const media = img.closest(".project-media");
+          const project = img.closest(".project");
+          const item = WORK.find((w) => w.id === (project && project.dataset.id));
+          if (!media) return;
+          media.classList.add("silver", "silver-" + ((item && item.silver) || "a"));
+          img.remove();
+          const vid = media.querySelector("video");
+          if (vid) vid.remove();
+        });
+      });
+    }
+
+    renderWork();
+    setLanguage(currentLang);
+
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const aura = document.querySelector(".cursor-aura");
-    if (aura && finePointer && !reduce) {
+    const cursor = document.querySelector(".cursor");
+    const cursorLabel = document.querySelector(".cursor-label");
+
+    function observeReveals() {
+      if (!reduce && "IntersectionObserver" in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in");
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.14, rootMargin: "0px 0px -10% 0px" });
+        document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+      } else {
+        document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+      }
+    }
+    observeReveals();
+
+    (function intro() {
+      const veil = document.querySelector(".intro");
+      const ready = () => {
+        document.documentElement.classList.add("is-ready");
+        if (!veil) return;
+        const drop = () => { veil.remove(); };
+        veil.addEventListener("transitionend", drop, { once: true });
+        setTimeout(drop, 1400);
+      };
+      if (reduce) {
+        ready();
+        return;
+      }
+      const start = () => setTimeout(ready, 420);
+      if (document.readyState === "complete") start();
+      else window.addEventListener("load", start, { once: true });
+      setTimeout(ready, 1800);
+    })();
+
+    if (cursor && finePointer && !reduce) {
+      document.documentElement.classList.add("has-cursor");
       let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
+      const ring = cursor.querySelector(".cursor-ring");
       window.addEventListener("pointermove", (e) => {
         tx = e.clientX;
         ty = e.clientY;
-        aura.classList.add("on");
+        cursor.classList.add("on");
         if (!raf) {
           const tick = () => {
-            x += (tx - x) * 0.22;
-            y += (ty - y) * 0.22;
-            aura.style.transform = "translate3d(" + x + "px," + y + "px,0)";
-            raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.4 ? requestAnimationFrame(tick) : 0;
+            x += (tx - x) * 0.18;
+            y += (ty - y) * 0.18;
+            cursor.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+            raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.35 ? requestAnimationFrame(tick) : 0;
           };
           raf = requestAnimationFrame(tick);
         }
       }, { passive: true });
+
+      document.addEventListener("pointerover", (e) => {
+        const hit = e.target.closest("[data-cursor]");
+        cursor.classList.toggle("is-view", !!(hit && hit.dataset.cursor === "view"));
+        cursor.classList.toggle("is-soon", !!(hit && hit.dataset.cursor === "soon"));
+        const pack = dictionary[currentLang];
+        if (cursorLabel && hit) cursorLabel.textContent = hit.dataset.cursor === "view" ? pack.cursorView : pack.cursorSoon;
+      });
     }
 
-    if (!reduce && "IntersectionObserver" in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in");
-            io.unobserve(entry.target);
-          }
+    if (!reduce) {
+      const projects = () => document.querySelectorAll(".project");
+      let scrolling = false;
+      const paintParallax = () => {
+        const vh = window.innerHeight;
+        projects().forEach((p) => {
+          const r = p.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > vh) return;
+          const t = (vh - r.top) / (vh + r.height) - 0.5;
+          p.style.setProperty("--py", (t * 36).toFixed(2) + "px");
         });
-      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
-      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-    } else {
-      document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+        scrolling = false;
+      };
+      window.addEventListener("scroll", () => {
+        if (!scrolling) {
+          scrolling = true;
+          requestAnimationFrame(paintParallax);
+        }
+      }, { passive: true });
+
+      if (finePointer) {
+        document.getElementById("work-stage").addEventListener("pointermove", (e) => {
+          const p = e.target.closest(".project");
+          if (!p) return;
+          const r = p.getBoundingClientRect();
+          const dx = ((e.clientX - r.left) / r.width - 0.5) * 18;
+          const dy = ((e.clientY - r.top) / r.height - 0.5) * 12;
+          p.style.setProperty("--mx", dx.toFixed(1) + "px");
+          p.style.setProperty("--my", dy.toFixed(1) + "px");
+        }, { passive: true });
+        document.getElementById("work-stage").addEventListener("pointerleave", (e) => {
+          const p = e.target.closest(".project");
+          if (!p) return;
+          p.style.setProperty("--mx", "0px");
+          p.style.setProperty("--my", "0px");
+        });
+        document.getElementById("work-stage").addEventListener("pointerenter", (e) => {
+          const p = e.target.closest(".project");
+          if (!p) return;
+          const vid = p.querySelector("video");
+          if (vid) vid.play().catch(() => {});
+        }, true);
+        document.getElementById("work-stage").addEventListener("pointerleave", (e) => {
+          const p = e.target.closest(".project");
+          if (!p) return;
+          const vid = p.querySelector("video");
+          if (vid) {
+            vid.pause();
+            vid.currentTime = 0;
+          }
+        }, true);
+      }
     }
   </script>
 </body>
