@@ -277,3 +277,23 @@
 .silver-c {
   background: linear-gradient(115deg, #0c0c10 0%, #3a3f48 42%, #121318 68%, #0a0a0c 100%);
 }
+
+@keyframes caviar-vt-fade-out {
+  to { opacity: 0; }
+}
+@keyframes caviar-vt-fade-in {
+  from { opacity: 0; }
+}
+::view-transition-old(root) {
+  animation: 180ms ease-in both caviar-vt-fade-out;
+}
+::view-transition-new(root) {
+  animation: 220ms ease-out 60ms both caviar-vt-fade-in;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

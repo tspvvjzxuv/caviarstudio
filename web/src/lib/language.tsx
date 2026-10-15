@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { CAVIAR, OG_LOCALES, PRICE_RANGE } from "@/lib/config";
 import { dictionary, isLang, type Dict, type Lang } from "@/lib/i18n";
 
@@ -85,6 +85,23 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
       /* ignore */
     }
   }
+
+  let faqLd = document.getElementById("caviar-faq-jsonld");
+  if (!faqLd) {
+    faqLd = document.createElement("script");
+    faqLd.id = "caviar-faq-jsonld";
+    (faqLd as HTMLScriptElement).type = "application/ld+json";
+    document.head.appendChild(faqLd);
+  }
+  faqLd.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: ([1, 2, 3, 4, 5, 6] as const).map((n) => ({
+      "@type": "Question",
+      name: pack[`faq${n}q`],
+      acceptedAnswer: { "@type": "Answer", text: pack[`faq${n}a`] },
+    })),
+  });
 }
 
 type LanguageContextValue = {
@@ -100,13 +117,21 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const t = dictionary[lang];
 
   const setLang = useCallback((next: Lang) => {
-    setLangState(next);
-    writeStorage(LANG_STORAGE_KEY, next);
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("lang") !== next) {
-      url.searchParams.set("lang", next);
-      history.replaceState({}, "", url.pathname + url.search + url.hash);
+    const apply = () => {
+      setLangState(next);
+      writeStorage(LANG_STORAGE_KEY, next);
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("lang") !== next) {
+        url.searchParams.set("lang", next);
+        history.replaceState({}, "", url.pathname + url.search + url.hash);
+      }
+    };
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduce && typeof document.startViewTransition === "function") {
+      document.startViewTransition(apply);
+      return;
     }
+    apply();
   }, []);
 
   useEffect(() => {
@@ -118,7 +143,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 }
 
 export function useLanguage() {
-  const ctx = useContext(LanguageContext);
+  const ctx = use(LanguageContext);
   if (!ctx) throw new Error("useLanguage must be used within LanguageProvider");
   return ctx;
 }

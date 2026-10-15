@@ -122,6 +122,8 @@ The UI is built with the **full Tailwind CSS utility system** and the **full sha
 
 `vercel-react-best-practices` is the React performance skill. Follow its SPA-relevant rules (direct imports, passive listeners, lazy state, refs for transient cursor values, no inline components, versioned localStorage). Skip Next.js/RSC-only rules. Do not introduce `next/dynamic` or a Next.js app.
 
+Language changes use the native View Transition API (`document.startViewTransition`) with a fade, skipped when `prefers-reduced-motion` is set. Do not switch the app to React canary solely for `<ViewTransition>`. Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. WordPress, Expo, Remotion, and Three.js skills stay installed but unused on this static site.
+
 Source: `web/` (Vite + React). GitHub Pages still needs a static output: commit the built `index.html` + `assets/` at the repo root **and** use `.github/workflows/pages.yml`. Do not rely on GitHub Pages to run `npm` unless Pages source is **GitHub Actions**.
 
 The “Čo robíme” strip sits immediately under the hero as three equal cards plus a full-width “Pre koho” panel.
