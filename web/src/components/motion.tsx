@@ -22,7 +22,7 @@ export function IntroVeil() {
 
   return (
     <div
-      className="intro-veil pointer-events-none fixed inset-0 z-[70] grid place-items-center bg-[#070708]"
+      className="intro-veil pointer-events-none fixed inset-0 z-[70] grid place-items-center bg-background"
       aria-hidden="true"
       onAnimationEnd={() => setShow(false)}
     >

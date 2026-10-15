@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -545,11 +546,13 @@ export function Contact() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-[2px]">
-                        <SelectItem value="Web">{t.needWeb}</SelectItem>
-                        <SelectItem value="Video">{t.needVideo}</SelectItem>
-                        <SelectItem value="Foto">{t.needFoto}</SelectItem>
-                        <SelectItem value="Komplet">{t.needKomplet}</SelectItem>
-                        <SelectItem value="Mix">{t.needMix}</SelectItem>
+                        <SelectGroup>
+                          <SelectItem value="Web">{t.needWeb}</SelectItem>
+                          <SelectItem value="Video">{t.needVideo}</SelectItem>
+                          <SelectItem value="Foto">{t.needFoto}</SelectItem>
+                          <SelectItem value="Komplet">{t.needKomplet}</SelectItem>
+                          <SelectItem value="Mix">{t.needMix}</SelectItem>
+                        </SelectGroup>
                       </SelectContent>
                     </Select>
                   </Field>

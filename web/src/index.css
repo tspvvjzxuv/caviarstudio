@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 @custom-variant motion-ok {
   @media (prefers-reduced-motion: no-preference) {
     @slot;
@@ -59,6 +59,51 @@
   --radius-3xl: 4px;
   --radius-4xl: 6px;
   --ease-caviar: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-fade-out: fade-out 0.2s ease-in;
+  --animate-ken: ken 36s var(--ease-caviar) forwards;
+  --animate-sheen: sheen 16s ease-in-out infinite;
+  --animate-intro-out: intro-out 0.9s var(--ease-caviar) 0.55s forwards;
+  --animate-line-grow: line-grow 0.55s var(--ease-caviar) 0.08s forwards;
+  --animate-cue: cue 2.4s var(--ease-caviar) infinite;
+  --animate-ticker: ticker 36s linear infinite;
+  --animate-tile-sheen: tile-sheen 10s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes ken {
+    from { transform: scale(1.04); }
+    to { transform: scale(1.12); }
+  }
+  @keyframes sheen {
+    0%, 100% { background-position: 0 0, 0% 0; opacity: 0.75; }
+    50% { background-position: 0 0, 100% 0; opacity: 1; }
+  }
+  @keyframes intro-out {
+    to { opacity: 0; visibility: hidden; }
+  }
+  @keyframes line-grow {
+    from { transform: scaleX(0.18); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes cue {
+    0% { top: 0; opacity: 1; }
+    100% { top: 42px; opacity: 0; }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes tile-sheen {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
 }
 
 :root,
@@ -166,55 +211,27 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-shine {
-    animation: sheen 16s ease-in-out infinite;
+    animation: var(--animate-sheen);
   }
   .hero-ken img {
-    animation: ken 36s var(--ease-caviar) forwards;
+    animation: var(--animate-ken);
   }
   .intro-veil {
-    animation: intro-out 0.9s var(--ease-caviar) 0.55s forwards;
+    animation: var(--animate-intro-out);
     z-index: 70;
   }
   .intro-line {
-    animation: line-grow 0.55s var(--ease-caviar) 0.08s forwards;
+    animation: var(--animate-line-grow);
   }
   .scroll-cue-dot {
-    animation: cue 2.4s var(--ease-caviar) infinite;
+    animation: var(--animate-cue);
   }
   .marquee-track {
-    animation: ticker 36s linear infinite;
+    animation: var(--animate-ticker);
   }
   .silver-sheen::after {
-    animation: tile-sheen 10s ease-in-out infinite;
+    animation: var(--animate-tile-sheen);
   }
-}
-
-@keyframes ken {
-  from { transform: scale(1.04); }
-  to { transform: scale(1.12); }
-}
-@keyframes sheen {
-  0%, 100% { background-position: 0 0, 0% 0; opacity: 0.75; }
-  50% { background-position: 0 0, 100% 0; opacity: 1; }
-}
-@keyframes intro-out {
-  to { opacity: 0; visibility: hidden; }
-}
-@keyframes line-grow {
-  from { transform: scaleX(0.18); }
-  to { transform: scaleX(1); }
-}
-@keyframes cue {
-  0% { top: 0; opacity: 1; }
-  100% { top: 42px; opacity: 0; }
-}
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@keyframes tile-sheen {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 1; }
 }
 
 .js .reveal {

@@ -15,6 +15,7 @@ Deploy as static GitHub Pages at the repo root for `caviarstudio.sk`:
 
 ## References
 
+- Repo skills: `.agents/skills/tailwind-design-system`, `.agents/skills/shadcn`
 - [Tailwind CSS](https://tailwindcss.com/) — spacing, type, color, responsive, dark, animation utilities
 - [shadcn/ui components](https://ui.shadcn.com/docs/components) and [blocks](https://ui.shadcn.com/blocks)
 

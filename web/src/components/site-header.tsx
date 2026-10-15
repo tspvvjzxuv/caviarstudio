@@ -73,7 +73,7 @@ export function SiteHeader() {
     <header
       className={cn(
         "sticky top-0 z-50 flex min-h-16 items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] py-3",
-        scrolled ? "border-b border-border bg-[#070708]/88 backdrop-blur-[18px]" : "border-b border-transparent bg-[#070708]/34 backdrop-blur-[18px]",
+        scrolled ? "border-b border-border bg-background/88 backdrop-blur-[18px]" : "border-b border-transparent bg-background/34 backdrop-blur-[18px]",
       )}
     >
       <a href="#top" className="relative z-[52] font-serif text-[0.95rem] tracking-[0.38em] uppercase">
