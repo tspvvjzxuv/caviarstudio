@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, ViewTransition } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CustomCursor, Grain, IntroVeil } from "@/components/motion";
 import {
@@ -20,22 +20,24 @@ function SkipLink() {
   return (
     <a
       href="#obsah"
-      className="absolute top-[-80px] left-[clamp(1.25rem,5vw,5rem)] z-[100] bg-pearl px-4 py-2.5 text-[0.8rem] tracking-[0.08em] text-background uppercase focus:top-3"
+      className="sr-only focus:not-sr-only focus:fixed focus:top-[max(0.75rem,env(safe-area-inset-top,0px))] focus:left-[max(1.25rem,env(safe-area-inset-left,0px))] focus:z-50 focus:bg-pearl focus:px-4 focus:py-2.5 focus:text-[0.8rem] focus:tracking-[0.08em] focus:text-background focus:uppercase focus:ring-3 focus:ring-ring"
     >
       {t.skip}
     </a>
   );
 }
 
+let didHonorHash = false;
+
 function Page() {
   useEffect(() => {
-    document.documentElement.classList.add("js", "dark");
-    const honor = () => {
-      const id = location.hash.replace("#", "");
-      if (!id) return;
+    if (didHonorHash) return;
+    didHonorHash = true;
+    const id = location.hash.replace("#", "");
+    if (!id) return;
+    const t = window.setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: "auto", block: "start" });
-    };
-    const t = window.setTimeout(honor, 50);
+    }, 50);
     return () => window.clearTimeout(t);
   }, []);
 
@@ -47,14 +49,18 @@ function Page() {
       <SkipLink />
       <SiteHeader />
       <main id="obsah">
-        <Hero />
-        <Services />
-        <Pricing />
-        <Process />
-        <Work />
-        <Team />
-        <Faq />
-        <Contact />
+        <ViewTransition>
+          <>
+            <Hero />
+            <Services />
+            <Pricing />
+            <Process />
+            <Work />
+            <Team />
+            <Faq />
+            <Contact />
+          </>
+        </ViewTransition>
       </main>
       <SiteFooter />
     </>

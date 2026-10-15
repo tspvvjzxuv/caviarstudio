@@ -95,3 +95,24 @@ export const WORK: WorkItem[] = [
     silver: "b",
   },
 ];
+
+export const WORK_INDEX = new Map(WORK.map((item, index) => [item.id, index]));
+
+export function workIndex(item: WorkItem): number {
+  return WORK_INDEX.get(item.id) ?? 0;
+}
+
+export const WORK_ROWS: WorkItem[][] = (() => {
+  const rows: WorkItem[][] = [];
+  for (let i = 0; i < WORK.length; i++) {
+    const item = WORK[i];
+    const next = WORK[i + 1];
+    if (item.layout === "pair" && next?.layout === "pair") {
+      rows.push([item, next]);
+      i += 1;
+    } else {
+      rows.push([item]);
+    }
+  }
+  return rows;
+})();

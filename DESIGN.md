@@ -89,6 +89,8 @@ components:
 
 Caviar is a small creative studio in Trnava. The site should feel like a quiet gallery: cool, high-end, and artistic — never like a SaaS template. Near-black fields, platinum type, generous empty space, and a single silver accent language. Motion is slow and cinematic. Copy stays plain and concrete. No gold, champagne, neon, or invented social proof.
 
+**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero), everything else quieter. Parallel offerings (Web / Video / Foto) are not numbered; the four-step process is, because it is a sequence. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
+
 ## Colors
 
 The palette is pearl on caviar black, with silver as the only metal.
@@ -114,19 +116,27 @@ Two families only: **Cormorant Garamond** for display and titles, **DM Sans** fo
 
 Mobile-first. Spacing follows the **Tailwind 4px scale** (`4 / 8 / 12 / 16 / 24 / 32 / 40 / 48 / 64`). Content width caps at 1120px. Section padding scales from 72px to 140px.
 
-**Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (16px mobile, 24px from 720px, 32px from 1080px) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
+**Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (24px mobile, 32px from `md`, 40px from `xl`) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
 
-The UI is built with the **full Tailwind CSS utility system** and the **full shadcn/ui component set + CSS-variable theming** ([components](https://ui.shadcn.com/docs/components), [blocks](https://ui.shadcn.com/blocks)): Button, Card, Badge, Accordion (FAQ), Tabs, Input/Select/Label (form), Navigation Menu, Sheet (mobile menu), Separator, Tooltip, Toggle Group (SK/EN/DE), Field. Tokens live in `web/src/index.css` (`@theme` semantic colors, `--radius` 2px, class-based `.dark` always on). Agent skills in `.agents/skills/`: `tailwind-design-system` (wshobson/agents), `shadcn` (shadcn-ui/ui), and `web-artifacts-builder` (anthropics/skills).
+The UI is built with the **full Tailwind CSS utility system** and the **full shadcn/ui component set + CSS-variable theming** ([components](https://ui.shadcn.com/docs/components), [blocks](https://ui.shadcn.com/blocks)): Button, Card, Badge, Accordion (FAQ), Tabs, Input/Select/Label (form), Navigation Menu, Sheet (mobile menu), Separator, Tooltip, Toggle Group (SK/EN/DE), Field. Tokens live in `web/src/index.css` (`@theme` semantic colors, `--radius` 2px, class-based `.dark` always on). Agent skills in `.agents/skills/`: `tailwind-design-system` (wshobson/agents), `shadcn` (shadcn-ui/ui), `web-artifacts-builder` (anthropics/skills), `vercel-react-best-practices` (vercel-labs/agent-skills), and `frontend-slides` (zarazhangrui).
 
 `web-artifacts-builder` is the React + Vite + Tailwind + shadcn stack skill. Follow its **design guidelines** (no Inter, no purple gradients, no excessive centering, no uniform large rounding). Do **not** run its `init-artifact.sh` or Parcel `bundle-artifact.sh` for this site: those target a single Claude HTML artifact. Caviar already has Vite + Tailwind v4 + shadcn in `web/` and must ship a GitHub Pages static build (`npm run build:pages`).
 
+`vercel-react-best-practices` is the React performance skill. Follow its SPA-relevant rules (direct imports, passive listeners, lazy state, refs for transient cursor values, no inline components, versioned localStorage). Skip Next.js/RSC-only rules. Do not introduce `next/dynamic` or a Next.js app.
+
+Language changes use React `<ViewTransition>` (fade) triggered with `startTransition`. Header, footer, grain, and cursor are isolated so chrome does not cross-fade. `prefers-reduced-motion` zeros view-transition durations. This is a one-page site: no directional page slides (those are for hierarchical routes).
+
+`frontend-slides` (zarazhangrui) is for presentation-style beats on this site, not a 16:9 HTML deck: one orchestrated hero stagger after the intro veil, speaker-led process steps (one idea each), silver grid atmosphere, hairline chrome, expo easing, `prefers-reduced-motion`. Do not copy its yellow/gold Studio templates or reflow the marketing page as a fixed 1920×1080 stage.
+
+Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. Three.js is a lazy silver/pearl hero shader on desktop (static still fallback on mobile, coarse pointer, Save-Data, and `prefers-reduced-motion`). WordPress, Expo, and Remotion skills stay installed but unused: this is not WordPress, and a CSS ken-burns still is lighter than a Remotion runtime.
+
 Source: `web/` (Vite + React). GitHub Pages still needs a static output: commit the built `index.html` + `assets/` at the repo root **and** use `.github/workflows/pages.yml`. Do not rely on GitHub Pages to run `npm` unless Pages source is **GitHub Actions**.
 
-The “Čo robíme” strip sits immediately under the hero as three equal cards plus a full-width “Pre koho” panel.
+The “Čo robíme” block sits immediately under the hero: a real display `h2` (not a tracked kicker), a one-line lead, three equal Web / Video / Foto cards, plus a full-width “Pre koho” panel. Visible address is **Trnava** only (JSON-LD may still use `addressCountry: SK`).
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a slow ken-burns still, a moving silver sheen, and a bottom fade into black.
+Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a slow ken-burns still, a moving silver sheen, a lazy Three.js silver/pearl shader overlay on capable desktops, and a bottom fade into black.
 
 ## Shapes
 
@@ -141,7 +151,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
 - **Work tiles:** Dark silver art-directed fields or grayscale stills. Captions are quiet style words. Never “TODO” or “Placeholder”.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
-- **Header / footer:** Sticky blurred navbar; footer is a hairline bar with uppercase meta. Study shadcn navbar/footer block rhythm, keep Caviar type.
+- **Header / footer:** Sticky blurred navbar with safe-area padding; footer is a hairline bar with stacked contacts (no middle-dot meta string). Study shadcn navbar/footer block rhythm, keep Caviar type.
 
 ## Do's and Don'ts
 
@@ -155,4 +165,17 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Don't show the words TODO or Placeholder anywhere in the UI
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
 - Do keep prices 49 / 69 / 190 / 349 EUR including VAT
-- Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
+- Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, address **Trnava** only
+- Do pause ken-burns, sheen, and marquee when off-screen or the tab is hidden
+
+## Motion that earns its place
+
+Animate only what has a job: the first-load hero stagger (explanation), ken-burns/sheen/shader on the still (atmosphere), accordion and sheet (spatial), metal-fill press scale 0.97 (feedback). Do not add hover lift on every card. Honor `prefers-reduced-motion`. Primary CTA press uses `transition` on `transform` and `background-image` only, 160ms ease-out.
+
+## Conversion
+
+One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof.
+
+## SEO
+
+Title, meta, Open Graph, hreflang, canonical, `robots.txt`, `sitemap.xml`, and JSON-LD (`LocalBusiness` + `ProfessionalService`, `WebSite`, `FAQPage`) must match visible copy. Do not invent a street, geo pin, hours, or reviews. Programmatic SEO city pages are out of scope on this one-pager.

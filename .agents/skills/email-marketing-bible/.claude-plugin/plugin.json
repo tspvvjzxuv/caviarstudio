@@ -1,0 +1,18 @@
+{
+  "name": "email-marketing-bible",
+  "displayName": "Email Marketing Bible",
+  "version": "2.8.2",
+  "description": "Email marketing operating manual for AI agents, with hard send-safety gates: campaigns, newsletters and flows, deliverability and DNS, switching ESPs, compliance, anti-slop copy, email design and benchmarks, with any ESP through MCP or an API.",
+  "author": {
+    "name": "George Hartley",
+    "email": "george@nitrosend.com",
+    "url": "https://x.com/gthartley"
+  },
+  "homepage": "https://nitrosend.com/email-marketing-bible",
+  "repository": "https://github.com/CosmoBlk/email-marketing-bible",
+  "license": "MIT",
+  "keywords": ["email-marketing", "deliverability", "copywriting", "marketing-automation", "email-design", "ecommerce", "saas", "cold-email", "compliance", "mcp"],
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://nitrosend.com/email-marketing-bible",
+  "supportUrl": "https://github.com/CosmoBlk/email-marketing-bible/issues"
+}

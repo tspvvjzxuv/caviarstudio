@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { isLang } from "@/lib/i18n";
+import { isLang, LANGS, type Lang } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
@@ -29,8 +29,14 @@ const NAV = [
   { href: "#kontakt", key: "navContact" as const },
 ];
 
+const LANG_NAME: Record<Lang, "langSk" | "langEn" | "langDe"> = {
+  sk: "langSk",
+  en: "langEn",
+  de: "langDe",
+};
+
 export function LangSwitch({ className }: { className?: string }) {
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
   return (
     <ToggleGroup
       type="single"
@@ -42,12 +48,13 @@ export function LangSwitch({ className }: { className?: string }) {
       size="sm"
       variant="outline"
       className={cn("rounded-[2px] border border-border", className)}
-      aria-label="Language"
+      aria-label={t.langLabel}
     >
-      {(["sk", "en", "de"] as const).map((code) => (
+      {LANGS.map((code) => (
         <ToggleGroupItem
           key={code}
           value={code}
+          aria-label={t[LANG_NAME[code]]}
           className="h-8 rounded-none px-2.5 text-[0.68rem] tracking-[0.16em] uppercase data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
         >
           {code}
@@ -63,7 +70,16 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 8;
+        setScrolled((prev) => (prev === next ? prev : next));
+        ticking = false;
+      });
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -72,7 +88,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 flex min-h-16 items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] py-3",
+        "sticky top-0 z-50 flex min-h-16 items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-3 [view-transition-name:site-header]",
         scrolled ? "border-b border-border bg-background/88 backdrop-blur-[18px]" : "border-b border-transparent bg-background/34 backdrop-blur-[18px]",
       )}
     >
@@ -80,7 +96,7 @@ export function SiteHeader() {
         Caviar
       </a>
 
-      <NavigationMenu viewport={false} className="hidden max-w-none flex-1 md:flex" aria-label="Caviar">
+      <NavigationMenu viewport={false} className="hidden max-w-none flex-1 md:flex" aria-label={t.navLabel}>
         <NavigationMenuList className="gap-1">
           {NAV.map((item) => (
             <NavigationMenuItem key={item.href}>
@@ -118,13 +134,13 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent
             side="top"
-            className="h-dvh gap-0 border-0 bg-background p-[clamp(1.25rem,5vw,5rem)] pt-24"
+            className="h-dvh gap-0 border-0 bg-background p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))]"
             showCloseButton={false}
           >
             <SheetHeader className="p-0">
               <SheetTitle className="font-serif text-sm tracking-[0.38em] uppercase">Caviar</SheetTitle>
             </SheetHeader>
-            <nav className="mt-8 flex flex-col gap-1" aria-label="Caviar">
+            <nav className="mt-8 flex flex-col gap-1" aria-label={t.navLabel}>
               {NAV.map((item) => (
                 <SheetClose asChild key={item.href}>
                   <a
