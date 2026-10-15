@@ -22,6 +22,7 @@ import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { useLanguage } from "@/lib/language";
 import { WORK_ROWS } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
+import { HeroSilverField } from "@/components/hero-silver-field";
 import { Section } from "@/components/section";
 import { renderWorkTile } from "@/components/work-tile";
 
@@ -64,6 +65,7 @@ export function Hero() {
             className="size-full object-cover grayscale-[0.15] contrast-[1.05] brightness-[0.78]"
           />
         </picture>
+        <HeroSilverField />
         <div className="hero-shine absolute inset-0 z-[1]" aria-hidden="true" />
         <div className="absolute inset-0 bg-linear-to-b from-[#070708]/42 via-[#070708]/12 via-34% to-[#070708]" />
         <div className="absolute inset-0 bg-linear-to-r from-[#070708]/58 to-transparent to-58%" />

@@ -36,4 +36,4 @@ Skills from https://agenticskills.io/workflows were installed; MCP servers were 
 - `better-auth/skills@create-auth-skill` — skill is named `create-auth`
 - Full Development Lifecycle bundle — 0 skills (MCP-only); skipped
 
-Use design/motion/copy/SEO skills on this static site. Do not apply WordPress, Expo, Cloudflare, auth, Remotion, or Three.js unless a later task explicitly asks for them.
+Use design/motion/copy/SEO skills on this static site. Three.js is used only as a lazy silver/pearl hero shader with a static fallback. Do not apply WordPress, Expo, Cloudflare, auth, or Remotion unless a later task explicitly asks for them.

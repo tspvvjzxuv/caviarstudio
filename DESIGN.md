@@ -126,7 +126,7 @@ Language changes use React `<ViewTransition>` (fade) triggered with `startTransi
 
 `frontend-slides` (zarazhangrui) is for presentation-style beats on this site, not a 16:9 HTML deck: one orchestrated hero stagger after the intro veil, speaker-led process steps (one idea each), silver grid atmosphere, hairline chrome, expo easing, `prefers-reduced-motion`. Do not copy its yellow/gold Studio templates or reflow the marketing page as a fixed 1920×1080 stage.
 
-Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. WordPress, Expo, Remotion, and Three.js skills stay installed but unused on this static site.
+Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. Three.js is a lazy silver/pearl hero shader on desktop (static still fallback on mobile, coarse pointer, Save-Data, and `prefers-reduced-motion`). WordPress, Expo, and Remotion skills stay installed but unused: this is not WordPress, and a CSS ken-burns still is lighter than a Remotion runtime.
 
 Source: `web/` (Vite + React). GitHub Pages still needs a static output: commit the built `index.html` + `assets/` at the repo root **and** use `.github/workflows/pages.yml`. Do not rely on GitHub Pages to run `npm` unless Pages source is **GitHub Actions**.
 
@@ -134,7 +134,7 @@ The “Čo robíme” strip sits immediately under the hero as three equal cards
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a slow ken-burns still, a moving silver sheen, and a bottom fade into black.
+Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a slow ken-burns still, a moving silver sheen, a lazy Three.js silver/pearl shader overlay on capable desktops, and a bottom fade into black.
 
 ## Shapes
 

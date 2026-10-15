@@ -173,6 +173,9 @@
   html {
     scroll-behavior: auto;
   }
+  .hero-silver {
+    display: none;
+  }
 }
 
 .grain {
