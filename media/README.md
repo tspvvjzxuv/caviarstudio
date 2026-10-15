@@ -1,6 +1,6 @@
 # Caviar media
 
-Drop project stills and hover-preview films here. The work section reads a `WORK` array at the top of `index.html`.
+Drop project stills and hover-preview films here. The work section reads `WORK` in `web/src/lib/work.ts`.
 
 ```js
 {

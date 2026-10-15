@@ -1,26 +1,45 @@
 # Caviar — caviarstudio.sk
 
-Standalone GitHub Pages export. Copy **this folder’s contents** to a **new repo root** (not thedesigns.org).
+Dark silver art-house studio site. **Slovak default**, English and German in lockstep.
 
-Root `CNAME` in the hub repo stays `thedesigns.org`. This folder’s `CNAME` is `caviarstudio.sk`.
+Source of truth is a **Vite + React + Tailwind CSS v4 + shadcn/ui** app in `web/`. GitHub Pages still serves a **static build at the repo root**, so the live site stays up even before Actions is enabled.
 
-## Deploy
+## Deploy (keep the site live)
 
-1. Create a new GitHub repository (example: `caviarstudio`).
-2. Copy everything in `caviar-site/` to the **root** of that repo (`index.html`, `caviar.css`, `CNAME`, `img/`, …).
-3. Push to `main` and enable **GitHub Pages** from the root of `main`.
-4. In the repo: Settings → Pages → Custom domain `caviarstudio.sk` → enable HTTPS (wait for the certificate).
-5. DNS at the domain registrar (apex `caviarstudio.sk`):
+The repo currently publishes from **branch `main`, folder `/` (legacy)**. That cannot be changed from this agent.
 
-   **A records** to GitHub Pages:
+1. **Fallback (already committed):** `web/` builds into `web/dist`, then `npm run build:pages` copies `index.html` + `assets/` to the repo root. Pushing `main` keeps [caviarstudio.sk](https://caviarstudio.sk) working with the existing Pages source.
+2. **GitHub Actions (optional, recommended):** `.github/workflows/pages.yml` builds `web/` and deploys with `actions/deploy-pages`.
 
-   - `185.199.108.153`
-   - `185.199.109.153`
-   - `185.199.110.153`
-   - `185.199.111.153`
+### What the owner must switch (you have to do this in the GitHub UI)
 
-   Do **not** point a DNS CNAME for the apex at `github.io` if you use these A records. Optional `www` CNAME can go to `<user>.github.io`.
+Until this is changed, the Actions workflow’s **deploy** job will fail; the committed root files still serve the site.
 
-6. After DNS propagates, confirm `https://caviarstudio.sk` serves this `index.html`.
+1. Repo **Settings → Pages**
+2. **Build and deployment → Source:** change from **Deploy from a branch** to **GitHub Actions**
+3. Leave the custom domain `caviarstudio.sk` (root `CNAME` is preserved in `web/public` and in the build)
+4. Keep **HTTPS** on once the certificate is ready
 
-thedesigns.org `/weby/` already redirects here. Hub card on thedesigns.org links to `https://caviarstudio.sk`.
+Do not point the apex DNS CNAME at `github.io` if you use GitHub’s A records (`185.199.108.153`–`111.153`).
+
+## Local
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Production build + write the root fallback:
+
+```bash
+cd web
+npm run build:pages
+```
+
+## Content rules
+
+- Prices: 49 / 69 / 190 / 349 EUR including VAT
+- Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
+- Palette: near-black `#070708`, silver/platinum only — **no gold**
+- Swap work stills in `media/` and the `WORK` array in `web/src/lib/work.ts`

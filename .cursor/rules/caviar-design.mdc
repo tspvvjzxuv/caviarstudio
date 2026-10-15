@@ -1,31 +1,32 @@
 ---
-description: Caviar visual system — dark silver, Tailwind spacing, shadcn-like components, GitHub Pages
+description: Caviar visual system — Tailwind + shadcn/ui, silver on near-black, GitHub Pages
 alwaysApply: true
 ---
 
 # Caviar design rules
 
-Static GitHub Pages site. **Do not add a Tailwind/Vite/npm build** that must run at deploy time. Keep vanilla CSS (this repo) using a Tailwind-like 4px spacing scale, or commit a precompiled CSS file.
+UI is **Vite + React + Tailwind CSS v4 + the full shadcn/ui set** in `web/`. Theme via CSS variables in `web/src/index.css`. Do not go back to hand-rolled “Tailwind-like” CSS as the source of truth.
+
+Deploy as static GitHub Pages at the repo root for `caviarstudio.sk`:
+
+- Build with `cd web && npm run build:pages` (writes `index.html` + `assets/` to repo root as fallback)
+- `.github/workflows/pages.yml` deploys `web/dist` when Pages source is **GitHub Actions** (the owner must switch that in Settings → Pages; agents cannot)
+- Keep `CNAME`, `robots.txt`, `sitemap.xml`, SEO tags, JSON-LD
 
 ## References
 
-- Spacing, type scale, utility rhythm: [Tailwind CSS](https://tailwindcss.com/)
-- Component anatomy, padding, and grid gaps: [shadcn/ui](https://ui.shadcn.com/) and [shadcn blocks](https://ui.shadcn.com/blocks) (hero, feature, pricing, FAQ, contact/form, navbar, footer)
+- [Tailwind CSS](https://tailwindcss.com/) — spacing, type, color, responsive, dark, animation utilities
+- [shadcn/ui components](https://ui.shadcn.com/docs/components) and [blocks](https://ui.shadcn.com/blocks)
 
 ## Palette
 
 - Near-black ground `#070708`, elevated `#0E0E12`, surface `#14141A`
 - Pearl `#F4F5F7`, silver `#C5CAD3`, platinum `#E8EAEE`, steel `#9AA3AE`
 - **No gold, champagne, amber, or warm yellow**
+- `--radius`: 2px. Sharp cards and buttons.
 
 ## Layout
 
-- Generous whitespace. Panels (service cards, pricing, process steps, work tiles, team, FAQ items) **never touch**. Use `--gap-panel` (16px mobile / 24px md / 32px lg).
-- Each panel is a self-contained card: own border, own padding (`--pad-panel`), not a shared 1px divider between flush columns.
-- Sharp corners (0–2px). Do not switch to pill CTAs or large rounded-xl SaaS cards.
+- Generous whitespace. Panels never touch (`gap-4` / `md:gap-6` / `xl:gap-8`).
 - Slovak default, EN/DE in lockstep. No invented testimonials or numbers.
-
-## Type
-
-- Display: Cormorant Garamond. Body/UI: DM Sans.
-- Feature headlines large; body 16–18px; labels uppercase with wide tracking.
+- Prices 49 / 69 / 190 / 349 EUR s DPH. Contacts unchanged.

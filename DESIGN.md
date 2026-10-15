@@ -116,7 +116,9 @@ Mobile-first. Spacing follows the **Tailwind 4px scale** (`4 / 8 / 12 / 16 / 24 
 
 **Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (16px mobile, 24px from 720px, 32px from 1080px) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
 
-Component anatomy (card padding, feature grids, pricing, FAQ accordion, form fields, navbar, footer) follows [shadcn/ui](https://ui.shadcn.com/) and [shadcn blocks](https://ui.shadcn.com/blocks), restyled in Caviar metals. The site is static GitHub Pages: keep vanilla CSS on this scale, or commit a precompiled stylesheet. Do not add a deploy-time Tailwind build.
+The UI is built with the **full Tailwind CSS utility system** and the **full shadcn/ui component set + CSS-variable theming** ([components](https://ui.shadcn.com/docs/components), [blocks](https://ui.shadcn.com/blocks)): Button, Card, Badge, Accordion (FAQ), Tabs, Input/Select/Label (form), Navigation Menu, Sheet (mobile menu), Separator, Tooltip, Toggle Group (SK/EN/DE), Field. Tokens live in `web/src/index.css` (`--background`, `--primary`, `--radius` 2px, dark class always on).
+
+Source: `web/` (Vite + React). GitHub Pages still needs a static output: commit the built `index.html` + `assets/` at the repo root **and** use `.github/workflows/pages.yml`. Do not rely on GitHub Pages to run `npm` unless Pages source is **GitHub Actions**.
 
 The “Čo robíme” strip sits immediately under the hero as three equal cards plus a full-width “Pre koho” panel.
 
@@ -148,6 +150,6 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Don't use gold, warm yellow, or champagne metals
 - Don't invent testimonials, client counts, or results
 - Don't show the words TODO or Placeholder anywhere in the UI
-- Don't add a Node/Tailwind build that GitHub Pages must run
+- Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
 - Do keep prices 49 / 69 / 190 / 349 EUR including VAT
 - Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
