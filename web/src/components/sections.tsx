@@ -20,21 +20,25 @@ import {
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { useLanguage } from "@/lib/language";
-import { WORK_ROWS, workIndex, type WorkItem } from "@/lib/work";
-import { cn } from "@/lib/utils";
+import { WORK_ROWS } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
+import { Section } from "@/components/section";
+import { renderWorkTile } from "@/components/work-tile";
 
 const TEAM = [
   { mono: "MK", name: "Miroslav Kotvas" },
   { mono: "SK", name: "Sofia Klebanová" },
 ] as const;
 
-const PRICE_PACKS = [
-  { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc", featured: false },
-  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc", featured: false },
-  { key: "webOnePager", name: "pWebName", desc: "pWebDesc", featured: false },
-  { key: "komplet", name: "pKompletName", desc: "pKompletDesc", featured: true },
+const LAUNCH_PACKS = [
+  { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc" },
+  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc" },
+  { key: "webOnePager", name: "pWebName", desc: "pWebDesc" },
 ] as const;
+
+const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc" } as const;
+
+type PricePack = (typeof LAUNCH_PACKS)[number] | typeof FEATURED_PACK;
 
 const NEED_OPTIONS = [
   { value: "Web", label: "needWeb" },
@@ -102,8 +106,8 @@ export function Services() {
     { name: t.fotoName, lead: t.fotoLead, gets: t.fotoGets, i: "03" },
   ];
   return (
-    <section id="sluzby" className="scroll-mt-20 border-t border-border py-[clamp(3rem,8vw,5.5rem)]">
-      <div className="mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
+    <Section.Frame id="sluzby" density="compact" className="border-t border-border">
+      <Section.Body>
         <div className="mb-8 md:mb-10">
           <h2>
             <Kicker>{t.doKicker}</Kicker>
@@ -118,8 +122,8 @@ export function Services() {
           <span className="block text-[0.68rem] tracking-[0.22em] text-silver uppercase">{t.forWhomLabel}</span>
           <span className="mt-2 block font-serif text-[clamp(1.2rem,2.4vw,1.55rem)] leading-[1.45] italic">{t.forWhom}</span>
         </Reveal>
-      </div>
-    </section>
+      </Section.Body>
+    </Section.Frame>
   );
 }
 
@@ -144,63 +148,89 @@ function ServiceCard({
   );
 }
 
+function PriceIdentity({ name, desc }: { name: string; desc: string }) {
+  const { t } = useLanguage();
+  return (
+    <div className="grid gap-3">
+      <Badge variant="outline" className="rounded-[2px] border-silver/40 bg-platinum/10 tracking-[0.2em] text-platinum uppercase">
+        {t.launchBadge}
+      </Badge>
+      <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] font-normal">{name}</CardTitle>
+      <CardDescription className="max-w-[36ch] text-[0.95rem]">{desc}</CardDescription>
+    </div>
+  );
+}
+
+function PriceAmounts({ launch, standard, vat }: { launch: number; standard: number; vat: string }) {
+  const { t } = useLanguage();
+  return (
+    <div>
+      <p className="font-serif text-[clamp(2rem,3.2vw,2.7rem)] leading-none">
+        {t.priceFrom} {launch} EUR{" "}
+        <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">{vat}</span>
+      </p>
+      <p className="mt-3 text-[0.85rem] text-muted-foreground">
+        <s className="text-foreground/40">{standard} EUR</s>
+        <span className="mt-0.5 block text-[0.62rem] tracking-[0.16em] uppercase">{t.stdLabel}</span>
+      </p>
+    </div>
+  );
+}
+
+function LaunchPriceCard({ pack, delay, vat }: { pack: PricePack; delay: number; vat: string }) {
+  const { t } = useLanguage();
+  const price = CAVIAR.prices[pack.key];
+  return (
+    <Reveal delay={delay}>
+      <Card className="h-full rounded-[2px] py-0 ring-1 bg-card ring-border">
+        <CardHeader className="gap-4 p-6 md:p-8">
+          <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
+          <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+        </CardHeader>
+      </Card>
+    </Reveal>
+  );
+}
+
+function FeaturedPriceCard({ pack, delay, vat }: { pack: typeof FEATURED_PACK; delay: number; vat: string }) {
+  const { t } = useLanguage();
+  const price = CAVIAR.prices[pack.key];
+  return (
+    <Reveal delay={delay} className="md:col-span-2 xl:col-span-3">
+      <Card className="h-full rounded-[2px] py-0 ring-1 bg-linear-to-b from-platinum/7 to-platinum/1.5 ring-platinum/42">
+        <CardHeader className="gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
+          <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
+          <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+        </CardHeader>
+      </Card>
+    </Reveal>
+  );
+}
+
 export function Pricing() {
   const { t } = useLanguage();
   const vat = CAVIAR.VAT_PAYER ? t.vatTag : t.vatTagEx;
   return (
-    <section id="cennik" className="scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
-      <div className="mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
-        <Reveal className="mb-10 grid max-w-[38ch] gap-4 md:mb-16">
-          <Kicker>{t.priceKicker}</Kicker>
-          <h2 className="font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{t.priceTitle}</h2>
+    <Section.Frame id="cennik">
+      <Section.Body>
+        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.priceKicker} title={t.priceTitle}>
           <p className="text-[0.72rem] tracking-[0.14em] text-silver uppercase">
             {t.slots.replace("{x}", String(CAVIAR.SLOTS_REMAINING)).replace("{total}", String(CAVIAR.SLOTS_TOTAL))}
           </p>
-        </Reveal>
+        </Section.Heading>
         <div className="grid gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-8">
-          {PRICE_PACKS.map((pack, idx) => {
-            const price = CAVIAR.prices[pack.key];
-            return (
-              <Reveal key={pack.key} delay={idx} className={pack.featured ? "md:col-span-2 xl:col-span-3" : ""}>
-                <Card
-                  className={cn(
-                    "h-full rounded-[2px] py-0 ring-1",
-                    pack.featured
-                      ? "bg-linear-to-b from-platinum/7 to-platinum/1.5 ring-platinum/42"
-                      : "bg-card ring-border",
-                  )}
-                >
-                  <CardHeader className={cn("gap-4 p-6 md:p-8", pack.featured && "lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12")}>
-                    <div className="grid gap-3">
-                      <Badge variant="outline" className="rounded-[2px] border-silver/40 bg-platinum/10 tracking-[0.2em] text-platinum uppercase">
-                        {t.launchBadge}
-                      </Badge>
-                      <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] font-normal">{t[pack.name]}</CardTitle>
-                      <CardDescription className="max-w-[36ch] text-[0.95rem]">{t[pack.desc]}</CardDescription>
-                    </div>
-                    <div>
-                      <p className="font-serif text-[clamp(2rem,3.2vw,2.7rem)] leading-none">
-                        {t.priceFrom} {price.launch} EUR{" "}
-                        <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">{vat}</span>
-                      </p>
-                      <p className="mt-3 text-[0.85rem] text-muted-foreground">
-                        <s className="text-foreground/40">{price.standard} EUR</s>
-                        <span className="mt-0.5 block text-[0.62rem] tracking-[0.16em] uppercase">{t.stdLabel}</span>
-                      </p>
-                    </div>
-                  </CardHeader>
-                </Card>
-              </Reveal>
-            );
-          })}
+          {LAUNCH_PACKS.map((pack, idx) => (
+            <LaunchPriceCard key={pack.key} pack={pack} delay={idx} vat={vat} />
+          ))}
+          <FeaturedPriceCard pack={FEATURED_PACK} delay={LAUNCH_PACKS.length} vat={vat} />
         </div>
         <Reveal className="mt-7 grid gap-2 text-[0.88rem] text-muted-foreground">
           <p>{t.priceIntro}</p>
           <p>{t.noHidden}</p>
           <p>{CAVIAR.VAT_PAYER ? t.vatYes : t.vatNo}</p>
         </Reveal>
-      </div>
-    </section>
+      </Section.Body>
+    </Section.Frame>
   );
 }
 
@@ -213,12 +243,9 @@ export function Process() {
     { n: "04", title: t.how4t, body: t.how4p },
   ];
   return (
-    <section id="ako" className="scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
-      <div className="mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
-        <Reveal className="mb-10 grid max-w-[22ch] gap-4 md:mb-16">
-          <Kicker>{t.howKicker}</Kicker>
-          <h2 className="font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{t.howTitle}</h2>
-        </Reveal>
+    <Section.Frame id="ako">
+      <Section.Body>
+        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.howKicker} title={t.howTitle} />
         <ol className="grid list-none gap-4 md:gap-6 xl:gap-8">
           {steps.map((step, idx) => (
             <li key={step.n}>
@@ -236,75 +263,8 @@ export function Process() {
             </li>
           ))}
         </ol>
-      </div>
-    </section>
-  );
-}
-
-function WorkCard({ item, index }: { item: WorkItem; index: number }) {
-  const { t } = useLanguage();
-  const isSilver = item.kind === "silver" || !item.image;
-  const [broken, setBroken] = useState(false);
-  const showSilver = isSilver || broken;
-  const n = String(index + 1).padStart(2, "0");
-  const pack = t as Record<string, string>;
-  const inner = (
-    <>
-      <div
-        className={cn(
-          "project-media absolute inset-0 overflow-hidden",
-          showSilver && `silver-sheen silver-${item.silver}`,
-        )}
-      >
-        {showSilver ? null : (
-          <img
-            src={item.image}
-            alt={pack[item.altKey] || ""}
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-[-8%] size-[116%] object-cover grayscale-[0.42] contrast-[1.06] brightness-[0.88] motion-ok:transition-transform motion-ok:duration-[1350ms]"
-            onError={() => setBroken(true)}
-          />
-        )}
-      </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] grid gap-2 bg-linear-to-t from-[#070708]/78 to-transparent p-[clamp(1.25rem,4vw,2.25rem)]">
-        <span className="text-[0.62rem] tracking-[0.22em] text-silver uppercase">{n}</span>
-        <h3 className="font-serif text-[clamp(1.8rem,4vw,3.2rem)] leading-none font-normal tracking-[-0.02em]">{pack[item.titleKey]}</h3>
-        <p className="max-w-[36ch] text-[0.95rem] text-muted-foreground">{pack[item.lineKey]}</p>
-        <ul className="mt-1.5 flex list-none flex-wrap gap-2">
-          {item.tags.map((tag) => (
-            <li key={tag}>
-              <Badge variant="outline" className="rounded-[2px] border-silver/28 text-[0.62rem] tracking-[0.18em] text-platinum uppercase">
-                {pack[tag]}
-              </Badge>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
-  );
-  const cls = cn(
-    "project relative isolate min-h-[64vh] overflow-hidden rounded-[2px] border border-border bg-card",
-    item.layout === "feature" && "min-h-[78vh] md:min-h-[min(84vh,920px)]",
-    item.layout === "pair" && "md:min-h-[min(68vh,700px)]",
-  );
-  if (item.href) {
-    return (
-      <article className={cls} data-id={item.id} data-cursor="view">
-        <a
-          className="absolute inset-0 z-[2]"
-          href={item.href}
-          target={item.href.startsWith("http") ? "_blank" : undefined}
-          rel={item.href.startsWith("http") ? "noopener" : undefined}
-        />
-        {inner}
-      </article>
-    );
-  }
-  return (
-    <article className={cls} data-id={item.id} data-cursor="soon">
-      {inner}
-    </article>
+      </Section.Body>
+    </Section.Frame>
   );
 }
 
@@ -373,14 +333,12 @@ export function Work() {
   }, []);
 
   return (
-    <section id="praca" className="work-sec scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
-      <div className="mx-auto mb-10 w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] md:mb-16">
-        <Reveal className="grid max-w-[38ch] gap-4">
-          <Kicker>{t.workKicker}</Kicker>
-          <h2 className="font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{t.workTitle}</h2>
+    <Section.Frame id="praca" className="work-sec">
+      <Section.Body className="mb-10 md:mb-16">
+        <Section.Heading className="max-w-[38ch]" kicker={t.workKicker} title={t.workTitle}>
           <p className="text-[1.02rem] text-muted-foreground">{t.workLead}</p>
-        </Reveal>
-      </div>
+        </Section.Heading>
+      </Section.Body>
       <div className="marquee overflow-hidden border-y border-border py-4" aria-hidden="true">
         <div className="marquee-track flex w-max gap-8 text-[0.72rem] tracking-[0.28em] text-silver uppercase">
           <span>{t.marquee}</span>
@@ -389,41 +347,37 @@ export function Work() {
           <span>{t.marquee}</span>
         </div>
       </div>
-      <div className="mx-auto mt-8 w-[min(1360px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
+      <Section.Wide className="mt-8">
         <div ref={stage} className="grid gap-4 md:gap-6 xl:gap-8">
           {WORK_ROWS.map((row) =>
             row.length === 2 ? (
               <div key={row[0].id} className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
-                <WorkCard item={row[0]} index={workIndex(row[0])} />
-                <WorkCard item={row[1]} index={workIndex(row[1])} />
+                {row.map(renderWorkTile)}
               </div>
             ) : (
-              <WorkCard key={row[0].id} item={row[0]} index={workIndex(row[0])} />
+              renderWorkTile(row[0])
             ),
           )}
         </div>
-      </div>
-      <div className="mx-auto mt-7 w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
+      </Section.Wide>
+      <Section.Body className="mt-7">
         <a
           href={CAVIAR.EVERLIGHT}
           className="inline-flex items-center pb-1.5 text-[0.78rem] tracking-[0.14em] text-silver uppercase hover:text-foreground"
         >
           {t.everLink}
         </a>
-      </div>
-    </section>
+      </Section.Body>
+    </Section.Frame>
   );
 }
 
 export function Team() {
   const { t } = useLanguage();
   return (
-    <section id="onas" className="scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
-      <div className="mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
-        <Reveal className="mb-10 grid max-w-[22ch] gap-4 md:mb-16">
-          <Kicker>{t.teamKicker}</Kicker>
-          <h2 className="font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{t.aboutTitle}</h2>
-        </Reveal>
+    <Section.Frame id="onas">
+      <Section.Body>
+        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.teamKicker} title={t.aboutTitle} />
         <ul className="grid list-none gap-6 md:grid-cols-2 md:gap-8">
           {TEAM.map((p, idx) => (
             <li key={p.name}>
@@ -441,8 +395,8 @@ export function Team() {
             </li>
           ))}
         </ul>
-      </div>
-    </section>
+      </Section.Body>
+    </Section.Frame>
   );
 }
 
@@ -457,12 +411,9 @@ export function Faq() {
     { q: t.faq6q, a: t.faq6a },
   ];
   return (
-    <section id="faq" className="scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
-      <div className="mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
-        <Reveal className="mb-10 grid max-w-[22ch] gap-4 md:mb-16">
-          <Kicker>FAQ</Kicker>
-          <h2 className="font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{t.faqTitle}</h2>
-        </Reveal>
+    <Section.Frame id="faq">
+      <Section.Body>
+        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker="FAQ" title={t.faqTitle} />
         <Accordion type="single" collapsible className="grid gap-3">
           {items.map((item, idx) => (
             <AccordionItem
@@ -477,12 +428,42 @@ export function Faq() {
             </AccordionItem>
           ))}
         </Accordion>
-      </div>
-    </section>
+      </Section.Body>
+    </Section.Frame>
   );
 }
 
-export function Contact() {
+function ContactIntro() {
+  const { t } = useLanguage();
+  return (
+    <Reveal>
+      <Kicker>{t.contactKicker}</Kicker>
+      <h2 className="mt-4 max-w-[11ch] font-serif text-[clamp(2.5rem,7vw,5.6rem)] leading-[0.98] tracking-[-0.03em]">
+        {t.contactTitle}
+      </h2>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <a href={`mailto:${CAVIAR.EMAIL}`}>{t.ctaMail}</a>
+        </Button>
+        <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <a href={`tel:${CAVIAR.PHONE}`}>{t.ctaPhone}</a>
+        </Button>
+        <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <a href={waHref(t.waText)}>{t.ctaWa}</a>
+        </Button>
+        <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <a href={CAVIAR.INSTAGRAM} target="_blank" rel="noopener">
+            {t.ctaIg}
+          </a>
+        </Button>
+      </div>
+      <p className="mt-5 font-serif text-2xl tracking-[0.04em]">{formatPhone(CAVIAR.PHONE)}</p>
+      <p className="mt-2 text-[0.85rem] tracking-[0.12em] text-silver uppercase">{t.place}</p>
+    </Reveal>
+  );
+}
+
+function ContactForm() {
   const { t } = useLanguage();
   const [need, setNeed] = useState("Web");
 
@@ -505,87 +486,73 @@ export function Contact() {
   }
 
   return (
-    <section id="kontakt" className="scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
-      <div className="mx-auto grid w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] gap-10 md:grid-cols-2 md:gap-16">
-        <Reveal>
-          <Kicker>{t.contactKicker}</Kicker>
-          <h2 className="mt-4 max-w-[11ch] font-serif text-[clamp(2.5rem,7vw,5.6rem)] leading-[0.98] tracking-[-0.03em]">
-            {t.contactTitle}
-          </h2>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-              <a href={`mailto:${CAVIAR.EMAIL}`}>{t.ctaMail}</a>
+    <Reveal>
+      <Card className="rounded-[2px] py-0 ring-1 ring-border">
+        <CardContent className="p-6 md:p-8">
+          <form onSubmit={onSubmit} className="grid gap-6">
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="f-name" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
+                  {t.fName}
+                </FieldLabel>
+                <Input id="f-name" name="name" autoComplete="name" required className="h-11 rounded-[2px] bg-background" />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="f-biz" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
+                  {t.fBiz}
+                </FieldLabel>
+                <Input id="f-biz" name="business" autoComplete="organization" required className="h-11 rounded-[2px] bg-background" />
+              </Field>
+              <Field>
+                <FieldLabel className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">{t.fNeed}</FieldLabel>
+                <Select value={need} onValueChange={setNeed} required>
+                  <SelectTrigger className="h-11 w-full rounded-[2px] bg-background">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-[2px]">
+                    <SelectGroup>
+                      {NEED_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {t[option.label]}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="f-budget" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
+                  {t.fBudget}
+                </FieldLabel>
+                <Input
+                  id="f-budget"
+                  name="budget"
+                  inputMode="decimal"
+                  placeholder={t.fBudgetPh}
+                  className="h-11 rounded-[2px] bg-background"
+                />
+              </Field>
+            </FieldGroup>
+            <Button type="submit" className="metal-fill h-[52px] rounded-[2px] text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+              {t.ctaQuote}
             </Button>
-            <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-              <a href={`tel:${CAVIAR.PHONE}`}>{t.ctaPhone}</a>
-            </Button>
-            <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-              <a href={waHref(t.waText)}>{t.ctaWa}</a>
-            </Button>
-            <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-              <a href={CAVIAR.INSTAGRAM} target="_blank" rel="noopener">
-                {t.ctaIg}
-              </a>
-            </Button>
-          </div>
-          <p className="mt-5 font-serif text-2xl tracking-[0.04em]">{formatPhone(CAVIAR.PHONE)}</p>
-          <p className="mt-2 text-[0.85rem] tracking-[0.12em] text-silver uppercase">{t.place}</p>
-        </Reveal>
-        <Reveal>
-          <Card className="rounded-[2px] py-0 ring-1 ring-border">
-            <CardContent className="p-6 md:p-8">
-              <form onSubmit={onSubmit} className="grid gap-6">
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="f-name" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
-                      {t.fName}
-                    </FieldLabel>
-                    <Input id="f-name" name="name" autoComplete="name" required className="h-11 rounded-[2px] bg-background" />
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="f-biz" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
-                      {t.fBiz}
-                    </FieldLabel>
-                    <Input id="f-biz" name="business" autoComplete="organization" required className="h-11 rounded-[2px] bg-background" />
-                  </Field>
-                  <Field>
-                    <FieldLabel className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">{t.fNeed}</FieldLabel>
-                    <Select value={need} onValueChange={setNeed} required>
-                      <SelectTrigger className="h-11 w-full rounded-[2px] bg-background">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-[2px]">
-                        <SelectGroup>
-                          {NEED_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {t[option.label]}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="f-budget" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
-                      {t.fBudget}
-                    </FieldLabel>
-                    <Input
-                      id="f-budget"
-                      name="budget"
-                      inputMode="decimal"
-                      placeholder={t.fBudgetPh}
-                      className="h-11 rounded-[2px] bg-background"
-                    />
-                  </Field>
-                </FieldGroup>
-                <Button type="submit" className="metal-fill h-[52px] rounded-[2px] text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-                  {t.ctaQuote}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </Reveal>
-      </div>
-    </section>
+          </form>
+        </CardContent>
+      </Card>
+    </Reveal>
   );
 }
+
+export function Contact() {
+  return (
+    <Section.Frame id="kontakt">
+      <Section.Body className="grid gap-10 md:grid-cols-2 md:gap-16">
+        <ContactIntro />
+        <ContactForm />
+      </Section.Body>
+    </Section.Frame>
+  );
+}
+
+Contact.Intro = ContactIntro;
+Contact.Form = ContactForm;

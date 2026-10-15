@@ -136,7 +136,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [lang]);
 
   const value = useMemo(() => ({ lang, t, setLang }), [lang, t, setLang]);
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return <LanguageContext value={value}>{children}</LanguageContext>;
 }
 
 export function useLanguage() {
