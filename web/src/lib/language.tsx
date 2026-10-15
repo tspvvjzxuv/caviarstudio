@@ -1,26 +1,48 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { CAVIAR, OG_LOCALES } from "@/lib/config";
+import { CAVIAR, OG_LOCALES, PRICE_RANGE } from "@/lib/config";
 import { dictionary, isLang, type Dict, type Lang } from "@/lib/i18n";
 
-const STORAGE_KEY = "td-weby-lang";
+const LANG_STORAGE_KEY = "td-weby-lang:v1";
+const LANG_STORAGE_LEGACY = "td-weby-lang";
+const langStorageCache = new Map<string, string | null>();
 
-type LanguageContextValue = {
-  lang: Lang;
-  t: Dict;
-  setLang: (lang: Lang) => void;
-};
+function readStorage(key: string): string | null {
+  if (langStorageCache.has(key)) return langStorageCache.get(key) ?? null;
+  try {
+    const value = localStorage.getItem(key);
+    langStorageCache.set(key, value);
+    return value;
+  } catch {
+    langStorageCache.set(key, null);
+    return null;
+  }
+}
 
-const LanguageContext = createContext<LanguageContextValue | null>(null);
+function writeStorage(key: string, value: string) {
+  langStorageCache.set(key, value);
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
 
 function readInitialLang(): Lang {
   if (typeof window === "undefined") return "sk";
   const fromUrl = new URLSearchParams(window.location.search).get("lang");
   if (isLang(fromUrl)) return fromUrl;
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (isLang(saved)) return saved;
-  } catch {
-    /* ignore */
+  const saved = readStorage(LANG_STORAGE_KEY);
+  if (isLang(saved)) return saved;
+  const legacy = readStorage(LANG_STORAGE_LEGACY);
+  if (isLang(legacy)) {
+    writeStorage(LANG_STORAGE_KEY, legacy);
+    try {
+      localStorage.removeItem(LANG_STORAGE_LEGACY);
+      langStorageCache.delete(LANG_STORAGE_LEGACY);
+    } catch {
+      /* ignore */
+    }
+    return legacy;
   }
   return "sk";
 }
@@ -49,7 +71,6 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
         webOnePager: "Web Jednostránka",
         komplet: "Caviar Komplet",
       };
-      const amounts = Object.values(CAVIAR.prices).map((p) => p.launch);
       data.makesOffer = Object.entries(CAVIAR.prices).map(([key, p]) => ({
         "@type": "Offer",
         name: names[key] || key,
@@ -57,7 +78,7 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
         priceCurrency: "EUR",
         valueAddedTaxIncluded: !!CAVIAR.VAT_PAYER,
       }));
-      data.priceRange = `€${Math.min(...amounts)}–€${Math.max(...amounts)}`;
+      data.priceRange = `€${PRICE_RANGE.min}–€${PRICE_RANGE.max}`;
       data.description = pack.docDesc;
       ld.textContent = JSON.stringify(data);
     } catch {
@@ -66,17 +87,21 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
   }
 }
 
+type LanguageContextValue = {
+  lang: Lang;
+  t: Dict;
+  setLang: (lang: Lang) => void;
+};
+
+const LanguageContext = createContext<LanguageContextValue | null>(null);
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(readInitialLang);
   const t = dictionary[lang];
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      /* ignore */
-    }
+    writeStorage(LANG_STORAGE_KEY, next);
     const url = new URL(window.location.href);
     if (url.searchParams.get("lang") !== next) {
       url.searchParams.set("lang", next);

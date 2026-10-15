@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { isLang } from "@/lib/i18n";
+import { isLang, LANGS } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +44,7 @@ export function LangSwitch({ className }: { className?: string }) {
       className={cn("rounded-[2px] border border-border", className)}
       aria-label="Language"
     >
-      {(["sk", "en", "de"] as const).map((code) => (
+      {LANGS.map((code) => (
         <ToggleGroupItem
           key={code}
           value={code}

@@ -20,9 +20,29 @@ import {
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { useLanguage } from "@/lib/language";
-import { WORK, type WorkItem } from "@/lib/work";
+import { WORK_ROWS, workIndex, type WorkItem } from "@/lib/work";
 import { cn } from "@/lib/utils";
 import { Kicker, Reveal } from "@/components/reveal";
+
+const TEAM = [
+  { mono: "MK", name: "Miroslav Kotvas" },
+  { mono: "SK", name: "Sofia Klebanová" },
+] as const;
+
+const PRICE_PACKS = [
+  { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc", featured: false },
+  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc", featured: false },
+  { key: "webOnePager", name: "pWebName", desc: "pWebDesc", featured: false },
+  { key: "komplet", name: "pKompletName", desc: "pKompletDesc", featured: true },
+] as const;
+
+const NEED_OPTIONS = [
+  { value: "Web", label: "needWeb" },
+  { value: "Video", label: "needVideo" },
+  { value: "Foto", label: "needFoto" },
+  { value: "Komplet", label: "needKomplet" },
+  { value: "Mix", label: "needMix" },
+] as const;
 
 export function Hero() {
   const { t } = useLanguage();
@@ -126,12 +146,6 @@ function ServiceCard({
 
 export function Pricing() {
   const { t } = useLanguage();
-  const packs = [
-    { key: "fotoMini", name: t.pFotoName, desc: t.pFotoDesc, featured: false },
-    { key: "videoReel", name: t.pVideoName, desc: t.pVideoDesc, featured: false },
-    { key: "webOnePager", name: t.pWebName, desc: t.pWebDesc, featured: false },
-    { key: "komplet", name: t.pKompletName, desc: t.pKompletDesc, featured: true },
-  ] as const;
   const vat = CAVIAR.VAT_PAYER ? t.vatTag : t.vatTagEx;
   return (
     <section id="cennik" className="scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
@@ -144,7 +158,7 @@ export function Pricing() {
           </p>
         </Reveal>
         <div className="grid gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-8">
-          {packs.map((pack, idx) => {
+          {PRICE_PACKS.map((pack, idx) => {
             const price = CAVIAR.prices[pack.key];
             return (
               <Reveal key={pack.key} delay={idx} className={pack.featured ? "md:col-span-2 xl:col-span-3" : ""}>
@@ -161,8 +175,8 @@ export function Pricing() {
                       <Badge variant="outline" className="rounded-[2px] border-silver/40 bg-platinum/10 tracking-[0.2em] text-platinum uppercase">
                         {t.launchBadge}
                       </Badge>
-                      <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] font-normal">{pack.name}</CardTitle>
-                      <CardDescription className="max-w-[36ch] text-[0.95rem]">{pack.desc}</CardDescription>
+                      <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] font-normal">{t[pack.name]}</CardTitle>
+                      <CardDescription className="max-w-[36ch] text-[0.95rem]">{t[pack.desc]}</CardDescription>
                     </div>
                     <div>
                       <p className="font-serif text-[clamp(2rem,3.2vw,2.7rem)] leading-none">
@@ -242,7 +256,7 @@ function WorkCard({ item, index }: { item: WorkItem; index: number }) {
           showSilver && `silver-sheen silver-${item.silver}`,
         )}
       >
-        {!showSilver && (
+        {showSilver ? null : (
           <img
             src={item.image}
             alt={pack[item.altKey] || ""}
@@ -306,12 +320,20 @@ export function Work() {
     let scrolling = false;
     const paint = () => {
       const vh = window.innerHeight;
-      root.querySelectorAll<HTMLElement>(".project").forEach((p) => {
+      const projects = root.querySelectorAll<HTMLElement>(".project");
+      const writes: { el: HTMLElement; py: string }[] = [];
+      for (let i = 0; i < projects.length; i++) {
+        const p = projects[i];
         const r = p.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > vh) return;
-        const v = (vh - r.top) / (vh + r.height) - 0.5;
-        p.style.setProperty("--py", `${(v * 36).toFixed(2)}px`);
-      });
+        const top = r.top;
+        const height = r.height;
+        if (r.bottom < 0 || top > vh) continue;
+        const v = (vh - top) / (vh + height) - 0.5;
+        writes.push({ el: p, py: `${(v * 36).toFixed(2)}px` });
+      }
+      for (let i = 0; i < writes.length; i++) {
+        writes[i].el.style.setProperty("--py", writes[i].py);
+      }
       scrolling = false;
     };
     const onScroll = () => {
@@ -327,8 +349,11 @@ export function Work() {
       const p = (e.target as HTMLElement | null)?.closest(".project") as HTMLElement | null;
       if (!p) return;
       const r = p.getBoundingClientRect();
-      p.style.setProperty("--mx", `${(((e.clientX - r.left) / r.width - 0.5) * 18).toFixed(1)}px`);
-      p.style.setProperty("--my", `${(((e.clientY - r.top) / r.height - 0.5) * 12).toFixed(1)}px`);
+      const width = r.width;
+      const height = r.height;
+      if (!width || !height) return;
+      p.style.setProperty("--mx", `${(((e.clientX - r.left) / width - 0.5) * 18).toFixed(1)}px`);
+      p.style.setProperty("--my", `${(((e.clientY - r.top) / height - 0.5) * 12).toFixed(1)}px`);
     };
     const onLeave = (e: PointerEvent) => {
       const p = (e.target as HTMLElement | null)?.closest(".project") as HTMLElement | null;
@@ -337,8 +362,8 @@ export function Work() {
       p.style.setProperty("--my", "0px");
     };
     if (fine) {
-      root.addEventListener("pointermove", onMove);
-      root.addEventListener("pointerleave", onLeave);
+      root.addEventListener("pointermove", onMove, { passive: true });
+      root.addEventListener("pointerleave", onLeave, { passive: true });
     }
     return () => {
       window.removeEventListener("scroll", onScroll);
@@ -346,18 +371,6 @@ export function Work() {
       root.removeEventListener("pointerleave", onLeave);
     };
   }, []);
-
-  const rows: WorkItem[][] = [];
-  for (let i = 0; i < WORK.length; i++) {
-    const item = WORK[i];
-    const next = WORK[i + 1];
-    if (item.layout === "pair" && next?.layout === "pair") {
-      rows.push([item, next]);
-      i += 1;
-    } else {
-      rows.push([item]);
-    }
-  }
 
   return (
     <section id="praca" className="work-sec scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
@@ -378,14 +391,14 @@ export function Work() {
       </div>
       <div className="mx-auto mt-8 w-[min(1360px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
         <div ref={stage} className="grid gap-4 md:gap-6 xl:gap-8">
-          {rows.map((row, i) =>
+          {WORK_ROWS.map((row) =>
             row.length === 2 ? (
               <div key={row[0].id} className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
-                <WorkCard item={row[0]} index={WORK.indexOf(row[0])} />
-                <WorkCard item={row[1]} index={WORK.indexOf(row[1])} />
+                <WorkCard item={row[0]} index={workIndex(row[0])} />
+                <WorkCard item={row[1]} index={workIndex(row[1])} />
               </div>
             ) : (
-              <WorkCard key={row[0].id} item={row[0]} index={i === 0 ? 0 : WORK.indexOf(row[0])} />
+              <WorkCard key={row[0].id} item={row[0]} index={workIndex(row[0])} />
             ),
           )}
         </div>
@@ -404,10 +417,6 @@ export function Work() {
 
 export function Team() {
   const { t } = useLanguage();
-  const people = [
-    { mono: "MK", name: "Miroslav Kotvas" },
-    { mono: "SK", name: "Sofia Klebanová" },
-  ];
   return (
     <section id="onas" className="scroll-mt-20 py-[clamp(4.5rem,11vw,8.25rem)]">
       <div className="mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))]">
@@ -416,7 +425,7 @@ export function Team() {
           <h2 className="font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{t.aboutTitle}</h2>
         </Reveal>
         <ul className="grid list-none gap-6 md:grid-cols-2 md:gap-8">
-          {people.map((p, idx) => (
+          {TEAM.map((p, idx) => (
             <li key={p.name}>
               <Reveal delay={idx}>
                 <div
@@ -547,11 +556,11 @@ export function Contact() {
                       </SelectTrigger>
                       <SelectContent className="rounded-[2px]">
                         <SelectGroup>
-                          <SelectItem value="Web">{t.needWeb}</SelectItem>
-                          <SelectItem value="Video">{t.needVideo}</SelectItem>
-                          <SelectItem value="Foto">{t.needFoto}</SelectItem>
-                          <SelectItem value="Komplet">{t.needKomplet}</SelectItem>
-                          <SelectItem value="Mix">{t.needMix}</SelectItem>
+                          {NEED_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {t[option.label]}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

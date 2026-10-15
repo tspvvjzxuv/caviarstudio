@@ -27,15 +27,17 @@ function SkipLink() {
   );
 }
 
+let didHonorHash = false;
+
 function Page() {
   useEffect(() => {
-    document.documentElement.classList.add("js", "dark");
-    const honor = () => {
-      const id = location.hash.replace("#", "");
-      if (!id) return;
+    if (didHonorHash) return;
+    didHonorHash = true;
+    const id = location.hash.replace("#", "");
+    if (!id) return;
+    const t = window.setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: "auto", block: "start" });
-    };
-    const t = window.setTimeout(honor, 50);
+    }, 50);
     return () => window.clearTimeout(t);
   }, []);
 

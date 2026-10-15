@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CAVIAR, formatPhone } from "@/lib/config";
-import { isLang } from "@/lib/i18n";
+import { isLang, LANGS } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 
 export function SiteFooter() {
@@ -38,15 +38,15 @@ export function SiteFooter() {
           className="gap-0"
         >
           <TabsList variant="line" className="rounded-[2px] p-0">
-            <TabsTrigger value="sk" className="rounded-[2px] text-[0.68rem] tracking-[0.16em] uppercase">
-              SK
-            </TabsTrigger>
-            <TabsTrigger value="en" className="rounded-[2px] text-[0.68rem] tracking-[0.16em] uppercase">
-              EN
-            </TabsTrigger>
-            <TabsTrigger value="de" className="rounded-[2px] text-[0.68rem] tracking-[0.16em] uppercase">
-              DE
-            </TabsTrigger>
+            {LANGS.map((code) => (
+              <TabsTrigger
+                key={code}
+                value={code}
+                className="rounded-[2px] text-[0.68rem] tracking-[0.16em] uppercase"
+              >
+                {code.toUpperCase()}
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
       </div>

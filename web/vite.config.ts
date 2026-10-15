@@ -13,6 +13,9 @@ export default defineConfig({
       "@": path.resolve(rootDir, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ["lucide-react"],
+  },
   build: {
     outDir: "dist",
     emptyOutDir: true,

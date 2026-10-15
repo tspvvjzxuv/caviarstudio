@@ -20,6 +20,17 @@ export const CAVIAR = {
 
 export const OG_LOCALES = { sk: "sk_SK", en: "en_US", de: "de_DE" } as const;
 
+export const PRICE_RANGE = (() => {
+  let min = Number.POSITIVE_INFINITY;
+  let max = Number.NEGATIVE_INFINITY;
+  for (const pack of Object.values(CAVIAR.prices)) {
+    const launch = pack.launch;
+    if (launch < min) min = launch;
+    if (launch > max) max = launch;
+  }
+  return { min, max };
+})();
+
 export function formatPhone(raw: string) {
   const d = String(raw).replace(/[^\d+]/g, "");
   if (d.startsWith("+421") && d.length === 13) {
