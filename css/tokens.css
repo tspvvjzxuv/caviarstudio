@@ -1,0 +1,32 @@
+/* Generated from DESIGN.md — color & type tokens */
+
+:root {
+  --color-hub-ink: #ecf2ff;
+  --color-hub-bg: #080a1d;
+  --color-hub-accent: #6b2cff;
+
+  --color-caviar-bg: #070708;
+  --color-caviar-elev: #101014;
+  --color-caviar-pearl: #f4f5f7;
+  --color-caviar-silver: #c5cad3;
+  --color-caviar-platinum: #e8eaee;
+  --color-caviar-steel: #8b939e;
+
+  --color-ever-neutral: #f7f5f2;
+  --color-ever-ink: #1c1814;
+  --color-ever-accent: #b8860b;
+
+  --color-auto-ink: #eaf4ff;
+  --color-auto-bg: #05070f;
+  --color-auto-accent: #36f6ff;
+
+  --font-headline: "Instrument Serif", Georgia, serif;
+  --font-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --font-caviar-headline: "Cormorant Garamond", "Times New Roman", serif;
+  --font-caviar-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --font-ever-headline: "Fraunces", Georgia, serif;
+  --font-ever-body: "Outfit", system-ui, sans-serif;
+  --font-auto-display: "Space Grotesk", system-ui, sans-serif;
+  --font-auto-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-auto-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
