@@ -72,7 +72,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 flex min-h-16 items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] py-3",
+        "sticky top-0 z-50 flex min-h-16 items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] py-3 [view-transition-name:site-header]",
         scrolled ? "border-b border-border bg-background/88 backdrop-blur-[18px]" : "border-b border-transparent bg-background/34 backdrop-blur-[18px]",
       )}
     >

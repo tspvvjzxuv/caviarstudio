@@ -1,4 +1,4 @@
-import { createContext, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, startTransition, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { CAVIAR, OG_LOCALES, PRICE_RANGE } from "@/lib/config";
 import { dictionary, isLang, type Dict, type Lang } from "@/lib/i18n";
 
@@ -127,11 +127,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
     };
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduce && typeof document.startViewTransition === "function") {
-      document.startViewTransition(apply);
-      return;
-    }
-    apply();
+    if (reduce) apply();
+    else startTransition(apply);
   }, []);
 
   useEffect(() => {

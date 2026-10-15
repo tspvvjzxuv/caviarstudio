@@ -278,22 +278,40 @@
   background: linear-gradient(115deg, #0c0c10 0%, #3a3f48 42%, #121318 68%, #0a0a0c 100%);
 }
 
-@keyframes caviar-vt-fade-out {
-  to { opacity: 0; }
+:root {
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
 }
-@keyframes caviar-vt-fade-in {
+@keyframes fade {
   from { opacity: 0; }
+  to { opacity: 1; }
 }
-::view-transition-old(root) {
-  animation: 180ms ease-in both caviar-vt-fade-out;
+::view-transition-old(.fade-out) {
+  animation: var(--duration-exit) ease-in fade reverse;
 }
-::view-transition-new(root) {
-  animation: 220ms ease-out 60ms both caviar-vt-fade-in;
+::view-transition-new(.fade-in) {
+  animation: var(--duration-enter) ease-out var(--duration-exit) both fade;
+}
+::view-transition-old(site-header),
+::view-transition-old(site-footer),
+::view-transition-old(site-grain),
+::view-transition-old(site-cursor) {
+  display: none;
+}
+::view-transition-new(site-header),
+::view-transition-new(site-footer),
+::view-transition-new(site-grain),
+::view-transition-new(site-cursor) {
+  animation: none;
+}
+::view-transition-group(site-header) {
+  z-index: 100;
 }
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
   ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/lib/language";
 
-const grain = <div className="grain" aria-hidden="true" />;
+const grain = <div className="grain [view-transition-name:site-grain]" aria-hidden="true" />;
 
 const introMark = (
   <>
@@ -98,7 +98,7 @@ export function CustomCursor() {
   }, []);
 
   return (
-    <div ref={root} className="cursor-root hidden md:block" aria-hidden="true">
+    <div ref={root} className="cursor-root hidden md:block [view-transition-name:site-cursor]" aria-hidden="true">
       <span className="block size-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-platinum/70" />
       <span className="absolute top-0 left-0 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-platinum" />
       <span ref={label} className="absolute top-5 left-3 text-[0.62rem] tracking-[0.18em] text-platinum uppercase" />

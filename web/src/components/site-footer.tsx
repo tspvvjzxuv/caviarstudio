@@ -7,7 +7,7 @@ import { useLanguage } from "@/lib/language";
 export function SiteFooter() {
   const { t, lang, setLang } = useLanguage();
   return (
-    <footer className="px-[clamp(1.25rem,5vw,5rem)] pt-8 pb-12">
+    <footer className="px-[clamp(1.25rem,5vw,5rem)] pt-8 pb-12 [view-transition-name:site-footer]">
       <Separator className="mb-8" />
       <div className="flex flex-wrap items-start justify-between gap-5 text-[0.72rem] tracking-[0.14em] text-muted-foreground uppercase">
         <div className="max-w-xl leading-6 normal-case tracking-normal">

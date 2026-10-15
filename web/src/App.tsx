@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, ViewTransition } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CustomCursor, Grain, IntroVeil } from "@/components/motion";
 import {
@@ -49,14 +49,18 @@ function Page() {
       <SkipLink />
       <SiteHeader />
       <main id="obsah">
-        <Hero />
-        <Services />
-        <Pricing />
-        <Process />
-        <Work />
-        <Team />
-        <Faq />
-        <Contact />
+        <ViewTransition>
+          <>
+            <Hero />
+            <Services />
+            <Pricing />
+            <Process />
+            <Work />
+            <Team />
+            <Faq />
+            <Contact />
+          </>
+        </ViewTransition>
       </main>
       <SiteFooter />
     </>
