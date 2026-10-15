@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caviar — weby, video a fotky pre podniky</title>
-  <meta name="description" content="Caviar — weby, video a fotky pre podniky. Jedno štúdio, jeden vizuálny jazyk, žiadne šablóny. Trnava a okolie. Úvodné ceny pre prvých 10 klientov.">
+  <meta name="description" content="Caviar — weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali. Trnava a okolie. Úvodné ceny pre prvých 10 klientov.">
   <link rel="canonical" href="https://caviarstudio.sk/">
   <link rel="alternate" hreflang="sk" href="https://caviarstudio.sk/?lang=sk">
   <link rel="alternate" hreflang="en" href="https://caviarstudio.sk/?lang=en">
@@ -17,18 +17,19 @@
   <meta property="og:locale:alternate" content="de_DE">
   <meta property="og:url" content="https://caviarstudio.sk/">
   <meta property="og:title" content="Caviar — weby, video a fotky pre podniky">
-  <meta property="og:description" content="Jedno štúdio, jeden vizuálny jazyk, žiadne šablóny. Web, video a foto pre podniky v Trnave a okolí.">
-  <meta property="og:image" content="https://caviarstudio.sk/img/egypt_1073.jpg">
+  <meta property="og:description" content="Robíme weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali. Trnava a okolie.">
+  <meta property="og:image" content="https://caviarstudio.sk/img/hero.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Caviar — weby, video a fotky pre podniky">
-  <meta name="twitter:description" content="Jedno štúdio, jeden vizuálny jazyk, žiadne šablóny. Web, video a foto pre podniky v Trnave a okolí.">
-  <meta name="twitter:image" content="https://caviarstudio.sk/img/egypt_1073.jpg">
+  <meta name="twitter:description" content="Robíme weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali. Trnava a okolie.">
+  <meta name="twitter:image" content="https://caviarstudio.sk/img/hero.jpg">
   <meta name="theme-color" content="#070708">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="./img/egypt_1073.jpg">
+  <link rel="preload" as="image" href="./img/hero.webp" type="image/webp">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap">
   <link rel="stylesheet" href="./caviar.css">
   <!-- Analytics: paste Plausible or GA snippet here. Do not add trackers by default. -->
   <script type="application/ld+json" id="caviar-jsonld">
@@ -39,6 +40,7 @@
     "url": "https://caviarstudio.sk/",
     "email": "mircoft.sk@gmail.com",
     "telephone": "+421905173086",
+    "image": "https://caviarstudio.sk/img/hero.jpg",
     "sameAs": [
       "https://www.instagram.com/mircoft"
     ],
@@ -55,7 +57,7 @@
       { "@type": "Person", "name": "Miroslav Kotvas" },
       { "@type": "Person", "name": "Sofia Klebanová" }
     ],
-    "description": "Weby, video a fotky pre miestne podniky. Jedno štúdio, jeden vizuálny jazyk, žiadne šablóny.",
+    "description": "Weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali.",
     "priceRange": "€49–€349",
     "makesOffer": [
       { "@type": "Offer", "name": "Foto Mini", "price": "49", "priceCurrency": "EUR", "valueAddedTaxIncluded": true },
@@ -68,12 +70,13 @@
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-aura" aria-hidden="true"></div>
   <a class="skip" href="#obsah" data-i18n="skip">Preskočiť na obsah</a>
 
   <header class="site-header">
     <a class="brand" href="#top">Caviar</a>
-    <nav class="nav" aria-label="Caviar">
-      <a href="#sluzby" data-i18n="navServices">Služby</a>
+    <nav class="nav" id="site-nav" aria-label="Caviar">
+      <a href="#sluzby" data-i18n="navServices">Čo robíme</a>
       <a href="#cennik" data-i18n="navPricing">Cenník</a>
       <a href="#praca" data-i18n="navWork">Práca</a>
       <a href="#faq" data-i18n="navFaq">FAQ</a>
@@ -81,57 +84,69 @@
     </nav>
     <div class="header-end">
       <div class="lang-switch" role="group" aria-label="Language">
-        <button class="lang-btn active" type="button" data-lang="sk">SK</button>
-        <button class="lang-btn" type="button" data-lang="en">EN</button>
-        <button class="lang-btn" type="button" data-lang="de">DE</button>
+        <button class="lang-btn active" type="button" data-lang="sk" aria-pressed="true">SK</button>
+        <button class="lang-btn" type="button" data-lang="en" aria-pressed="false">EN</button>
+        <button class="lang-btn" type="button" data-lang="de" aria-pressed="false">DE</button>
       </div>
       <a class="cta-mini" href="#kontakt" data-i18n="ctaQuote">Chcem cenovú ponuku</a>
+      <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" data-i18n="menu">Menu</button>
     </div>
   </header>
 
   <main id="obsah">
     <section class="hero" id="top">
       <div class="hero-media">
-        <img src="./img/egypt_1073.jpg" alt="Editoriálny čiernobiely portrét — ukážka vizuálneho jazyka Caviar" data-i18n-alt="heroAlt" fetchpriority="high" width="1600" height="900">
+        <picture>
+          <source srcset="./img/hero.webp" type="image/webp">
+          <img src="./img/hero.jpg" alt="Editoriálny čiernobiely portrét — ukážka vizuálneho jazyka Caviar" data-i18n-alt="heroAlt" fetchpriority="high" width="1920" height="1080">
+        </picture>
+        <div class="hero-shine" aria-hidden="true"></div>
       </div>
       <div class="hero-copy">
         <p class="kicker"><span class="pearl" aria-hidden="true"></span> <span data-i18n="heroKicker">Trnava a okolie</span></p>
         <h1 data-i18n-html="heroTitle">Viac rezervácií.<br><em>Jeden vizuál.</em></h1>
-        <p class="lead" data-i18n="heroLead">Caviar — weby, video a fotky pre podniky. Jedno štúdio, jeden vizuálny jazyk, žiadne šablóny.</p>
+        <p class="hero-explain" data-i18n="heroExplain">Robíme weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#kontakt" data-i18n="ctaQuote">Chcem cenovú ponuku</a>
           <a class="btn btn-ghost" href="#cennik" data-i18n="ctaPricing">Pozrieť cenník</a>
         </div>
-        <p class="trust" data-i18n="heroTrust">Spustenie: limitovaná úvodná cena pre prvých 10 klientov.</p>
+        <p class="trust" data-i18n="heroTrust">Úvodná cena pre prvých 10 klientov.</p>
       </div>
+      <a class="scroll-cue" href="#sluzby">
+        <span data-i18n="scrollCue">Ďalej</span>
+        <i aria-hidden="true"></i>
+      </a>
     </section>
 
-    <section id="sluzby">
+    <section id="sluzby" class="do-strip">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <p class="kicker"><span class="pearl" aria-hidden="true"></span> <span data-i18n="svcKicker">Tri služby</span></p>
-          <h2 data-i18n="svcTitle">Web, video a foto, z ktorých ľudia volajú.</h2>
+        <div class="sec-head">
+          <h2 class="kicker"><span class="pearl" aria-hidden="true"></span> <span data-i18n="doKicker">Čo robíme</span></h2>
         </div>
-        <div class="services-grid">
-          <article class="service reveal">
-            <span class="service-index">01</span>
+        <div class="do-grid">
+          <article class="do-card reveal" style="--d:0">
+            <span class="do-index">01</span>
             <h3 data-i18n="webName">Web</h3>
-            <p data-i18n="webLead">Rýchla stránka na mobile s tlačidlom na hovor alebo rezerváciu. Google vás nájde.</p>
+            <p class="benefit" data-i18n="webLead">Stránka, na ktorej vás ľudia nájdu a môžu hneď zavolať.</p>
             <p class="gets" data-i18n="webGets">Dostanete: jednostránkový web, mapu, základné SEO a tlačidlo Kontakt.</p>
           </article>
-          <article class="service reveal">
-            <span class="service-index">02</span>
+          <article class="do-card reveal" style="--d:1">
+            <span class="do-index">02</span>
             <h3 data-i18n="videoName">Video</h3>
-            <p data-i18n="videoLead">Krátke vertikálne reely na Instagram, TikTok a Facebook plus jedno promo video.</p>
+            <p class="benefit" data-i18n="videoLead">Krátke videá, ktoré ukážu, ako u vás vyzerá.</p>
             <p class="gets" data-i18n="videoGets">Dostanete: 15–30 s reel, hudbu, titulky, súbor pripravený na zverejnenie.</p>
           </article>
-          <article class="service reveal">
-            <span class="service-index">03</span>
+          <article class="do-card reveal" style="--d:2">
+            <span class="do-index">03</span>
             <h3 data-i18n="fotoName">Foto</h3>
-            <p data-i18n="fotoLead">Produkt, interiér, jedlo, tím a prevádzka — fotky, ktoré predávajú.</p>
+            <p class="benefit" data-i18n="fotoLead">Fotky podniku, ľudí a produktov, ktoré môžete hneď použiť.</p>
             <p class="gets" data-i18n="fotoGets">Dostanete: upravené fotky na web, menu, e-shop aj sociálne siete.</p>
           </article>
         </div>
+        <p class="for-whom reveal">
+          <span class="lbl" data-i18n="forWhomLabel">Pre koho</span>
+          <span class="who" data-i18n="forWhom">reštaurácie, ubytovanie, služby, e-shopy, remeselníci, malé firmy</span>
+        </p>
       </div>
     </section>
 
@@ -143,30 +158,30 @@
           <p class="slots" data-slots></p>
         </div>
         <div class="packages">
-          <article class="pack reveal">
+          <article class="pack reveal" style="--d:0">
             <span class="badge" data-i18n="launchBadge">Úvodná cena</span>
             <h3 data-i18n="pFotoName">Foto Mini</h3>
             <p class="desc" data-i18n="pFotoDesc">1 hodina fotenia, 15 upravených fotiek.</p>
             <div class="price-row">
-              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="fotoMini.launch">49</span> EUR <span class="vat-tag" data-vat-tag>cena s DPH</span></p>
+              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="fotoMini.launch">49</span> EUR <span class="vat-tag" data-vat-tag>s DPH</span></p>
               <p class="was"><s><span data-price="fotoMini.standard">120</span> EUR</s><span class="was-label" data-i18n="stdLabel">bežná cena po spustení</span></p>
             </div>
           </article>
-          <article class="pack reveal">
+          <article class="pack reveal" style="--d:1">
             <span class="badge" data-i18n="launchBadge">Úvodná cena</span>
             <h3 data-i18n="pVideoName">Video Reel</h3>
             <p class="desc" data-i18n="pVideoDesc">1 krátky vertikálny reel (15–30 s), strih, hudba a titulky.</p>
             <div class="price-row">
-              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="videoReel.launch">69</span> EUR <span class="vat-tag" data-vat-tag>cena s DPH</span></p>
+              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="videoReel.launch">69</span> EUR <span class="vat-tag" data-vat-tag>s DPH</span></p>
               <p class="was"><s><span data-price="videoReel.standard">180</span> EUR</s><span class="was-label" data-i18n="stdLabel">bežná cena po spustení</span></p>
             </div>
           </article>
-          <article class="pack reveal">
+          <article class="pack reveal" style="--d:2">
             <span class="badge" data-i18n="launchBadge">Úvodná cena</span>
             <h3 data-i18n="pWebName">Web Jednostránka</h3>
             <p class="desc" data-i18n="pWebDesc">Jednostránkový responzívny web s tlačidlom Kontakt, mapou, základným SEO a napojením domény.</p>
             <div class="price-row">
-              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="webOnePager.launch">190</span> EUR <span class="vat-tag" data-vat-tag>cena s DPH</span></p>
+              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="webOnePager.launch">190</span> EUR <span class="vat-tag" data-vat-tag>s DPH</span></p>
               <p class="was"><s><span data-price="webOnePager.standard">490</span> EUR</s><span class="was-label" data-i18n="stdLabel">bežná cena po spustení</span></p>
             </div>
           </article>
@@ -177,7 +192,7 @@
               <p class="desc" data-i18n="pKompletDesc">Jednostránkový web + 2 reely + 20 fotiek. Jeden vizuál pre celý podnik.</p>
             </div>
             <div class="price-row">
-              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="komplet.launch">349</span> EUR <span class="vat-tag" data-vat-tag>cena s DPH</span></p>
+              <p class="price"><span data-i18n="priceFrom">od</span> <span data-price="komplet.launch">349</span> EUR <span class="vat-tag" data-vat-tag>s DPH</span></p>
               <p class="was"><s><span data-price="komplet.standard">890</span> EUR</s><span class="was-label" data-i18n="stdLabel">bežná cena po spustení</span></p>
             </div>
           </article>
@@ -197,28 +212,28 @@
           <h2 data-i18n="howTitle">Štyri kroky. Žiadna byrokracia.</h2>
         </div>
         <ol class="process-list">
-          <li class="step reveal">
+          <li class="step reveal" style="--d:0">
             <span class="step-num">01</span>
             <div>
               <h3 data-i18n="how1t">Cenová ponuka do 24 hodín</h3>
               <p data-i18n="how1p">Napíšte, čo potrebujete. Do druhého dňa máte konkrétnu cenu.</p>
             </div>
           </li>
-          <li class="step reveal">
+          <li class="step reveal" style="--d:1">
             <span class="step-num">02</span>
             <div>
-              <h3 data-i18n="how2t">Krátky call alebo stretnutie</h3>
+              <h3 data-i18n="how2t">Krátky hovor alebo stretnutie</h3>
               <p data-i18n="how2p">15–20 minút. Zistíme, kto má u vás volať, rezervovať a objednávať.</p>
             </div>
           </li>
-          <li class="step reveal">
+          <li class="step reveal" style="--d:2">
             <span class="step-num">03</span>
             <div>
               <h3 data-i18n="how3t">Výroba</h3>
               <p data-i18n="how3p">Web 5–7 dní. Foto a video 3–5 dní po natáčaní.</p>
             </div>
           </li>
-          <li class="step reveal">
+          <li class="step reveal" style="--d:3">
             <span class="step-num">04</span>
             <div>
               <h3 data-i18n="how4t">Odovzdanie a podpora</h3>
@@ -233,33 +248,32 @@
       <div class="wrap">
         <div class="sec-head wide reveal">
           <p class="kicker"><span class="pearl" aria-hidden="true"></span> <span data-i18n="workKicker">Práca</span></p>
-          <h2 data-i18n="workTitle">Ukážky štýlu. Vaše meno sem príde.</h2>
-          <p data-i18n="workLead">Zatiaľ placeholderové zábery z archívu — nie sú to klientské referencie.</p>
+          <h2 data-i18n="workTitle">Portfólio čoskoro.</h2>
+          <p data-i18n="workLead">Ukážky vizuálneho jazyka. Klientské práce sem pribudnú.</p>
         </div>
         <div class="work-grid">
           <figure class="tile span-2">
-            <img src="./img/egypt_1069.jpg" alt="" data-i18n-alt="w1alt" loading="lazy" width="1200" height="1600">
-            <figcaption data-i18n="w1cap">Placeholder · foto</figcaption>
+            <img src="./img/work-editorial.webp" alt="" data-i18n-alt="w1alt" loading="lazy" width="1200" height="1800">
+            <figcaption data-i18n="w1cap">Editoriál</figcaption>
           </figure>
           <figure class="tile">
-            <img src="./img/metal.png" alt="" data-i18n-alt="w2alt" loading="lazy" width="1200" height="900">
-            <figcaption data-i18n="w2cap">Placeholder · produkt</figcaption>
+            <img src="./img/work-metal.webp" alt="" data-i18n-alt="w2alt" loading="lazy" width="1200" height="900">
+            <figcaption data-i18n="w2cap">Kov</figcaption>
+          </figure>
+          <figure class="tile silver silver-a" role="img" data-i18n-aria="soonAria">
+            <figcaption data-i18n="soonCap">Čoskoro</figcaption>
+          </figure>
+          <figure class="tile silver silver-b" role="img" data-i18n-aria="soonAria">
+            <figcaption data-i18n="folioCap">Portfólio</figcaption>
           </figure>
           <figure class="tile">
-            <img src="./img/hero3.png" alt="" data-i18n-alt="w3alt" loading="lazy" width="800" height="560">
-            <figcaption data-i18n="w3cap">Placeholder · ateliér</figcaption>
-          </figure>
-          <figure class="tile placeholder" aria-label="TODO">
-            <span data-i18n="phTile">TODO: sem príde vaša práca</span>
-          </figure>
-          <figure class="tile">
-            <img src="./img/fluid.png" alt="" data-i18n-alt="w4alt" loading="lazy" width="1200" height="700">
-            <figcaption data-i18n="w4cap">Placeholder · pohyb</figcaption>
+            <img src="./img/work-motion.webp" alt="" data-i18n-alt="w4alt" loading="lazy" width="1400" height="780">
+            <figcaption data-i18n="w4cap">Svetlo</figcaption>
           </figure>
           <figure class="tile">
             <a href="https://thedesigns.org/foto/">
-              <img src="./img/editorial-hero.jpg" alt="" data-i18n-alt="w5alt" loading="lazy" width="1200" height="800">
-              <figcaption data-i18n="w5cap">Everlight · ukážka foto a video</figcaption>
+              <img src="./img/work-everlight.webp" alt="" data-i18n-alt="w5alt" loading="lazy" width="1400" height="930">
+              <figcaption data-i18n="w5cap">Everlight</figcaption>
             </a>
           </figure>
         </div>
@@ -275,15 +289,11 @@
         </div>
         <ul class="team-grid">
           <li class="team-card reveal">
-            <div class="about-photo" role="img" aria-label="Miroslav Kotvas — TODO: foto">
-              <span data-i18n="aboutPhoto">TODO: foto</span>
-            </div>
+            <div class="mono" aria-hidden="true"><b>MK</b></div>
             <h3>Miroslav Kotvas</h3>
           </li>
-          <li class="team-card reveal">
-            <div class="about-photo" role="img" aria-label="Sofia Klebanová — TODO: foto">
-              <span data-i18n="aboutPhoto">TODO: foto</span>
-            </div>
+          <li class="team-card reveal" style="--d:1">
+            <div class="mono" aria-hidden="true"><b>SK</b></div>
             <h3>Sofia Klebanová</h3>
           </li>
         </ul>
@@ -299,7 +309,7 @@
         <div class="faq-list">
           <details class="reveal">
             <summary data-i18n="faq1q">Ako dlho to trvá?</summary>
-            <p data-i18n="faq1a">Web 5–7 dní od odsúhlasenia. Foto a video 3–5 dní po natáčaní. Termín natáčania dohodneme na calle.</p>
+            <p data-i18n="faq1a">Web 5–7 dní od odsúhlasenia. Foto a video 3–5 dní po natáčaní. Termín natáčania dohodneme na hovore.</p>
           </details>
           <details class="reveal">
             <summary data-i18n="faq2q">Čo od vás potrebujem?</summary>
@@ -389,10 +399,6 @@
   </footer>
 
   <script>
-    /*====================================================================
-      CAVIAR CONFIG — prices, slots, phone, WhatsApp, VAT
-      Edit this object only. The page reads it on load.
-    ====================================================================*/
     const CAVIAR = {
       PHONE: "+421905173086",
       WHATSAPP: "421905173086",
@@ -400,7 +406,7 @@
       EMAIL: "mircoft.sk@gmail.com",
       SLOTS_TOTAL: 10,
       SLOTS_REMAINING: 10,
-      VAT_PAYER: true, // true = shown prices are final, with VAT (s DPH)
+      VAT_PAYER: true,
       prices: {
         fotoMini: { launch: 49, standard: 120 },
         videoReel: { launch: 69, standard: 180 },
@@ -412,24 +418,27 @@
     const dictionary = {
       sk: {
         skip: "Preskočiť na obsah",
-        navServices: "Služby", navPricing: "Cenník", navWork: "Práca", navFaq: "FAQ", navContact: "Kontakt",
+        menu: "Menu",
+        navServices: "Čo robíme", navPricing: "Cenník", navWork: "Práca", navFaq: "FAQ", navContact: "Kontakt",
         navHub: "thedesigns.org",
         ctaQuote: "Chcem cenovú ponuku", ctaPricing: "Pozrieť cenník",
         ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Zavolať", ctaWa: "WhatsApp", ctaIg: "Instagram",
         heroKicker: "Trnava a okolie",
         heroTitle: "Viac rezervácií.<br><em>Jeden vizuál.</em>",
-        heroLead: "Caviar — weby, video a fotky pre podniky. Jedno štúdio, jeden vizuálny jazyk, žiadne šablóny.",
-        heroTrust: "Spustenie: limitovaná úvodná cena pre prvých 10 klientov.",
+        heroExplain: "Robíme weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali.",
+        heroTrust: "Úvodná cena pre prvých 10 klientov.",
         heroAlt: "Editoriálny čiernobiely portrét — ukážka vizuálneho jazyka Caviar",
-        svcKicker: "Tri služby",
-        svcTitle: "Web, video a foto, z ktorých ľudia volajú.",
+        scrollCue: "Ďalej",
+        doKicker: "Čo robíme",
         webName: "Web", videoName: "Video", fotoName: "Foto",
-        webLead: "Rýchla stránka na mobile s tlačidlom na hovor alebo rezerváciu. Google vás nájde.",
+        webLead: "Stránka, na ktorej vás ľudia nájdu a môžu hneď zavolať.",
         webGets: "Dostanete: jednostránkový web, mapu, základné SEO a tlačidlo Kontakt.",
-        videoLead: "Krátke vertikálne reely na Instagram, TikTok a Facebook plus jedno promo video.",
+        videoLead: "Krátke videá, ktoré ukážu, ako u vás vyzerá.",
         videoGets: "Dostanete: 15–30 s reel, hudbu, titulky, súbor pripravený na zverejnenie.",
-        fotoLead: "Produkt, interiér, jedlo, tím a prevádzka — fotky, ktoré predávajú.",
+        fotoLead: "Fotky podniku, ľudí a produktov, ktoré môžete hneď použiť.",
         fotoGets: "Dostanete: upravené fotky na web, menu, e-shop aj sociálne siete.",
+        forWhomLabel: "Pre koho",
+        forWhom: "reštaurácie, ubytovanie, služby, e-shopy, remeselníci, malé firmy",
         priceKicker: "Cenník",
         priceTitle: "Úvodné ceny pre prvých 10.",
         slots: "Zostáva {x} z {total} miest",
@@ -445,33 +454,31 @@
         noHidden: "Bez skrytých poplatkov.",
         vatNo: "Ceny sú bez DPH (nie som platiteľ DPH).",
         vatYes: "Všetky ceny sú s DPH.",
-        vatTag: "cena s DPH",
-        vatTagEx: "cena bez DPH",
+        vatTag: "s DPH",
+        vatTagEx: "bez DPH",
         howKicker: "Postup",
         howTitle: "Štyri kroky. Žiadna byrokracia.",
         how1t: "Cenová ponuka do 24 hodín", how1p: "Napíšte, čo potrebujete. Do druhého dňa máte konkrétnu cenu.",
-        how2t: "Krátky call alebo stretnutie", how2p: "15–20 minút. Zistíme, kto má u vás volať, rezervovať a objednávať.",
+        how2t: "Krátky hovor alebo stretnutie", how2p: "15–20 minút. Zistíme, kto má u vás volať, rezervovať a objednávať.",
         how3t: "Výroba", how3p: "Web 5–7 dní. Foto a video 3–5 dní po natáčaní.",
         how4t: "Odovzdanie a podpora", how4p: "Súbory aj web sú vaše. Ukážeme, ako ich používať, a ostávame k dispozícii.",
         workKicker: "Práca",
-        workTitle: "Ukážky štýlu. Vaše meno sem príde.",
-        workLead: "Zatiaľ placeholderové zábery z archívu — nie sú to klientské referencie.",
-        w1cap: "Placeholder · foto", w2cap: "Placeholder · produkt", w3cap: "Placeholder · ateliér",
-        w4cap: "Placeholder · pohyb", w5cap: "Everlight · ukážka foto a video",
-        w1alt: "Placeholder — čiernobiely editoriálny portrét",
-        w2alt: "Placeholder — strieborný produktový detail",
-        w3alt: "Placeholder — socha v ateliérovom svetle",
-        w4alt: "Placeholder — abstraktný perleťový pohyb",
-        w5alt: "Everlight — ukážka svadobnej foto a video práce",
-        phTile: "TODO: sem príde vaša práca",
+        workTitle: "Portfólio čoskoro.",
+        workLead: "Ukážky vizuálneho jazyka. Klientské práce sem pribudnú.",
+        w1cap: "Editoriál", w2cap: "Kov", w4cap: "Svetlo", w5cap: "Everlight",
+        soonCap: "Čoskoro", folioCap: "Portfólio",
+        w1alt: "Čiernobiely editoriálny portrét — ukážka vizuálneho jazyka",
+        w2alt: "Strieborný materiálový detail",
+        w4alt: "Abstraktné svetlo a pohyb",
+        w5alt: "Everlight — ukážka foto a video práce",
+        soonAria: "Pripravované portfólio",
         everLink: "Pozrieť foto a video prácu na Everlight",
         teamKicker: "Tím",
-        aboutPhoto: "TODO: foto",
         aboutTitle: "O nás",
         place: "Trnava, Slovensko",
         faqTitle: "Stručne a na rovinu.",
         faq1q: "Ako dlho to trvá?",
-        faq1a: "Web 5–7 dní od odsúhlasenia. Foto a video 3–5 dní po natáčaní. Termín natáčania dohodneme na calle.",
+        faq1a: "Web 5–7 dní od odsúhlasenia. Foto a video 3–5 dní po natáčaní. Termín natáčania dohodneme na hovore.",
         faq2q: "Čo od vás potrebujem?",
         faq2a: "Meno podniku, logo ak ho máte, texty alebo aspoň odseky čo robíte, a 20 minút času. Fotky a video vyriešime u vás.",
         faq3q: "Komu patria súbory?",
@@ -489,29 +496,33 @@
         needWeb: "Web", needVideo: "Video", needFoto: "Foto", needKomplet: "Caviar Komplet", needMix: "Zatiaľ neviem",
         mailSubject: "Caviar — cenová ponuka",
         mailName: "Meno", mailBiz: "Podnik", mailNeed: "Potrebujem", mailBudget: "Rozpočet",
+        waText: "Dobrý deň, mám záujem o cenovú ponuku od Caviar.",
         docTitle: "Caviar — weby, video a fotky pre podniky",
-        docDesc: "Caviar — weby, video a fotky pre podniky. Jedno štúdio, jeden vizuálny jazyk, žiadne šablóny. Trnava a okolie. Úvodné ceny pre prvých 10 klientov."
+        docDesc: "Caviar — weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali. Trnava a okolie. Úvodné ceny pre prvých 10 klientov."
       },
       en: {
         skip: "Skip to content",
-        navServices: "Services", navPricing: "Pricing", navWork: "Work", navFaq: "FAQ", navContact: "Contact",
+        menu: "Menu",
+        navServices: "What we do", navPricing: "Pricing", navWork: "Work", navFaq: "FAQ", navContact: "Contact",
         navHub: "thedesigns.org",
         ctaQuote: "Request a quote", ctaPricing: "See pricing",
         ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Call", ctaWa: "WhatsApp", ctaIg: "Instagram",
         heroKicker: "Trnava and around",
         heroTitle: "More bookings.<br><em>One visual.</em>",
-        heroLead: "Caviar — websites, video and photo for businesses. One studio, one visual language, no templates.",
-        heroTrust: "Launch: limited intro price for the first 10 clients.",
+        heroExplain: "We make websites, videos and photos for businesses: so people can find you, see you and call.",
+        heroTrust: "Launch price for the first 10 clients.",
         heroAlt: "Editorial black-and-white portrait — sample of Caviar’s visual language",
-        svcKicker: "Three services",
-        svcTitle: "Web, video and photo that make people call.",
+        scrollCue: "Next",
+        doKicker: "What we do",
         webName: "Web", videoName: "Video", fotoName: "Photo",
-        webLead: "A fast mobile-first site with a call or booking button. Google can find you.",
+        webLead: "A page people can find — and call you from.",
         webGets: "You get: a one-page site, a map, basic SEO and a Contact button.",
-        videoLead: "Short vertical reels for Instagram, TikTok and Facebook, plus one promo film.",
+        videoLead: "Short videos that show what your place looks like.",
         videoGets: "You get: a 15–30 s reel, music, captions, ready to post.",
-        fotoLead: "Product, interior, food, team and venue — photos that sell.",
+        fotoLead: "Photos of the business, people and products, ready to use.",
         fotoGets: "You get: edited photos for web, menus, the shop and socials.",
+        forWhomLabel: "For",
+        forWhom: "restaurants, lodging, services, online shops, craftspeople, small businesses",
         priceKicker: "Pricing",
         priceTitle: "Launch prices for the first 10.",
         slots: "{x} of {total} spots left",
@@ -536,19 +547,17 @@
         how3t: "Production", how3p: "Web in 5–7 days. Photo and video 3–5 days after the shoot.",
         how4t: "Handover and support", how4p: "Files and the site are yours. We show you how to use them and stay available.",
         workKicker: "Work",
-        workTitle: "Style samples. Your name goes here.",
-        workLead: "Archive placeholders for now — not client testimonials.",
-        w1cap: "Placeholder · photo", w2cap: "Placeholder · product", w3cap: "Placeholder · studio",
-        w4cap: "Placeholder · motion", w5cap: "Everlight · photo and video sample",
-        w1alt: "Placeholder — black-and-white editorial portrait",
-        w2alt: "Placeholder — silver product detail",
-        w3alt: "Placeholder — sculpture in studio light",
-        w4alt: "Placeholder — abstract pearl motion",
-        w5alt: "Everlight — sample of wedding photo and video work",
-        phTile: "TODO: your work goes here",
+        workTitle: "Portfolio coming soon.",
+        workLead: "Samples of the visual language. Client work will appear here.",
+        w1cap: "Editorial", w2cap: "Metal", w4cap: "Light", w5cap: "Everlight",
+        soonCap: "Soon", folioCap: "Portfolio",
+        w1alt: "Black-and-white editorial portrait — sample of the visual language",
+        w2alt: "Silver material detail",
+        w4alt: "Abstract light and motion",
+        w5alt: "Everlight — sample of photo and video work",
+        soonAria: "Portfolio in preparation",
         everLink: "See photo and video work on Everlight",
         teamKicker: "Team",
-        aboutPhoto: "TODO: photo",
         aboutTitle: "About",
         place: "Trnava, Slovakia",
         faqTitle: "Straight answers.",
@@ -571,29 +580,33 @@
         needWeb: "Web", needVideo: "Video", needFoto: "Photo", needKomplet: "Caviar Komplet", needMix: "Not sure yet",
         mailSubject: "Caviar — quote request",
         mailName: "Name", mailBiz: "Business", mailNeed: "Need", mailBudget: "Budget",
+        waText: "Hello, I would like a quote from Caviar.",
         docTitle: "Caviar — websites, video and photo for businesses",
-        docDesc: "Caviar — websites, video and photo for businesses. One studio, one visual language, no templates. Trnava and around. Launch prices for the first 10 clients."
+        docDesc: "Caviar — websites, videos and photos for businesses: so people can find you, see you and call. Trnava and around. Launch prices for the first 10 clients."
       },
       de: {
         skip: "Zum Inhalt springen",
-        navServices: "Leistungen", navPricing: "Preise", navWork: "Arbeit", navFaq: "FAQ", navContact: "Kontakt",
+        menu: "Menü",
+        navServices: "Was wir tun", navPricing: "Preise", navWork: "Arbeit", navFaq: "FAQ", navContact: "Kontakt",
         navHub: "thedesigns.org",
         ctaQuote: "Angebot anfordern", ctaPricing: "Preise ansehen",
         ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Anrufen", ctaWa: "WhatsApp", ctaIg: "Instagram",
         heroKicker: "Trnava und Umgebung",
         heroTitle: "Mehr Buchungen.<br><em>Eine Bildsprache.</em>",
-        heroLead: "Caviar — Websites, Video und Foto für Betriebe. Ein Studio, eine Bildsprache, keine Templates.",
-        heroTrust: "Start: limitierter Einführungspreis für die ersten 10 Kunden.",
+        heroExplain: "Wir machen Websites, Videos und Fotos für Betriebe: damit man Sie findet, sieht und anruft.",
+        heroTrust: "Einführungspreis für die ersten 10 Kunden.",
         heroAlt: "Editoriales Schwarz-Weiß-Porträt — Beispiel der Bildsprache von Caviar",
-        svcKicker: "Drei Leistungen",
-        svcTitle: "Web, Video und Foto, die Anrufe bringen.",
+        scrollCue: "Weiter",
+        doKicker: "Was wir tun",
         webName: "Web", videoName: "Video", fotoName: "Foto",
-        webLead: "Schnelle mobile Seite mit Button für Anruf oder Reservierung. Google findet Sie.",
+        webLead: "Eine Seite, auf der man Sie findet und gleich anrufen kann.",
         webGets: "Sie bekommen: One-Pager, Karte, Basis-SEO und Kontakt-Button.",
-        videoLead: "Kurze vertikale Reels für Instagram, TikTok und Facebook plus ein Promo-Video.",
+        videoLead: "Kurze Videos, die zeigen, wie es bei Ihnen aussieht.",
         videoGets: "Sie bekommen: 15–30 s Reel, Musik, Untertitel, bereit zum Posten.",
-        fotoLead: "Produkt, Interieur, Essen, Team und Betrieb — Fotos, die verkaufen.",
+        fotoLead: "Fotos von Betrieb, Menschen und Produkten, sofort einsetzbar.",
         fotoGets: "Sie bekommen: retuschierte Fotos für Web, Speisekarte, Shop und Socials.",
+        forWhomLabel: "Für",
+        forWhom: "Restaurants, Unterkünfte, Dienstleistungen, Online-Shops, Handwerker, kleine Betriebe",
         priceKicker: "Preise",
         priceTitle: "Einführungspreise für die ersten 10.",
         slots: "Noch {x} von {total} Plätzen",
@@ -614,28 +627,26 @@
         howKicker: "Ablauf",
         howTitle: "Vier Schritte. Kein Umweg.",
         how1t: "Angebot innerhalb von 24 Stunden", how1p: "Schreiben Sie, was Sie brauchen. Am nächsten Tag steht der Preis.",
-        how2t: "Kurzer Call oder Termin", how2p: "15–20 Minuten. Wir klären, wer anrufen, buchen und bestellen soll.",
+        how2t: "Kurzer Anruf oder Termin", how2p: "15–20 Minuten. Wir klären, wer anrufen, buchen und bestellen soll.",
         how3t: "Produktion", how3p: "Web in 5–7 Tagen. Foto und Video 3–5 Tage nach dem Dreh.",
         how4t: "Übergabe und Support", how4p: "Dateien und Website gehören Ihnen. Wir zeigen die Nutzung und bleiben erreichbar.",
         workKicker: "Arbeit",
-        workTitle: "Stilproben. Ihr Name kommt hier hin.",
-        workLead: "Archiv-Platzhalter — keine Kundenreferenzen.",
-        w1cap: "Platzhalter · Foto", w2cap: "Platzhalter · Produkt", w3cap: "Platzhalter · Studio",
-        w4cap: "Platzhalter · Bewegung", w5cap: "Everlight · Foto- und Video-Beispiel",
-        w1alt: "Platzhalter — editoriales Schwarz-Weiß-Porträt",
-        w2alt: "Platzhalter — silbernes Produktdetail",
-        w3alt: "Platzhalter — Skulptur im Studio-Licht",
-        w4alt: "Platzhalter — abstrakte Perlmutt-Bewegung",
-        w5alt: "Everlight — Beispiel für Hochzeitsfoto und -video",
-        phTile: "TODO: hier kommt Ihre Arbeit hin",
+        workTitle: "Portfolio folgt.",
+        workLead: "Proben der Bildsprache. Kundenarbeiten folgen.",
+        w1cap: "Editorial", w2cap: "Metall", w4cap: "Licht", w5cap: "Everlight",
+        soonCap: "Demnächst", folioCap: "Portfolio",
+        w1alt: "Editoriales Schwarz-Weiß-Porträt — Beispiel der Bildsprache",
+        w2alt: "Silbernes Materialdetail",
+        w4alt: "Abstraktes Licht und Bewegung",
+        w5alt: "Everlight — Beispiel für Foto- und Videoarbeit",
+        soonAria: "Portfolio in Vorbereitung",
         everLink: "Foto- und Videoarbeit auf Everlight ansehen",
         teamKicker: "Team",
-        aboutPhoto: "TODO: Foto",
         aboutTitle: "Über uns",
         place: "Trnava, Slowakei",
         faqTitle: "Kurz und klar.",
         faq1q: "Wie lange dauert es?",
-        faq1a: "Web in 5–7 Tagen nach Freigabe. Foto und Video 3–5 Tage nach dem Dreh. Den Drehtermin klären wir am Call.",
+        faq1a: "Web in 5–7 Tagen nach Freigabe. Foto und Video 3–5 Tage nach dem Dreh. Den Drehtermin klären wir am Gespräch.",
         faq2q: "Was muss ich liefern?",
         faq2a: "Name des Betriebs, Logo falls vorhanden, Texte oder ein paar Sätze zu Ihrer Arbeit, und 20 Minuten. Fotos und Video machen wir vor Ort.",
         faq3q: "Wem gehören die Dateien?",
@@ -653,8 +664,9 @@
         needWeb: "Web", needVideo: "Video", needFoto: "Foto", needKomplet: "Caviar Komplet", needMix: "Noch unsicher",
         mailSubject: "Caviar — Angebotsanfrage",
         mailName: "Name", mailBiz: "Betrieb", mailNeed: "Bedarf", mailBudget: "Budget",
+        waText: "Guten Tag, ich möchte ein Angebot von Caviar.",
         docTitle: "Caviar — Websites, Video und Foto für Betriebe",
-        docDesc: "Caviar — Websites, Video und Foto für Betriebe. Ein Studio, eine Bildsprache, keine Templates. Trnava und Umgebung. Einführungspreise für die ersten 10 Kunden."
+        docDesc: "Caviar — Websites, Videos und Fotos für Betriebe: damit man Sie findet, sieht und anruft. Trnava und Umgebung. Einführungspreise für die ersten 10 Kunden."
       }
     };
 
@@ -707,6 +719,7 @@
             valueAddedTaxIncluded: !!CAVIAR.VAT_PAYER
           }));
           data.priceRange = "€" + Math.min.apply(null, amounts) + "–€" + Math.max.apply(null, amounts);
+          data.description = pack.docDesc;
           ld.textContent = JSON.stringify(data);
         } catch (_) {}
       }
@@ -720,7 +733,7 @@
         document.querySelectorAll("[data-phone-text]").forEach((el) => { el.textContent = formatPhone(phone); });
       }
       if (wa) {
-        const text = String(CAVIAR.WHATSAPP_TEXT || "").trim();
+        const text = String(pack.waText || CAVIAR.WHATSAPP_TEXT || "").trim();
         const href = "https://wa.me/" + wa + (text ? "?text=" + encodeURIComponent(text) : "");
         document.querySelectorAll("[data-wa-href]").forEach((a) => { a.href = href; });
       }
@@ -766,7 +779,9 @@
         if (pack[key] != null) el.setAttribute("aria-label", pack[key]);
       });
       document.querySelectorAll(".lang-btn").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.lang === lang);
+        const on = btn.dataset.lang === lang;
+        btn.classList.toggle("active", on);
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
       });
       applyConfig(pack);
       try { localStorage.setItem("td-weby-lang", lang); } catch (_) {}
@@ -808,7 +823,54 @@
         + "&body=" + encodeURIComponent(body);
     });
 
+    const header = document.querySelector(".site-header");
+    const menuBtn = document.querySelector(".menu-toggle");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function setHeader() {
+      header.classList.toggle("is-scrolled", window.scrollY > 8);
+    }
+    setHeader();
+    window.addEventListener("scroll", setHeader, { passive: true });
+
+    function closeMenu() {
+      header.classList.remove("nav-open");
+      document.body.classList.remove("nav-lock");
+      if (menuBtn) menuBtn.setAttribute("aria-expanded", "false");
+    }
+
+    if (menuBtn) {
+      menuBtn.addEventListener("click", () => {
+        const open = header.classList.toggle("nav-open");
+        document.body.classList.toggle("nav-lock", open);
+        menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    }
+    document.querySelectorAll(".nav a").forEach((a) => a.addEventListener("click", closeMenu));
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const aura = document.querySelector(".cursor-aura");
+    if (aura && finePointer && !reduce) {
+      let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
+      window.addEventListener("pointermove", (e) => {
+        tx = e.clientX;
+        ty = e.clientY;
+        aura.classList.add("on");
+        if (!raf) {
+          const tick = () => {
+            x += (tx - x) * 0.22;
+            y += (ty - y) * 0.22;
+            aura.style.transform = "translate3d(" + x + "px," + y + "px,0)";
+            raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.4 ? requestAnimationFrame(tick) : 0;
+          };
+          raf = requestAnimationFrame(tick);
+        }
+      }, { passive: true });
+    }
+
     if (!reduce && "IntersectionObserver" in window) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
