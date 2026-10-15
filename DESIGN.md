@@ -48,19 +48,27 @@ typography:
     lineHeight: 1.3
     letterSpacing: 0.22em
 spacing:
-  xs: 4px
-  sm: 8px
-  md: 16px
-  lg: 24px
-  xl: 40px
-  2xl: 64px
-  3xl: 96px
+  1: 4px
+  2: 8px
+  3: 12px
+  4: 16px
+  5: 20px
+  6: 24px
+  8: 32px
+  10: 40px
+  12: 48px
+  16: 64px
+  20: 80px
+  24: 96px
+  panel-gap: 24px
+  panel-pad: 32px
   gutter: 24px
   margin: 32px
   max: 1120px
 rounded:
   none: 0px
   sm: 2px
+  md: 4px
   full: 9999px
 components:
   button-primary:
@@ -104,7 +112,13 @@ Two families only: **Cormorant Garamond** for display and titles, **DM Sans** fo
 
 ## Layout
 
-Mobile-first. An 8px rhythm with a 4px half-step. Content width caps at 1120px. Section padding scales from 72px to 140px. Related items group by alignment and hairlines, not boxes with heavy radius. The “Čo robíme” strip sits immediately under the hero with three equal columns and a full-width “Pre koho” line.
+Mobile-first. Spacing follows the **Tailwind 4px scale** (`4 / 8 / 12 / 16 / 24 / 32 / 40 / 48 / 64`). Content width caps at 1120px. Section padding scales from 72px to 140px.
+
+**Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (16px mobile, 24px from 720px, 32px from 1080px) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
+
+Component anatomy (card padding, feature grids, pricing, FAQ accordion, form fields, navbar, footer) follows [shadcn/ui](https://ui.shadcn.com/) and [shadcn blocks](https://ui.shadcn.com/blocks), restyled in Caviar metals. The site is static GitHub Pages: keep vanilla CSS on this scale, or commit a precompiled stylesheet. Do not add a deploy-time Tailwind build.
+
+The “Čo robíme” strip sits immediately under the hero as three equal cards plus a full-width “Pre koho” panel.
 
 ## Elevation & Depth
 
@@ -117,18 +131,23 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 ## Components
 
 - **Buttons:** Primary is a platinum metal fill with dark ink type. Ghost is a hairline. Uppercase labels, 52px min height, full width on small screens.
-- **Pricing cards:** Shared launch-price badge. Caviar Komplet is visually louder: platinum frame, elevated ground, wider measure.
+- **Feature / service cards:** Elevated `#0E0E12` surface, 1px steel border, equal padding, hover hairline brightens. Three-up on desktop with `--gap-panel`.
+- **Pricing cards:** Shared launch-price badge. Caviar Komplet is visually louder: platinum frame, elevated ground, wider measure. Same gap as other panel grids.
+- **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
+- **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
 - **Work tiles:** Dark silver art-directed fields or grayscale stills. Captions are quiet style words. Never “TODO” or “Placeholder”.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
-- **Header:** Sticky, blurred, denser after scroll. Mobile uses a full-screen serif menu.
+- **Header / footer:** Sticky blurred navbar; footer is a hairline bar with uppercase meta. Study shadcn navbar/footer block rhythm, keep Caviar type.
 
 ## Do's and Don'ts
 
 - Do keep Slovak as the default language, with EN and DE in lockstep
 - Do explain what Caviar does in one plain sentence under the hero headline
 - Do respect `prefers-reduced-motion` for ken-burns, sheen, reveals, and cursor
+- Do leave a visible gap between every card/panel on mobile and desktop
 - Don't use gold, warm yellow, or champagne metals
 - Don't invent testimonials, client counts, or results
 - Don't show the words TODO or Placeholder anywhere in the UI
+- Don't add a Node/Tailwind build that GitHub Pages must run
 - Do keep prices 49 / 69 / 190 / 349 EUR including VAT
 - Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava

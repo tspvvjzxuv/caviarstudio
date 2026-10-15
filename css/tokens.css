@@ -1,4 +1,4 @@
-/* Generated from DESIGN.md — Caviar tokens */
+/* Generated from DESIGN.md — Caviar tokens (Tailwind-like 4px scale) */
 
 :root {
   --color-caviar-bg: #070708;
@@ -13,15 +13,45 @@
   --font-caviar-headline: "Cormorant Garamond", "Times New Roman", serif;
   --font-caviar-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
 
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 40px;
-  --space-2xl: 64px;
-  --space-3xl: 96px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-10);
+  --space-2xl: var(--space-16);
+  --space-3xl: var(--space-24);
+
+  --gap-panel: var(--space-4);
+  --pad-panel: var(--space-6);
 
   --radius-none: 0px;
   --radius-sm: 2px;
+  --radius-md: 4px;
   --radius-full: 9999px;
+}
+
+@media (min-width: 720px) {
+  :root {
+    --gap-panel: var(--space-6);
+    --pad-panel: var(--space-8);
+  }
+}
+
+@media (min-width: 1080px) {
+  :root {
+    --gap-panel: var(--space-8);
+  }
 }

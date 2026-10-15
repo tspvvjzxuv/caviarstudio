@@ -515,19 +515,22 @@ section {
 
 .do-grid {
   display: grid;
-  gap: 0;
+  gap: var(--gap-panel);
 }
 
 .do-card {
-  padding: 28px 0;
+  padding: var(--pad-panel);
   display: grid;
-  gap: 12px;
-  border-top: 1px solid var(--line);
-  transition: background 0.5s var(--ease);
+  gap: var(--space-3);
+  align-content: start;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  transition: background 0.5s var(--ease), border-color 0.45s var(--ease);
 }
 
-.do-card:last-of-type {
-  border-bottom: 1px solid var(--line);
+.do-card:hover {
+  border-color: rgba(197, 202, 211, 0.38);
 }
 
 .do-index {
@@ -559,9 +562,13 @@ section {
 }
 
 .for-whom {
-  margin-top: 28px;
+  margin-top: var(--gap-panel);
   display: grid;
-  gap: 8px;
+  gap: var(--space-2);
+  padding: var(--pad-panel);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
 }
 
 .for-whom .lbl {
@@ -624,17 +631,18 @@ section {
 
 .packages {
   display: grid;
-  gap: 12px;
+  gap: var(--gap-panel);
 }
 
 .pack {
   background: var(--bg-2);
-  padding: clamp(24px, 4vw, 36px);
+  padding: var(--pad-panel);
   display: grid;
   grid-template-rows: auto auto 1fr auto;
-  gap: 14px;
+  gap: var(--space-4);
   position: relative;
   border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   transition: border-color 0.45s var(--ease), background 0.45s var(--ease);
 }
 
@@ -737,17 +745,19 @@ section {
 
 .process-list {
   display: grid;
+  gap: var(--gap-panel);
   list-style: none;
-  border-top: 1px solid var(--line);
 }
 
 .step {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 16px 24px;
-  padding-block: 28px;
-  border-bottom: 1px solid var(--line);
+  gap: var(--space-4) var(--space-6);
+  padding: var(--pad-panel);
   align-items: baseline;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
 }
 
 .step-num {
@@ -882,12 +892,12 @@ section {
 
 .work-stage {
   display: grid;
-  gap: 10px;
+  gap: var(--gap-panel);
 }
 
 .work-pair {
   display: grid;
-  gap: 10px;
+  gap: var(--gap-panel);
 }
 
 .project {
@@ -896,6 +906,8 @@ section {
   min-height: 64vh;
   background: var(--bg-2);
   isolation: isolate;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
 }
 
 .project.is-feature {
@@ -1093,7 +1105,7 @@ section {
   list-style: none;
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(24px, 4vw, 48px);
+  gap: var(--gap-panel);
 }
 
 .mono {
@@ -1143,22 +1155,25 @@ section {
 
 .faq-list {
   display: grid;
-  border-top: 1px solid var(--line);
+  gap: var(--space-3);
 }
 
 .faq-list details {
-  border-bottom: 1px solid var(--line);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding-inline: var(--pad-panel);
 }
 
 .faq-list summary {
   list-style: none;
   cursor: pointer;
-  padding-block: 22px;
+  padding-block: var(--space-5);
   font-family: var(--serif);
   font-size: clamp(1.25rem, 2.4vw, 1.6rem);
   display: flex;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-4);
   align-items: baseline;
 }
 
@@ -1183,7 +1198,7 @@ section {
 }
 
 .faq-list details p {
-  padding-bottom: 24px;
+  padding-bottom: var(--space-6);
   color: var(--muted);
   max-width: 62ch;
 }
@@ -1199,10 +1214,10 @@ section {
 }
 
 .contact-links {
-  margin-top: 32px;
+  margin-top: var(--space-8);
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .contact-num {
@@ -1221,10 +1236,14 @@ section {
 }
 
 .form {
-  margin-top: 56px;
+  margin-top: var(--space-8);
   display: grid;
-  gap: 28px;
+  gap: var(--space-6);
   max-width: 640px;
+  padding: var(--pad-panel);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
 }
 
 .field {
@@ -1242,18 +1261,17 @@ section {
 .field input,
 .field select,
 .field textarea {
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  padding: 12px 0;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
   appearance: none;
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-bottom-color: var(--platinum);
+  border-color: var(--platinum);
   outline: none;
 }
 
@@ -1424,25 +1442,11 @@ section {
 
   .do-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+    gap: var(--gap-panel);
   }
 
   .do-card {
-    padding: 36px 28px 36px 0;
-    border: 0;
-    border-right: 1px solid var(--line);
-  }
-
-  .do-card:first-child {
-    padding-left: 0;
-  }
-
-  .do-card:last-of-type {
-    border-right: 0;
-    padding-right: 0;
-    border-bottom: 0;
+    padding: var(--pad-panel);
   }
 
   .for-whom {
@@ -1483,13 +1487,13 @@ section {
 
   .team-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 64px;
+    gap: var(--space-8);
   }
 
   .contact-shell {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 64px;
+    gap: var(--space-16);
     align-items: start;
   }
 

@@ -1,0 +1,31 @@
+---
+description: Caviar visual system — dark silver, Tailwind spacing, shadcn-like components, GitHub Pages
+alwaysApply: true
+---
+
+# Caviar design rules
+
+Static GitHub Pages site. **Do not add a Tailwind/Vite/npm build** that must run at deploy time. Keep vanilla CSS (this repo) using a Tailwind-like 4px spacing scale, or commit a precompiled CSS file.
+
+## References
+
+- Spacing, type scale, utility rhythm: [Tailwind CSS](https://tailwindcss.com/)
+- Component anatomy, padding, and grid gaps: [shadcn/ui](https://ui.shadcn.com/) and [shadcn blocks](https://ui.shadcn.com/blocks) (hero, feature, pricing, FAQ, contact/form, navbar, footer)
+
+## Palette
+
+- Near-black ground `#070708`, elevated `#0E0E12`, surface `#14141A`
+- Pearl `#F4F5F7`, silver `#C5CAD3`, platinum `#E8EAEE`, steel `#9AA3AE`
+- **No gold, champagne, amber, or warm yellow**
+
+## Layout
+
+- Generous whitespace. Panels (service cards, pricing, process steps, work tiles, team, FAQ items) **never touch**. Use `--gap-panel` (16px mobile / 24px md / 32px lg).
+- Each panel is a self-contained card: own border, own padding (`--pad-panel`), not a shared 1px divider between flush columns.
+- Sharp corners (0–2px). Do not switch to pill CTAs or large rounded-xl SaaS cards.
+- Slovak default, EN/DE in lockstep. No invented testimonials or numbers.
+
+## Type
+
+- Display: Cormorant Garamond. Body/UI: DM Sans.
+- Feature headlines large; body 16–18px; labels uppercase with wide tracking.
