@@ -869,17 +869,20 @@
     window.addEventListener("scroll", setHeader, { passive: true });
 
     function closeMenu() {
-      header.classList.remove("nav-open");
+      const bar = document.querySelector(".site-header");
+      if (bar) bar.classList.remove("nav-open");
       document.body.classList.remove("nav-lock");
       syncMenuLabel();
     }
 
     function syncMenuLabel() {
-      if (!menuBtn) return;
-      const open = header.classList.contains("nav-open");
+      const btn = document.querySelector(".menu-toggle");
+      const bar = document.querySelector(".site-header");
+      if (!btn || !bar) return;
+      const open = bar.classList.contains("nav-open");
       const pack = dictionary[currentLang];
-      menuBtn.textContent = open ? pack.close : pack.menu;
-      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.textContent = open ? pack.close : pack.menu;
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
     }
 
     if (menuBtn) {
