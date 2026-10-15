@@ -90,8 +90,8 @@ export const dictionary = {
         mailSubject: "Caviar: cenová ponuka",
         mailName: "Meno", mailBiz: "Podnik", mailNeed: "Potrebujem", mailBudget: "Rozpočet",
         waText: "Dobrý deň, mám záujem o cenovú ponuku od Caviar.",
-        docTitle: "Caviar: weby, video a fotky pre podniky",
-        docDesc: "Caviar: weby, videá a fotky pre podniky, aby vás ľudia našli, uvideli a zavolali. Trnava a okolie. Úvodné ceny pre prvých 10 klientov."
+        docTitle: "Caviar: weby, video a fotky | Trnava",
+        docDesc: "Weby, videá a fotky pre podniky v Trnave a okolí, aby vás ľudia našli, uvideli a zavolali. Napíšte, ozveme sa do 24 hodín."
       },
       en: {
         skip: "Skip to content",
@@ -184,8 +184,8 @@ export const dictionary = {
         mailSubject: "Caviar: quote request",
         mailName: "Name", mailBiz: "Business", mailNeed: "Need", mailBudget: "Budget",
         waText: "Hello, I would like a quote from Caviar.",
-        docTitle: "Caviar: websites, video and photo for businesses",
-        docDesc: "Caviar: websites, videos and photos for businesses so people find you, see the place, and call. Trnava and around. Launch prices for the first 10 clients."
+        docTitle: "Caviar: websites, video and photo | Trnava",
+        docDesc: "Websites, videos and photos for businesses in Trnava and nearby so people find you, see the place, and call. Write to us. We reply within 24 hours."
       },
       de: {
         skip: "Zum Inhalt springen",
@@ -278,8 +278,8 @@ export const dictionary = {
         mailSubject: "Caviar: Angebotsanfrage",
         mailName: "Name", mailBiz: "Betrieb", mailNeed: "Bedarf", mailBudget: "Budget",
         waText: "Guten Tag, ich möchte ein Angebot von Caviar.",
-        docTitle: "Caviar: Websites, Video und Foto für Betriebe",
-        docDesc: "Caviar: Websites, Videos und Fotos für Betriebe, damit man Sie findet, sieht und anruft. Trnava und Umgebung. Einführungspreise für die ersten 10 Kunden."
+        docTitle: "Caviar: Websites, Video und Foto | Trnava",
+        docDesc: "Websites, Videos und Fotos für Betriebe in Trnava und Umgebung, damit man Sie findet, sieht und anruft. Schreiben Sie. Antwort in 24 Stunden."
       }
     };
 

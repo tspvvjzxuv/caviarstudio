@@ -103,9 +103,9 @@ export function Hero() {
 export function Services() {
   const { t } = useLanguage();
   const items = [
-    { name: t.webName, lead: t.webLead, gets: t.webGets, i: "01" },
-    { name: t.videoName, lead: t.videoLead, gets: t.videoGets, i: "02" },
-    { name: t.fotoName, lead: t.fotoLead, gets: t.fotoGets, i: "03" },
+    { name: t.webName, lead: t.webLead, gets: t.webGets },
+    { name: t.videoName, lead: t.videoLead, gets: t.videoGets },
+    { name: t.fotoName, lead: t.fotoLead, gets: t.fotoGets },
   ];
   return (
     <Section.Frame id="sluzby" density="compact" className="border-t border-border">
@@ -117,7 +117,7 @@ export function Services() {
         </div>
         <div className="grid gap-4 md:grid-cols-3 md:gap-6 xl:gap-8">
           {items.map((item, idx) => (
-            <ServiceCard key={item.i} item={item} delay={idx} />
+            <ServiceCard key={item.name} item={item} delay={idx} />
           ))}
         </div>
         <Reveal className="mt-4 rounded-[2px] border border-border bg-card p-6 md:mt-6 md:p-8 xl:mt-8" delay={3}>
@@ -133,14 +133,13 @@ function ServiceCard({
   item,
   delay,
 }: {
-  item: { name: string; lead: string; gets: string; i: string };
+  item: { name: string; lead: string; gets: string };
   delay: number;
 }) {
   return (
     <Reveal delay={delay}>
       <Card className="h-full rounded-[2px] bg-card py-0 ring-1 ring-border">
         <CardHeader className="gap-3 p-6 md:p-8">
-          <span className="font-serif text-[1.35rem] text-silver italic">{item.i}</span>
           <CardTitle className="font-serif text-[clamp(2rem,4vw,3rem)] font-normal tracking-[-0.02em]">{item.name}</CardTitle>
           <p className="max-w-[34ch] text-[1.05rem] leading-[1.5]">{item.lead}</p>
           <CardDescription className="max-w-[38ch] text-[0.82rem] tracking-[0.03em]">{item.gets}</CardDescription>
@@ -188,6 +187,9 @@ function LaunchPriceCard({ pack, delay, vat }: { pack: PricePack; delay: number;
         <CardHeader className="gap-4 p-6 md:p-8">
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
           <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+          <Button asChild variant="outline" className="mt-1 h-11 rounded-[2px] text-[0.68rem] tracking-[0.16em] uppercase">
+            <a href="#kontakt">{t.ctaQuote}</a>
+          </Button>
         </CardHeader>
       </Card>
     </Reveal>
@@ -202,7 +204,12 @@ function FeaturedPriceCard({ pack, delay, vat }: { pack: typeof FEATURED_PACK; d
       <Card className="h-full rounded-[2px] py-0 ring-1 bg-linear-to-b from-platinum/7 to-platinum/1.5 ring-platinum/42">
         <CardHeader className="gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
-          <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+          <div className="grid gap-4 justify-items-start">
+            <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+            <Button asChild className="metal-fill h-11 rounded-[2px] px-6 text-[0.68rem] tracking-[0.16em] uppercase">
+              <a href="#kontakt">{t.ctaQuote}</a>
+            </Button>
+          </div>
         </CardHeader>
       </Card>
     </Reveal>
@@ -230,6 +237,11 @@ export function Pricing() {
           <p>{t.priceIntro}</p>
           <p>{t.noHidden}</p>
           <p>{CAVIAR.VAT_PAYER ? t.vatYes : t.vatNo}</p>
+        </Reveal>
+        <Reveal className="mt-8">
+          <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+            <a href="#kontakt">{t.ctaQuote}</a>
+          </Button>
         </Reveal>
       </Section.Body>
     </Section.Frame>

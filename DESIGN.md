@@ -89,6 +89,8 @@ components:
 
 Caviar is a small creative studio in Trnava. The site should feel like a quiet gallery: cool, high-end, and artistic — never like a SaaS template. Near-black fields, platinum type, generous empty space, and a single silver accent language. Motion is slow and cinematic. Copy stays plain and concrete. No gold, champagne, neon, or invented social proof.
 
+**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero), everything else quieter. Parallel offerings (Web / Video / Foto) are not numbered; the four-step process is, because it is a sequence. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
+
 ## Colors
 
 The palette is pearl on caviar black, with silver as the only metal.
@@ -164,3 +166,15 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
 - Do keep prices 49 / 69 / 190 / 349 EUR including VAT
 - Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
+
+## Motion that earns its place
+
+Animate only what has a job: the first-load hero stagger (explanation), ken-burns/sheen/shader on the still (atmosphere), accordion and sheet (spatial), metal-fill press scale 0.97 (feedback). Do not add hover lift on every card. Honor `prefers-reduced-motion`. Primary CTA press uses `transition` on `transform` and `background-image` only, 160ms ease-out.
+
+## Conversion
+
+One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof.
+
+## SEO
+
+Title, meta, Open Graph, hreflang, canonical, `robots.txt`, `sitemap.xml`, and JSON-LD (`LocalBusiness` + `ProfessionalService`, `WebSite`, `FAQPage`) must match visible copy. Do not invent a street, geo pin, hours, or reviews. Programmatic SEO city pages are out of scope on this one-pager.

@@ -176,6 +176,12 @@
   .hero-silver {
     display: none;
   }
+  .metal-fill {
+    transition: none;
+  }
+  .metal-fill:active {
+    transform: none;
+  }
 }
 
 .grain {
@@ -201,9 +207,13 @@
   background-image: var(--metal);
   color: var(--color-ink);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 55%);
+  transition: background-image 160ms ease-out, transform 160ms ease-out;
 }
 .metal-fill:hover {
   background-image: var(--metal-hover);
+}
+.metal-fill:active {
+  transform: scale(0.97);
 }
 
 .hero-shine {

@@ -58,8 +58,10 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
   set('meta[property="og:title"]', pack.docTitle);
   set('meta[property="og:description"]', pack.docDesc);
   set('meta[property="og:locale"]', OG_LOCALES[lang]);
+  set('meta[property="og:image:alt"]', pack.heroAlt);
   set('meta[name="twitter:title"]', pack.docTitle);
   set('meta[name="twitter:description"]', pack.docDesc);
+  set('meta[name="twitter:image:alt"]', pack.heroAlt);
 
   const ld = document.getElementById("caviar-jsonld");
   if (ld) {

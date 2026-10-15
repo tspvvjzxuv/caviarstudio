@@ -36,4 +36,19 @@ Skills from https://agenticskills.io/workflows were installed; MCP servers were 
 - `better-auth/skills@create-auth-skill` — skill is named `create-auth`
 - Full Development Lifecycle bundle — 0 skills (MCP-only); skipped
 
-Use design/motion/copy/SEO skills on this static site. Three.js is used only as a lazy silver/pearl hero shader with a static fallback. Do not apply WordPress, Expo, Cloudflare, auth, or Remotion unless a later task explicitly asks for them.
+Use design/motion/copy/SEO skills on this static site. Follow `AGENTS.md` and `.agents/product-marketing.md`. Three.js is used only as a lazy silver/pearl hero shader with a static fallback. Do not apply WordPress, Expo, Cloudflare, auth, Remotion, or programmatic SEO page factories unless a later task explicitly asks for them.
+
+## AgenticSkills.io marketing-site bundles (this pass)
+
+Installed at project scope; MCP servers skipped. Already-present skills were not reinstalled.
+
+- Frontend Development: `vercel-react-best-practices`, `frontend-design`
+- Distinctive UI Without a Mockup: `design-taste-frontend`, `emil-design-eng`, `animate` (Inspo MCP skipped)
+- Design-to-Code (skills only): `frontend-design`, `figma-implement-design`, `vercel-react-best-practices` (Figma MCP skipped)
+- SEO Content Sprint: `seo-audit`, `content-strategy`, `copywriting`, `schema` (`AgriciDaniel/claude-seo` already present)
+- Programmatic SEO: skills present, **not used** (one-pager, no unique per-URL data)
+- Founder Marketing Stack: `product-marketing`, `content-strategy`, `marketing-ideas`, `charlie947/social-media-skills` (`x-article-publisher` unused)
+- Conversion Optimization Loop: `cro`, `copywriting`, `pricing` (`analytics` unused: no GA4 id)
+- AI Search Visibility Stack: `seo-aeo-best-practices`, `schema`, `zubair-trabzada/geo-seo-claude` (`Auriti-Labs/geo-optimizer-skill` failed: no SKILL.md)
+- Marketing & Growth Engine: `coreyhaines31/marketingskills`
+- Disciplined Development: `obra/superpowers` (brainstorming, TDD, systematic-debugging, verification-before-completion, …)

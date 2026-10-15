@@ -35,3 +35,4 @@ Deploy as static GitHub Pages at the repo root for `caviarstudio.sk`:
 - Generous whitespace. Panels never touch (`gap-4` / `md:gap-6` / `xl:gap-8`).
 - Slovak default, EN/DE in lockstep. No invented testimonials or numbers.
 - Prices 49 / 69 / 190 / 349 EUR s DPH. Contacts unchanged.
+- Follow `AGENTS.md` and `.agents/product-marketing.md`. Distinctive silver gallery, not a SaaS kit. Number process steps only. Quote CTA on hero, pricing, and form. Keep title/meta/OG/JSON-LD/sitemap/robots accurate. No programmatic city pages.
