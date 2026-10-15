@@ -778,8 +778,6 @@ section {
   place-items: center;
   background: #070708;
   pointer-events: none;
-  transform: none;
-  transition: transform 1.05s var(--ease);
 }
 
 .intro-mark {
@@ -800,28 +798,35 @@ section {
   bottom: 38%;
   height: 1px;
   background: var(--hair);
-  transform: scaleX(0.2);
+  transform: scaleX(0.18);
   transform-origin: center;
 }
 
-.js.is-ready .intro {
-  transform: translateY(-100%);
+@media (prefers-reduced-motion: no-preference) {
+  .intro {
+    animation: intro-out 0.9s var(--ease) 0.55s forwards;
+  }
+
+  .intro-line {
+    animation: line-grow 0.55s var(--ease) 0.08s forwards;
+  }
+
+  .hero-copy {
+    animation: rise-in 1.15s var(--ease) 0.7s both;
+  }
 }
 
-.js.is-ready .intro-line {
-  transform: scaleX(1);
-  transition: transform 0.8s var(--ease);
+@keyframes intro-out {
+  to { transform: translateY(-100%); }
 }
 
-.js .hero-copy {
-  opacity: 0;
-  transform: translateY(28px);
+@keyframes line-grow {
+  to { transform: scaleX(1); }
 }
 
-.js.is-ready .hero-copy {
-  opacity: 1;
-  transform: none;
-  transition: opacity 1.1s var(--ease) 0.18s, transform 1.2s var(--ease) 0.18s;
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
 }
 
 .marquee {
@@ -1276,8 +1281,7 @@ section {
 }
 
 .js .reveal {
-  opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(28px);
 }
 
 .js .reveal.in {
@@ -1368,7 +1372,6 @@ section {
   .hero-shine,
   .js .reveal,
   .js .reveal.in,
-  .js .hero-copy,
   .project-media img,
   .project-media video,
   .project-media.silver::after,

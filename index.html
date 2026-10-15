@@ -823,7 +823,7 @@
       const url = new URL(location.href);
       if (url.searchParams.get("lang") !== lang) {
         url.searchParams.set("lang", lang);
-        history.replaceState({}, "", url);
+        history.replaceState({}, "", url.pathname + url.search + url.hash);
       }
     }
 
@@ -955,10 +955,21 @@
 
     renderWork();
     setLanguage(currentLang);
+    if (location.hash) {
+      const jump = document.getElementById(location.hash.slice(1));
+      if (jump) jump.scrollIntoView({ behavior: "auto", block: "start" });
+    }
 
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const cursor = document.querySelector(".cursor");
     const cursorLabel = document.querySelector(".cursor-label");
+
+    function flushVisibleReveals() {
+      document.querySelectorAll(".reveal:not(.in)").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom > 24 && r.top < window.innerHeight - 24) el.classList.add("in");
+      });
+    }
 
     function observeReveals() {
       if (!reduce && "IntersectionObserver" in window) {
@@ -969,8 +980,10 @@
               io.unobserve(entry.target);
             }
           });
-        }, { threshold: 0.14, rootMargin: "0px 0px -10% 0px" });
+        }, { threshold: 0.08, rootMargin: "0px 0px -6% 0px" });
         document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+        requestAnimationFrame(flushVisibleReveals);
+        window.addEventListener("load", flushVisibleReveals, { once: true });
       } else {
         document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
       }
@@ -979,21 +992,23 @@
 
     (function intro() {
       const veil = document.querySelector(".intro");
-      const ready = () => {
-        document.documentElement.classList.add("is-ready");
-        if (!veil) return;
-        const drop = () => { veil.remove(); };
-        veil.addEventListener("transitionend", drop, { once: true });
-        setTimeout(drop, 1400);
+      const honorHash = () => {
+        const id = location.hash.replace("#", "");
+        if (!id) return;
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "auto", block: "start" });
       };
-      if (reduce) {
-        ready();
+      const drop = () => {
+        if (veil && veil.parentNode) veil.remove();
+        honorHash();
+        flushVisibleReveals();
+      };
+      if (!veil || reduce) {
+        drop();
         return;
       }
-      const start = () => setTimeout(ready, 420);
-      if (document.readyState === "complete") start();
-      else window.addEventListener("load", start, { once: true });
-      setTimeout(ready, 1800);
+      veil.addEventListener("animationend", drop, { once: true });
+      setTimeout(drop, 1700);
     })();
 
     if (cursor && finePointer && !reduce) {
