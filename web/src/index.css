@@ -94,16 +94,16 @@
     to { transform: scaleX(1); }
   }
   @keyframes cue {
-    0% { top: 0; opacity: 1; }
-    100% { top: 42px; opacity: 0; }
+    0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+    100% { transform: translateX(-50%) translateY(42px); opacity: 0; }
   }
   @keyframes ticker {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
   @keyframes tile-sheen {
-    0%, 100% { opacity: 0.55; }
-    50% { opacity: 1; }
+    0%, 100% { background-position: 0% 0; opacity: 0.55; }
+    50% { background-position: 100% 0; opacity: 1; }
   }
 }
 
@@ -176,6 +176,13 @@
   .hero-silver {
     display: none;
   }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .project {
+    transition: none;
+  }
   .metal-fill {
     transition: none;
   }
@@ -246,6 +253,20 @@
   .silver-sheen::after {
     animation: var(--animate-tile-sheen);
   }
+  .hero-ken.is-paused img,
+  .hero-ken.is-paused .hero-shine,
+  .work-sec.is-paused .silver-sheen::after,
+  .work-sec.is-paused .marquee-track {
+    animation-play-state: paused;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .project:hover {
+      border-color: rgb(232 234 238 / 42%);
+    }
+    .project:hover .project-media {
+      --zs: 1.14;
+    }
+  }
 }
 
 .js .reveal {
@@ -308,9 +329,23 @@
   cursor: none;
 }
 
+.project {
+  transition: border-color 200ms ease-out;
+}
+
 .project-media img,
 .project-media video {
   transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) + var(--py, 0px)), 0) scale(var(--zs, 1.08));
+}
+
+.silver-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 32%, rgb(232 234 238 / 18%) 50%, transparent 68%);
+  background-size: 220% 100%;
+  mix-blend-mode: screen;
 }
 
 .silver-a {

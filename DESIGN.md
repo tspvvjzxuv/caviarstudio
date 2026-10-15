@@ -116,7 +116,7 @@ Two families only: **Cormorant Garamond** for display and titles, **DM Sans** fo
 
 Mobile-first. Spacing follows the **Tailwind 4px scale** (`4 / 8 / 12 / 16 / 24 / 32 / 40 / 48 / 64`). Content width caps at 1120px. Section padding scales from 72px to 140px.
 
-**Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (16px mobile, 24px from 720px, 32px from 1080px) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
+**Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (24px mobile, 32px from `md`, 40px from `xl`) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
 
 The UI is built with the **full Tailwind CSS utility system** and the **full shadcn/ui component set + CSS-variable theming** ([components](https://ui.shadcn.com/docs/components), [blocks](https://ui.shadcn.com/blocks)): Button, Card, Badge, Accordion (FAQ), Tabs, Input/Select/Label (form), Navigation Menu, Sheet (mobile menu), Separator, Tooltip, Toggle Group (SK/EN/DE), Field. Tokens live in `web/src/index.css` (`@theme` semantic colors, `--radius` 2px, class-based `.dark` always on). Agent skills in `.agents/skills/`: `tailwind-design-system` (wshobson/agents), `shadcn` (shadcn-ui/ui), `web-artifacts-builder` (anthropics/skills), `vercel-react-best-practices` (vercel-labs/agent-skills), and `frontend-slides` (zarazhangrui).
 
@@ -132,7 +132,7 @@ Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for 
 
 Source: `web/` (Vite + React). GitHub Pages still needs a static output: commit the built `index.html` + `assets/` at the repo root **and** use `.github/workflows/pages.yml`. Do not rely on GitHub Pages to run `npm` unless Pages source is **GitHub Actions**.
 
-The “Čo robíme” strip sits immediately under the hero as three equal cards plus a full-width “Pre koho” panel.
+The “Čo robíme” block sits immediately under the hero: a real display `h2` (not a tracked kicker), a one-line lead, three equal Web / Video / Foto cards, plus a full-width “Pre koho” panel. Visible address is **Trnava** only (JSON-LD may still use `addressCountry: SK`).
 
 ## Elevation & Depth
 
@@ -151,7 +151,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
 - **Work tiles:** Dark silver art-directed fields or grayscale stills. Captions are quiet style words. Never “TODO” or “Placeholder”.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
-- **Header / footer:** Sticky blurred navbar; footer is a hairline bar with uppercase meta. Study shadcn navbar/footer block rhythm, keep Caviar type.
+- **Header / footer:** Sticky blurred navbar with safe-area padding; footer is a hairline bar with stacked contacts (no middle-dot meta string). Study shadcn navbar/footer block rhythm, keep Caviar type.
 
 ## Do's and Don'ts
 
@@ -165,7 +165,8 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Don't show the words TODO or Placeholder anywhere in the UI
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
 - Do keep prices 49 / 69 / 190 / 349 EUR including VAT
-- Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
+- Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, address **Trnava** only
+- Do pause ken-burns, sheen, and marquee when off-screen or the tab is hidden
 
 ## Motion that earns its place
 

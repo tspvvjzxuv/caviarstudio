@@ -1,9 +1,9 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Kicker, Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
 
-const frameVariants = cva("scroll-mt-20", {
+const frameVariants = cva("scroll-mt-[calc(5rem+env(safe-area-inset-top,0px))]", {
   variants: {
     density: {
       default: "py-[clamp(4.5rem,11vw,8.25rem)]",
@@ -18,13 +18,15 @@ function Frame({
   children,
   className,
   density,
+  ref,
 }: {
   id: string;
   children: ReactNode;
   className?: string;
+  ref?: Ref<HTMLElement>;
 } & VariantProps<typeof frameVariants>) {
   return (
-    <section id={id} className={cn(frameVariants({ density }), className)}>
+    <section id={id} ref={ref} className={cn(frameVariants({ density }), className)}>
       {children}
     </section>
   );
@@ -60,7 +62,7 @@ function Heading({
   return (
     <Reveal className={cn("grid gap-4", className)}>
       <Kicker>{kicker}</Kicker>
-      <h2 className="font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{title}</h2>
+      <h2 className="text-balance font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{title}</h2>
       {children}
     </Reveal>
   );

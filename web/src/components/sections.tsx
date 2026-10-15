@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,9 +52,11 @@ const NEED_OPTIONS = [
 
 export function Hero() {
   const { t } = useLanguage();
+  const kenRef = useRef<HTMLDivElement>(null);
+  usePauseOffscreen(kenRef);
   return (
     <section className="relative flex min-h-[100dvh] flex-col justify-end overflow-hidden pt-16" id="top">
-      <div className="hero-ken absolute inset-0">
+      <div ref={kenRef} className="hero-ken absolute inset-0">
         <picture>
           <source srcSet="./img/hero.webp" type="image/webp" />
           <img
@@ -62,6 +65,7 @@ export function Hero() {
             fetchPriority="high"
             width={1920}
             height={1080}
+            sizes="100vw"
             className="size-full object-cover grayscale-[0.15] contrast-[1.05] brightness-[0.78]"
           />
         </picture>
@@ -73,10 +77,10 @@ export function Hero() {
       <div className="hero-stage relative z-[2] mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pb-[clamp(4.5rem,10vw,6.75rem)]">
         <Kicker>{t.heroKicker}</Kicker>
         <h1
-          className="mt-6 max-w-[11ch] font-serif text-[clamp(3rem,12vw,8.4rem)] leading-[0.88] font-normal tracking-[-0.03em] [&_em]:bg-linear-to-r [&_em]:from-steel [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
+          className="mt-6 max-w-[12ch] font-serif text-[clamp(2.85rem,11vw,8.1rem)] leading-[0.9] font-normal tracking-[-0.035em] text-balance [&_em]:bg-linear-to-r [&_em]:from-steel [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
           dangerouslySetInnerHTML={{ __html: t.heroTitle }}
         />
-        <p className="mt-7 max-w-[34ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.45]">{t.heroExplain}</p>
+        <p className="mt-7 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.45] text-pretty">{t.heroExplain}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
@@ -89,6 +93,7 @@ export function Hero() {
       </div>
       <a
         href="#sluzby"
+        aria-label={t.scrollCue}
         className="hero-cue absolute right-[clamp(1.25rem,5vw,5rem)] bottom-7 z-[2] flex flex-col items-center gap-2.5 text-silver"
       >
         <span className="rotate-180 text-[0.62rem] tracking-[0.22em] uppercase [writing-mode:vertical-rl]">{t.scrollCue}</span>
@@ -110,17 +115,18 @@ export function Services() {
   return (
     <Section.Frame id="sluzby" density="compact" className="border-t border-border">
       <Section.Body>
-        <div className="mb-8 md:mb-10">
-          <h2>
-            <Kicker>{t.doKicker}</Kicker>
-          </h2>
-        </div>
-        <div className="grid gap-4 md:grid-cols-3 md:gap-6 xl:gap-8">
+        <h2 className="max-w-[12ch] font-serif text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.98] tracking-[-0.03em] text-balance">
+          {t.doKicker}
+        </h2>
+        <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
+          {t.doLead}
+        </p>
+        <div className="grid gap-6 md:grid-cols-3 md:gap-8 xl:gap-10">
           {items.map((item, idx) => (
             <ServiceCard key={item.name} item={item} delay={idx} />
           ))}
         </div>
-        <Reveal className="mt-4 rounded-[2px] border border-border bg-card p-6 md:mt-6 md:p-8 xl:mt-8" delay={3}>
+        <Reveal className="mt-6 rounded-[2px] border border-border bg-card p-6 md:mt-8 md:p-8 xl:mt-10" delay={3}>
           <span className="block text-[0.68rem] tracking-[0.22em] text-silver uppercase">{t.forWhomLabel}</span>
           <span className="mt-2 block font-serif text-[clamp(1.2rem,2.4vw,1.55rem)] leading-[1.45] italic">{t.forWhom}</span>
         </Reveal>
@@ -227,7 +233,7 @@ export function Pricing() {
             {t.slots.replace("{x}", String(CAVIAR.SLOTS_REMAINING)).replace("{total}", String(CAVIAR.SLOTS_TOTAL))}
           </p>
         </Section.Heading>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 xl:gap-8">
+        <div className="grid gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
           {LAUNCH_PACKS.map((pack, idx) => (
             <LaunchPriceCard key={pack.key} pack={pack} delay={idx} vat={vat} />
           ))}
@@ -260,7 +266,7 @@ export function Process() {
     <Section.Frame id="ako" className="slide-grid">
       <Section.Body>
         <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.howKicker} title={t.howTitle} />
-        <ol className="grid list-none gap-4 md:gap-6 xl:gap-8">
+        <ol className="grid list-none gap-6 md:gap-8 xl:gap-10">
           {steps.map((step, idx) => (
             <li key={step.n}>
               <Reveal delay={idx}>
@@ -288,6 +294,8 @@ export function Process() {
 export function Work() {
   const { t } = useLanguage();
   const stage = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  usePauseOffscreen(sectionRef);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -350,7 +358,7 @@ export function Work() {
   }, []);
 
   return (
-    <Section.Frame id="praca" className="work-sec">
+    <Section.Frame id="praca" className="work-sec" ref={sectionRef}>
       <Section.Body className="mb-10 md:mb-16">
         <Section.Heading className="max-w-[38ch]" kicker={t.workKicker} title={t.workTitle}>
           <p className="text-[1.02rem] text-muted-foreground">{t.workLead}</p>
@@ -455,7 +463,7 @@ function ContactIntro() {
   return (
     <Reveal>
       <Kicker>{t.contactKicker}</Kicker>
-      <h2 className="mt-4 max-w-[11ch] font-serif text-[clamp(2.5rem,7vw,5.6rem)] leading-[0.98] tracking-[-0.03em]">
+      <h2 className="mt-4 max-w-[11ch] font-serif text-[clamp(2.5rem,7vw,5.6rem)] leading-[0.98] tracking-[-0.03em] text-balance">
         {t.contactTitle}
       </h2>
       <div className="mt-8 flex flex-wrap gap-3">
@@ -469,7 +477,7 @@ function ContactIntro() {
           <a href={waHref(t.waText)}>{t.ctaWa}</a>
         </Button>
         <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-          <a href={CAVIAR.INSTAGRAM} target="_blank" rel="noopener">
+          <a href={CAVIAR.INSTAGRAM} target="_blank" rel="noopener noreferrer">
             {t.ctaIg}
           </a>
         </Button>
@@ -494,7 +502,7 @@ function ContactForm() {
       `${t.mailName}: ${name}`,
       `${t.mailBiz}: ${biz}`,
       `${t.mailNeed}: ${need}`,
-      `${t.mailBudget}: ${budget || "—"}`,
+      `${t.mailBudget}: ${budget || "-"}`,
     ].join("\n");
     window.location.href =
       `mailto:${CAVIAR.EMAIL}` +
@@ -521,9 +529,11 @@ function ContactForm() {
                 <Input id="f-biz" name="business" autoComplete="organization" required className="h-11 rounded-[2px] bg-background" />
               </Field>
               <Field>
-                <FieldLabel className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">{t.fNeed}</FieldLabel>
+                <FieldLabel htmlFor="f-need" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
+                  {t.fNeed}
+                </FieldLabel>
                 <Select value={need} onValueChange={setNeed} required>
-                  <SelectTrigger className="h-11 w-full rounded-[2px] bg-background">
+                  <SelectTrigger id="f-need" className="h-11 w-full rounded-[2px] bg-background">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-[2px]">

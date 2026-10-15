@@ -26,6 +26,7 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
             alt={pack[item.altKey] || ""}
             loading="lazy"
             decoding="async"
+            sizes={item.layout === "feature" ? "100vw" : "(min-width: 768px) 50vw, 100vw"}
             className="absolute inset-[-8%] size-[116%] object-cover grayscale-[0.42] contrast-[1.06] brightness-[0.88] motion-ok:transition-transform motion-ok:duration-[1350ms]"
             onError={() => setBroken(true)}
           />
@@ -58,13 +59,17 @@ function tileClass(item: WorkItem) {
 }
 
 export function WorkLinkedTile({ item, index }: { item: WorkItem; index: number }) {
+  const { t } = useLanguage();
+  const pack = t as Record<string, string>;
+  const title = pack[item.titleKey];
   return (
     <article className={tileClass(item)} data-id={item.id} data-cursor="view">
       <a
-        className="absolute inset-0 z-[2]"
+        className="absolute inset-0 z-[2] rounded-[2px] focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
         href={item.href}
         target={item.href.startsWith("http") ? "_blank" : undefined}
-        rel={item.href.startsWith("http") ? "noopener" : undefined}
+        rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+        aria-label={title}
       />
       <WorkMedia item={item} index={index} />
     </article>
@@ -72,8 +77,15 @@ export function WorkLinkedTile({ item, index }: { item: WorkItem; index: number 
 }
 
 export function WorkSoonTile({ item, index }: { item: WorkItem; index: number }) {
+  const { t } = useLanguage();
+  const pack = t as Record<string, string>;
   return (
-    <article className={tileClass(item)} data-id={item.id} data-cursor="soon">
+    <article
+      className={tileClass(item)}
+      data-id={item.id}
+      data-cursor="soon"
+      aria-label={`${pack[item.titleKey]}. ${t.soonAria}`}
+    >
       <WorkMedia item={item} index={index} />
     </article>
   );

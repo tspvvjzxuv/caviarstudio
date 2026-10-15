@@ -18,7 +18,7 @@ Spend boldness on the hero still and the platinum Komplet card. Do not add numbe
 - Ken-burns, silver sheen, and lazy Three.js pearl shader on capable desktops only.
 - Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only.
 - Scroll reveals: fade in once. Do not add hover motion on every card.
-- Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data.
+- Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, and marquee when off-screen.
 
 ## Conversion
 
