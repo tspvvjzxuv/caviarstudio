@@ -59,6 +59,7 @@
   --radius-3xl: 4px;
   --radius-4xl: 6px;
   --ease-caviar: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --animate-fade-in: fade-in 0.2s ease-out;
   --animate-fade-out: fade-out 0.2s ease-in;
   --animate-ken: ken 36s var(--ease-caviar) forwards;
@@ -236,13 +237,49 @@
 
 .js .reveal {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(30px);
 }
 .js .reveal.in {
   opacity: 1;
   transform: none;
-  transition: opacity 0.95s var(--ease-caviar), transform 1.05s var(--ease-caviar);
+  transition:
+    opacity 0.95s var(--ease-out-expo),
+    transform 1.05s var(--ease-out-expo);
   transition-delay: calc(var(--d, 0) * 90ms);
+}
+
+/* Title-slide stagger after the intro veil (frontend-slides: one orchestrated load). */
+.hero-stage > * {
+  opacity: 0;
+}
+.hero-cue {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stage > * {
+    animation: stage-up 0.9s var(--ease-out-expo) both;
+  }
+  .hero-stage > *:nth-child(1) { animation-delay: 1.55s; }
+  .hero-stage > *:nth-child(2) { animation-delay: 1.68s; }
+  .hero-stage > *:nth-child(3) { animation-delay: 1.81s; }
+  .hero-stage > *:nth-child(4) { animation-delay: 1.94s; }
+  .hero-stage > *:nth-child(5) { animation-delay: 2.07s; }
+  .hero-cue {
+    animation: stage-up 0.9s var(--ease-out-expo) 2.2s both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-stage > *,
+  .hero-cue {
+    opacity: 1;
+  }
+}
+
+.slide-grid {
+  background-image:
+    linear-gradient(rgb(232 234 238 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(232 234 238 / 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
 }
 
 .cursor-root {
@@ -285,6 +322,10 @@
 @keyframes fade {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+@keyframes stage-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
 }
 ::view-transition-old(.fade-out) {
   animation: var(--duration-exit) ease-in fade reverse;

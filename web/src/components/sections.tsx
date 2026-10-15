@@ -68,7 +68,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-linear-to-b from-[#070708]/42 via-[#070708]/12 via-34% to-[#070708]" />
         <div className="absolute inset-0 bg-linear-to-r from-[#070708]/58 to-transparent to-58%" />
       </div>
-      <div className="relative z-[2] mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pb-[clamp(4.5rem,10vw,6.75rem)]">
+      <div className="hero-stage relative z-[2] mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pb-[clamp(4.5rem,10vw,6.75rem)]">
         <Kicker>{t.heroKicker}</Kicker>
         <h1
           className="mt-6 max-w-[11ch] font-serif text-[clamp(3rem,12vw,8.4rem)] leading-[0.88] font-normal tracking-[-0.03em] [&_em]:bg-linear-to-r [&_em]:from-steel [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
@@ -87,7 +87,7 @@ export function Hero() {
       </div>
       <a
         href="#sluzby"
-        className="absolute right-[clamp(1.25rem,5vw,5rem)] bottom-7 z-[2] flex flex-col items-center gap-2.5 text-silver"
+        className="hero-cue absolute right-[clamp(1.25rem,5vw,5rem)] bottom-7 z-[2] flex flex-col items-center gap-2.5 text-silver"
       >
         <span className="rotate-180 text-[0.62rem] tracking-[0.22em] uppercase [writing-mode:vertical-rl]">{t.scrollCue}</span>
         <i className="relative block h-12 w-px bg-linear-to-b from-platinum to-transparent">
@@ -243,7 +243,7 @@ export function Process() {
     { n: "04", title: t.how4t, body: t.how4p },
   ];
   return (
-    <Section.Frame id="ako">
+    <Section.Frame id="ako" className="slide-grid">
       <Section.Body>
         <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.howKicker} title={t.howTitle} />
         <ol className="grid list-none gap-4 md:gap-6 xl:gap-8">
@@ -252,7 +252,10 @@ export function Process() {
               <Reveal delay={idx}>
                 <Card className="rounded-[2px] py-0 ring-1 ring-border">
                   <CardContent className="grid grid-cols-[auto_1fr] items-baseline gap-x-6 gap-y-4 p-6 md:p-8">
-                    <span className="min-w-[2.2ch] font-serif text-[clamp(2rem,4vw,3rem)] text-silver italic">{step.n}</span>
+                    <span className="grid min-w-[2.2ch] gap-3">
+                      <i className="block h-px w-9 bg-platinum" aria-hidden="true" />
+                      <span className="font-serif text-[clamp(2rem,4vw,3rem)] text-silver italic">{step.n}</span>
+                    </span>
                     <div>
                       <h3 className="font-serif text-[clamp(1.35rem,2.4vw,1.85rem)] font-normal">{step.title}</h3>
                       <p className="mt-2 max-w-[52ch] text-muted-foreground">{step.body}</p>
