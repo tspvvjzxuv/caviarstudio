@@ -1052,10 +1052,10 @@
       "computedHash": "236637043bb124064fe8feed57e10ab9b2dbec5de1c33ed755d5caace45b0154"
     },
     "seo-audit": {
-      "source": "AgriciDaniel/claude-seo",
+      "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "skillPath": "skills/seo-audit/SKILL.md",
-      "computedHash": "ad118adc5ec68480497fd056b7ed733f99fcfd7dc2499152c226799faeba714e"
+      "computedHash": "928ca75d9899be7d17d7cbfa21aee28cc2e66681b2f4e19e6c9bd2a8330daa24"
     },
     "seo-backlinks": {
       "source": "AgriciDaniel/claude-seo",

@@ -25,7 +25,7 @@ Project-scope copies live in `.agents/skills/` (lock: `skills-lock.json`). Insta
 
 ## AgenticSkills.io workflow skills (22 bundles)
 
-Skills from https://agenticskills.io/workflows were installed; MCP servers were not.
+Skills from https://agenticskills.io/workflows were installed; MCP servers were not. The queued `npx skills add` list was re-run at project scope (`-y --copy`); already-present skills were reinstalled in place. `seo-audit` now comes from `coreyhaines31/marketingskills` (SEO Content Sprint), not AgriciDaniel.
 
 **Failed or renamed**
 
