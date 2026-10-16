@@ -11,6 +11,7 @@ function allowHeroVideo() {
   const conn = (navigator as Conn).connection;
   if (conn?.saveData) return false;
   if (conn?.effectiveType === "slow-2g" || conn?.effectiveType === "2g") return false;
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return false;
   return true;
 }
 
@@ -123,7 +124,7 @@ export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | nu
       <div ref={kenRef} className="hero-ken absolute inset-0">
         <div className="hero-field absolute inset-0" />
         <HeroLoop pausedRoot={kenRef} />
-        <p className="hero-wordmark absolute top-[max(5.5rem,14%)] right-[6%] font-serif text-[clamp(3.4rem,16vw,13rem)] leading-none tracking-[0.08em] text-platinum/10 italic [@media(max-height:42rem)]:opacity-30">
+        <p className="hero-wordmark absolute top-[calc(var(--header-h)+1.25rem)] right-[clamp(1.25rem,5vw,5rem)] font-serif text-[clamp(2rem,5vw,3.25rem)] leading-none tracking-[0.12em] text-platinum/12 italic min-[90rem]:top-[16%] min-[90rem]:text-[clamp(5rem,11vw,10rem)] [@media(max-height:44rem)]:hidden">
           Caviar
         </p>
         <HeroSilverField />

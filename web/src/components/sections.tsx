@@ -29,7 +29,7 @@ import { renderWorkTile } from "@/components/work-tile";
 
 const PANEL =
   "h-full min-h-[17rem] overflow-visible rounded-[2px] bg-card py-0 ring-1 ring-border";
-const PANEL_HEAD = "flex flex-col gap-3 p-6 md:gap-4 md:p-8";
+const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
 
 const TEAM = [
   { mono: "MK", name: "Miroslav Kotvas" },
@@ -61,7 +61,7 @@ export function Hero() {
   return (
     <section className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
       <HeroBackdrop kenRef={kenRef} />
-      <div className="hero-stage relative z-[2] mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
+      <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
         <Kicker>{t.heroKicker}</Kicker>
         <h1
           className="mt-6 max-w-[22ch] font-serif text-[clamp(2.85rem,11vw,8.1rem)] leading-[1.08] font-normal tracking-[-0.035em] text-balance [&_em]:inline-block [&_em]:bg-linear-to-r [&_em]:from-steel [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:pb-[0.14em] [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
