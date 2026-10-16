@@ -161,7 +161,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Do leave a visible gap between every card/panel on mobile and desktop
 - Don't use gold, warm yellow, or champagne metals
 - Don't use Inter, purple/violet gradients, or uniformly large rounded corners (web-artifacts-builder anti-slop)
-- Don't invent testimonials, client counts, or results
+- Don't invent testimonials, client counts, limited slots, or guaranteed results (no “more bookings”, no “first 10” counters)
 - Don't show the words TODO or Placeholder anywhere in the UI
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
 - Do keep prices 49 / 69 / 190 / 349 EUR including VAT
@@ -174,7 +174,7 @@ Animate only what has a job: the first-load hero stagger (explanation), ken-burn
 
 ## Conversion
 
-One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof.
+One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero headline: “Váš podnik v najlepšom svetle.”
 
 ## SEO
 

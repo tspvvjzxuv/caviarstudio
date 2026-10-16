@@ -8,7 +8,7 @@
 **What it does:** Caviar is a small studio in Trnava that makes a one-page website, short vertical reels, and edited photos so a local business can be found, seen, and called. Work is delivered in days, not months. Files belong to the client after payment.
 **Product category:** Local creative studio / web + photo + video for small businesses
 **Product type:** Service (project packages)
-**Business model:** One-off packages, launch prices for the first 10 clients, all prices including VAT. Foto Mini 49 EUR, Video Reel 69 EUR, Web Jednostránka 190 EUR, Caviar Komplet 349 EUR.
+**Business model:** One-off packages, launch prices including VAT. Foto Mini 49 EUR, Video Reel 69 EUR, Web Jednostránka 190 EUR, Caviar Komplet 349 EUR.
 
 ## Target Audience
 **Target companies:** Restaurants, lodging, services, online shops, craftspeople, and small firms in Trnava and nearby.
@@ -43,7 +43,7 @@
 ## Differentiation
 **Key differentiators:**
 - One visual language across web, video, and photo
-- Launch prices for the first 10 clients
+- Launch prices (úvodná cena), all including VAT
 - Quote within 24 hours; web in 5–7 days; photo/video 3–5 days after the shoot
 - Two revision rounds in every package; files belong to the client after payment
 **How we do it differently:** One studio, one look, Trnava and nearby, no invented case studies.
@@ -71,23 +71,23 @@
 **How they describe us:**
 - (none on file)
 **Words to use:** weby, videá, fotky, rezervácie, zavolať, Trnava a okolie, úvodná cena, s DPH
-**Words to avoid:** gold, luxury-for-luxury's-sake, testimonials we do not have, made-up metrics
+**Words to avoid:** gold, luxury-for-luxury's-sake, testimonials we do not have, made-up metrics, guaranteed bookings, first-10 slot counters
 **Glossary:**
 | Term | Meaning |
 |------|---------|
 | Caviar Komplet | One-page web + 2 reels + 20 photos |
-| Úvodná cena | Launch price for the first 10 clients |
+| Úvodná cena | Launch price |
 
 ## Brand Voice
 | Attribute | Means | Doesn't mean | Example line |
 |-----------|-------|--------------|--------------|
-| Direct | Short sentences, concrete offer | Clever slogans | Viac rezervácií. Jeden vizuál. |
+| Direct | Short sentences, concrete offer | Promised results we cannot guarantee | Váš podnik v najlepšom svetle. |
 | Local | Trnava and nearby, spoken Slovak | Invented street folklore | Trnava a okolie |
 | Calm | Gallery quiet, silver on black | Gold, neon, hype | Napíšte. Ozveme sa do 24 hodín. |
 
 **Tone by context:**
 - Support: plain how-to after handover
-- Launch: first-10 prices, no fake urgency beyond that fact
+- Launch: launch prices, no fake urgency or slot counters
 - Errors: say what failed and what to do
 - Sales: quote in 24 hours, packages with VAT
 - Social: same voice as the site; do not invent a different persona
@@ -102,11 +102,11 @@
 | Theme | Proof |
 |-------|-------|
 | Speed | Quote in 24 hours; web 5–7 days; photo/video 3–5 days after shoot |
-| Price | 49 / 69 / 190 / 349 EUR s DPH for the first 10 |
+| Price | 49 / 69 / 190 / 349 EUR s DPH |
 | Ownership | Files belong to the client after payment |
 
 ## Goals
-**Business goal:** Book the first 10 launch clients.
+**Business goal:** Get quote requests. Do not promise more bookings or invent limited slots.
 **Conversion action:** Request a quote (form / mailto / phone / WhatsApp).
 **Current metrics:** unknown; do not invent.
 

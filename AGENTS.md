@@ -22,7 +22,7 @@ Spend boldness on the hero still and the platinum Komplet card. Do not add numbe
 
 ## Conversion
 
-Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Do not invent testimonials, client counts, or results.
+Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Do not invent testimonials, client counts, limited slots, or guaranteed results. Headline is “Váš podnik v najlepšom svetle.” / “Your business in its best light.” / “Ihr Unternehmen im besten Licht.”
 
 ## SEO
 
