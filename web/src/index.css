@@ -95,7 +95,7 @@
   }
   @keyframes cue {
     0% { transform: translateX(-50%) translateY(0); opacity: 1; }
-    100% { transform: translateX(-50%) translateY(42px); opacity: 0; }
+    100% { transform: translateX(-50%) translateY(36px); opacity: 0; }
   }
   @keyframes ticker {
     from { transform: translateX(0); }
@@ -144,6 +144,7 @@
   --metal: linear-gradient(180deg, #f7f8fa 0%, #c8ced6 48%, #9aa3ae 100%);
   --metal-hover: linear-gradient(180deg, #ffffff 0%, #dce0e6 48%, #b4bcc6 100%);
   --hair: linear-gradient(90deg, transparent, #9aa3ae 18%, #e8eaee 50%, #9aa3ae 82%, transparent);
+  --header-h: calc(4.75rem + env(safe-area-inset-top, 0px));
 }
 
 @layer base {
@@ -173,7 +174,8 @@
   html {
     scroll-behavior: auto;
   }
-  .hero-silver {
+  .hero-silver,
+  .hero-loop {
     display: none;
   }
   .js .reveal {
@@ -225,17 +227,36 @@
 
 .hero-field {
   background:
-    radial-gradient(ellipse 80% 55% at 18% 14%, rgb(232 234 238 / 22%), transparent 58%),
-    radial-gradient(circle at 72% 36%, rgb(197 202 211 / 12%), transparent 42%),
-    linear-gradient(160deg, #1a1c22, #070708 62%);
+    radial-gradient(ellipse 100% 72% at 10% -8%, rgb(244 245 247 / 34%), transparent 46%),
+    radial-gradient(ellipse 58% 48% at 86% 16%, rgb(232 234 238 / 20%), transparent 52%),
+    radial-gradient(ellipse 70% 42% at 46% 108%, rgb(197 202 211 / 16%), transparent 58%),
+    radial-gradient(circle at 62% 40%, rgb(154 163 174 / 11%), transparent 36%),
+    linear-gradient(168deg, #1d1f26 0%, #121318 34%, #0a0a0c 62%, #070708 100%);
 }
 
 .hero-shine {
   background:
-    radial-gradient(ellipse 70% 50% at 18% 12%, rgb(232 234 238 / 16%), transparent 58%),
-    linear-gradient(115deg, transparent 36%, rgb(197 202 211 / 10%) 50%, transparent 64%);
-  background-size: 100% 100%, 220% 100%;
+    radial-gradient(ellipse 85% 58% at 14% 6%, rgb(244 245 247 / 24%), transparent 56%),
+    linear-gradient(118deg, transparent 36%, rgb(232 234 238 / 18%) 50%, transparent 64%);
+  background-size: 100% 100%, 240% 100%;
   mix-blend-mode: screen;
+}
+
+.hero-grain {
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+.hero-depth {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 40%, transparent 35%, rgb(7 7 8 / 42%) 100%),
+    linear-gradient(180deg, rgb(7 7 8 / 22%) 0%, transparent 28%, transparent 48%, #070708 100%),
+    linear-gradient(90deg, rgb(7 7 8 / 55%) 0%, transparent 42%);
+}
+
+.hero-loop {
+  opacity: 0.86;
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-shine {
@@ -278,7 +299,7 @@
 
 .js .reveal {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(16px);
 }
 .js .reveal.in {
   opacity: 1;

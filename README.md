@@ -42,7 +42,7 @@ npm run build:pages
 - Prices: 49 / 69 / 190 / 349 EUR including VAT (always s DPH)
 - Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
 - Palette: near-black `#070708`, silver/platinum only — **no gold**
-- No stock photos and no assistant-chosen portraits. Hero is a silver field + shader. Team uses monograms.
+- No stock photos and no assistant-chosen portraits. Hero is a silver/platinum field + shader (optional muted loop: `media/hero-loop.webm` / `.mp4`). Team uses monograms.
 
 ## Work / photos
 

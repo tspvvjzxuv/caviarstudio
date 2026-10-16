@@ -17,7 +17,7 @@ typography:
     fontFamily: Cormorant Garamond
     fontSize: 88px
     fontWeight: 400
-    lineHeight: 0.9
+    lineHeight: 1.08
     letterSpacing: -0.03em
   headline-lg:
     fontFamily: Cormorant Garamond
@@ -136,7 +136,7 @@ The “Čo robíme” block sits immediately under the hero: a real display `h2`
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a silver gradient field, a moving sheen, a lazy Three.js silver/pearl shader overlay on capable desktops, and a bottom fade into black. No stock or assistant-chosen photographs.
+Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a platinum/silver field on near-black: layered cool blooms, a moving light sweep, subtle grain, a vignette, a lazy Three.js silver/pearl shader on capable desktops, and a bottom fade into black. Drop an abstract loop at `media/hero-loop.webm` (and/or `.mp4`) to play muted behind that field; poster is `img/og.png`. Skip the loop on `prefers-reduced-motion`, Save-Data, and 2G; lazy-mount it. No gold, no stock photographs. Cards and hero type use open overflow and 1.08–1.15 display leading so serif italic never clips the frame.
 
 ## Shapes
 

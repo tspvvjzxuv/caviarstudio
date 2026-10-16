@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { Kicker, Reveal } from "@/components/reveal";
 import { cn } from "@/lib/utils";
 
-const frameVariants = cva("scroll-mt-[calc(5rem+env(safe-area-inset-top,0px))]", {
+const frameVariants = cva("scroll-mt-[calc(var(--header-h)+0.75rem)]", {
   variants: {
     density: {
       default: "py-[clamp(4.5rem,11vw,8.25rem)]",
@@ -62,7 +62,7 @@ function Heading({
   return (
     <Reveal className={cn("grid gap-4", className)}>
       <Kicker>{kicker}</Kicker>
-      <h2 className="text-balance font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.04] tracking-[-0.025em]">{title}</h2>
+      <h2 className="text-balance font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.08] tracking-[-0.025em]">{title}</h2>
       {children}
     </Reveal>
   );

@@ -10,12 +10,12 @@ Static Vite + React + Tailwind v4 + shadcn/ui in `web/`, deployed as GitHub Page
 
 Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum only. **No gold, champagne, amber, or warm yellow.** Two type families: Cormorant Garamond (display) and DM Sans (body/UI). Sharp 0–2px corners. Panels never touch.
 
-Spend boldness on the hero still and the platinum Komplet card. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps may stay numbered because they are a sequence.
+Spend boldness on the silver/platinum hero field (optional muted `media/hero-loop` video) and the platinum Komplet card. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps may stay numbered because they are a sequence.
 
 ## Motion that earns its place
 
 - One orchestrated hero stagger after the intro veil (first-time / explanation).
-- Ken-burns on the silver hero field, sheen, and lazy Three.js pearl shader on capable desktops only. No stock photos.
+- Ken-burns on the silver hero field, sheen, optional muted looping backdrop (`media/hero-loop.webm` / `.mp4`, poster `img/og.png`), and lazy Three.js pearl shader on capable desktops only. Skip the loop on reduced motion, Save-Data, and slow 2G. No stock photos. Do not clip display type or card copy.
 - Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only.
 - Scroll reveals: fade in once. Do not add hover motion on every card.
 - Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, and marquee when off-screen.
