@@ -15,14 +15,14 @@ Spend boldness on the hero still and the platinum Komplet card. Do not add numbe
 ## Motion that earns its place
 
 - One orchestrated hero stagger after the intro veil (first-time / explanation).
-- Ken-burns, silver sheen, and lazy Three.js pearl shader on capable desktops only.
+- Ken-burns on the silver hero field, sheen, and lazy Three.js pearl shader on capable desktops only. No stock photos.
 - Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only.
 - Scroll reveals: fade in once. Do not add hover motion on every card.
 - Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, and marquee when off-screen.
 
 ## Conversion
 
-Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Do not invent testimonials, client counts, or results.
+Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Headline is “Váš podnik v najlepšom svetle.” Work stays hidden until the owner adds photos to `WORK`.
 
 ## SEO
 

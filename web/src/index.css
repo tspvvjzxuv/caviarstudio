@@ -223,6 +223,13 @@
   transform: scale(0.97);
 }
 
+.hero-field {
+  background:
+    radial-gradient(ellipse 80% 55% at 18% 14%, rgb(232 234 238 / 22%), transparent 58%),
+    radial-gradient(circle at 72% 36%, rgb(197 202 211 / 12%), transparent 42%),
+    linear-gradient(160deg, #1a1c22, #070708 62%);
+}
+
 .hero-shine {
   background:
     radial-gradient(ellipse 70% 50% at 18% 12%, rgb(232 234 238 / 16%), transparent 58%),
@@ -234,7 +241,7 @@
   .hero-shine {
     animation: var(--animate-sheen);
   }
-  .hero-ken img {
+  .hero-ken .hero-field {
     animation: var(--animate-ken);
   }
   .intro-veil {
@@ -253,7 +260,7 @@
   .silver-sheen::after {
     animation: var(--animate-tile-sheen);
   }
-  .hero-ken.is-paused img,
+  .hero-ken.is-paused .hero-field,
   .hero-ken.is-paused .hero-shine,
   .work-sec.is-paused .silver-sheen::after,
   .work-sec.is-paused .marquee-track {
@@ -297,7 +304,6 @@
   .hero-stage > *:nth-child(2) { animation-delay: 1.68s; }
   .hero-stage > *:nth-child(3) { animation-delay: 1.81s; }
   .hero-stage > *:nth-child(4) { animation-delay: 1.94s; }
-  .hero-stage > *:nth-child(5) { animation-delay: 2.07s; }
   .hero-cue {
     animation: stage-up 0.9s var(--ease-out-expo) 2.2s both;
   }

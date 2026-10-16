@@ -19,6 +19,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { isLang, LANGS, type Lang } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
+import { SHOW_WORK } from "@/lib/work";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -68,6 +69,7 @@ export function SiteHeader() {
   const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const nav = NAV.filter((item) => item.href !== "#praca" || SHOW_WORK);
 
   useEffect(() => {
     let ticking = false;
@@ -98,7 +100,7 @@ export function SiteHeader() {
 
       <NavigationMenu viewport={false} className="hidden max-w-none flex-1 md:flex" aria-label={t.navLabel}>
         <NavigationMenuList className="gap-1">
-          {NAV.map((item) => (
+          {nav.map((item) => (
             <NavigationMenuItem key={item.href}>
               <NavigationMenuLink
                 href={item.href}
@@ -141,7 +143,7 @@ export function SiteHeader() {
               <SheetTitle className="font-serif text-sm tracking-[0.38em] uppercase">Caviar</SheetTitle>
             </SheetHeader>
             <nav className="mt-8 flex flex-col gap-1" aria-label={t.navLabel}>
-              {NAV.map((item) => (
+              {nav.map((item) => (
                 <SheetClose asChild key={item.href}>
                   <a
                     href={item.href}

@@ -128,7 +128,7 @@ Language changes use React `<ViewTransition>` (fade) triggered with `startTransi
 
 `frontend-slides` (zarazhangrui) is for presentation-style beats on this site, not a 16:9 HTML deck: one orchestrated hero stagger after the intro veil, speaker-led process steps (one idea each), silver grid atmosphere, hairline chrome, expo easing, `prefers-reduced-motion`. Do not copy its yellow/gold Studio templates or reflow the marketing page as a fixed 1920×1080 stage.
 
-Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. Three.js is a lazy silver/pearl hero shader on desktop (static still fallback on mobile, coarse pointer, Save-Data, and `prefers-reduced-motion`). WordPress, Expo, and Remotion skills stay installed but unused: this is not WordPress, and a CSS ken-burns still is lighter than a Remotion runtime.
+Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. Three.js is a lazy silver/pearl hero shader on desktop (CSS silver-field fallback on mobile, coarse pointer, Save-Data, and `prefers-reduced-motion`). WordPress, Expo, and Remotion skills stay installed but unused: this is not WordPress, and a CSS silver field is lighter than a Remotion runtime.
 
 Source: `web/` (Vite + React). GitHub Pages still needs a static output: commit the built `index.html` + `assets/` at the repo root **and** use `.github/workflows/pages.yml`. Do not rely on GitHub Pages to run `npm` unless Pages source is **GitHub Actions**.
 
@@ -136,7 +136,7 @@ The “Čo robíme” block sits immediately under the hero: a real display `h2`
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a slow ken-burns still, a moving silver sheen, a lazy Three.js silver/pearl shader overlay on capable desktops, and a bottom fade into black.
+Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a silver gradient field, a moving sheen, a lazy Three.js silver/pearl shader overlay on capable desktops, and a bottom fade into black. No stock or assistant-chosen photographs.
 
 ## Shapes
 
@@ -149,7 +149,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - **Pricing cards:** Shared launch-price badge. Caviar Komplet is visually louder: platinum frame, elevated ground, wider measure. Same gap as other panel grids.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
-- **Work tiles:** Dark silver art-directed fields or grayscale stills. Captions are quiet style words. Never “TODO” or “Placeholder”.
+- **Work tiles:** Hidden until the owner adds stills to `WORK`. Then: owner photos or a silver fallback if a file is missing. Never “TODO”, “Placeholder”, or “Čoskoro” filler tiles.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
 - **Header / footer:** Sticky blurred navbar with safe-area padding; footer is a hairline bar with stacked contacts (no middle-dot meta string). Study shadcn navbar/footer block rhythm, keep Caviar type.
 
@@ -161,7 +161,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Do leave a visible gap between every card/panel on mobile and desktop
 - Don't use gold, warm yellow, or champagne metals
 - Don't use Inter, purple/violet gradients, or uniformly large rounded corners (web-artifacts-builder anti-slop)
-- Don't invent testimonials, client counts, or results
+- Don't invent testimonials, client counts, limited slots, or guaranteed results (no “more bookings”, no “first 10” counters)
 - Don't show the words TODO or Placeholder anywhere in the UI
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
 - Do keep prices 49 / 69 / 190 / 349 EUR including VAT
@@ -174,7 +174,7 @@ Animate only what has a job: the first-load hero stagger (explanation), ken-burn
 
 ## Conversion
 
-One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof.
+One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero headline: “Váš podnik v najlepšom svetle.”
 
 ## SEO
 

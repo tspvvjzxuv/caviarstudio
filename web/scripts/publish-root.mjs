@@ -26,6 +26,11 @@ for (const name of readdirSync(dist)) {
   cpSync(from, to, { recursive: true });
 }
 
-mkdirSync(resolve(root, "img"), { recursive: true });
-mkdirSync(resolve(root, "media"), { recursive: true });
+for (const folder of ["img", "media"]) {
+  const dest = resolve(root, folder);
+  rmSync(dest, { recursive: true, force: true });
+  const src = resolve(dist, folder);
+  if (existsSync(src)) cpSync(src, dest, { recursive: true });
+  else mkdirSync(dest, { recursive: true });
+}
 console.log("published dist to repo root (GitHub Pages branch fallback)");

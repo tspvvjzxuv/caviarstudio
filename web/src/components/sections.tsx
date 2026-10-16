@@ -56,28 +56,20 @@ export function Hero() {
   usePauseOffscreen(kenRef);
   return (
     <section className="relative flex min-h-[100dvh] flex-col justify-end overflow-hidden pt-16" id="top">
-      <div ref={kenRef} className="hero-ken absolute inset-0">
-        <picture>
-          <source srcSet="./img/hero.webp" type="image/webp" />
-          <img
-            src="./img/hero.jpg"
-            alt={t.heroAlt}
-            fetchPriority="high"
-            width={1920}
-            height={1080}
-            sizes="100vw"
-            className="size-full object-cover grayscale-[0.15] contrast-[1.05] brightness-[0.78]"
-          />
-        </picture>
+      <div ref={kenRef} className="hero-ken absolute inset-0" aria-hidden="true">
+        <div className="hero-field absolute inset-0" />
+        <p className="pointer-events-none absolute top-[18%] right-[8%] font-serif text-[clamp(4rem,18vw,14rem)] leading-none tracking-[0.08em] text-platinum/8 italic">
+          Caviar
+        </p>
         <HeroSilverField />
-        <div className="hero-shine absolute inset-0 z-[1]" aria-hidden="true" />
-        <div className="absolute inset-0 bg-linear-to-b from-[#070708]/42 via-[#070708]/12 via-34% to-[#070708]" />
-        <div className="absolute inset-0 bg-linear-to-r from-[#070708]/58 to-transparent to-58%" />
+        <div className="hero-shine absolute inset-0 z-[1]" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#070708]/28 via-[#070708]/8 via-34% to-[#070708]" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#070708]/48 to-transparent to-58%" />
       </div>
       <div className="hero-stage relative z-[2] mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pb-[clamp(4.5rem,10vw,6.75rem)]">
         <Kicker>{t.heroKicker}</Kicker>
         <h1
-          className="mt-6 max-w-[12ch] font-serif text-[clamp(2.85rem,11vw,8.1rem)] leading-[0.9] font-normal tracking-[-0.035em] text-balance [&_em]:bg-linear-to-r [&_em]:from-steel [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
+          className="mt-6 max-w-[22ch] font-serif text-[clamp(2.85rem,11vw,8.1rem)] leading-[0.9] font-normal tracking-[-0.035em] text-balance [&_em]:bg-linear-to-r [&_em]:from-steel [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
           dangerouslySetInnerHTML={{ __html: t.heroTitle }}
         />
         <p className="mt-7 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.45] text-pretty">{t.heroExplain}</p>
@@ -89,7 +81,6 @@ export function Hero() {
             <a href="#cennik">{t.ctaPricing}</a>
           </Button>
         </div>
-        <p className="mt-5 max-w-[42ch] text-[0.72rem] tracking-[0.12em] text-silver uppercase">{t.heroTrust}</p>
       </div>
       <a
         href="#sluzby"
@@ -224,15 +215,11 @@ function FeaturedPriceCard({ pack, delay, vat }: { pack: typeof FEATURED_PACK; d
 
 export function Pricing() {
   const { t } = useLanguage();
-  const vat = CAVIAR.VAT_PAYER ? t.vatTag : t.vatTagEx;
+  const vat = t.vatTag;
   return (
     <Section.Frame id="cennik">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.priceKicker} title={t.priceTitle}>
-          <p className="text-[0.72rem] tracking-[0.14em] text-silver uppercase">
-            {t.slots.replace("{x}", String(CAVIAR.SLOTS_REMAINING)).replace("{total}", String(CAVIAR.SLOTS_TOTAL))}
-          </p>
-        </Section.Heading>
+        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.priceKicker} title={t.priceTitle} />
         <div className="grid gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
           {LAUNCH_PACKS.map((pack, idx) => (
             <LaunchPriceCard key={pack.key} pack={pack} delay={idx} vat={vat} />
@@ -240,9 +227,8 @@ export function Pricing() {
           <FeaturedPriceCard pack={FEATURED_PACK} delay={LAUNCH_PACKS.length} vat={vat} />
         </div>
         <Reveal className="mt-7 grid gap-2 text-[0.88rem] text-muted-foreground">
-          <p>{t.priceIntro}</p>
           <p>{t.noHidden}</p>
-          <p>{CAVIAR.VAT_PAYER ? t.vatYes : t.vatNo}</p>
+          <p>{t.vatYes}</p>
         </Reveal>
         <Reveal className="mt-8">
           <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">

@@ -15,86 +15,29 @@ export type WorkItem = {
   silver: "a" | "b" | "c";
 };
 
-export const WORK: WorkItem[] = [
-  {
-    id: "editorial",
-    kind: "image",
-    layout: "feature",
-    image: "./media/editorial.webp",
-    video: "",
-    href: "",
-    titleKey: "wEditorialTitle",
-    lineKey: "wEditorialLine",
-    tags: ["tagFoto"],
-    altKey: "w1alt",
-    silver: "a",
-  },
-  {
-    id: "metal",
-    kind: "image",
-    layout: "pair",
-    image: "./media/metal.webp",
-    video: "",
-    href: "",
-    titleKey: "wMetalTitle",
-    lineKey: "wMetalLine",
-    tags: ["tagFoto"],
-    altKey: "w2alt",
-    silver: "c",
-  },
-  {
-    id: "soon",
-    kind: "silver",
-    layout: "pair",
-    image: "",
-    video: "",
-    href: "",
-    titleKey: "wSoonTitle",
-    lineKey: "wSoonLine",
-    tags: ["tagSoon"],
-    altKey: "soonAria",
-    silver: "a",
-  },
-  {
-    id: "motion",
-    kind: "image",
-    layout: "feature",
-    image: "./media/motion.webp",
-    video: "",
-    href: "",
-    titleKey: "wLightTitle",
-    lineKey: "wLightLine",
-    tags: ["tagVideo"],
-    altKey: "w4alt",
-    silver: "b",
-  },
-  {
-    id: "everlight",
-    kind: "image",
-    layout: "pair",
-    image: "./media/everlight.webp",
-    video: "",
-    href: "https://thedesigns.org/foto/",
-    titleKey: "wEverTitle",
-    lineKey: "wEverLine",
-    tags: ["tagFoto", "tagVideo"],
-    altKey: "w5alt",
-    silver: "c",
-  },
-  {
-    id: "folio",
-    kind: "silver",
-    layout: "pair",
-    image: "",
-    video: "",
-    href: "",
-    titleKey: "wFolioTitle",
-    lineKey: "wFolioLine",
-    tags: ["tagSoon"],
-    altKey: "soonAria",
-    silver: "b",
-  },
-];
+/**
+ * Owner photos only. Leave empty to hide the Work section and its nav link.
+ * How to add stills: see README.md (“Work / photos”).
+ *
+ * Example once a real file exists in media/:
+ * {
+ *   id: "everlight",
+ *   kind: "image",
+ *   layout: "feature",
+ *   image: "./media/everlight.webp",
+ *   video: "",
+ *   href: "https://thedesigns.org/foto/",
+ *   titleKey: "wEverTitle",
+ *   lineKey: "wEverLine",
+ *   tags: ["tagFoto", "tagVideo"],
+ *   altKey: "w5alt",
+ *   silver: "c",
+ * }
+ */
+export const WORK: WorkItem[] = [];
+
+/** True when there is at least one owner still to show. */
+export const SHOW_WORK = WORK.length > 0;
 
 export const WORK_INDEX = new Map(WORK.map((item, index) => [item.id, index]));
 

@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,6 +12,8 @@ for (const file of files) {
   cpSync(resolve(root, file), resolve(pub, file));
 }
 writeFileSync(resolve(pub, ".nojekyll"), "");
-cpSync(resolve(root, "img"), resolve(pub, "img"), { recursive: true });
-cpSync(resolve(root, "media"), resolve(pub, "media"), { recursive: true });
+for (const folder of ["img", "media"]) {
+  rmSync(resolve(pub, folder), { recursive: true, force: true });
+  cpSync(resolve(root, folder), resolve(pub, folder), { recursive: true });
+}
 console.log("synced public assets");
