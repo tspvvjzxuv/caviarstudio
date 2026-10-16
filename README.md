@@ -42,7 +42,7 @@ npm run build:pages
 - Prices: 49 / 69 / 190 / 349 EUR including VAT (always s DPH)
 - Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
 - Palette: near-black `#070708`, silver/platinum only — **no gold**
-- No stock photos and no assistant-chosen portraits. Hero is a silver/platinum field + shader (optional muted loop: `media/hero-loop.webm` / `.mp4`). Team uses monograms.
+- No stock photos and no assistant-chosen portraits. Hero is a muted liquid-chrome loop (`media/hero/`) over a silver field. Team uses monograms.
 
 ## Work / photos
 
@@ -54,3 +54,7 @@ The Work section and its nav link stay **hidden** until you add your own stills 
 4. Rebuild: `cd web && npm run build:pages`.
 
 Do not drop in stock photos or “coming soon” silver tiles. If a file is missing, `kind: "silver"` is only a fallback for a broken owner still, not a placeholder grid.
+
+## Credits
+
+Hero background loop: [Pexels video 29848606](https://www.pexels.com/video/29848606/) (liquid chrome). Pexels license allows free commercial use; attribution is not required.

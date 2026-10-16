@@ -2,12 +2,15 @@
 
 ## Hero loop
 
-Optional abstract silver/platinum video (no gold, no photos). Drop files here when ready:
+Liquid-chrome backdrop in `media/hero/`:
 
-- `media/hero-loop.webm`
-- `media/hero-loop.mp4` (fallback)
+- `liquid-chrome.webm` (VP9)
+- `liquid-chrome.mp4` (H.264 fallback)
+- `liquid-chrome.jpg` (poster / reduced-motion still)
 
-The hero already looks for those paths, uses `img/og.png` as poster, lazy-loads, and stays on the CSS field if the files are missing, if `prefers-reduced-motion` is on, or if Save-Data / 2G is set. Rebuild with `cd web && npm run build:pages` after adding files.
+Source: [Pexels 29848606](https://www.pexels.com/video/29848606/). Pexels license: free commercial use, no attribution required.
+
+The hero plays it muted, looping, full-bleed. It stays on the poster if `prefers-reduced-motion` is on, or if Save-Data / 2G is set.
 
 ## Work stills
 

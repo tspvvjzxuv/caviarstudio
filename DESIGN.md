@@ -136,7 +136,7 @@ The “Čo robíme” block sits immediately under the hero: a real display `h2`
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a platinum/silver field on near-black: layered cool blooms, a moving light sweep, subtle grain, a vignette, a lazy Three.js silver/pearl shader on capable desktops, and a bottom fade into black. Drop an abstract loop at `media/hero-loop.webm` (and/or `.mp4`) to play muted behind that field; poster is `img/og.png`. Skip the loop on `prefers-reduced-motion`, Save-Data, and 2G; lazy-mount it. No gold, no stock photographs. Cards and hero type use open overflow and 1.08–1.15 display leading so serif italic never clips the frame.
+Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a muted liquid-chrome loop (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`) on near-black, with grain, a light sweep, a vignette, and a dark gradient so the headline stays readable. Skip the loop on `prefers-reduced-motion` (poster only), Save-Data, and 2G; pause it off-screen. The CSS silver field and lazy Three.js shader remain the fallback. No gold. Cards and hero type use open overflow and 1.08–1.15 display leading so serif italic never clips the frame.
 
 ## Shapes
 
