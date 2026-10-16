@@ -22,7 +22,7 @@ Spend boldness on the liquid-chrome hero loop (`media/hero/`) and the platinum K
 
 ## Conversion
 
-Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Headline is “Váš podnik v najlepšom svetle.” Work stays hidden until the owner adds photos to `WORK`.
+Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Headline is “Váš podnik v najlepšom svetle.” Work stays visible: empty `WORK` shows an invite line plus quote CTA (no empty tiles); owner stills in `media/` plus one object in `web/src/lib/work.ts` become Attic Salt–style tiles.
 
 ## SEO
 

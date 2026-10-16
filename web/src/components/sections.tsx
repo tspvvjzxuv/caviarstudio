@@ -21,11 +21,11 @@ import {
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { useLanguage } from "@/lib/language";
-import { WORK_ROWS } from "@/lib/work";
+import { HAS_WORK, WORK_ROWS } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
-import { renderWorkTile } from "@/components/work-tile";
+import { WorkTile } from "@/components/work-tile";
 
 const PANEL =
   "h-full min-h-[17rem] overflow-visible rounded-[2px] bg-card py-0 ring-1 ring-border";
@@ -274,6 +274,15 @@ export function Process() {
   );
 }
 
+function pauseTileVideo(video: HTMLVideoElement) {
+  video.pause();
+  try {
+    video.currentTime = 0;
+  } catch {
+    /* ignore */
+  }
+}
+
 export function Work() {
   const { t } = useLanguage();
   const stage = useRef<HTMLDivElement>(null);
@@ -281,9 +290,42 @@ export function Work() {
   usePauseOffscreen(sectionRef);
 
   useEffect(() => {
+    const root = stage.current;
+    if (!root) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const projects = () => root.querySelectorAll<HTMLElement>(".project");
+
+    const flushIn = (el: HTMLElement) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > 24 && r.top < window.innerHeight - 24) el.classList.add("in");
+    };
+    if (!reduce && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in");
+              io.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -6% 0px" },
+      );
+      projects().forEach((el) => {
+        io.observe(el);
+        flushIn(el);
+      });
+      return () => io.disconnect();
+    }
+    projects().forEach((el) => el.classList.add("in"));
+  }, []);
+
+  useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
     const root = stage.current;
+    const section = sectionRef.current;
     if (!root) return;
     let scrolling = false;
     const paint = () => {
@@ -323,59 +365,107 @@ export function Work() {
       p.style.setProperty("--mx", `${(((e.clientX - r.left) / width - 0.5) * 18).toFixed(1)}px`);
       p.style.setProperty("--my", `${(((e.clientY - r.top) / height - 0.5) * 12).toFixed(1)}px`);
     };
-    const onLeave = (e: PointerEvent) => {
+    const onLeaveParallax = (e: PointerEvent) => {
       const p = (e.target as HTMLElement | null)?.closest(".project") as HTMLElement | null;
       if (!p) return;
       p.style.setProperty("--mx", "0px");
       p.style.setProperty("--my", "0px");
     };
+    const projectFrom = (node: EventTarget | null) =>
+      node instanceof Element ? (node.closest(".project") as HTMLElement | null) : null;
+    const onEnterFilm = (e: PointerEvent) => {
+      const p = projectFrom(e.target);
+      if (!p || p === projectFrom(e.relatedTarget)) return;
+      p.classList.add("is-playing");
+      const vid = p.querySelector("video");
+      if (vid) void vid.play().catch(() => {});
+    };
+    const onLeaveFilm = (e: PointerEvent) => {
+      const p = projectFrom(e.target);
+      if (!p || p === projectFrom(e.relatedTarget)) return;
+      p.classList.remove("is-playing");
+      if (!p.querySelector(".project-media img")) return;
+      const vid = p.querySelector("video");
+      if (vid) pauseTileVideo(vid);
+    };
+    const pauseAll = () => {
+      root.querySelectorAll("video").forEach((vid) => {
+        pauseTileVideo(vid);
+        vid.closest(".project")?.classList.remove("is-playing");
+      });
+    };
+    const onVis = () => {
+      if (document.hidden || section?.classList.contains("is-paused")) pauseAll();
+    };
+
     if (fine) {
       root.addEventListener("pointermove", onMove, { passive: true });
-      root.addEventListener("pointerleave", onLeave, { passive: true });
+      root.addEventListener("pointerleave", onLeaveParallax, { passive: true });
+      root.addEventListener("pointerenter", onEnterFilm, { passive: true, capture: true });
+      root.addEventListener("pointerleave", onLeaveFilm, { passive: true, capture: true });
     }
+    document.addEventListener("visibilitychange", onVis);
+    const mo = section
+      ? new MutationObserver(onVis)
+      : null;
+    if (section && mo) mo.observe(section, { attributes: true, attributeFilter: ["class"] });
+
     return () => {
       window.removeEventListener("scroll", onScroll);
       root.removeEventListener("pointermove", onMove);
-      root.removeEventListener("pointerleave", onLeave);
+      root.removeEventListener("pointerleave", onLeaveParallax);
+      root.removeEventListener("pointerenter", onEnterFilm, true);
+      root.removeEventListener("pointerleave", onLeaveFilm, true);
+      document.removeEventListener("visibilitychange", onVis);
+      mo?.disconnect();
     };
   }, []);
 
   return (
     <Section.Frame id="praca" className="work-sec" ref={sectionRef}>
-      <Section.Body className="mb-10 md:mb-16">
+      <Section.Body className={HAS_WORK ? "mb-10 md:mb-16" : ""}>
         <Section.Heading className="max-w-[38ch]" kicker={t.workKicker} title={t.workTitle}>
-          <p className="text-[1.02rem] text-muted-foreground">{t.workLead}</p>
+          {HAS_WORK ? (
+            <p className="text-[1.02rem] text-muted-foreground">{t.workLead}</p>
+          ) : (
+            <>
+              <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.workEmpty}</p>
+              <div className="mt-6">
+                <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+                  <a href="#kontakt">{t.ctaQuote}</a>
+                </Button>
+              </div>
+            </>
+          )}
         </Section.Heading>
       </Section.Body>
-      <div className="marquee overflow-hidden border-y border-border py-4" aria-hidden="true">
-        <div className="marquee-track flex w-max gap-8 text-[0.72rem] tracking-[0.28em] text-silver uppercase">
-          <span>{t.marquee}</span>
-          <span>{t.marquee}</span>
-          <span>{t.marquee}</span>
-          <span>{t.marquee}</span>
-        </div>
-      </div>
-      <Section.Wide className="mt-8">
-        <div ref={stage} className="grid gap-4 md:gap-6 xl:gap-8">
-          {WORK_ROWS.map((row) =>
-            row.length === 2 ? (
-              <div key={row[0].id} className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
-                {row.map(renderWorkTile)}
-              </div>
-            ) : (
-              renderWorkTile(row[0])
-            ),
-          )}
-        </div>
-      </Section.Wide>
-      <Section.Body className="mt-7">
-        <a
-          href={CAVIAR.EVERLIGHT}
-          className="inline-flex items-center pb-1.5 text-[0.78rem] tracking-[0.14em] text-silver uppercase hover:text-foreground"
-        >
-          {t.everLink}
-        </a>
-      </Section.Body>
+      {HAS_WORK ? (
+        <>
+          <div className="marquee overflow-hidden border-y border-border py-4" aria-hidden="true">
+            <div className="marquee-track flex w-max gap-8 text-[0.72rem] tracking-[0.28em] text-silver uppercase">
+              <span>{t.marquee}</span>
+              <span>{t.marquee}</span>
+              <span>{t.marquee}</span>
+              <span>{t.marquee}</span>
+            </div>
+          </div>
+          <Section.Wide className="mt-8">
+            <div ref={stage} className="grid gap-4 md:gap-6 xl:gap-8">
+              {WORK_ROWS.map((row) =>
+                row.length === 2 ? (
+                  <div key={row[0].id} className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
+                    {row.map((item) => (
+                      <WorkTile key={item.id} item={item} />
+                    ))}
+                  </div>
+                ) : (
+                  <WorkTile key={row[0].id} item={row[0]} />
+                ),
+              )}
+            </div>
+          </Section.Wide>
+        </>
+      ) : null}
     </Section.Frame>
   );
 }

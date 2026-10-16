@@ -149,7 +149,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - **Pricing cards:** Shared launch-price badge. Caviar Komplet is visually louder: platinum frame, elevated ground, wider measure. Same gap as other panel grids.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
-- **Work tiles:** Hidden until the owner adds stills to `WORK`. Then: owner photos or a silver fallback if a file is missing. Never “TODO”, “Placeholder”, or “Čoskoro” filler tiles.
+- **Work tiles:** Section and nav stay visible. Empty `WORK` is one invite line plus a quote CTA — no empty tiles, no “Čoskoro” grid. Each owner item in `web/src/lib/work.ts` (image or video, title, category, optional link) becomes a large Attic Salt–style tile (hover parallax, scroll shift, hover film, custom cursor). Silver fallback only if that file is missing. Never “TODO”, “Placeholder”, or filler tiles.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
 - **Header / footer:** Sticky blurred navbar with safe-area padding; footer is a hairline bar with stacked contacts (no middle-dot meta string). Study shadcn navbar/footer block rhythm, keep Caviar type.
 

@@ -295,6 +295,10 @@
     .project:hover .project-media {
       --zs: 1.14;
     }
+    .project:hover .project-media img,
+    .project:hover .project-media video {
+      filter: grayscale(0.08) contrast(1.08) brightness(0.96);
+    }
   }
 }
 
@@ -335,6 +339,14 @@
   .hero-cue {
     opacity: 1;
   }
+  .project-media img,
+  .project-media video {
+    transform: none;
+    will-change: auto;
+  }
+  .cursor-root {
+    display: none;
+  }
 }
 
 .slide-grid {
@@ -350,11 +362,44 @@
   left: 0;
   z-index: 80;
   pointer-events: none;
+  opacity: 0;
   mix-blend-mode: difference;
+}
+.cursor-root.on {
+  opacity: 1;
+}
+.cursor-root > span:first-child {
+  transition:
+    width 280ms var(--ease-caviar),
+    height 280ms var(--ease-caviar),
+    background-color 280ms var(--ease-caviar);
+}
+.cursor-root.is-view > span:first-child,
+.cursor-root.is-soon > span:first-child {
+  width: 4.5rem;
+  height: 4.5rem;
+  background: rgb(232 234 238 / 8%);
+}
+.cursor-root > span:last-child {
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 220ms var(--ease-caviar),
+    transform 220ms var(--ease-caviar);
+}
+.cursor-root.is-view > span:last-child,
+.cursor-root.is-soon > span:last-child {
+  opacity: 1;
+  transform: none;
 }
 .has-cursor,
 .has-cursor * {
   cursor: none;
+}
+.has-cursor input,
+.has-cursor textarea,
+.has-cursor select {
+  cursor: text;
 }
 
 .project {
@@ -363,7 +408,37 @@
 
 .project-media img,
 .project-media video {
+  position: absolute;
+  inset: -8%;
+  width: 116%;
+  height: 116%;
+  object-fit: cover;
+  filter: grayscale(0.42) contrast(1.06) brightness(0.88);
   transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) + var(--py, 0px)), 0) scale(var(--zs, 1.08));
+  will-change: transform;
+}
+
+.project-media video {
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-caviar);
+}
+
+.project.is-playing .project-media:has(img) video,
+.project:hover .project-media:has(img) video {
+  opacity: 1;
+}
+
+.project-media:not(:has(img)) video {
+  opacity: 1;
+}
+
+.project.in .project-media img,
+.project.in .project-media video {
+  --zs: 1.03;
+  transition:
+    transform 1.35s var(--ease-caviar),
+    filter 0.9s var(--ease-caviar);
 }
 
 .silver-sheen::after {
