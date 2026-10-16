@@ -56,23 +56,15 @@ export function Hero() {
   usePauseOffscreen(kenRef);
   return (
     <section className="relative flex min-h-[100dvh] flex-col justify-end overflow-hidden pt-16" id="top">
-      <div ref={kenRef} className="hero-ken absolute inset-0">
-        <picture>
-          <source srcSet="./img/hero.webp" type="image/webp" />
-          <img
-            src="./img/hero.jpg"
-            alt={t.heroAlt}
-            fetchPriority="high"
-            width={1920}
-            height={1080}
-            sizes="100vw"
-            className="size-full object-cover grayscale-[0.15] contrast-[1.05] brightness-[0.78]"
-          />
-        </picture>
+      <div ref={kenRef} className="hero-ken absolute inset-0" aria-hidden="true">
+        <div className="hero-field absolute inset-0" />
+        <p className="pointer-events-none absolute top-[18%] right-[8%] font-serif text-[clamp(4rem,18vw,14rem)] leading-none tracking-[0.08em] text-platinum/8 italic">
+          Caviar
+        </p>
         <HeroSilverField />
-        <div className="hero-shine absolute inset-0 z-[1]" aria-hidden="true" />
-        <div className="absolute inset-0 bg-linear-to-b from-[#070708]/42 via-[#070708]/12 via-34% to-[#070708]" />
-        <div className="absolute inset-0 bg-linear-to-r from-[#070708]/58 to-transparent to-58%" />
+        <div className="hero-shine absolute inset-0 z-[1]" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#070708]/28 via-[#070708]/8 via-34% to-[#070708]" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#070708]/48 to-transparent to-58%" />
       </div>
       <div className="hero-stage relative z-[2] mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pb-[clamp(4.5rem,10vw,6.75rem)]">
         <Kicker>{t.heroKicker}</Kicker>
@@ -223,7 +215,7 @@ function FeaturedPriceCard({ pack, delay, vat }: { pack: typeof FEATURED_PACK; d
 
 export function Pricing() {
   const { t } = useLanguage();
-  const vat = CAVIAR.VAT_PAYER ? t.vatTag : t.vatTagEx;
+  const vat = t.vatTag;
   return (
     <Section.Frame id="cennik">
       <Section.Body>
@@ -235,9 +227,8 @@ export function Pricing() {
           <FeaturedPriceCard pack={FEATURED_PACK} delay={LAUNCH_PACKS.length} vat={vat} />
         </div>
         <Reveal className="mt-7 grid gap-2 text-[0.88rem] text-muted-foreground">
-          <p>{t.priceIntro}</p>
           <p>{t.noHidden}</p>
-          <p>{CAVIAR.VAT_PAYER ? t.vatYes : t.vatNo}</p>
+          <p>{t.vatYes}</p>
         </Reveal>
         <Reveal className="mt-8">
           <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">

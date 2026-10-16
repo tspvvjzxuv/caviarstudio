@@ -1,24 +1,21 @@
 # Caviar media
 
-Drop project stills and hover-preview films here. The work section reads `WORK` in `web/src/lib/work.ts`.
+Owner stills only. The Work section reads `WORK` in `web/src/lib/work.ts` and stays hidden while that array is empty.
 
 ```js
 {
-  id: "editorial",
+  id: "everlight",
   kind: "image",          // image | video | silver
   layout: "feature",      // feature (full-width, tall) | pair (two-up)
-  image: "./media/editorial.webp",
-  video: "./media/editorial.mp4", // optional; plays muted on hover
-  href: "",               // optional case-study URL
-  titleKey: "wEditorialTitle",
-  lineKey: "wEditorialLine",
-  tags: ["tagFoto"],
-  altKey: "w1alt",
-  silver: "a"             // a | b | c — used when kind is silver, or if image fails
+  image: "./media/everlight.webp",
+  video: "",              // optional muted mp4; leave "" until a file exists
+  href: "https://thedesigns.org/foto/",
+  titleKey: "wEverTitle",
+  lineKey: "wEverLine",
+  tags: ["tagFoto", "tagVideo"],
+  altKey: "w5alt",
+  silver: "c"             // fallback field if the image file is missing
 }
 ```
 
-- Prefer WebP stills and short muted MP4/WebM loops.
-- Leave `video` as `""` until a file exists (no 404s).
-- `kind: "silver"` draws a dark platinum field so the grid stays complete before photos arrive.
-- Update SK / EN / DE strings in `dictionary` for the matching `titleKey` / `lineKey`.
+See the root `README.md` section **Work / photos**.

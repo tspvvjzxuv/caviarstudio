@@ -25,7 +25,7 @@
 ## Personas
 | Persona | Cares about | Challenge | Value we promise |
 |---------|-------------|-----------|------------------|
-| Owner-operator | Bookings, calls, looking serious online | No time, no in-house designer | Concrete quote in 24 hours, delivery in days |
+| Owner-operator | Bookings, calls, looking serious online | No time, no in-house designer | A reply right away, delivery in days |
 
 ## Problems & Pain Points
 **Core problem:** The business is hard to find or looks unfinished online, so people do not call.
@@ -44,7 +44,7 @@
 **Key differentiators:**
 - One visual language across web, video, and photo
 - Launch prices (úvodná cena), all including VAT
-- Quote within 24 hours; web in 5–7 days; photo/video 3–5 days after the shoot
+- Reply right away; web in 5–7 days; photo/video 3–5 days after the shoot
 - Two revision rounds in every package; files belong to the client after payment
 **How we do it differently:** One studio, one look, Trnava and nearby, no invented case studies.
 **Why that's better:** The owner does not have to coordinate three vendors.
@@ -83,13 +83,13 @@
 |-----------|-------|--------------|--------------|
 | Direct | Short sentences, concrete offer | Promised results we cannot guarantee | Váš podnik v najlepšom svetle. |
 | Local | Trnava and nearby, spoken Slovak | Invented street folklore | Trnava a okolie |
-| Calm | Gallery quiet, silver on black | Gold, neon, hype | Napíšte. Ozveme sa do 24 hodín. |
+| Calm | Gallery quiet, silver on black | Gold, neon, hype | Napíšte. Ozveme sa hneď. |
 
 **Tone by context:**
 - Support: plain how-to after handover
 - Launch: launch prices, no fake urgency or slot counters
 - Errors: say what failed and what to do
-- Sales: quote in 24 hours, packages with VAT
+- Sales: reply right away, packages with VAT
 - Social: same voice as the site; do not invent a different persona
 **Terms we own:** Caviar, Caviar Komplet, Foto Mini, Video Reel, Web Jednostránka
 **Never use (and why):** gold / champagne (art direction); testimonials or counts not in this file; TODO / Placeholder in the UI
@@ -101,7 +101,7 @@
 **Value themes:**
 | Theme | Proof |
 |-------|-------|
-| Speed | Quote in 24 hours; web 5–7 days; photo/video 3–5 days after shoot |
+| Speed | Reply right away; web 5–7 days; photo/video 3–5 days after shoot |
 | Price | 49 / 69 / 190 / 349 EUR s DPH |
 | Ownership | Files belong to the client after payment |
 

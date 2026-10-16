@@ -78,7 +78,7 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
         name: names[key] || key,
         price: String(p.launch),
         priceCurrency: "EUR",
-        valueAddedTaxIncluded: !!CAVIAR.VAT_PAYER,
+        valueAddedTaxIncluded: true,
       }));
       data.priceRange = `€${PRICE_RANGE.min}–€${PRICE_RANGE.max}`;
       data.description = pack.docDesc;

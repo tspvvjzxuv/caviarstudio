@@ -7,7 +7,6 @@ export const CAVIAR = {
   HUB: "https://thedesigns.org/",
   EVERLIGHT: "https://thedesigns.org/foto/",
   SITE: "https://caviarstudio.sk/",
-  VAT_PAYER: true,
   prices: {
     fotoMini: { launch: 49, standard: 120 },
     videoReel: { launch: 69, standard: 180 },

@@ -39,7 +39,18 @@ npm run build:pages
 
 ## Content rules
 
-- Prices: 49 / 69 / 190 / 349 EUR including VAT
+- Prices: 49 / 69 / 190 / 349 EUR including VAT (always s DPH)
 - Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
 - Palette: near-black `#070708`, silver/platinum only — **no gold**
-- Swap work stills in `media/` and the `WORK` array in `web/src/lib/work.ts`
+- No stock photos and no assistant-chosen portraits. Hero is a silver field + shader. Team uses monograms.
+
+## Work / photos
+
+The Work section and its nav link stay **hidden** until you add your own stills to `WORK`. Placeholder tiles and sample images are gone on purpose.
+
+1. Put your WebP stills in `media/` (for example `media/everlight.webp`). Optional muted hover film: `media/<id>.mp4`.
+2. Open `web/src/lib/work.ts` and push an item onto `WORK`. Copy the commented Everlight example. `SHOW_WORK` turns on by itself when the array is not empty.
+3. Add matching SK / EN / DE strings in `web/src/lib/i18n.ts` for `titleKey`, `lineKey`, and `altKey`.
+4. Rebuild: `cd web && npm run build:pages`.
+
+Do not drop in stock photos or “coming soon” silver tiles. If a file is missing, `kind: "silver"` is only a fallback for a broken owner still, not a placeholder grid.
