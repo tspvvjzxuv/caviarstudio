@@ -14,7 +14,6 @@ import {
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { LanguageProvider, useLanguage } from "@/lib/language";
-import { SHOW_WORK } from "@/lib/work";
 
 function SkipLink() {
   const { t } = useLanguage();
@@ -56,7 +55,7 @@ function Page() {
             <Services />
             <Pricing />
             <Process />
-            {SHOW_WORK ? <Work /> : null}
+            <Work />
             <Team />
             <Faq />
             <Contact />

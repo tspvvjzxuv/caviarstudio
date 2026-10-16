@@ -10,19 +10,19 @@ Static Vite + React + Tailwind v4 + shadcn/ui in `web/`, deployed as GitHub Page
 
 Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum only. **No gold, champagne, amber, or warm yellow.** Two type families: Cormorant Garamond (display) and DM Sans (body/UI). Sharp 0–2px corners. Panels never touch.
 
-Spend boldness on the hero still and the platinum Komplet card. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps may stay numbered because they are a sequence.
+Spend boldness on the liquid-chrome hero loop (`media/hero/`) and the platinum Komplet card. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps may stay numbered because they are a sequence.
 
 ## Motion that earns its place
 
 - One orchestrated hero stagger after the intro veil (first-time / explanation).
-- Ken-burns on the silver hero field, sheen, and lazy Three.js pearl shader on capable desktops only. No stock photos.
+- Muted looping liquid-chrome hero (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`). Skip on reduced motion (poster only), Save-Data, and slow 2G. Pause when off-screen or the tab is hidden. CSS field + lazy Three.js shader if the loop does not play. No gold. Do not clip display type or card copy.
 - Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only.
 - Scroll reveals: fade in once. Do not add hover motion on every card.
 - Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, and marquee when off-screen.
 
 ## Conversion
 
-Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Headline is “Váš podnik v najlepšom svetle.” Work stays hidden until the owner adds photos to `WORK`.
+Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Headline is “Váš podnik v najlepšom svetle.” Work stays visible: empty `WORK` shows an invite line plus quote CTA (no empty tiles); owner stills in `media/` plus one object in `web/src/lib/work.ts` become Attic Salt–style tiles.
 
 ## SEO
 

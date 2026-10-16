@@ -1,3 +1,9 @@
+export const HERO_LOOP = {
+  poster: "/media/hero/liquid-chrome.jpg",
+  webm: "/media/hero/liquid-chrome.webm",
+  mp4: "/media/hero/liquid-chrome.mp4",
+} as const;
+
 export const CAVIAR = {
   PHONE: "+421905173086",
   WHATSAPP: "421905173086",

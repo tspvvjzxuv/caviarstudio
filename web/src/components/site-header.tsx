@@ -19,7 +19,6 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { isLang, LANGS, type Lang } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
-import { SHOW_WORK } from "@/lib/work";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -69,7 +68,6 @@ export function SiteHeader() {
   const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const nav = NAV.filter((item) => item.href !== "#praca" || SHOW_WORK);
 
   useEffect(() => {
     let ticking = false;
@@ -90,7 +88,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 flex min-h-16 items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[max(0.75rem,env(safe-area-inset-top,0px))] pb-3 [view-transition-name:site-header]",
+        "sticky top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] [view-transition-name:site-header]",
         scrolled ? "border-b border-border bg-background/88 backdrop-blur-[18px]" : "border-b border-transparent bg-background/34 backdrop-blur-[18px]",
       )}
     >
@@ -98,9 +96,9 @@ export function SiteHeader() {
         Caviar
       </a>
 
-      <NavigationMenu viewport={false} className="hidden max-w-none flex-1 md:flex" aria-label={t.navLabel}>
+      <NavigationMenu viewport={false} className="hidden max-w-none min-w-0 flex-1 lg:flex" aria-label={t.navLabel}>
         <NavigationMenuList className="gap-1">
-          {nav.map((item) => (
+          {NAV.map((item) => (
             <NavigationMenuItem key={item.href}>
               <NavigationMenuLink
                 href={item.href}
@@ -117,7 +115,7 @@ export function SiteHeader() {
         <LangSwitch className="hidden sm:inline-flex" />
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button asChild className="metal-fill hidden h-[52px] rounded-[2px] px-5 text-[0.72rem] tracking-[0.16em] uppercase md:inline-flex">
+            <Button asChild className="metal-fill hidden h-10 shrink-0 rounded-[2px] px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
           </TooltipTrigger>
@@ -128,7 +126,7 @@ export function SiteHeader() {
           <SheetTrigger asChild>
             <Button
               variant="outline"
-              className="h-10 rounded-[2px] tracking-[0.16em] uppercase md:hidden"
+              className="h-10 rounded-[2px] tracking-[0.16em] uppercase lg:hidden"
               aria-expanded={open}
             >
               {open ? t.close : t.menu}
@@ -143,7 +141,7 @@ export function SiteHeader() {
               <SheetTitle className="font-serif text-sm tracking-[0.38em] uppercase">Caviar</SheetTitle>
             </SheetHeader>
             <nav className="mt-8 flex flex-col gap-1" aria-label={t.navLabel}>
-              {nav.map((item) => (
+              {NAV.map((item) => (
                 <SheetClose asChild key={item.href}>
                   <a
                     href={item.href}

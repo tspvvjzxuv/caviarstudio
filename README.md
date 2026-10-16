@@ -42,15 +42,27 @@ npm run build:pages
 - Prices: 49 / 69 / 190 / 349 EUR including VAT (always s DPH)
 - Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
 - Palette: near-black `#070708`, silver/platinum only — **no gold**
-- No stock photos and no assistant-chosen portraits. Hero is a silver field + shader. Team uses monograms.
+- No stock photos and no assistant-chosen portraits. Hero is a muted liquid-chrome loop (`media/hero/`) over a silver field. Team uses monograms.
 
 ## Work / photos
 
-The Work section and its nav link stay **hidden** until you add your own stills to `WORK`. Placeholder tiles and sample images are gone on purpose.
+The Work section and its nav link stay **visible**. While `WORK` in `web/src/lib/work.ts` is empty, the section shows one invite line and a quote button. It does not render empty tiles or “coming soon” copy.
 
-1. Put your WebP stills in `media/` (for example `media/everlight.webp`). Optional muted hover film: `media/<id>.mp4`.
-2. Open `web/src/lib/work.ts` and push an item onto `WORK`. Copy the commented Everlight example. `SHOW_WORK` turns on by itself when the array is not empty.
-3. Add matching SK / EN / DE strings in `web/src/lib/i18n.ts` for `titleKey`, `lineKey`, and `altKey`.
-4. Rebuild: `cd web && npm run build:pages`.
+To add a photo (or a video):
 
-Do not drop in stock photos or “coming soon” silver tiles. If a file is missing, `kind: "silver"` is only a fallback for a broken owner still, not a placeholder grid.
+1. Drop the file in `media/` (for example `media/cafe.webp`). Optional muted hover film: `media/cafe.mp4`.
+2. Open `web/src/lib/work.ts` and add one object to `WORK`:
+
+```ts
+{ id: "cafe", image: "/media/cafe.webp", title: "Café Ruža", category: "foto" }
+```
+
+3. Rebuild: `cd web && npm run build:pages`.
+
+Optional fields: `video`, `line`, `alt`, `href`, `layout` (`feature` = full-width, `pair` = two consecutive pair items sit side by side). `title` / `line` / `alt` can be a string (all languages) or `{ sk, en, de }`. `category` is `foto`, `video`, `web`, or an array of those.
+
+Do not drop in stock photos. A missing file falls back to a silver field on that tile only. It is not a placeholder grid.
+
+## Credits
+
+Hero background loop: [Pexels video 29848606](https://www.pexels.com/video/29848606/) (liquid chrome). Pexels license allows free commercial use; attribution is not required.
