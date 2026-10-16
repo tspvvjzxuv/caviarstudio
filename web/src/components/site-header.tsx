@@ -98,7 +98,7 @@ export function SiteHeader() {
         Caviar
       </a>
 
-      <NavigationMenu viewport={false} className="hidden max-w-none flex-1 md:flex" aria-label={t.navLabel}>
+      <NavigationMenu viewport={false} className="hidden max-w-none min-w-0 flex-1 lg:flex" aria-label={t.navLabel}>
         <NavigationMenuList className="gap-1">
           {nav.map((item) => (
             <NavigationMenuItem key={item.href}>
@@ -117,7 +117,7 @@ export function SiteHeader() {
         <LangSwitch className="hidden sm:inline-flex" />
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button asChild className="metal-fill hidden h-[52px] rounded-[2px] px-5 text-[0.72rem] tracking-[0.16em] uppercase md:inline-flex">
+            <Button asChild className="metal-fill hidden h-10 shrink-0 rounded-[2px] px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
           </TooltipTrigger>
@@ -128,7 +128,7 @@ export function SiteHeader() {
           <SheetTrigger asChild>
             <Button
               variant="outline"
-              className="h-10 rounded-[2px] tracking-[0.16em] uppercase md:hidden"
+              className="h-10 rounded-[2px] tracking-[0.16em] uppercase lg:hidden"
               aria-expanded={open}
             >
               {open ? t.close : t.menu}
