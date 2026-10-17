@@ -23,6 +23,18 @@ Project-scope copies live in `.agents/skills/` (lock: `skills-lock.json`). Insta
 - `blader/humanizer`
 - `anthropics/skills@frontend-design`
 
+## Additional owner installs (2026-10-17)
+
+Installed with `npx skills add … -y --copy` from skills.sh sources. Already-present skills were skipped.
+
+| Request | Action | Source |
+|---|---|---|
+| MCP Builder | installed | `npx skills add anthropics/skills --skill mcp-builder -y --copy` ([skills.sh](https://www.skills.sh/anthropics/skills/mcp-builder), GitHub `anthropics/skills`) |
+| Playwright | installed | `npx skills add microsoft/playwright-cli --skill playwright-cli -y --copy` ([skills.sh](https://www.skills.sh/microsoft/playwright-cli), 187.5K installs; official Playwright CLI skill). Runner-up: `currents-dev/playwright-best-practices-skill` at 94.9K |
+| Front-End Design | skipped | already present: `anthropics/skills@frontend-design` |
+| Code Review | skipped | already present: `getsentry/skills@code-review` |
+| Refactor | installed | `npx skills add tartinerlabs/skills --skill refactor -y --copy` ([skills.sh](https://www.skills.sh/tartinerlabs/skills/refactor); most popular skill named `refactor`, 356 installs) |
+
 ## AgenticSkills.io — all 22 workflow bundles
 
 Each bundle page on https://agenticskills.io/workflows was opened for the exact `npx skills add` commands. MCP servers were not installed. Already-present skills were skipped.
