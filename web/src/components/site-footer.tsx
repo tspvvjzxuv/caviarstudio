@@ -14,24 +14,24 @@ export function SiteFooter() {
   const { t, lang, setLang } = useLanguage();
   return (
     <footer className="px-[clamp(1.25rem,5vw,5rem)] pt-8 pb-[max(3rem,env(safe-area-inset-bottom,0px))] [view-transition-name:site-footer]">
-      <Separator className="mb-8" />
+      <Separator className="mb-8 bg-[image:var(--hair)]" />
       <div className="flex flex-wrap items-start justify-between gap-8">
         <div className="grid gap-2 text-[0.82rem] leading-6 text-muted-foreground">
           <strong className="font-serif text-[0.95rem] font-normal tracking-[0.38em] text-foreground uppercase">
             Caviar
           </strong>
           <p className="text-[0.72rem] tracking-[0.14em] uppercase">{t.place}</p>
-          <a href={`mailto:${CAVIAR.EMAIL}`} className="hover:text-foreground">
+          <a href={`mailto:${CAVIAR.EMAIL}`} className="hover:text-azure">
             {CAVIAR.EMAIL}
           </a>
-          <a href={`tel:${CAVIAR.PHONE}`} className="hover:text-foreground">
+          <a href={`tel:${CAVIAR.PHONE}`} className="hover:text-azure">
             {formatPhone(CAVIAR.PHONE)}
           </a>
           <a
             href={CAVIAR.INSTAGRAM}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-foreground"
+            className="hover:text-azure"
             aria-label={`Instagram ${CAVIAR.IG_HANDLE}`}
           >
             {CAVIAR.IG_HANDLE}
@@ -39,7 +39,7 @@ export function SiteFooter() {
         </div>
         <a
           href={CAVIAR.HUB}
-          className="text-[0.72rem] tracking-[0.14em] text-muted-foreground uppercase hover:text-foreground"
+          className="text-[0.72rem] tracking-[0.14em] text-muted-foreground uppercase hover:text-azure"
         >
           {t.navHub}
         </a>

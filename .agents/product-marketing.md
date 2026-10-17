@@ -71,7 +71,7 @@
 **How they describe us:**
 - (none on file)
 **Words to use:** weby, videá, fotky, rezervácie, zavolať, Trnava a okolie, úvodná cena, s DPH
-**Words to avoid:** gold, luxury-for-luxury's-sake, testimonials we do not have, made-up metrics, guaranteed bookings, first-10 slot counters
+**Words to avoid:** luxury-for-luxury's-sake, testimonials we do not have, made-up metrics, guaranteed bookings, first-10 slot counters
 **Glossary:**
 | Term | Meaning |
 |------|---------|
@@ -83,7 +83,7 @@
 |-----------|-------|--------------|--------------|
 | Direct | Short sentences, concrete offer | Promised results we cannot guarantee | Váš podnik v najlepšom svetle. |
 | Local | Trnava and nearby, spoken Slovak | Invented street folklore | Trnava a okolie |
-| Calm | Gallery quiet, silver on black | Gold, neon, hype | Napíšte. Ozveme sa hneď. |
+| Calm | Gallery quiet, silver on black with restrained azure/lemon | Neon kits, hype | Napíšte. Ozveme sa hneď. |
 
 **Tone by context:**
 - Support: plain how-to after handover
@@ -92,7 +92,7 @@
 - Sales: reply right away, packages with VAT
 - Social: same voice as the site; do not invent a different persona
 **Terms we own:** Caviar, Caviar Komplet, Foto Mini, Video Reel, Web Jednostránka
-**Never use (and why):** gold / champagne (art direction); testimonials or counts not in this file; TODO / Placeholder in the UI
+**Never use (and why):** metallic gold / mustard / champagne as metals (lemon yellow is the UI secondary accent); testimonials or counts not in this file; TODO / Placeholder in the UI
 
 ## Proof Points
 **Metrics:** none published
