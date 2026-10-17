@@ -51,6 +51,9 @@
   --color-ink: #0a0a0c;
   --color-elev: #0e0e12;
   --color-surface: #14141a;
+  --color-azure: #3d8aff;
+  --color-azure-deep: #1d4ed8;
+  --color-lemon: #ffe44d;
   --radius-sm: 2px;
   --radius-md: 2px;
   --radius-lg: 2px;
@@ -115,35 +118,35 @@
   --card-foreground: #f4f5f7;
   --popover: #0e0e12;
   --popover-foreground: #f4f5f7;
-  --primary: #e8eaee;
-  --primary-foreground: #0a0a0c;
+  --primary: #1d4ed8;
+  --primary-foreground: #f4f5f7;
   --secondary: #14141a;
   --secondary-foreground: #f4f5f7;
   --muted: #14141a;
   --muted-foreground: #9aa3ae;
-  --accent: #14141a;
-  --accent-foreground: #e8eaee;
+  --accent: rgb(61 138 255 / 18%);
+  --accent-foreground: #f4f5f7;
   --destructive: oklch(0.65 0.18 25);
   --border: rgb(197 202 211 / 18%);
   --input: rgb(197 202 211 / 22%);
-  --ring: #c5cad3;
-  --chart-1: #e8eaee;
-  --chart-2: #c5cad3;
+  --ring: #ffe44d;
+  --chart-1: #3d8aff;
+  --chart-2: #ffe44d;
   --chart-3: #9aa3ae;
   --chart-4: #14141a;
   --chart-5: #0e0e12;
   --radius: 0.125rem;
   --sidebar: #0e0e12;
   --sidebar-foreground: #f4f5f7;
-  --sidebar-primary: #e8eaee;
-  --sidebar-primary-foreground: #0a0a0c;
+  --sidebar-primary: #1d4ed8;
+  --sidebar-primary-foreground: #f4f5f7;
   --sidebar-accent: #14141a;
   --sidebar-accent-foreground: #e8eaee;
   --sidebar-border: rgb(197 202 211 / 18%);
-  --sidebar-ring: #c5cad3;
-  --metal: linear-gradient(180deg, #f7f8fa 0%, #c8ced6 48%, #9aa3ae 100%);
-  --metal-hover: linear-gradient(180deg, #ffffff 0%, #dce0e6 48%, #b4bcc6 100%);
-  --hair: linear-gradient(90deg, transparent, #9aa3ae 18%, #e8eaee 50%, #9aa3ae 82%, transparent);
+  --sidebar-ring: #ffe44d;
+  --metal: linear-gradient(180deg, #4c94ff 0%, #2f7bff 46%, #1d4ed8 100%);
+  --metal-hover: linear-gradient(180deg, #6aa8ff 0%, #3d8aff 46%, #2f7bff 100%);
+  --hair: linear-gradient(90deg, transparent, #3d8aff 18%, #ffe44d 50%, #3d8aff 82%, transparent);
   --header-h: calc(4.75rem + env(safe-area-inset-top, 0px));
 }
 
@@ -160,6 +163,15 @@
     font-size: 16px;
     line-height: 1.6;
     letter-spacing: 0.01em;
+  }
+  ::selection {
+    background: rgb(61 138 255 / 42%);
+    color: #f4f5f7;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  [data-slot="select-trigger"]:focus-visible {
+    outline-color: var(--color-lemon);
   }
   h1,
   h2,
@@ -207,14 +219,14 @@
   height: 7px;
   border-radius: 50%;
   display: inline-block;
-  background: radial-gradient(circle at 32% 28%, #fff 0%, #e8eaee 38%, #9aa3ae 100%);
-  box-shadow: 0 0 8px rgb(232 234 238 / 35%);
+  background: radial-gradient(circle at 32% 28%, #fff 0%, #ffe44d 42%, #3d8aff 100%);
+  box-shadow: 0 0 8px rgb(255 228 77 / 45%);
 }
 
 .metal-fill {
   background-image: var(--metal);
-  color: var(--color-ink);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 55%);
+  color: var(--color-pearl);
+  box-shadow: inset 0 1px 0 rgb(255 228 77 / 42%);
   transition: background-image 160ms ease-out, transform 160ms ease-out;
 }
 .metal-fill:hover {
@@ -249,9 +261,39 @@
 
 .hero-depth {
   background:
-    radial-gradient(ellipse 85% 65% at 50% 38%, transparent 22%, rgb(7 7 8 / 58%) 100%),
-    linear-gradient(180deg, rgb(7 7 8 / 42%) 0%, rgb(7 7 8 / 18%) 24%, rgb(7 7 8 / 22%) 48%, #070708 100%),
-    linear-gradient(90deg, rgb(7 7 8 / 68%) 0%, rgb(7 7 8 / 28%) 36%, transparent 58%);
+    radial-gradient(ellipse 72% 58% at 8% 16%, rgb(61 138 255 / 26%), transparent 58%),
+    radial-gradient(ellipse 58% 48% at 94% 82%, rgb(255 228 77 / 13%), transparent 54%),
+    radial-gradient(ellipse 85% 65% at 50% 38%, transparent 22%, rgb(7 7 8 / 52%) 100%),
+    linear-gradient(180deg, rgb(7 7 8 / 36%) 0%, rgb(7 7 8 / 14%) 24%, rgb(7 7 8 / 20%) 48%, #070708 100%),
+    linear-gradient(90deg, rgb(7 7 8 / 52%) 0%, rgb(7 7 8 / 22%) 36%, transparent 58%);
+}
+
+.glass {
+  background-color: rgb(14 14 18 / 38%);
+  background-image: linear-gradient(180deg, rgb(61 138 255 / 12%) 0%, rgb(255 228 77 / 4%) 100%);
+  backdrop-filter: blur(22px) saturate(1.45);
+  -webkit-backdrop-filter: blur(22px) saturate(1.45);
+  box-shadow:
+    inset 0 1px 0 rgb(255 228 77 / 14%),
+    inset 0 0 0 1px rgb(244 245 247 / 12%),
+    0 12px 40px rgb(0 0 0 / 28%);
+}
+.glass-panel {
+  background-color: rgb(14 14 18 / 62%);
+  background-image: linear-gradient(180deg, rgb(61 138 255 / 14%) 0%, rgb(7 7 8 / 42%) 100%);
+  backdrop-filter: blur(28px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
+  box-shadow:
+    inset 0 1px 0 rgb(255 228 77 / 16%),
+    inset 0 0 0 1px rgb(244 245 247 / 12%),
+    0 18px 48px rgb(0 0 0 / 36%);
+}
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-panel {
+    background-image: none;
+    background-color: rgb(14 14 18 / 94%);
+  }
 }
 
 .hero-loop,
@@ -289,7 +331,7 @@
   }
   @media (hover: hover) and (pointer: fine) {
     .project:hover {
-      border-color: rgb(232 234 238 / 42%);
+      border-color: rgb(61 138 255 / 55%);
     }
     .project:hover .project-media {
       --zs: 1.14;
@@ -386,7 +428,7 @@
 .cursor-root.is-soon > span:first-child {
   width: 4.5rem;
   height: 4.5rem;
-  background: rgb(232 234 238 / 8%);
+  background: rgb(61 138 255 / 14%);
 }
 .cursor-root > span:last-child {
   opacity: 0;
@@ -454,7 +496,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(115deg, transparent 32%, rgb(232 234 238 / 18%) 50%, transparent 68%);
+  background: linear-gradient(115deg, transparent 32%, rgb(61 138 255 / 16%) 46%, rgb(255 228 77 / 22%) 50%, rgb(61 138 255 / 16%) 54%, transparent 68%);
   background-size: 220% 100%;
   mix-blend-mode: screen;
 }
@@ -476,28 +518,28 @@
 
 .service-wash-web {
   background:
-    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(232 234 238 / 9%), transparent 58%),
+    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(61 138 255 / 14%), transparent 58%),
     #0e0e12;
 }
 .service-wash-video {
   background:
-    radial-gradient(ellipse 80% 60% at 100% 0%, rgb(197 202 211 / 11%), transparent 54%),
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgb(255 228 77 / 8%), transparent 54%),
     #0e0e12;
 }
 .service-wash-foto {
   background:
-    linear-gradient(165deg, rgb(244 245 247 / 7%) 0%, transparent 46%),
+    linear-gradient(165deg, rgb(61 138 255 / 10%) 0%, rgb(255 228 77 / 6%) 46%, transparent 70%),
     #0e0e12;
 }
 
 .hero-ghost {
-  border-color: rgb(232 234 238 / 55%);
+  border-color: rgb(61 138 255 / 55%);
   background: rgb(7 7 8 / 52%);
   color: #f4f5f7;
   backdrop-filter: blur(10px);
 }
 .hero-ghost:hover {
-  border-color: rgb(232 234 238 / 78%);
+  border-color: rgb(255 228 77 / 72%);
   background: rgb(7 7 8 / 72%);
   color: #f4f5f7;
 }

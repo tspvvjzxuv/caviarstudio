@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: Caviar
-description: Dark luxury art-house studio. Cool silver and platinum on near-black. No gold.
+description: Dark luxury art-house studio. Cool silver and platinum on near-black, with azure and lemon accents.
 colors:
   bg: "#070708"
   elev: "#0E0E12"
@@ -12,6 +12,9 @@ colors:
   steel: "#9AA3AE"
   ink: "#0A0A0C"
   line: "#2A2C32"
+  azure: "#3D8AFF"
+  azure-deep: "#1D4ED8"
+  lemon: "#FFE44D"
 typography:
   display:
     fontFamily: Cormorant Garamond
@@ -72,8 +75,8 @@ rounded:
   full: 9999px
 components:
   button-primary:
-    backgroundColor: "{colors.platinum}"
-    textColor: "{colors.ink}"
+    backgroundColor: "{colors.azure-deep}"
+    textColor: "{colors.pearl}"
     rounded: "{rounded.none}"
     padding: 16px
   button-ghost:
@@ -87,22 +90,25 @@ components:
 
 ## Overview
 
-Caviar is a small creative studio in Trnava. The site should feel like a quiet gallery: cool, high-end, and artistic — never like a SaaS template. Near-black fields, platinum type, generous empty space, and a single silver accent language. Motion is slow and cinematic. Copy stays plain and concrete. No gold, champagne, neon, or invented social proof.
+Caviar is a small creative studio in Trnava. The site should feel like a quiet gallery: cool, high-end, and artistic — never like a SaaS template. Near-black fields, platinum type, generous empty space, azure as the main accent, and lemon only for small high-impact moments. Motion is slow and cinematic. Copy stays plain and concrete. No metallic gold, mustard, neon kits, or invented social proof.
 
-**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero), everything else quieter. Parallel offerings (Web / Video / Foto) are not numbered; the four-step process is, because it is a sequence. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
+**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — with azure and a clean electric yellow as restrained accents, not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero), everything else quieter. Parallel offerings (Web / Video / Foto) are not numbered; the four-step process is, because it is a sequence. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
 
 ## Colors
 
-The palette is pearl on caviar black, with silver as the only metal.
+The palette is pearl on caviar black. Silver and platinum stay on type. **Azure is the main accent. Lemon yellow is the secondary accent.**
 
 - **Background (#070708):** Near-black field for every page surface.
 - **Pearl (#F4F5F7):** Primary reading color and headlines.
-- **Silver (#C5CAD3):** Kickers, captions, secondary metal.
-- **Platinum (#E8EAEE):** Highlights, primary buttons, italic display sheen.
-- **Steel (#9AA3AE):** Hairlines and quiet metadata.
+- **Silver (#C5CAD3):** Captions and secondary metal type.
+- **Platinum (#E8EAEE):** Highlights and italic display sheen.
+- **Steel (#9AA3AE):** Quiet metadata.
 - **Elevated (#0E0E12):** Cards and featured pricing, one step off black.
+- **Azure (#3D8AFF):** Main accent — kickers, links, process numbers, larger glows, tile hover borders.
+- **Azure deep (#1D4ED8):** Primary CTA fills (`--primary`). Pearl on this blue must stay WCAG AA.
+- **Lemon (#FFE44D):** Secondary accent — small high-impact only: price numbers, launch badges, focus rings, cursor dot, hairline sheen. Not metallic gold, not mustard.
 
-Do not introduce warm yellow, gold, or amber. Everlight samples may be desaturated to sit in this register.
+Do not use metallic gold, champagne, or mustard. Lemon is a vivid electric / lemon-amber yellow, used sparingly so the site stays premium. Keep text contrast WCAG AA. The hero video must stay visible under the blue-to-yellow overlay glows. Menus use `.glass` / `.glass-panel` (backdrop-blur + saturate, faint azure/lemon tint, 1px inner highlight, solid fallback where `backdrop-filter` is missing, `-webkit-backdrop-filter` for Safari).
 
 ## Typography
 
@@ -126,7 +132,7 @@ The UI is built with the **full Tailwind CSS utility system** and the **full sha
 
 Language changes use React `<ViewTransition>` (fade) triggered with `startTransition`. Header, footer, grain, and cursor are isolated so chrome does not cross-fade. `prefers-reduced-motion` zeros view-transition durations. This is a one-page site: no directional page slides (those are for hierarchical routes).
 
-`frontend-slides` (zarazhangrui) is for presentation-style beats on this site, not a 16:9 HTML deck: one orchestrated hero stagger after the intro veil, speaker-led process steps (one idea each), silver grid atmosphere, hairline chrome, expo easing, `prefers-reduced-motion`. Do not copy its yellow/gold Studio templates or reflow the marketing page as a fixed 1920×1080 stage.
+`frontend-slides` (zarazhangrui) is for presentation-style beats on this site, not a 16:9 HTML deck: one orchestrated hero stagger after the intro veil, speaker-led process steps (one idea each), silver grid atmosphere, hairline chrome, expo easing, `prefers-reduced-motion`. Do not copy its mustard/gold Studio templates or reflow the marketing page as a fixed 1920×1080 stage. Caviar’s lemon is a restrained secondary accent, not a slide-deck fill.
 
 Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. Three.js is a lazy silver/pearl hero shader on desktop (CSS silver-field fallback on mobile, coarse pointer, Save-Data, and `prefers-reduced-motion`). WordPress, Expo, and Remotion skills stay installed but unused: this is not WordPress, and a CSS silver field is lighter than a Remotion runtime.
 
@@ -136,7 +142,7 @@ The “Čo robíme” block sits immediately under the hero: a real display `h2`
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, and 1px steel hairlines — not drop shadows. Featured surfaces (Caviar Komplet) use a platinum hairline and a faint inner silver wash. Hero depth is a muted liquid-chrome loop (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`) on near-black, with grain, a light sweep, a vignette, and a dark gradient so the headline stays readable. The loop plays even when `prefers-reduced-motion` is on (it is a slow muted ambient clip). Skip only on explicit Save-Data; pause it off-screen. No decorative ghost “Caviar” wordmark in the hero. The CSS silver field and lazy Three.js shader remain the fallback. No gold. Cards and hero type use open overflow and 1.08–1.15 display leading so serif italic never clips the frame.
+Hierarchy comes from tonal layers, film grain, thin azure-to-lemon hairlines, and glass chrome — not heavy drop shadows. Featured surfaces (Caviar Komplet) use an azure ring and a faint azure-to-lemon wash. Hero depth is a muted liquid-chrome loop (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`) on near-black, with grain, a light sweep, a blue glow (left) and lemon glow (right), a vignette, and a dark gradient so the headline stays readable and the video stays visible. The loop plays even when `prefers-reduced-motion` is on (it is a slow muted ambient clip). Skip only on explicit Save-Data; pause it off-screen. No decorative ghost “Caviar” wordmark in the hero. The CSS silver field and lazy Three.js shader remain the fallback. Cards and hero type use open overflow and 1.08–1.15 display leading so serif italic never clips the frame.
 
 ## Shapes
 
@@ -144,14 +150,15 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 
 ## Components
 
-- **Buttons:** Primary is a platinum metal fill with dark ink type. Ghost is a hairline. Uppercase labels, 52px min height, full width on small screens.
-- **Feature / service cards:** Elevated `#0E0E12` surface, 1px steel border, equal padding, hover hairline brightens. Three-up on desktop with `--gap-panel`.
-- **Pricing cards:** Shared launch-price badge. Caviar Komplet is visually louder: platinum frame, elevated ground, wider measure. Same gap as other panel grids.
+- **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset). Ghost is a hairline that warms to lemon on hover. Uppercase labels, 52px min height, full width on small screens.
+- **Feature / service cards:** Elevated `#0E0E12` surface, 1px steel border, equal padding, hover hairline goes azure. Three-up on desktop with `--gap-panel`.
+- **Pricing cards:** Shared lemon launch-price badge; launch amounts in lemon. Caviar Komplet is visually louder: azure frame, faint azure-to-lemon wash, wider measure. Same gap as other panel grids.
+- **Header / menus:** Sticky `.glass` navbar (hero video shows through). Mobile sheet, language switcher, select, tooltip, popover, dropdown, and dialog use `.glass` / `.glass-panel`.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
 - **Work tiles:** Section and nav stay visible. Empty `WORK` is one invite line plus a quote CTA — no empty tiles, no “Čoskoro” grid. Each owner item in `web/src/lib/work.ts` (image or video, title, category, optional link) becomes a large Attic Salt–style tile (hover parallax, scroll shift, hover film, custom cursor). Silver fallback only if that file is missing. Never “TODO”, “Placeholder”, or filler tiles.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
-- **Header / footer:** Sticky blurred navbar with safe-area padding; footer is a hairline bar with stacked contacts (no middle-dot meta string). Study shadcn navbar/footer block rhythm, keep Caviar type.
+- **Footer:** Hairline bar with stacked contacts (no middle-dot meta string). Azure link hover. Study shadcn navbar/footer block rhythm, keep Caviar type.
 
 ## Do's and Don'ts
 
@@ -159,7 +166,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Do explain what Caviar does in one plain sentence under the hero headline
 - Do respect `prefers-reduced-motion` for ken-burns, sheen, reveals, and cursor
 - Do leave a visible gap between every card/panel on mobile and desktop
-- Don't use gold, warm yellow, or champagne metals
+- Don't use metallic gold, mustard, or champagne metals; lemon yellow is the only yellow, and only in small doses
 - Don't use Inter, purple/violet gradients, or uniformly large rounded corners (web-artifacts-builder anti-slop)
 - Don't invent testimonials, client counts, limited slots, or guaranteed results (no “more bookings”, no “first 10” counters)
 - Don't show the words TODO or Placeholder anywhere in the UI

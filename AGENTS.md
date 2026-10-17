@@ -8,14 +8,14 @@ Static Vite + React + Tailwind v4 + shadcn/ui in `web/`, deployed as GitHub Page
 
 ## Art direction
 
-Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum only. **No gold, champagne, amber, or warm yellow.** Two type families: Cormorant Garamond (display) and DM Sans (body/UI). Sharp 0–2px corners. Panels never touch.
+Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum type. **Azure `#3D8AFF` is the main accent; lemon `#FFE44D` is the secondary accent** (not metallic gold, not mustard). Azure-deep `#1D4ED8` fills primary CTAs. Two type families: Cormorant Garamond (display) and DM Sans (body/UI). Sharp 0–2px corners. Panels never touch. Menus use `.glass` / `.glass-panel`.
 
-Spend boldness on the liquid-chrome hero loop (`media/hero/`) and the platinum Komplet card. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps may stay numbered because they are a sequence.
+Spend boldness on the liquid-chrome hero loop (`media/hero/`) with a restrained blue-to-yellow overlay, azure CTAs, and the Komplet card. Yellow only for small high-impact moments. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps may stay numbered because they are a sequence.
 
 ## Motion that earns its place
 
 - One orchestrated hero stagger after the intro veil (first-time / explanation).
-- Muted looping liquid-chrome hero (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`, 1080p). Always play, including when `prefers-reduced-motion` is on (Windows “Animation effects” off). Skip only on explicit Save-Data. Retry play on canplay, loadeddata, visibility, and first pointer/key/scroll. Pause when off-screen or the tab is hidden. CSS field + lazy Three.js shader if Save-Data blocks the loop. No gold. No decorative ghost wordmark in the hero. Do not clip display type or card copy.
+- Muted looping liquid-chrome hero (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`, 1080p). Always play, including when `prefers-reduced-motion` is on (Windows “Animation effects” off). Skip only on explicit Save-Data. Retry play on canplay, loadeddata, visibility, and first pointer/key/scroll. Pause when off-screen or the tab is hidden. CSS field + lazy Three.js shader if Save-Data blocks the loop. Keep the video visible under the azure/lemon glows. No decorative ghost wordmark in the hero. Do not clip display type or card copy.
 - Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only.
 - Scroll reveals: fade in once. Do not add hover motion on every card.
 - Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, and marquee when off-screen.

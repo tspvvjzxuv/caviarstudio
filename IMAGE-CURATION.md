@@ -1,7 +1,7 @@
 # Image Curation — Caviar (caviarstudio.sk)
 
-**Art direction:** High-end editorial studio. Near-black, cool silver / platinum / pearl.  
-**Palette:** `#070708` bases · pearl white `#f4f5f7` · silver `#c5cad3` · platinum highlights. **No gold, champagne, or warm yellow.**  
+**Art direction:** High-end editorial studio. Near-black, cool silver / platinum / pearl, azure + lemon UI accents.  
+**Palette:** `#070708` bases · pearl `#f4f5f7` · silver `#c5cad3` · platinum highlights · azure `#3d8aff` · lemon `#ffe44d`. **No metallic gold, champagne, or mustard.**  
 **Photos:** Owner files only. No stock, no assistant-chosen portraits.
 
 | Asset | File | Notes |

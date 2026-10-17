@@ -53,7 +53,7 @@ export function Reveal({
 
 export function Kicker({ children }: { children: ReactNode }) {
   return (
-    <p className="flex items-center gap-3 text-[0.68rem] font-medium tracking-[0.26em] text-silver uppercase">
+    <p className="flex items-center gap-3 text-[0.68rem] font-medium tracking-[0.26em] text-azure uppercase">
       <span className="pearl shrink-0" aria-hidden="true" />
       {children}
     </p>

@@ -47,7 +47,7 @@ export function LangSwitch({ className }: { className?: string }) {
       spacing={0}
       size="sm"
       variant="outline"
-      className={cn("rounded-[2px] border border-border", className)}
+      className={cn("glass rounded-[2px] border-0", className)}
       aria-label={t.langLabel}
     >
       {LANGS.map((code) => (
@@ -55,7 +55,7 @@ export function LangSwitch({ className }: { className?: string }) {
           key={code}
           value={code}
           aria-label={t[LANG_NAME[code]]}
-          className="h-8 rounded-none px-2.5 text-[0.68rem] tracking-[0.16em] uppercase data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+          className="h-8 rounded-none px-2.5 text-[0.68rem] tracking-[0.16em] uppercase data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
         >
           {code}
         </ToggleGroupItem>
@@ -88,8 +88,8 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] [view-transition-name:site-header]",
-        scrolled ? "border-b border-border bg-background/88 backdrop-blur-[18px]" : "border-b border-transparent bg-background/34 backdrop-blur-[18px]",
+        "glass sticky top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] [view-transition-name:site-header]",
+        scrolled ? "border-b border-border" : "border-b border-transparent",
       )}
     >
       <a href="#top" className="relative z-[52] font-serif text-[0.95rem] tracking-[0.38em] uppercase">
@@ -102,7 +102,7 @@ export function SiteHeader() {
             <NavigationMenuItem key={item.href}>
               <NavigationMenuLink
                 href={item.href}
-                className="rounded-[2px] px-3 py-1.5 text-[0.72rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-foreground"
+                className="rounded-[2px] px-3 py-1.5 text-[0.72rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-azure"
               >
                 {t[item.key]}
               </NavigationMenuLink>
@@ -134,7 +134,7 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent
             side="top"
-            className="h-dvh gap-0 border-0 bg-background p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))]"
+            className="glass-panel h-dvh gap-0 border-0 bg-transparent p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))]"
             showCloseButton={false}
           >
             <SheetHeader className="p-0">
@@ -145,7 +145,7 @@ export function SiteHeader() {
                 <SheetClose asChild key={item.href}>
                   <a
                     href={item.href}
-                    className="font-serif text-[clamp(2.2rem,9vw,3.2rem)] leading-[1.15] tracking-[-0.02em]"
+                    className="font-serif text-[clamp(2.2rem,9vw,3.2rem)] leading-[1.15] tracking-[-0.02em] hover:text-azure"
                   >
                     {t[item.key]}
                   </a>

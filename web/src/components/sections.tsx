@@ -67,7 +67,7 @@ export function Hero() {
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
         <Kicker>{t.heroKicker}</Kicker>
         <h1
-          className="mt-6 max-w-[22ch] font-serif text-[clamp(2.85rem,11vw,8.1rem)] leading-[1.08] font-normal tracking-[-0.035em] text-balance [&_em]:inline-block [&_em]:bg-linear-to-r [&_em]:from-steel [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:pb-[0.14em] [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
+          className="mt-6 max-w-[22ch] font-serif text-[clamp(2.85rem,11vw,8.1rem)] leading-[1.08] font-normal tracking-[-0.035em] text-balance [&_em]:inline-block [&_em]:bg-linear-to-r [&_em]:from-azure [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:pb-[0.14em] [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
           dangerouslySetInnerHTML={{ __html: t.heroTitle }}
         />
         <p className="mt-6 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.5] text-pretty">{t.heroExplain}</p>
@@ -116,7 +116,7 @@ export function Services() {
           ))}
         </div>
         <Reveal className="mt-6 overflow-visible rounded-[2px] border border-border bg-card p-6 md:mt-8 md:p-8 xl:mt-10">
-          <span className="block text-[0.68rem] tracking-[0.22em] text-silver uppercase">{t.forWhomLabel}</span>
+          <span className="block text-[0.68rem] tracking-[0.22em] text-azure uppercase">{t.forWhomLabel}</span>
           <span className="mt-2 block font-serif text-[clamp(1.2rem,2.4vw,1.55rem)] leading-[1.55] italic">{t.forWhom}</span>
         </Reveal>
       </Section.Body>
@@ -150,7 +150,7 @@ function PriceIdentity({ name, desc }: { name: string; desc: string }) {
   const { t } = useLanguage();
   return (
     <div className="grid gap-3">
-      <Badge variant="outline" className="rounded-[2px] border-silver/40 bg-platinum/10 tracking-[0.2em] text-platinum uppercase">
+      <Badge variant="outline" className="rounded-[2px] border-lemon/45 bg-lemon/10 tracking-[0.2em] text-lemon uppercase">
         {t.launchBadge}
       </Badge>
       <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal">{name}</CardTitle>
@@ -164,7 +164,7 @@ function PriceAmounts({ launch, standard, vat }: { launch: number; standard: num
   return (
     <div>
       <p className="font-serif text-[clamp(2rem,3.2vw,2.7rem)] leading-[1.12]">
-        {t.priceFrom} {launch} EUR{" "}
+        {t.priceFrom} <span className="text-lemon">{launch} EUR</span>{" "}
         <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">{vat}</span>
       </p>
       <p className="mt-3 text-[0.85rem] text-muted-foreground">
@@ -198,7 +198,7 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
   const price = CAVIAR.prices[pack.key];
   return (
       <Reveal className="h-full md:col-span-2 xl:col-span-3">
-      <Card className="h-full min-h-[16rem] overflow-visible rounded-[2px] py-0 ring-1 bg-linear-to-b from-platinum/7 to-platinum/1.5 ring-platinum/42">
+      <Card className="h-full min-h-[16rem] overflow-visible rounded-[2px] bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-1 ring-azure/50">
         <CardHeader className="flex flex-col gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
           <div className="grid gap-4 justify-items-start">
@@ -259,8 +259,8 @@ export function Process() {
                 <Card className="overflow-visible rounded-[2px] py-0 ring-1 ring-border">
                   <CardContent className="grid grid-cols-[auto_1fr] items-start gap-x-6 gap-y-4 p-6 md:p-8">
                     <span className="grid min-w-[2.2ch] gap-3">
-                      <i className="block h-px w-9 bg-platinum" aria-hidden="true" />
-                      <span className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-silver italic">{step.n}</span>
+                      <i className="block h-px w-9 bg-[image:var(--hair)]" aria-hidden="true" />
+                      <span className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-azure italic">{step.n}</span>
                     </span>
                     <div className="min-w-0">
                       <h3 className="font-serif text-[clamp(1.35rem,2.4vw,1.85rem)] leading-[1.2] font-normal">{step.title}</h3>
@@ -434,7 +434,7 @@ export function Work() {
             <>
               <p className="max-w-[42ch] text-[1.02rem] text-muted-foreground">{t.workEmpty}</p>
               <p className="mt-3">
-                <a href="#kontakt" className="text-[0.95rem] text-platinum underline-offset-4 hover:underline">
+                <a href="#kontakt" className="text-[0.95rem] text-azure underline-offset-4 hover:text-lemon hover:underline">
                   {t.ctaQuote}
                 </a>
               </p>
@@ -620,7 +620,7 @@ function ContactForm() {
                   <SelectTrigger id="f-need" className="h-11 w-full rounded-[2px] bg-background">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-[2px]">
+                  <SelectContent className="glass rounded-[2px] bg-transparent">
                     <SelectGroup>
                       {NEED_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
