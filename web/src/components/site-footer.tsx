@@ -27,8 +27,14 @@ export function SiteFooter() {
           <a href={`tel:${CAVIAR.PHONE}`} className="hover:text-foreground">
             {formatPhone(CAVIAR.PHONE)}
           </a>
-          <a href={CAVIAR.INSTAGRAM} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
-            Instagram
+          <a
+            href={CAVIAR.INSTAGRAM}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-foreground"
+            aria-label={`Instagram ${CAVIAR.IG_HANDLE}`}
+          >
+            {CAVIAR.IG_HANDLE}
           </a>
         </div>
         <a

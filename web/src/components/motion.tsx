@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/lib/language";
 
+const INTRO_SEEN_KEY = "caviar-intro-seen";
+
 const grain = <div className="grain [view-transition-name:site-grain]" aria-hidden="true" />;
 
 const introMark = (
@@ -12,18 +14,42 @@ const introMark = (
   </>
 );
 
+function markIntroSeen() {
+  if (typeof document === "undefined") return;
+  document.documentElement.classList.add("intro-seen");
+}
+
+function hasSeenIntro() {
+  if (typeof window === "undefined") return true;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+  try {
+    return sessionStorage.getItem(INTRO_SEEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function Grain() {
   return grain;
 }
 
 export function IntroVeil() {
   const [show, setShow] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const seen = hasSeenIntro();
+    if (seen) markIntroSeen();
+    return !seen;
   });
 
   useEffect(() => {
-    if (!show) return;
+    if (!show) {
+      markIntroSeen();
+      return;
+    }
+    try {
+      sessionStorage.setItem(INTRO_SEEN_KEY, "1");
+    } catch {
+      /* private mode */
+    }
     const t = window.setTimeout(() => setShow(false), 1700);
     return () => window.clearTimeout(t);
   }, [show]);
