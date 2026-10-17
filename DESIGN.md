@@ -17,19 +17,19 @@ colors:
   lemon: "#FFE44D"
 typography:
   display:
-    fontFamily: Cormorant Garamond
+    fontFamily: Bodoni Moda
     fontSize: 88px
     fontWeight: 400
     lineHeight: 1.08
     letterSpacing: -0.03em
   headline-lg:
-    fontFamily: Cormorant Garamond
+    fontFamily: Bodoni Moda
     fontSize: 48px
     fontWeight: 400
     lineHeight: 1.05
     letterSpacing: -0.02em
   headline-md:
-    fontFamily: Cormorant Garamond
+    fontFamily: Bodoni Moda
     fontSize: 32px
     fontWeight: 400
     lineHeight: 1.1
@@ -115,9 +115,9 @@ Do not use metallic gold, champagne, or mustard. Lemon is a vivid electric / lem
 
 ## Typography
 
-Two families only: **Cormorant Garamond** for display and titles, **DM Sans** for UI, body, and labels.
+Two families only: **Bodoni Moda** for display, titles, price numbers, and the wordmark, **DM Sans** for UI, body, and labels.
 
-- **Display:** Large, slightly tight tracking, italic second line in a silver metallic wash.
+- **Display:** Upright Bodoni, slightly tight tracking. The logo is the exception: uppercase, tracked 0.12em, weight 500.
 - **Body:** 16–18px, long line-height, max ~42–58ch.
 - **Labels:** Small caps via uppercase + wide tracking. Never more than two weights on a screen (400 and 500/600).
 
@@ -145,7 +145,7 @@ The “Čo robíme” block sits immediately under the hero: a real display `h2`
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, translucent glass borders, and glass chrome — not heavy drop shadows. Featured surfaces (Caviar Komplet) use a faint azure border and an azure-to-lemon wash. Hero depth is a muted liquid-chrome loop (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`) on near-black, with grain, a light sweep, a blue glow (left) and lemon glow (right), a vignette, and a dark gradient so the wordmark stays readable and the video stays visible. The loop plays even when `prefers-reduced-motion` is on (it is a slow muted ambient clip). Skip only on explicit Save-Data; pause it off-screen. The hero centerpiece is the Caviar wordmark (serif + pearl/C mark), not a ghost overlay. The CSS silver field and lazy Three.js shader remain the fallback. Cards use open overflow so serif italic never clips the frame.
+Hierarchy comes from tonal layers, film grain, translucent glass borders, and glass chrome — not heavy drop shadows. Featured surfaces (Caviar Komplet) use a faint azure border and an azure-to-lemon wash. Hero depth is a muted liquid-chrome loop (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`) on near-black, with grain, a light sweep, a blue glow (left) and lemon glow (right), a vignette, and a dark gradient so the wordmark stays readable and the video stays visible. The loop plays even when `prefers-reduced-motion` is on (it is a slow muted ambient clip). Skip only on explicit Save-Data; pause it off-screen. The hero centerpiece is the upright Bodoni **CAVIAR** lockup (silver gradient, hairline, STUDIO · TRNAVA), not a pearl mark or italic wordmark. The CSS silver field and lazy Three.js shader remain the fallback. Cards use open overflow so serif italic never clips the frame.
 
 ## Shapes
 
@@ -153,7 +153,7 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 
 ## Components
 
-- **Logo:** Pearl bead with a silver/azure/lemon C-stroke plus italic Cormorant “Caviar”. Same mark on the favicon, nav, intro, and footer. Hero uses the large wordmark; the old headline sits under it as a smaller tagline.
+- **Logo:** Upright uppercase **CAVIAR** in Bodoni Moda 500, letter-spacing 0.12em, silver gradient `#ffffff → #d9dee6 → #8f98a6`. Thin silver hairline (`#c9d0da`, fading at the ends) under the word, then **STUDIO · TRNAVA** in Bodoni 400, `#a7afbb`, tracked uppercase. Same lockup on the hero, nav, intro, footer, favicon, and apple-touch. No pearl circle, no italic. Hero size: about 80% width on 390px, clamp up to ~10.5rem on desktop. Azure/lemon glows stay around the hero, not in the letters.
 - **Icons:** Lucide, thin stroke (1.5), round caps, inside circular `.glass` discs. No decorative gradient dashes.
 - **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset), fully pill-shaped. Ghost/outline uses a translucent glass border. Uppercase labels, 52px min height, full width on small screens.
 - **Feature / service cards:** Elevated `#0E0E12` surface, translucent glass border, `rounded-3xl`, lucide icon in a glass disc. Three-up on desktop with `--gap-panel`.
@@ -186,7 +186,7 @@ Animate only what has a job: the first-load hero stagger (explanation), ken-burn
 
 ## Conversion
 
-One primary action: request a quote. Keep that CTA in the header, hero, each price card, and on the form. Do not add a second quote button under the price notes. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero centerpiece is the Caviar wordmark; tagline: “Váš podnik v najlepšom svetle.”
+One primary action: request a quote. Keep that CTA in the header, hero, each price card, and on the form. Do not add a second quote button under the price notes. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero centerpiece is the CAVIAR lockup; brand tagline is “STUDIO · TRNAVA.” Explain Caviar in one plain sentence under the lockup.
 
 ## SEO
 

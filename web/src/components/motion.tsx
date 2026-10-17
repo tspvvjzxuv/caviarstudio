@@ -6,15 +6,7 @@ const INTRO_SEEN_KEY = "caviar-intro-seen";
 
 const grain = <div className="grain [view-transition-name:site-grain]" aria-hidden="true" />;
 
-const introMark = (
-  <>
-    <CaviarLogo
-      markClassName="size-11"
-      wordClassName="text-[clamp(1.8rem,5vw,2.8rem)] leading-none pb-[0.06em]"
-    />
-    <span className="intro-line absolute right-[12%] bottom-[38%] left-[12%] h-px origin-center scale-x-[0.18] bg-[image:var(--hair)]" />
-  </>
-);
+const introMark = <CaviarLogo className="text-[clamp(2.4rem,7vw,4.2rem)]" />;
 
 function markIntroSeen() {
   if (typeof document === "undefined") return;
