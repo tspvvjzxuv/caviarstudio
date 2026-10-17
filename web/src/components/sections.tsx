@@ -256,11 +256,6 @@ export function Pricing() {
           <p>{t.noHidden}</p>
           <p>{t.vatYes}</p>
         </Reveal>
-        <Reveal className="mt-8">
-          <Button asChild className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-            <a href="#kontakt">{t.ctaQuote}</a>
-          </Button>
-        </Reveal>
       </Section.Body>
     </Section.Frame>
   );

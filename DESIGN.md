@@ -186,7 +186,7 @@ Animate only what has a job: the first-load hero stagger (explanation), ken-burn
 
 ## Conversion
 
-One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero centerpiece is the Caviar wordmark; tagline: “Váš podnik v najlepšom svetle.”
+One primary action: request a quote. Keep that CTA in the header, hero, each price card, and on the form. Do not add a second quote button under the price notes. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero centerpiece is the Caviar wordmark; tagline: “Váš podnik v najlepšom svetle.”
 
 ## SEO
 
