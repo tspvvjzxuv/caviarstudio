@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/sheet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Menu, X } from "lucide-react";
+import { CaviarLogo } from "@/components/caviar-logo";
 import { isLang, LANGS, type Lang } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
@@ -47,7 +49,7 @@ export function LangSwitch({ className }: { className?: string }) {
       spacing={0}
       size="sm"
       variant="outline"
-      className={cn("glass rounded-[2px] border-0", className)}
+      className={cn("glass rounded-full border-0", className)}
       aria-label={t.langLabel}
     >
       {LANGS.map((code) => (
@@ -55,7 +57,7 @@ export function LangSwitch({ className }: { className?: string }) {
           key={code}
           value={code}
           aria-label={t[LANG_NAME[code]]}
-          className="h-8 rounded-none px-2.5 text-[0.68rem] tracking-[0.16em] uppercase data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
+          className="h-8 rounded-full px-2.5 text-[0.68rem] tracking-[0.16em] uppercase data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
         >
           {code}
         </ToggleGroupItem>
@@ -92,8 +94,11 @@ export function SiteHeader() {
         scrolled ? "border-b border-border" : "border-b border-transparent",
       )}
     >
-      <a href="#top" className="relative z-[52] font-serif text-[0.95rem] tracking-[0.38em] uppercase">
-        Caviar
+      <a href="#top" className="relative z-[52]" aria-label="Caviar">
+        <CaviarLogo
+          markClassName="size-7"
+          wordClassName="text-[1.35rem] leading-none pb-[0.06em]"
+        />
       </a>
 
       <NavigationMenu viewport={false} className="hidden max-w-none min-w-0 flex-1 lg:flex" aria-label={t.navLabel}>
@@ -102,7 +107,7 @@ export function SiteHeader() {
             <NavigationMenuItem key={item.href}>
               <NavigationMenuLink
                 href={item.href}
-                className="rounded-[2px] px-3 py-1.5 text-[0.72rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-azure"
+                className="rounded-full px-3 py-1.5 text-[0.72rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-azure"
               >
                 {t[item.key]}
               </NavigationMenuLink>
@@ -115,7 +120,7 @@ export function SiteHeader() {
         <LangSwitch className="hidden sm:inline-flex" />
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button asChild className="metal-fill hidden h-10 shrink-0 rounded-[2px] px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
+            <Button asChild className="metal-fill hidden h-10 shrink-0 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
           </TooltipTrigger>
@@ -125,11 +130,13 @@ export function SiteHeader() {
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
-              variant="outline"
-              className="h-10 rounded-[2px] tracking-[0.16em] uppercase lg:hidden"
+              variant="ghost"
+              size="icon"
+              className="glass size-11 rounded-full border border-white/12 lg:hidden"
               aria-expanded={open}
+              aria-label={open ? t.close : t.menu}
             >
-              {open ? t.close : t.menu}
+              {open ? <X className="size-4 stroke-[1.5]" /> : <Menu className="size-4 stroke-[1.5]" />}
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -138,7 +145,9 @@ export function SiteHeader() {
             showCloseButton={false}
           >
             <SheetHeader className="p-0">
-              <SheetTitle className="font-serif text-sm tracking-[0.38em] uppercase">Caviar</SheetTitle>
+              <SheetTitle className="font-serif text-sm">
+                <CaviarLogo markClassName="size-6" wordClassName="text-[1.2rem] leading-none" />
+              </SheetTitle>
             </SheetHeader>
             <nav className="mt-8 flex flex-col gap-1" aria-label={t.navLabel}>
               {NAV.map((item) => (
@@ -155,7 +164,7 @@ export function SiteHeader() {
             <Separator className="my-8" />
             <LangSwitch />
             <SheetClose asChild>
-              <Button asChild className="metal-fill mt-6 h-[52px] w-full rounded-[2px] text-[0.72rem] tracking-[0.16em] uppercase">
+              <Button asChild className="metal-fill mt-6 h-[52px] w-full rounded-full text-[0.72rem] tracking-[0.16em] uppercase">
                 <a href="#kontakt">{t.ctaQuote}</a>
               </Button>
             </SheetClose>

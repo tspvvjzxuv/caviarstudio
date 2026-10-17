@@ -108,7 +108,7 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
           <ul className="mt-1.5 flex list-none flex-wrap gap-2">
             {tags.map((tag) => (
               <li key={tag}>
-                <Badge variant="outline" className="rounded-[2px] border-silver/28 text-[0.62rem] tracking-[0.18em] text-platinum uppercase">
+                <Badge variant="outline" className="rounded-full border-white/12 text-[0.62rem] tracking-[0.18em] text-platinum uppercase">
                   {tag}
                 </Badge>
               </li>
@@ -123,7 +123,7 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
 function tileClass(item: WorkItem) {
   const layout = item.layout ?? "feature";
   return cn(
-    "project relative isolate min-h-[64vh] overflow-hidden rounded-[2px] border border-border bg-card",
+    "project relative isolate min-h-[64vh] overflow-hidden rounded-3xl border border-border bg-card",
     layout === "feature" && "min-h-[78vh] md:min-h-[min(84vh,920px)]",
     layout === "pair" && "md:min-h-[min(68vh,700px)]",
   );
@@ -138,7 +138,7 @@ export function WorkTile({ item }: { item: WorkItem }) {
     <article className={cn(tileClass(item), "reveal")} data-id={item.id} data-cursor={href ? "view" : undefined} aria-label={title}>
       {href ? (
         <a
-          className="project-hit absolute inset-0 z-[2] rounded-[2px] focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
+          className="project-hit absolute inset-0 z-[2] rounded-3xl focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
           href={href}
           target={href.startsWith("http") ? "_blank" : undefined}
           rel={href.startsWith("http") ? "noopener noreferrer" : undefined}

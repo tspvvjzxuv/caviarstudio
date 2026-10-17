@@ -1,3 +1,4 @@
+import { CaviarLogo } from "@/components/caviar-logo";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CAVIAR, formatPhone } from "@/lib/config";
@@ -17,8 +18,8 @@ export function SiteFooter() {
       <Separator className="mb-8 bg-[image:var(--hair)]" />
       <div className="flex flex-wrap items-start justify-between gap-8">
         <div className="grid gap-2 text-[0.82rem] leading-6 text-muted-foreground">
-          <strong className="font-serif text-[0.95rem] font-normal tracking-[0.38em] text-foreground uppercase">
-            Caviar
+          <strong className="font-normal">
+            <CaviarLogo markClassName="size-6" wordClassName="text-[1.25rem] leading-none" />
           </strong>
           <p className="text-[0.72rem] tracking-[0.14em] uppercase">{t.place}</p>
           <a href={`mailto:${CAVIAR.EMAIL}`} className="hover:text-azure">
@@ -50,13 +51,13 @@ export function SiteFooter() {
           }}
           className="gap-0"
         >
-          <TabsList variant="line" className="rounded-[2px] p-0" aria-label={t.langLabel}>
+          <TabsList variant="line" className="rounded-full p-0" aria-label={t.langLabel}>
             {LANGS.map((code) => (
               <TabsTrigger
                 key={code}
                 value={code}
                 aria-label={t[LANG_NAME[code]]}
-                className="rounded-[2px] text-[0.68rem] tracking-[0.16em] uppercase"
+                className="rounded-full text-[0.68rem] tracking-[0.16em] uppercase"
               >
                 {code.toUpperCase()}
               </TabsTrigger>

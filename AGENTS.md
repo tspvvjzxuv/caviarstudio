@@ -8,21 +8,21 @@ Static Vite + React + Tailwind v4 + shadcn/ui in `web/`, deployed as GitHub Page
 
 ## Art direction
 
-Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum type. **Azure `#3D8AFF` is the main accent; lemon `#FFE44D` is the secondary accent** (not metallic gold, not mustard). Azure-deep `#1D4ED8` fills primary CTAs. Two type families: Cormorant Garamond (display) and DM Sans (body/UI). Sharp 0–2px corners. Panels never touch. Menus use `.glass` / `.glass-panel`.
+Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum type. **Azure `#3D8AFF` is the main accent; lemon `#FFE44D` is the secondary accent** (not metallic gold, not mustard). Azure-deep `#1D4ED8` fills primary CTAs. Two type families: Cormorant Garamond (display) and DM Sans (body/UI). Soft glass radii (`--radius` 1.5rem, pills, `rounded-3xl` cards). Translucent borders. Panels never touch. Menus use `.glass` / `.glass-panel`.
 
-Spend boldness on the liquid-chrome hero loop (`media/hero/`) with a restrained blue-to-yellow overlay, azure CTAs, and the Komplet card. Yellow only for small high-impact moments. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps may stay numbered because they are a sequence.
+Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/hero/`), azure CTAs, and the Komplet card. Yellow only for small high-impact moments. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps use lucide icons in circular glass discs — no gradient dashes.
 
 ## Motion that earns its place
 
 - One orchestrated hero stagger after the intro veil (first-time / explanation).
-- Muted looping liquid-chrome hero (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`, 1080p). Always play, including when `prefers-reduced-motion` is on (Windows “Animation effects” off). Skip only on explicit Save-Data. Retry play on canplay, loadeddata, visibility, and first pointer/key/scroll. Pause when off-screen or the tab is hidden. CSS field + lazy Three.js shader if Save-Data blocks the loop. Keep the video visible under the azure/lemon glows. No decorative ghost wordmark in the hero. Do not clip display type or card copy.
+- Muted looping liquid-chrome hero (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`, 1080p). Always play, including when `prefers-reduced-motion` is on (Windows “Animation effects” off). Skip only on explicit Save-Data. Retry play on canplay, loadeddata, visibility, and first pointer/key/scroll. Pause when off-screen or the tab is hidden. CSS field + lazy Three.js shader if Save-Data blocks the loop. Keep the video visible under the azure/lemon glows. Hero centerpiece is the Caviar wordmark (same mark as favicon/nav). Do not clip display type or card copy.
 - Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only.
 - Scroll reveals: fade in once. Do not add hover motion on every card.
 - Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, and marquee when off-screen.
 
 ## Conversion
 
-Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Headline is “Váš podnik v najlepšom svetle.” Work stays visible: empty `WORK` shows an invite line plus quote CTA (no empty tiles); owner stills in `media/` plus one object in `web/src/lib/work.ts` become Attic Salt–style tiles.
+Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, after the price notes, in the header, and on the form. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Hero centerpiece is the Caviar wordmark; tagline is “Váš podnik v najlepšom svetle.” Work stays visible: empty `WORK` shows an invite line plus quote CTA (no empty tiles); owner stills in `media/` plus one object in `web/src/lib/work.ts` become Attic Salt–style tiles.
 
 ## SEO
 

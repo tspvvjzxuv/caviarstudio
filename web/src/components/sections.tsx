@@ -1,8 +1,21 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  AtSign,
+  Camera,
+  Clapperboard,
+  Globe,
+  Hammer,
+  Mail,
+  MessageCircle,
+  PackageCheck,
+  Phone,
+} from "lucide-react";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CaviarLogo } from "@/components/caviar-logo";
+import { IconDisc } from "@/components/icon-disc";
 import {
   Accordion,
   AccordionContent,
@@ -28,11 +41,13 @@ import { Section } from "@/components/section";
 import { WorkTile } from "@/components/work-tile";
 
 const PANEL =
-  "h-full min-h-[14rem] overflow-visible rounded-[2px] py-0 ring-1 ring-border";
+  "h-full min-h-[14rem] overflow-visible rounded-3xl border border-border py-0 ring-0";
 const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
 const SERVICE_WASH = ["service-wash-web", "service-wash-video", "service-wash-foto"] as const;
+const SERVICE_ICON = [Globe, Clapperboard, Camera] as const;
 const HERO_GHOST =
-  "hero-ghost h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full";
+  "hero-ghost h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full";
+const PROCESS_ICON = [MessageCircle, Phone, Hammer, PackageCheck] as const;
 
 const TEAM = [
   { mono: "MK", name: "Miroslav Kotvas" },
@@ -66,13 +81,19 @@ export function Hero() {
       <HeroBackdrop kenRef={kenRef} />
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
         <Kicker>{t.heroKicker}</Kicker>
-        <h1
-          className="mt-6 max-w-[22ch] font-serif text-[clamp(2.85rem,11vw,8.1rem)] leading-[1.08] font-normal tracking-[-0.035em] text-balance [&_em]:inline-block [&_em]:bg-linear-to-r [&_em]:from-azure [&_em]:via-pearl [&_em]:to-platinum [&_em]:bg-clip-text [&_em]:pb-[0.14em] [&_em]:font-serif [&_em]:italic [&_em]:text-transparent"
-          dangerouslySetInnerHTML={{ __html: t.heroTitle }}
-        />
-        <p className="mt-6 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.5] text-pretty">{t.heroExplain}</p>
+        <h1 className="hero-logo mt-5 text-[clamp(3.1rem,12vw,7.4rem)]">
+          <CaviarLogo
+            className="max-w-full"
+            markClassName="size-[0.72em]"
+            wordClassName="leading-[0.95] pb-[0.08em]"
+          />
+        </h1>
+        <p className="mt-3 max-w-[22ch] font-serif text-[clamp(1.25rem,2.4vw,1.85rem)] leading-[1.25] tracking-[-0.02em] text-pretty italic text-platinum">
+          {t.heroTagline}
+        </p>
+        <p className="mt-5 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.5] text-pretty">{t.heroExplain}</p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <Button asChild className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
           <Button asChild variant="outline" className={HERO_GHOST}>
@@ -112,10 +133,10 @@ export function Services() {
         </p>
         <div className="grid items-stretch gap-6 md:grid-cols-3 md:gap-8 xl:gap-10">
           {items.map((item, idx) => (
-            <ServiceCard key={item.name} item={item} wash={SERVICE_WASH[idx]} />
+            <ServiceCard key={item.name} item={item} wash={SERVICE_WASH[idx]} Icon={SERVICE_ICON[idx]} />
           ))}
         </div>
-        <Reveal className="mt-6 overflow-visible rounded-[2px] border border-border bg-card p-6 md:mt-8 md:p-8 xl:mt-10">
+        <Reveal className="mt-6 overflow-visible rounded-3xl border border-border bg-card p-6 md:mt-8 md:p-8 xl:mt-10">
           <span className="block text-[0.68rem] tracking-[0.22em] text-azure uppercase">{t.forWhomLabel}</span>
           <span className="mt-2 block font-serif text-[clamp(1.2rem,2.4vw,1.55rem)] leading-[1.55] italic">{t.forWhom}</span>
         </Reveal>
@@ -127,14 +148,19 @@ export function Services() {
 function ServiceCard({
   item,
   wash,
+  Icon,
 }: {
   item: { name: string; lead: string; gets: string };
   wash: string;
+  Icon: (typeof SERVICE_ICON)[number];
 }) {
   return (
     <Reveal className="h-full">
       <Card className={`${PANEL} ${wash}`}>
         <CardHeader className={PANEL_HEAD}>
+          <IconDisc>
+            <Icon />
+          </IconDisc>
           <CardTitle className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em]">
             {item.name}
           </CardTitle>
@@ -150,7 +176,7 @@ function PriceIdentity({ name, desc }: { name: string; desc: string }) {
   const { t } = useLanguage();
   return (
     <div className="grid gap-3">
-      <Badge variant="outline" className="rounded-[2px] border-lemon/45 bg-lemon/10 tracking-[0.2em] text-lemon uppercase">
+      <Badge variant="outline" className="rounded-full border-lemon/35 bg-lemon/10 tracking-[0.2em] text-lemon uppercase">
         {t.launchBadge}
       </Badge>
       <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal">{name}</CardTitle>
@@ -180,11 +206,11 @@ function LaunchPriceCard({ pack, vat }: { pack: PricePack; vat: string }) {
   const price = CAVIAR.prices[pack.key];
   return (
     <Reveal className="h-full">
-      <Card className="h-full min-h-[20rem] overflow-visible rounded-[2px] bg-card py-0 ring-1 ring-border">
+      <Card className="h-full min-h-[20rem] overflow-visible rounded-3xl border border-border bg-card py-0 ring-0">
         <CardHeader className={PANEL_HEAD}>
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
           <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
-          <Button asChild variant="outline" className="mt-1 h-11 rounded-[2px] text-[0.68rem] tracking-[0.16em] uppercase">
+          <Button asChild variant="outline" className="mt-1 h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
         </CardHeader>
@@ -198,12 +224,12 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
   const price = CAVIAR.prices[pack.key];
   return (
       <Reveal className="h-full md:col-span-2 xl:col-span-3">
-      <Card className="h-full min-h-[16rem] overflow-visible rounded-[2px] bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-1 ring-azure/50">
+      <Card className="h-full min-h-[16rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
         <CardHeader className="flex flex-col gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
           <div className="grid gap-4 justify-items-start">
             <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
-            <Button asChild className="metal-fill h-11 rounded-[2px] px-6 text-[0.68rem] tracking-[0.16em] uppercase">
+            <Button asChild className="metal-fill h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
           </div>
@@ -231,7 +257,7 @@ export function Pricing() {
           <p>{t.vatYes}</p>
         </Reveal>
         <Reveal className="mt-8">
-          <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <Button asChild className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
         </Reveal>
@@ -243,25 +269,26 @@ export function Pricing() {
 export function Process() {
   const { t } = useLanguage();
   const steps = [
-    { n: "01", title: t.how1t, body: t.how1p },
-    { n: "02", title: t.how2t, body: t.how2p },
-    { n: "03", title: t.how3t, body: t.how3p },
-    { n: "04", title: t.how4t, body: t.how4p },
+    { n: "01", title: t.how1t, body: t.how1p, Icon: PROCESS_ICON[0] },
+    { n: "02", title: t.how2t, body: t.how2p, Icon: PROCESS_ICON[1] },
+    { n: "03", title: t.how3t, body: t.how3p, Icon: PROCESS_ICON[2] },
+    { n: "04", title: t.how4t, body: t.how4p, Icon: PROCESS_ICON[3] },
   ];
   return (
     <Section.Frame id="ako" className="slide-grid">
       <Section.Body>
         <Section.Heading className="mb-10 max-w-[16rem] md:mb-16 md:max-w-[26rem]" kicker={t.howKicker} title={t.howTitle} />
         <ol className="grid list-none gap-6 md:gap-8 xl:gap-10">
-          {steps.map((step) => (
+          {steps.map((step) => {
+            const Icon = step.Icon;
+            return (
             <li key={step.n}>
               <Reveal>
-                <Card className="overflow-visible rounded-[2px] py-0 ring-1 ring-border">
-                  <CardContent className="grid grid-cols-[auto_1fr] items-start gap-x-6 gap-y-4 p-6 md:p-8">
-                    <span className="grid min-w-[2.2ch] gap-3">
-                      <i className="block h-px w-9 bg-[image:var(--hair)]" aria-hidden="true" />
-                      <span className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] text-azure italic">{step.n}</span>
-                    </span>
+                <Card className="overflow-visible rounded-3xl border border-border py-0 ring-0">
+                  <CardContent className="grid grid-cols-[auto_1fr] items-start gap-x-5 gap-y-4 p-6 md:p-8">
+                    <IconDisc>
+                      <Icon />
+                    </IconDisc>
                     <div className="min-w-0">
                       <h3 className="font-serif text-[clamp(1.35rem,2.4vw,1.85rem)] leading-[1.2] font-normal">{step.title}</h3>
                       <p className="mt-2 max-w-[52ch] leading-[1.55] text-muted-foreground">{step.body}</p>
@@ -270,7 +297,8 @@ export function Process() {
                 </Card>
               </Reveal>
             </li>
-          ))}
+            );
+          })}
         </ol>
       </Section.Body>
     </Section.Frame>
@@ -486,7 +514,7 @@ export function Team() {
             <li key={p.name}>
               <Reveal>
                 <div
-                  className="relative grid aspect-4/5 max-h-[420px] max-w-[380px] place-items-center overflow-hidden border border-border bg-linear-to-br from-[#1a1c22] to-[#0c0c10]"
+                  className="relative grid aspect-4/5 max-h-[420px] max-w-[380px] place-items-center overflow-hidden rounded-3xl border border-border bg-linear-to-br from-[#1a1c22] to-[#0c0c10]"
                   aria-hidden="true"
                 >
                   <b className="relative z-[1] font-serif text-[clamp(4.2rem,10vw,6.5rem)] font-normal tracking-[0.06em] text-transparent italic bg-linear-to-b from-[#f7f8fa] to-steel bg-clip-text">
@@ -522,9 +550,9 @@ export function Faq() {
             <AccordionItem
               key={item.q}
               value={`faq-${idx}`}
-              className="rounded-[2px] border border-border bg-card px-6 not-last:border-b md:px-8"
+              className="rounded-3xl border border-border bg-card px-6 not-last:border-b-0 md:px-8"
             >
-              <AccordionTrigger className="rounded-[2px] py-5 font-serif text-[clamp(1.25rem,2.4vw,1.6rem)] leading-[1.25] font-normal hover:no-underline">
+              <AccordionTrigger className="rounded-full py-5 font-serif text-[clamp(1.25rem,2.4vw,1.6rem)] leading-[1.25] font-normal hover:no-underline">
                 {item.q}
               </AccordionTrigger>
               <AccordionContent className="max-w-[62ch] pb-6 leading-[1.55] text-muted-foreground">{item.a}</AccordionContent>
@@ -546,22 +574,40 @@ function ContactIntro() {
         <span className="block">{t.how1t}</span>
       </h2>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-          <a href={`mailto:${CAVIAR.EMAIL}`}>{t.ctaMail}</a>
+        <Button asChild className="metal-fill h-[52px] gap-2.5 rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <a href={`mailto:${CAVIAR.EMAIL}`}>
+            <IconDisc size="sm">
+              <Mail />
+            </IconDisc>
+            {t.ctaMail}
+          </a>
         </Button>
-        <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-          <a href={`tel:${CAVIAR.PHONE}`}>{t.ctaPhone}</a>
+        <Button asChild variant="outline" className="h-[52px] gap-2.5 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <a href={`tel:${CAVIAR.PHONE}`}>
+            <IconDisc size="sm">
+              <Phone />
+            </IconDisc>
+            {t.ctaPhone}
+          </a>
         </Button>
-        <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-          <a href={waHref(t.waText)}>{t.ctaWa}</a>
+        <Button asChild variant="outline" className="h-[52px] gap-2.5 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <a href={waHref(t.waText)}>
+            <IconDisc size="sm">
+              <MessageCircle />
+            </IconDisc>
+            {t.ctaWa}
+          </a>
         </Button>
-        <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+        <Button asChild variant="outline" className="h-[52px] gap-2.5 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
           <a
             href={CAVIAR.INSTAGRAM}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Instagram ${CAVIAR.IG_HANDLE}`}
           >
+            <IconDisc size="sm">
+              <AtSign />
+            </IconDisc>
             {t.ctaIg}
           </a>
         </Button>
@@ -596,7 +642,7 @@ function ContactForm() {
 
   return (
     <Reveal>
-      <Card className="overflow-visible rounded-[2px] py-0 ring-1 ring-border">
+      <Card className="overflow-visible rounded-3xl border border-border py-0 ring-0">
         <CardContent className="p-6 md:p-8">
           <form onSubmit={onSubmit} className="grid gap-6">
             <FieldGroup>
@@ -604,23 +650,23 @@ function ContactForm() {
                 <FieldLabel htmlFor="f-name" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
                   {t.fName}
                 </FieldLabel>
-                <Input id="f-name" name="name" autoComplete="name" required className="h-11 rounded-[2px] bg-background" />
+                <Input id="f-name" name="name" autoComplete="name" required className="h-11 rounded-2xl bg-background" />
               </Field>
               <Field>
                 <FieldLabel htmlFor="f-biz" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
                   {t.fBiz}
                 </FieldLabel>
-                <Input id="f-biz" name="business" autoComplete="organization" required className="h-11 rounded-[2px] bg-background" />
+                <Input id="f-biz" name="business" autoComplete="organization" required className="h-11 rounded-2xl bg-background" />
               </Field>
               <Field>
                 <FieldLabel htmlFor="f-need" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
                   {t.fNeed}
                 </FieldLabel>
                 <Select value={need} onValueChange={setNeed} required>
-                  <SelectTrigger id="f-need" className="h-11 w-full rounded-[2px] bg-background">
+                  <SelectTrigger id="f-need" className="h-11 w-full rounded-2xl bg-background">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="glass rounded-[2px] bg-transparent">
+                  <SelectContent className="glass rounded-3xl border-white/12 bg-transparent">
                     <SelectGroup>
                       {NEED_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
@@ -640,11 +686,11 @@ function ContactForm() {
                   name="budget"
                   inputMode="decimal"
                   placeholder={t.fBudgetPh}
-                  className="h-11 rounded-[2px] bg-background"
+                  className="h-11 rounded-2xl bg-background"
                 />
               </Field>
             </FieldGroup>
-            <Button type="submit" className="metal-fill h-[52px] rounded-[2px] text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+            <Button type="submit" className="metal-fill h-[52px] rounded-full text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
               {t.ctaQuote}
             </Button>
           </form>

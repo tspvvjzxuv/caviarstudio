@@ -1,4 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Caviar">
-  <rect width="100" height="100" fill="#070708"/>
-  <text x="50" y="66" text-anchor="middle" font-size="58" fill="#e8eaee" font-family="Times New Roman, Georgia, serif">C</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#070708"/>
+  <defs>
+    <radialGradient id="bead" cx="34%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="32%" stop-color="#ffe44d"/>
+      <stop offset="68%" stop-color="#c5cad3"/>
+      <stop offset="100%" stop-color="#3d8aff"/>
+    </radialGradient>
+    <linearGradient id="c" x1="18%" y1="8%" x2="88%" y2="92%">
+      <stop offset="0%" stop-color="#3d8aff"/>
+      <stop offset="46%" stop-color="#f4f5f7"/>
+      <stop offset="100%" stop-color="#ffe44d"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="15.5" fill="url(#bead)"/>
+  <circle cx="32" cy="32" r="15.5" fill="none" stroke="#f4f5f7" stroke-opacity=".35" stroke-width="1"/>
+  <path d="M44.2 19.4a17.6 17.6 0 1 0 0 25.2" fill="none" stroke="url(#c)" stroke-width="2.4" stroke-linecap="round"/>
 </svg>
