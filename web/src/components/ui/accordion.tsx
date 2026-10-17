@@ -1,7 +1,7 @@
 import * as React from "react"
 import { cn } from "cn"
 import { Accordion as AccordionPrimitive } from "radix-ui"
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
+import { ChevronDownIcon } from "lucide-react"
 
 function Accordion({
   className,
@@ -39,17 +39,20 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group/accordion-trigger relative flex flex-1 items-start justify-between rounded-full border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring disabled:pointer-events-none disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
+          "group/accordion-trigger relative flex flex-1 items-center justify-between gap-4 rounded-full border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50",
           className
         )}
         {...props}
       >
         {children}
-        <span className="glass ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-white/12 text-pearl group-aria-expanded/accordion-trigger:hidden">
-          <ChevronDownIcon data-slot="accordion-trigger-icon" className="size-3.5 stroke-[1.5]" />
-        </span>
-        <span className="glass ml-auto hidden size-8 shrink-0 place-items-center rounded-full border border-white/12 text-pearl group-aria-expanded/accordion-trigger:grid">
-          <ChevronUpIcon data-slot="accordion-trigger-icon" className="size-3.5 stroke-[1.5]" />
+        <span
+          className="icon-disc ml-auto inline-flex size-9 shrink-0 items-center justify-center text-pearl transition-colors duration-300 group-aria-expanded/accordion-trigger:border-azure/30 group-aria-expanded/accordion-trigger:bg-azure/15"
+          aria-hidden="true"
+        >
+          <ChevronDownIcon
+            className="size-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-aria-expanded/accordion-trigger:rotate-180"
+            strokeWidth={1.75}
+          />
         </span>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>

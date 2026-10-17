@@ -19,7 +19,7 @@ export function IconDisc({
   return (
     <span
       className={cn(
-        "glass inline-grid shrink-0 place-items-center rounded-full border border-white/12 text-pearl [&_svg]:stroke-[1.5] [&_svg]:stroke-current",
+        "icon-disc inline-flex shrink-0 items-center justify-center [&_svg]:stroke-[1.75] [&_svg]:stroke-current",
         SIZE[size],
         className,
       )}

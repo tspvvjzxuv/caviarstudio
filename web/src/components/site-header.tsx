@@ -129,11 +129,11 @@ export function SiteHeader() {
             <Button
               variant="ghost"
               size="icon"
-              className="glass size-11 rounded-full border border-white/12 lg:hidden"
+              className="icon-disc inline-flex size-11 items-center justify-center lg:hidden"
               aria-expanded={open}
               aria-label={open ? t.close : t.menu}
             >
-              {open ? <X className="size-4 stroke-[1.5]" /> : <Menu className="size-4 stroke-[1.5]" />}
+              {open ? <X className="size-4" strokeWidth={1.75} /> : <Menu className="size-4" strokeWidth={1.75} />}
             </Button>
           </SheetTrigger>
           <SheetContent

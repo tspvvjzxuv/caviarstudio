@@ -310,6 +310,14 @@
     linear-gradient(90deg, rgb(7 7 8 / 52%) 0%, rgb(7 7 8 / 22%) 36%, transparent 58%);
 }
 
+.icon-disc {
+  @apply rounded-full border border-white/10 bg-white/[0.06] leading-none text-pearl backdrop-blur-md;
+}
+.icon-disc svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .glass {
   background-color: rgb(14 14 18 / 18%);
   background-image: linear-gradient(180deg, rgb(61 138 255 / 16%) 0%, rgb(255 228 77 / 6%) 100%);

@@ -50,8 +50,8 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <span className="glass grid size-7 place-items-center rounded-full border border-white/12 text-pearl">
-          <ChevronDownIcon className="pointer-events-none size-3.5 stroke-[1.5]" />
+        <span className="icon-disc inline-flex size-7 shrink-0 items-center justify-center text-pearl">
+          <ChevronDownIcon className="pointer-events-none size-3.5" strokeWidth={1.75} />
         </span>
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
