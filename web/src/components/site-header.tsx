@@ -88,7 +88,7 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "glass sticky top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] [view-transition-name:site-header]",
+        "glass fixed inset-x-0 top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] [view-transition-name:site-header]",
         scrolled ? "border-b border-border" : "border-b border-transparent",
       )}
     >

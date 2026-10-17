@@ -153,7 +153,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset). Ghost is a hairline that warms to lemon on hover. Uppercase labels, 52px min height, full width on small screens.
 - **Feature / service cards:** Elevated `#0E0E12` surface, 1px steel border, equal padding, hover hairline goes azure. Three-up on desktop with `--gap-panel`.
 - **Pricing cards:** Shared lemon launch-price badge; launch amounts in lemon. Caviar Komplet is visually louder: azure frame, faint azure-to-lemon wash, wider measure. Same gap as other panel grids.
-- **Header / menus:** Sticky `.glass` navbar (hero video shows through). Mobile sheet, language switcher, select, tooltip, popover, dropdown, and dialog use `.glass` / `.glass-panel`.
+- **Header / menus:** Fixed `.glass` navbar over the hero so the loop shows through. Mobile sheet, language switcher, select, tooltip, popover, dropdown, and dialog use `.glass` / `.glass-panel`.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
 - **Work tiles:** Section and nav stay visible. Empty `WORK` is one invite line plus a quote CTA — no empty tiles, no “Čoskoro” grid. Each owner item in `web/src/lib/work.ts` (image or video, title, category, optional link) becomes a large Attic Salt–style tile (hover parallax, scroll shift, hover film, custom cursor). Silver fallback only if that file is missing. Never “TODO”, “Placeholder”, or filler tiles.

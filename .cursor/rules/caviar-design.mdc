@@ -28,7 +28,7 @@ Deploy as static GitHub Pages at the repo root for `caviarstudio.sk`:
 - Near-black ground `#070708`, elevated `#0E0E12`, surface `#14141A`
 - Pearl `#F4F5F7`, silver `#C5CAD3`, platinum `#E8EAEE`, steel `#9AA3AE`
 - **Azure `#3D8AFF` main accent**, azure-deep `#1D4ED8` CTA fills, **lemon `#FFE44D` secondary** (small moments only). Not metallic gold, not mustard.
-- Menus: `.glass` / `.glass-panel` (blur + saturate, `-webkit-backdrop-filter`, solid fallback)
+- Menus: `.glass` / `.glass-panel` (blur + saturate, `-webkit-backdrop-filter`, solid fallback). Fixed glass nav overlays the hero so the loop shows through.
 - `--radius`: 2px. Sharp cards and buttons. Keep WCAG AA.
 
 ## Layout
