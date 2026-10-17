@@ -174,8 +174,7 @@
   html {
     scroll-behavior: auto;
   }
-  .hero-silver,
-  .hero-loop {
+  .hero-silver {
     display: none;
   }
   .js .reveal {

@@ -5,12 +5,6 @@ export function usePauseOffscreen(ref: RefObject<HTMLElement | null>, pausedClas
     const el = ref.current;
     if (!el) return;
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      el.classList.add(pausedClass);
-      return;
-    }
-
     const sync = (hidden: boolean) => {
       el.classList.toggle(pausedClass, hidden);
     };

@@ -8,7 +8,7 @@
 |-------|------|--------|
 | Open Graph | `img/og.png` | Typographic silver field, not a photograph |
 | Hero | Liquid chrome loop + overlay | `media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`. CSS field if the loop is skipped |
-| Hero loop | `media/hero/liquid-chrome.*` | Pexels 29848606. Muted autoplay loop; poster only on reduced motion / Save-Data / 2G |
+| Hero loop | `media/hero/liquid-chrome.*` | Pexels 29848606. Muted autoplay loop; skip only on explicit Save-Data |
 | Work stills | `media/<id>.webp` | Drop in `media/`, add one object to `WORK`. Empty `WORK` = invite line, no filler tiles |
 | Hover films | `media/<id>.mp4` | Optional muted hover film on a still; or the tile itself if there is no image |
 | Founders | CSS monograms | MK · SK until the owner adds portraits |

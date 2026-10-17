@@ -1,17 +1,15 @@
 import { useEffect, useRef, useState, type RefObject, type SyntheticEvent } from "react";
 import { HeroSilverField } from "@/components/hero-silver-field";
 import { HERO_LOOP } from "@/lib/config";
+import { cn } from "@/lib/utils";
 
 type Conn = Navigator & {
-  connection?: { saveData?: boolean; effectiveType?: string };
+  connection?: { saveData?: boolean };
 };
 
-function allowHeroVideo() {
-  if (typeof window === "undefined") return false;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-  const conn = (navigator as Conn).connection;
-  if (conn?.saveData) return false;
-  return true;
+function saveDataOn() {
+  if (typeof navigator === "undefined") return false;
+  return Boolean((navigator as Conn).connection?.saveData);
 }
 
 function restartLoop(video: HTMLVideoElement) {
@@ -25,42 +23,74 @@ function restartLoop(video: HTMLVideoElement) {
 
 function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null> }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [failed, setFailed] = useState(false);
-  const [allowed] = useState(allowHeroVideo);
+  const [waiting, setWaiting] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     const root = pausedRoot.current;
-    if (!video || !root || failed) return;
+    if (!video || !root) return;
+
+    const offscreen = () => document.hidden || root.classList.contains("is-paused");
+
+    const arm = () => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.setAttribute("playsinline", "true");
+      video.setAttribute("webkit-playsinline", "true");
+    };
 
     const tryPlay = () => {
-      if (root.classList.contains("is-paused") || document.hidden) {
+      arm();
+      if (offscreen()) {
         video.pause();
         return;
       }
-      video.muted = true;
-      video.defaultMuted = true;
-      video.setAttribute("webkit-playsinline", "true");
-      void video.play().catch(() => {
-        const retry = () => {
-          void video.play().catch(() => {});
-        };
-        video.addEventListener("canplay", retry, { once: true });
-        video.addEventListener("loadeddata", retry, { once: true });
-      });
+      if (!video.paused) {
+        setWaiting(false);
+        return;
+      }
+      void video.play()
+        .then(() => setWaiting(false))
+        .catch(() => {});
     };
+
+    const onPlaying = () => setWaiting(false);
 
     const mo = new MutationObserver(tryPlay);
     mo.observe(root, { attributes: true, attributeFilter: ["class"] });
+
+    video.addEventListener("canplay", tryPlay);
+    video.addEventListener("loadeddata", tryPlay);
+    video.addEventListener("playing", onPlaying);
     document.addEventListener("visibilitychange", tryPlay);
+    window.addEventListener("pointerdown", tryPlay, { passive: true });
+    window.addEventListener("touchstart", tryPlay, { passive: true });
+    window.addEventListener("scroll", tryPlay, { passive: true });
+    window.addEventListener("keydown", tryPlay);
+
     tryPlay();
+    const stall = window.setTimeout(() => {
+      if (video.paused && !offscreen()) setWaiting(true);
+    }, 1500);
+    const watchdog = window.setInterval(() => {
+      if (!offscreen() && video.paused) tryPlay();
+    }, 1000);
+
     return () => {
       mo.disconnect();
+      video.removeEventListener("canplay", tryPlay);
+      video.removeEventListener("loadeddata", tryPlay);
+      video.removeEventListener("playing", onPlaying);
       document.removeEventListener("visibilitychange", tryPlay);
+      window.removeEventListener("pointerdown", tryPlay);
+      window.removeEventListener("touchstart", tryPlay);
+      window.removeEventListener("scroll", tryPlay);
+      window.removeEventListener("keydown", tryPlay);
+      window.clearTimeout(stall);
+      window.clearInterval(watchdog);
     };
-  }, [allowed, failed, pausedRoot]);
-
-  if (!allowed || failed) return null;
+  }, [pausedRoot]);
 
   const onEnded = (event: SyntheticEvent<HTMLVideoElement>) => {
     restartLoop(event.currentTarget);
@@ -69,7 +99,10 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
   return (
     <video
       ref={videoRef}
-      className="hero-loop pointer-events-none absolute inset-0 z-[1] size-full object-cover"
+      className={cn(
+        "hero-loop pointer-events-none absolute inset-0 z-[1] size-full object-cover",
+        waiting && "opacity-0",
+      )}
       autoPlay
       muted
       loop
@@ -80,7 +113,6 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       disablePictureInPicture
       disableRemotePlayback
       onEnded={onEnded}
-      onError={() => setFailed(true)}
     >
       <source src={HERO_LOOP.mp4} type="video/mp4" />
       <source src={HERO_LOOP.webm} type="video/webm" />
@@ -89,7 +121,7 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
 }
 
 export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | null> }) {
-  const [videoOk] = useState(allowHeroVideo);
+  const [skip] = useState(saveDataOn);
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -100,11 +132,7 @@ export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | nu
           alt=""
           className="hero-poster absolute inset-0 z-0 size-full object-cover"
         />
-        <HeroLoop pausedRoot={kenRef} />
-        <p className="hero-wordmark absolute top-[16%] right-[clamp(1.25rem,5vw,5rem)] z-[2] hidden font-serif text-[clamp(5rem,11vw,10rem)] leading-none tracking-[0.12em] text-platinum/12 italic min-[90rem]:block min-[90rem]:[@media(max-height:44rem)]:hidden">
-          Caviar
-        </p>
-        {videoOk ? null : <HeroSilverField />}
+        {skip ? <HeroSilverField /> : <HeroLoop pausedRoot={kenRef} />}
         <div className="hero-shine absolute inset-0 z-[2]" />
         <div className="hero-grain absolute inset-0 z-[2]" />
         <div className="hero-depth absolute inset-0 z-[2]" />
