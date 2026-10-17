@@ -745,6 +745,12 @@
       "skillPath": "skills/marketing-psychology/SKILL.md",
       "computedHash": "50d735eb0f5c36f379ed2200f21aeacc9b9ad85667b5d33ec6111857352a1340"
     },
+    "mcp-builder": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/mcp-builder/SKILL.md",
+      "computedHash": "826e46adf81e1372282e205c34e1a2ee876e72148007726e4a2512599d2fef7b"
+    },
     "mermaid-to-proverif": {
       "source": "trailofbits/skills",
       "sourceType": "github",
@@ -828,6 +834,12 @@
       "sourceType": "github",
       "skillPath": "skills/pinned-comment/SKILL.md",
       "computedHash": "693072a5aa7ff5156d9c75b1190f18364628a1f68e48a746bf5f64a7b5cfb5c5"
+    },
+    "playwright-cli": {
+      "source": "microsoft/playwright-cli",
+      "sourceType": "github",
+      "skillPath": "skills/playwright-cli/SKILL.md",
+      "computedHash": "ffbd59a973d4e2c19c6ecc31254a14497069c362f1d1820b6a6cfbe62de34a73"
     },
     "popups": {
       "source": "coreyhaines31/marketingskills",
@@ -930,6 +942,12 @@
       "sourceType": "github",
       "skillPath": "skills/reels-scripting/SKILL.md",
       "computedHash": "ad253e372431db0872334dcde96f84d483fad33311d66ee13b8fc38621d60d75"
+    },
+    "refactor": {
+      "source": "tartinerlabs/skills",
+      "sourceType": "github",
+      "skillPath": "plugins/quality/skills/refactor/SKILL.md",
+      "computedHash": "a49ef988daef7ab469761bffc1e9738bb319871f17d2419df9b174919c6977d3"
     },
     "referrals": {
       "source": "coreyhaines31/marketingskills",
