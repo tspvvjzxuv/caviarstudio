@@ -256,7 +256,7 @@ export function Process() {
   return (
     <Section.Frame id="ako" className="slide-grid">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.howKicker} title={t.howTitle} />
+        <Section.Heading className="mb-10 max-w-[16rem] md:mb-16 md:max-w-[26rem]" kicker={t.howKicker} title={t.howTitle} />
         <ol className="grid list-none gap-6 md:gap-8 xl:gap-10">
           {steps.map((step) => (
             <li key={step.n}>
@@ -436,12 +436,14 @@ export function Work() {
           {HAS_WORK ? (
             <p className="text-[1.02rem] text-muted-foreground">{t.workLead}</p>
           ) : (
-            <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">
-              {t.workEmpty}{" "}
-              <a href="#kontakt" className="text-platinum underline-offset-4 hover:underline">
-                {t.ctaQuote}
-              </a>
-            </p>
+            <>
+              <p className="max-w-[42ch] text-[1.02rem] text-muted-foreground">{t.workEmpty}</p>
+              <p className="mt-3">
+                <a href="#kontakt" className="text-[0.95rem] text-platinum underline-offset-4 hover:underline">
+                  {t.ctaQuote}
+                </a>
+              </p>
+            </>
           )}
         </Section.Heading>
       </Section.Body>
@@ -544,7 +546,7 @@ function ContactIntro() {
   return (
     <Reveal>
       <Kicker>{t.contactKicker}</Kicker>
-      <h2 className="mt-4 font-serif text-[clamp(2.5rem,7vw,5.6rem)] leading-[1.08] tracking-[-0.03em]">
+      <h2 className="mt-4 font-serif text-[clamp(2.4rem,8vw,3.85rem)] leading-[1.08] tracking-[-0.03em]">
         <span className="block">{t.contactLine1}</span>
         <span className="block">{t.how1t}</span>
       </h2>
