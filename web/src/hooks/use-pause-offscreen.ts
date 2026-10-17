@@ -19,7 +19,7 @@ export function usePauseOffscreen(ref: RefObject<HTMLElement | null>, pausedClas
       ([entry]) => {
         sync(!entry.isIntersecting || document.hidden);
       },
-      { threshold: 0.02 },
+      { threshold: 0, rootMargin: "80px 0px 80px 0px" },
     );
     io.observe(el);
 

@@ -7,10 +7,10 @@ type Conn = Navigator & {
 };
 
 function allowHeroVideo() {
+  if (typeof window === "undefined") return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
   const conn = (navigator as Conn).connection;
   if (conn?.saveData) return false;
-  if (conn?.effectiveType === "slow-2g" || conn?.effectiveType === "2g") return false;
   return true;
 }
 
@@ -25,39 +25,42 @@ function restartLoop(video: HTMLVideoElement) {
 
 function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null> }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [mount, setMount] = useState(false);
   const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    if (!allowHeroVideo()) return;
-    setMount(true);
-  }, []);
+  const [allowed] = useState(allowHeroVideo);
 
   useEffect(() => {
     const video = videoRef.current;
     const root = pausedRoot.current;
     if (!video || !root || failed) return;
 
-    const sync = () => {
+    const tryPlay = () => {
       if (root.classList.contains("is-paused") || document.hidden) {
         video.pause();
         return;
       }
       video.muted = true;
-      void video.play().catch(() => setFailed(true));
+      video.defaultMuted = true;
+      video.setAttribute("webkit-playsinline", "true");
+      void video.play().catch(() => {
+        const retry = () => {
+          void video.play().catch(() => {});
+        };
+        video.addEventListener("canplay", retry, { once: true });
+        video.addEventListener("loadeddata", retry, { once: true });
+      });
     };
 
-    const mo = new MutationObserver(sync);
+    const mo = new MutationObserver(tryPlay);
     mo.observe(root, { attributes: true, attributeFilter: ["class"] });
-    document.addEventListener("visibilitychange", sync);
-    sync();
+    document.addEventListener("visibilitychange", tryPlay);
+    tryPlay();
     return () => {
       mo.disconnect();
-      document.removeEventListener("visibilitychange", sync);
+      document.removeEventListener("visibilitychange", tryPlay);
     };
-  }, [mount, failed, pausedRoot]);
+  }, [allowed, failed, pausedRoot]);
 
-  if (!mount || failed) return null;
+  if (!allowed || failed) return null;
 
   const onEnded = (event: SyntheticEvent<HTMLVideoElement>) => {
     restartLoop(event.currentTarget);
@@ -71,7 +74,7 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="auto"
       poster={HERO_LOOP.poster}
       aria-hidden="true"
       disablePictureInPicture
@@ -79,18 +82,14 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       onEnded={onEnded}
       onError={() => setFailed(true)}
     >
-      <source src={HERO_LOOP.webm} type="video/webm" />
       <source src={HERO_LOOP.mp4} type="video/mp4" />
+      <source src={HERO_LOOP.webm} type="video/webm" />
     </video>
   );
 }
 
 export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | null> }) {
-  const [videoOk, setVideoOk] = useState(false);
-
-  useEffect(() => {
-    setVideoOk(allowHeroVideo());
-  }, []);
+  const [videoOk] = useState(allowHeroVideo);
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -99,7 +98,7 @@ export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | nu
         <img
           src={HERO_LOOP.poster}
           alt=""
-          className="hero-poster absolute inset-0 z-[1] size-full object-cover"
+          className="hero-poster absolute inset-0 z-0 size-full object-cover"
         />
         <HeroLoop pausedRoot={kenRef} />
         <p className="hero-wordmark absolute top-[16%] right-[clamp(1.25rem,5vw,5rem)] z-[2] hidden font-serif text-[clamp(5rem,11vw,10rem)] leading-none tracking-[0.12em] text-platinum/12 italic min-[90rem]:block min-[90rem]:[@media(max-height:44rem)]:hidden">

@@ -79,11 +79,6 @@ export function Hero() {
             <a href="#cennik">{t.ctaPricing}</a>
           </Button>
         </div>
-        <ul className="mt-6 flex list-none flex-wrap gap-x-7 gap-y-2 p-0 text-[0.85rem] text-silver">
-          <li>{t.place}</li>
-          <li>{t.heroNoteVat}</li>
-          <li>{t.how1t}</li>
-        </ul>
       </div>
       <a
         href="#sluzby"
