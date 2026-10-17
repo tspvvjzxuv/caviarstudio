@@ -80,18 +80,10 @@ export function Hero() {
     <section className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
       <HeroBackdrop kenRef={kenRef} />
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
-        <Kicker>{t.heroKicker}</Kicker>
-        <h1 className="hero-logo mt-5 text-[clamp(3.1rem,12vw,7.4rem)]">
-          <CaviarLogo
-            className="max-w-full"
-            markClassName="size-[0.72em]"
-            wordClassName="leading-[0.95] pb-[0.08em]"
-          />
+        <h1 className="hero-logo w-fit max-w-[80%] text-[clamp(3.9rem,16vw,10.5rem)]">
+          <CaviarLogo />
         </h1>
-        <p className="mt-3 max-w-[22ch] font-serif text-[clamp(1.25rem,2.4vw,1.85rem)] leading-[1.25] tracking-[-0.02em] text-pretty italic text-platinum">
-          {t.heroTagline}
-        </p>
-        <p className="mt-5 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.5] text-pretty">{t.heroExplain}</p>
+        <p className="mt-8 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.5] text-pretty">{t.heroExplain}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
@@ -255,11 +247,6 @@ export function Pricing() {
         <Reveal className="mt-7 grid gap-2 text-[0.88rem] text-muted-foreground">
           <p>{t.noHidden}</p>
           <p>{t.vatYes}</p>
-        </Reveal>
-        <Reveal className="mt-8">
-          <Button asChild className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-            <a href="#kontakt">{t.ctaQuote}</a>
-          </Button>
         </Reveal>
       </Section.Body>
     </Section.Frame>
@@ -517,7 +504,7 @@ export function Team() {
                   className="relative grid aspect-4/5 max-h-[420px] max-w-[380px] place-items-center overflow-hidden rounded-3xl border border-border bg-linear-to-br from-[#1a1c22] to-[#0c0c10]"
                   aria-hidden="true"
                 >
-                  <b className="relative z-[1] font-serif text-[clamp(4.2rem,10vw,6.5rem)] font-normal tracking-[0.06em] text-transparent italic bg-linear-to-b from-[#f7f8fa] to-steel bg-clip-text">
+                  <b className="relative z-[1] font-serif text-[clamp(4.2rem,10vw,6.5rem)] font-normal tracking-[0.06em] text-transparent bg-linear-to-b from-[#ffffff] via-[#d9dee6] to-[#8f98a6] bg-clip-text">
                     {p.mono}
                   </b>
                 </div>

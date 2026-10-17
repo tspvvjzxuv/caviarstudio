@@ -95,10 +95,7 @@ export function SiteHeader() {
       )}
     >
       <a href="#top" className="relative z-[52]" aria-label="Caviar">
-        <CaviarLogo
-          markClassName="size-7"
-          wordClassName="text-[1.35rem] leading-none pb-[0.06em]"
-        />
+        <CaviarLogo className="text-[1.05rem] sm:text-[1.15rem]" />
       </a>
 
       <NavigationMenu viewport={false} className="hidden max-w-none min-w-0 flex-1 lg:flex" aria-label={t.navLabel}>
@@ -132,11 +129,11 @@ export function SiteHeader() {
             <Button
               variant="ghost"
               size="icon"
-              className="glass size-11 rounded-full border border-white/12 lg:hidden"
+              className="icon-disc inline-flex size-11 items-center justify-center lg:hidden"
               aria-expanded={open}
               aria-label={open ? t.close : t.menu}
             >
-              {open ? <X className="size-4 stroke-[1.5]" /> : <Menu className="size-4 stroke-[1.5]" />}
+              {open ? <X className="size-4" strokeWidth={1.75} /> : <Menu className="size-4" strokeWidth={1.75} />}
             </Button>
           </SheetTrigger>
           <SheetContent
@@ -146,7 +143,7 @@ export function SiteHeader() {
           >
             <SheetHeader className="p-0">
               <SheetTitle className="font-serif text-sm">
-                <CaviarLogo markClassName="size-6" wordClassName="text-[1.2rem] leading-none" />
+                <CaviarLogo className="text-[1.2rem]" />
               </SheetTitle>
             </SheetHeader>
             <nav className="mt-8 flex flex-col gap-1" aria-label={t.navLabel}>

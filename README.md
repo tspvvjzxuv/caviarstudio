@@ -41,7 +41,7 @@ npm run build:pages
 
 - Prices: 49 / 69 / 190 / 349 EUR including VAT (always s DPH)
 - Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
-- Palette: near-black `#070708`, silver/platinum type, azure `#3D8AFF` main accent, lemon `#FFE44D` secondary — **no metallic gold**. Soft glass radii; translucent borders.
+- Palette: near-black `#070708`, silver/platinum type, azure `#3D8AFF` main accent, lemon `#FFE44D` secondary — **no metallic gold**. Display type is **Bodoni Moda**; body is DM Sans. Soft glass radii; translucent borders. Logo is upright CAVIAR + STUDIO · TRNAVA.
 - No stock photos and no assistant-chosen portraits. Hero is a muted liquid-chrome loop (`media/hero/`) over a silver field. Team uses monograms.
 
 ## Work / photos

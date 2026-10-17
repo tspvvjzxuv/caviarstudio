@@ -10,8 +10,8 @@
 }
 
 @theme inline {
-  --font-heading: "Cormorant Garamond", "Times New Roman", serif;
-  --font-serif: "Cormorant Garamond", "Times New Roman", serif;
+  --font-heading: "Bodoni Moda", Didot, "Times New Roman", serif;
+  --font-serif: "Bodoni Moda", Didot, "Times New Roman", serif;
   --font-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -228,6 +228,43 @@
   box-shadow: 0 0 8px rgb(255 228 77 / 45%);
 }
 
+.caviar-word {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-style: normal;
+  letter-spacing: 0.12em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding-left: 0.12em;
+  color: transparent;
+  background-image: linear-gradient(180deg, #ffffff 0%, #d9dee6 48%, #8f98a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.caviar-rule {
+  display: block;
+  width: 72%;
+  height: 1px;
+  margin: 0.22em auto 0;
+  background-image: linear-gradient(90deg, transparent 0%, #c9d0da 18%, #c9d0da 82%, transparent 100%);
+}
+.caviar-tag {
+  margin-top: 0.42em;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-style: normal;
+  font-size: max(0.55rem, 0.125em);
+  letter-spacing: 0.38em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #a7afbb;
+  padding-left: 0.38em;
+  white-space: nowrap;
+}
+
 .metal-fill {
   background-image: var(--metal);
   color: var(--color-pearl);
@@ -271,6 +308,14 @@
     radial-gradient(ellipse 85% 65% at 50% 38%, transparent 22%, rgb(7 7 8 / 52%) 100%),
     linear-gradient(180deg, rgb(7 7 8 / 16%) 0%, rgb(7 7 8 / 10%) 18%, rgb(7 7 8 / 20%) 48%, #070708 100%),
     linear-gradient(90deg, rgb(7 7 8 / 52%) 0%, rgb(7 7 8 / 22%) 36%, transparent 58%);
+}
+
+.icon-disc {
+  @apply rounded-full border border-white/10 bg-white/[0.06] leading-none text-pearl backdrop-blur-md;
+}
+.icon-disc svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .glass {
@@ -386,7 +431,7 @@
   html.intro-seen .hero-cue {
     animation-delay: 0.56s;
   }
-  .hero-logo .caviar-mark {
+  .hero-logo .caviar-lockup {
     animation: logo-in 1.15s var(--ease-out-expo) 0.08s both;
   }
 }

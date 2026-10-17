@@ -30,11 +30,11 @@ Deploy as static GitHub Pages at the repo root for `caviarstudio.sk`:
 - **Azure `#3D8AFF` main accent**, azure-deep `#1D4ED8` CTA fills, **lemon `#FFE44D` secondary** (small moments only). Not metallic gold, not mustard.
 - Menus: `.glass` / `.glass-panel` (blur + saturate, `-webkit-backdrop-filter`, solid fallback). Fixed glass nav overlays the hero so the loop shows through.
 - `--radius`: 1.5rem. Cards `rounded-3xl`, buttons `rounded-full`, inputs `rounded-2xl`, icon discs circles. Translucent white/azure borders (~8–15% alpha). Keep WCAG AA.
-- Logo: pearl bead + C-stroke + italic Cormorant “Caviar”. Lucide icons in circular `.glass` discs; no gradient dashes.
+- Logo: upright Bodoni **CAVIAR** (weight 500, tracking 0.12em, silver gradient) + hairline + **STUDIO · TRNAVA**. No pearl, no italic. Lucide icons in circular `.glass` discs; no gradient dashes.
 
 ## Layout
 
 - Generous whitespace. Panels never touch (`gap-6` / `md:gap-8` / `xl:gap-10`). Visible address is Trnava only.
 - Slovak default, EN/DE in lockstep. No invented testimonials or numbers.
 - Prices 49 / 69 / 190 / 349 EUR s DPH. Contacts unchanged.
-- Follow `AGENTS.md` and `.agents/product-marketing.md`. Distinctive silver gallery, not a SaaS kit. Process steps use lucide glass discs, not numbers. Quote CTA on hero, pricing, and form. Keep title/meta/OG/JSON-LD/sitemap/robots accurate. No programmatic city pages.
+- Follow `AGENTS.md` and `.agents/product-marketing.md`. Distinctive silver gallery, not a SaaS kit. Process steps use lucide glass discs, not numbers. Quote CTA on hero, pricing cards, header, and form — not a second button under the price notes. Keep title/meta/OG/JSON-LD/sitemap/robots accurate. No programmatic city pages.

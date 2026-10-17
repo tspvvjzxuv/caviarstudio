@@ -19,9 +19,8 @@ export function SiteFooter() {
       <div className="flex flex-wrap items-start justify-between gap-8">
         <div className="grid gap-2 text-[0.82rem] leading-6 text-muted-foreground">
           <strong className="font-normal">
-            <CaviarLogo markClassName="size-6" wordClassName="text-[1.25rem] leading-none" />
+            <CaviarLogo className="text-[1.25rem]" />
           </strong>
-          <p className="text-[0.72rem] tracking-[0.14em] uppercase">{t.place}</p>
           <a href={`mailto:${CAVIAR.EMAIL}`} className="hover:text-azure">
             {CAVIAR.EMAIL}
           </a>
