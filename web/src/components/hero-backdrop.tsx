@@ -102,7 +102,7 @@ export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | nu
           className="hero-poster absolute inset-0 z-[1] size-full object-cover"
         />
         <HeroLoop pausedRoot={kenRef} />
-        <p className="hero-wordmark absolute top-[calc(var(--header-h)+1.25rem)] right-[clamp(1.25rem,5vw,5rem)] z-[2] font-serif text-[clamp(2rem,5vw,3.25rem)] leading-none tracking-[0.12em] text-platinum/12 italic min-[90rem]:top-[16%] min-[90rem]:text-[clamp(5rem,11vw,10rem)] [@media(max-height:44rem)]:hidden">
+        <p className="hero-wordmark absolute top-[16%] right-[clamp(1.25rem,5vw,5rem)] z-[2] hidden font-serif text-[clamp(5rem,11vw,10rem)] leading-none tracking-[0.12em] text-platinum/12 italic min-[90rem]:block min-[90rem]:[@media(max-height:44rem)]:hidden">
           Caviar
         </p>
         {videoOk ? null : <HeroSilverField />}

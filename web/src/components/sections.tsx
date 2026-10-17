@@ -28,8 +28,11 @@ import { Section } from "@/components/section";
 import { WorkTile } from "@/components/work-tile";
 
 const PANEL =
-  "h-full min-h-[17rem] overflow-visible rounded-[2px] bg-card py-0 ring-1 ring-border";
+  "h-full min-h-[14rem] overflow-visible rounded-[2px] py-0 ring-1 ring-border";
 const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
+const SERVICE_WASH = ["service-wash-web", "service-wash-video", "service-wash-foto"] as const;
+const HERO_GHOST =
+  "hero-ghost h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full";
 
 const TEAM = [
   { mono: "MK", name: "Miroslav Kotvas" },
@@ -72,10 +75,15 @@ export function Hero() {
           <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
-          <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <Button asChild variant="outline" className={HERO_GHOST}>
             <a href="#cennik">{t.ctaPricing}</a>
           </Button>
         </div>
+        <ul className="mt-6 flex list-none flex-wrap gap-x-7 gap-y-2 p-0 text-[0.85rem] text-silver">
+          <li>{t.place}</li>
+          <li>{t.heroNoteVat}</li>
+          <li>{t.how1t}</li>
+        </ul>
       </div>
       <a
         href="#sluzby"
@@ -109,10 +117,10 @@ export function Services() {
         </p>
         <div className="grid items-stretch gap-6 md:grid-cols-3 md:gap-8 xl:gap-10">
           {items.map((item, idx) => (
-            <ServiceCard key={item.name} item={item} delay={idx} />
+            <ServiceCard key={item.name} item={item} wash={SERVICE_WASH[idx]} />
           ))}
         </div>
-        <Reveal className="mt-6 overflow-visible rounded-[2px] border border-border bg-card p-6 md:mt-8 md:p-8 xl:mt-10" delay={3}>
+        <Reveal className="mt-6 overflow-visible rounded-[2px] border border-border bg-card p-6 md:mt-8 md:p-8 xl:mt-10">
           <span className="block text-[0.68rem] tracking-[0.22em] text-silver uppercase">{t.forWhomLabel}</span>
           <span className="mt-2 block font-serif text-[clamp(1.2rem,2.4vw,1.55rem)] leading-[1.55] italic">{t.forWhom}</span>
         </Reveal>
@@ -123,20 +131,20 @@ export function Services() {
 
 function ServiceCard({
   item,
-  delay,
+  wash,
 }: {
   item: { name: string; lead: string; gets: string };
-  delay: number;
+  wash: string;
 }) {
   return (
-    <Reveal className="h-full" delay={delay}>
-      <Card className={PANEL}>
+    <Reveal className="h-full">
+      <Card className={`${PANEL} ${wash}`}>
         <CardHeader className={PANEL_HEAD}>
           <CardTitle className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em]">
             {item.name}
           </CardTitle>
           <p className="max-w-[34ch] text-[1.05rem] leading-[1.55]">{item.lead}</p>
-          <CardDescription className="max-w-[38ch] text-[0.82rem] leading-[1.55] tracking-[0.03em]">{item.gets}</CardDescription>
+          <p className="max-w-[38ch] text-[0.82rem] leading-[1.55] tracking-[0.03em] text-silver">{item.gets}</p>
         </CardHeader>
       </Card>
     </Reveal>
@@ -172,11 +180,11 @@ function PriceAmounts({ launch, standard, vat }: { launch: number; standard: num
   );
 }
 
-function LaunchPriceCard({ pack, delay, vat }: { pack: PricePack; delay: number; vat: string }) {
+function LaunchPriceCard({ pack, vat }: { pack: PricePack; vat: string }) {
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
   return (
-    <Reveal className="h-full" delay={delay}>
+    <Reveal className="h-full">
       <Card className="h-full min-h-[20rem] overflow-visible rounded-[2px] bg-card py-0 ring-1 ring-border">
         <CardHeader className={PANEL_HEAD}>
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
@@ -190,11 +198,11 @@ function LaunchPriceCard({ pack, delay, vat }: { pack: PricePack; delay: number;
   );
 }
 
-function FeaturedPriceCard({ pack, delay, vat }: { pack: typeof FEATURED_PACK; delay: number; vat: string }) {
+function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: string }) {
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
   return (
-      <Reveal delay={delay} className="h-full md:col-span-2 xl:col-span-3">
+      <Reveal className="h-full md:col-span-2 xl:col-span-3">
       <Card className="h-full min-h-[16rem] overflow-visible rounded-[2px] py-0 ring-1 bg-linear-to-b from-platinum/7 to-platinum/1.5 ring-platinum/42">
         <CardHeader className="flex flex-col gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
@@ -218,10 +226,10 @@ export function Pricing() {
       <Section.Body>
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.priceKicker} title={t.priceTitle} />
         <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
-          {LAUNCH_PACKS.map((pack, idx) => (
-            <LaunchPriceCard key={pack.key} pack={pack} delay={idx} vat={vat} />
+          {LAUNCH_PACKS.map((pack) => (
+            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} />
           ))}
-          <FeaturedPriceCard pack={FEATURED_PACK} delay={LAUNCH_PACKS.length} vat={vat} />
+          <FeaturedPriceCard pack={FEATURED_PACK} vat={vat} />
         </div>
         <Reveal className="mt-7 grid gap-2 text-[0.88rem] text-muted-foreground">
           <p>{t.noHidden}</p>
@@ -248,11 +256,11 @@ export function Process() {
   return (
     <Section.Frame id="ako" className="slide-grid">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.howKicker} title={t.howTitle} />
+        <Section.Heading className="mb-10 max-w-[16rem] md:mb-16 md:max-w-[26rem]" kicker={t.howKicker} title={t.howTitle} />
         <ol className="grid list-none gap-6 md:gap-8 xl:gap-10">
-          {steps.map((step, idx) => (
+          {steps.map((step) => (
             <li key={step.n}>
-              <Reveal delay={idx}>
+              <Reveal>
                 <Card className="overflow-visible rounded-[2px] py-0 ring-1 ring-border">
                   <CardContent className="grid grid-cols-[auto_1fr] items-start gap-x-6 gap-y-4 p-6 md:p-8">
                     <span className="grid min-w-[2.2ch] gap-3">
@@ -422,19 +430,19 @@ export function Work() {
   }, []);
 
   return (
-    <Section.Frame id="praca" className="work-sec" ref={sectionRef}>
+    <Section.Frame id="praca" className="work-sec" ref={sectionRef} density={HAS_WORK ? "default" : "compact"}>
       <Section.Body className={HAS_WORK ? "mb-10 md:mb-16" : ""}>
         <Section.Heading className="max-w-[38ch]" kicker={t.workKicker} title={t.workTitle}>
           {HAS_WORK ? (
             <p className="text-[1.02rem] text-muted-foreground">{t.workLead}</p>
           ) : (
             <>
-              <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.workEmpty}</p>
-              <div className="mt-6">
-                <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-                  <a href="#kontakt">{t.ctaQuote}</a>
-                </Button>
-              </div>
+              <p className="max-w-[42ch] text-[1.02rem] text-muted-foreground">{t.workEmpty}</p>
+              <p className="mt-3">
+                <a href="#kontakt" className="text-[0.95rem] text-platinum underline-offset-4 hover:underline">
+                  {t.ctaQuote}
+                </a>
+              </p>
             </>
           )}
         </Section.Heading>
@@ -475,11 +483,13 @@ export function Team() {
   return (
     <Section.Frame id="onas">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.teamKicker} title={t.aboutTitle} />
+        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.teamKicker} title={t.aboutTitle}>
+          <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.aboutLead}</p>
+        </Section.Heading>
         <ul className="grid list-none gap-6 md:grid-cols-2 md:gap-8">
-          {TEAM.map((p, idx) => (
+          {TEAM.map((p) => (
             <li key={p.name}>
-              <Reveal delay={idx}>
+              <Reveal>
                 <div
                   className="relative grid aspect-4/5 max-h-[420px] max-w-[380px] place-items-center overflow-hidden border border-border bg-linear-to-br from-[#1a1c22] to-[#0c0c10]"
                   aria-hidden="true"
@@ -511,7 +521,7 @@ export function Faq() {
   return (
     <Section.Frame id="faq">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker="FAQ" title={t.faqTitle} />
+        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.navFaq} title={t.faqTitle} />
         <Accordion type="single" collapsible className="grid gap-3">
           {items.map((item, idx) => (
             <AccordionItem
@@ -536,8 +546,9 @@ function ContactIntro() {
   return (
     <Reveal>
       <Kicker>{t.contactKicker}</Kicker>
-      <h2 className="mt-4 max-w-[11ch] font-serif text-[clamp(2.5rem,7vw,5.6rem)] leading-[1.08] tracking-[-0.03em] text-balance">
-        {t.contactTitle}
+      <h2 className="mt-4 font-serif text-[clamp(2.4rem,8vw,3.85rem)] leading-[1.08] tracking-[-0.03em]">
+        <span className="block">{t.contactLine1}</span>
+        <span className="block">{t.how1t}</span>
       </h2>
       <div className="mt-8 flex flex-wrap gap-3">
         <Button asChild className="metal-fill h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
@@ -550,7 +561,12 @@ function ContactIntro() {
           <a href={waHref(t.waText)}>{t.ctaWa}</a>
         </Button>
         <Button asChild variant="outline" className="h-[52px] rounded-[2px] px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
-          <a href={CAVIAR.INSTAGRAM} target="_blank" rel="noopener noreferrer">
+          <a
+            href={CAVIAR.INSTAGRAM}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Instagram ${CAVIAR.IG_HANDLE}`}
+          >
             {t.ctaIg}
           </a>
         </Button>

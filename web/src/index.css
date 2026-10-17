@@ -196,7 +196,7 @@
 .grain {
   position: fixed;
   inset: 0;
-  z-index: 90;
+  z-index: 40;
   pointer-events: none;
   opacity: 0.05;
   mix-blend-mode: overlay;
@@ -330,8 +330,17 @@
   .hero-stage > *:nth-child(2) { animation-delay: 1.68s; }
   .hero-stage > *:nth-child(3) { animation-delay: 1.81s; }
   .hero-stage > *:nth-child(4) { animation-delay: 1.94s; }
+  .hero-stage > *:nth-child(5) { animation-delay: 2.07s; }
   .hero-cue {
     animation: stage-up 0.9s var(--ease-out-expo) 2.2s both;
+  }
+  html.intro-seen .hero-stage > *:nth-child(1) { animation-delay: 0.06s; }
+  html.intro-seen .hero-stage > *:nth-child(2) { animation-delay: 0.16s; }
+  html.intro-seen .hero-stage > *:nth-child(3) { animation-delay: 0.26s; }
+  html.intro-seen .hero-stage > *:nth-child(4) { animation-delay: 0.36s; }
+  html.intro-seen .hero-stage > *:nth-child(5) { animation-delay: 0.46s; }
+  html.intro-seen .hero-cue {
+    animation-delay: 0.56s;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -464,6 +473,34 @@
 }
 .silver-c {
   background: linear-gradient(115deg, #0c0c10 0%, #3a3f48 42%, #121318 68%, #0a0a0c 100%);
+}
+
+.service-wash-web {
+  background:
+    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(232 234 238 / 9%), transparent 58%),
+    #0e0e12;
+}
+.service-wash-video {
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 0%, rgb(197 202 211 / 11%), transparent 54%),
+    #0e0e12;
+}
+.service-wash-foto {
+  background:
+    linear-gradient(165deg, rgb(244 245 247 / 7%) 0%, transparent 46%),
+    #0e0e12;
+}
+
+.hero-ghost {
+  border-color: rgb(232 234 238 / 55%);
+  background: rgb(7 7 8 / 52%);
+  color: #f4f5f7;
+  backdrop-filter: blur(10px);
+}
+.hero-ghost:hover {
+  border-color: rgb(232 234 238 / 78%);
+  background: rgb(7 7 8 / 72%);
+  color: #f4f5f7;
 }
 
 :root {

@@ -10,6 +10,7 @@ export const CAVIAR = {
   WHATSAPP_TEXT: "Dobrý deň, mám záujem o cenovú ponuku od Caviar.",
   EMAIL: "mircoft.sk@gmail.com",
   INSTAGRAM: "https://www.instagram.com/mircoft",
+  IG_HANDLE: "/mircoft",
   HUB: "https://thedesigns.org/",
   EVERLIGHT: "https://thedesigns.org/foto/",
   SITE: "https://caviarstudio.sk/",
