@@ -1,7 +1,7 @@
 export const HERO_LOOP = {
-  poster: "/media/hero/liquid-chrome.jpg",
-  webm: "/media/hero/liquid-chrome.webm",
-  mp4: "/media/hero/liquid-chrome.mp4",
+  poster: "/media/hero/liquid-chrome.jpg?v=1080",
+  webm: "/media/hero/liquid-chrome.webm?v=1080",
+  mp4: "/media/hero/liquid-chrome.mp4?v=1080",
 } as const;
 
 export const CAVIAR = {
