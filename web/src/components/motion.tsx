@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { CaviarLogo } from "@/components/caviar-logo";
 import { useLanguage } from "@/lib/language";
 
 const INTRO_SEEN_KEY = "caviar-intro-seen";
@@ -7,9 +8,10 @@ const grain = <div className="grain [view-transition-name:site-grain]" aria-hidd
 
 const introMark = (
   <>
-    <p className="font-serif text-[clamp(1.4rem,4vw,2rem)] tracking-[0.42em] text-transparent uppercase bg-linear-to-r from-steel via-pearl to-platinum bg-clip-text">
-      Caviar
-    </p>
+    <CaviarLogo
+      markClassName="size-11"
+      wordClassName="text-[clamp(1.8rem,5vw,2.8rem)] leading-none pb-[0.06em]"
+    />
     <span className="intro-line absolute right-[12%] bottom-[38%] left-[12%] h-px origin-center scale-x-[0.18] bg-[image:var(--hair)]" />
   </>
 );

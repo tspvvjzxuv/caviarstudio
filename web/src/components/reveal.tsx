@@ -1,4 +1,5 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { CaviarMark } from "@/components/caviar-logo";
 import { cn } from "@/lib/utils";
 
 export function Reveal({
@@ -54,7 +55,7 @@ export function Reveal({
 export function Kicker({ children }: { children: ReactNode }) {
   return (
     <p className="flex items-center gap-3 text-[0.68rem] font-medium tracking-[0.26em] text-azure uppercase">
-      <span className="pearl shrink-0" aria-hidden="true" />
+      <CaviarMark className="size-3.5 shrink-0" />
       {children}
     </p>
   );

@@ -54,13 +54,13 @@
   --color-azure: #3d8aff;
   --color-azure-deep: #1d4ed8;
   --color-lemon: #ffe44d;
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 2px;
-  --radius-xl: 2px;
-  --radius-2xl: 4px;
-  --radius-3xl: 4px;
-  --radius-4xl: 6px;
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
   --ease-caviar: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --animate-fade-in: fade-in 0.2s ease-out;
@@ -72,6 +72,7 @@
   --animate-cue: cue 2.4s var(--ease-caviar) infinite;
   --animate-ticker: ticker 36s linear infinite;
   --animate-tile-sheen: tile-sheen 10s ease-in-out infinite;
+  --animate-logo-in: logo-in 1.05s var(--ease-out-expo) both;
 
   @keyframes fade-in {
     from { opacity: 0; }
@@ -108,6 +109,10 @@
     0%, 100% { background-position: 0% 0; opacity: 0.55; }
     50% { background-position: 100% 0; opacity: 1; }
   }
+  @keyframes logo-in {
+    from { opacity: 0; transform: translateY(18px) scale(0.94); }
+    to { opacity: 1; transform: none; }
+  }
 }
 
 :root,
@@ -127,22 +132,22 @@
   --accent: rgb(61 138 255 / 18%);
   --accent-foreground: #f4f5f7;
   --destructive: oklch(0.65 0.18 25);
-  --border: rgb(197 202 211 / 18%);
-  --input: rgb(197 202 211 / 22%);
+  --border: rgb(244 245 247 / 12%);
+  --input: rgb(61 138 255 / 14%);
   --ring: #ffe44d;
   --chart-1: #3d8aff;
   --chart-2: #ffe44d;
   --chart-3: #9aa3ae;
   --chart-4: #14141a;
   --chart-5: #0e0e12;
-  --radius: 0.125rem;
+  --radius: 1.5rem;
   --sidebar: #0e0e12;
   --sidebar-foreground: #f4f5f7;
   --sidebar-primary: #1d4ed8;
   --sidebar-primary-foreground: #f4f5f7;
   --sidebar-accent: #14141a;
   --sidebar-accent-foreground: #e8eaee;
-  --sidebar-border: rgb(197 202 211 / 18%);
+  --sidebar-border: rgb(244 245 247 / 12%);
   --sidebar-ring: #ffe44d;
   --metal: linear-gradient(180deg, #4c94ff 0%, #2f7bff 46%, #1d4ed8 100%);
   --metal-hover: linear-gradient(180deg, #6aa8ff 0%, #3d8aff 46%, #2f7bff 100%);
@@ -381,6 +386,9 @@
   html.intro-seen .hero-cue {
     animation-delay: 0.56s;
   }
+  .hero-logo .caviar-mark {
+    animation: logo-in 1.15s var(--ease-out-expo) 0.08s both;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-stage > *,
@@ -531,14 +539,14 @@
 }
 
 .hero-ghost {
-  border-color: rgb(61 138 255 / 55%);
-  background: rgb(7 7 8 / 52%);
+  border-color: rgb(244 245 247 / 14%);
+  background: rgb(7 7 8 / 42%);
   color: #f4f5f7;
   @apply backdrop-blur-[10px];
 }
 .hero-ghost:hover {
-  border-color: rgb(255 228 77 / 72%);
-  background: rgb(7 7 8 / 72%);
+  border-color: rgb(61 138 255 / 35%);
+  background: rgb(7 7 8 / 62%);
   color: #f4f5f7;
 }
 

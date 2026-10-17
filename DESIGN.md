@@ -69,20 +69,23 @@ spacing:
   margin: 32px
   max: 1120px
 rounded:
-  none: 0px
-  sm: 2px
-  md: 4px
+  sm: 12px
+  md: 16px
+  lg: 24px
+  xl: 24px
+  "2xl": 16px
+  "3xl": 24px
   full: 9999px
 components:
   button-primary:
     backgroundColor: "{colors.azure-deep}"
     textColor: "{colors.pearl}"
-    rounded: "{rounded.none}"
+    rounded: "{rounded.full}"
     padding: 16px
   button-ghost:
     backgroundColor: "{colors.bg}"
     textColor: "{colors.pearl}"
-    rounded: "{rounded.none}"
+    rounded: "{rounded.full}"
     padding: 16px
 ---
 
@@ -92,7 +95,7 @@ components:
 
 Caviar is a small creative studio in Trnava. The site should feel like a quiet gallery: cool, high-end, and artistic — never like a SaaS template. Near-black fields, platinum type, generous empty space, azure as the main accent, and lemon only for small high-impact moments. Motion is slow and cinematic. Copy stays plain and concrete. No metallic gold, mustard, neon kits, or invented social proof.
 
-**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — with azure and a clean electric yellow as restrained accents, not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero), everything else quieter. Parallel offerings (Web / Video / Foto) are not numbered; the four-step process is, because it is a sequence. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
+**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — with azure and a clean electric yellow as restrained accents, not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero wordmark), everything else quieter. Parallel offerings (Web / Video / Foto) are not numbered. Process steps use lucide icons in circular glass discs, not italic numerals or gradient dashes. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
 
 ## Colors
 
@@ -124,9 +127,9 @@ Mobile-first. Spacing follows the **Tailwind 4px scale** (`4 / 8 / 12 / 16 / 24 
 
 **Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (24px mobile, 32px from `md`, 40px from `xl`) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
 
-The UI is built with the **full Tailwind CSS utility system** and the **full shadcn/ui component set + CSS-variable theming** ([components](https://ui.shadcn.com/docs/components), [blocks](https://ui.shadcn.com/blocks)): Button, Card, Badge, Accordion (FAQ), Tabs, Input/Select/Label (form), Navigation Menu, Sheet (mobile menu), Separator, Tooltip, Toggle Group (SK/EN/DE), Field. Tokens live in `web/src/index.css` (`@theme` semantic colors, `--radius` 2px, class-based `.dark` always on). Agent skills in `.agents/skills/`: `tailwind-design-system` (wshobson/agents), `shadcn` (shadcn-ui/ui), `web-artifacts-builder` (anthropics/skills), `vercel-react-best-practices` (vercel-labs/agent-skills), and `frontend-slides` (zarazhangrui).
+The UI is built with the **full Tailwind CSS utility system** and the **full shadcn/ui component set + CSS-variable theming** ([components](https://ui.shadcn.com/docs/components), [blocks](https://ui.shadcn.com/blocks)): Button, Card, Badge, Accordion (FAQ), Tabs, Input/Select/Label (form), Navigation Menu, Sheet (mobile menu), Separator, Tooltip, Toggle Group (SK/EN/DE), Field. Tokens live in `web/src/index.css` (`@theme` semantic colors, `--radius` 1.5rem, class-based `.dark` always on). Agent skills in `.agents/skills/`: `tailwind-design-system` (wshobson/agents), `shadcn` (shadcn-ui/ui), `web-artifacts-builder` (anthropics/skills), `vercel-react-best-practices` (vercel-labs/agent-skills), and `frontend-slides` (zarazhangrui).
 
-`web-artifacts-builder` is the React + Vite + Tailwind + shadcn stack skill. Follow its **design guidelines** (no Inter, no purple gradients, no excessive centering, no uniform large rounding). Do **not** run its `init-artifact.sh` or Parcel `bundle-artifact.sh` for this site: those target a single Claude HTML artifact. Caviar already has Vite + Tailwind v4 + shadcn in `web/` and must ship a GitHub Pages static build (`npm run build:pages`).
+`web-artifacts-builder` is the React + Vite + Tailwind + shadcn stack skill. Follow its **design guidelines** (no Inter, no purple gradients, no excessive centering). Large rounding is intentional for Caviar (pills and `rounded-3xl` cards), not a default UI kit. Do **not** run its `init-artifact.sh` or Parcel `bundle-artifact.sh` for this site: those target a single Claude HTML artifact. Caviar already has Vite + Tailwind v4 + shadcn in `web/` and must ship a GitHub Pages static build (`npm run build:pages`).
 
 `vercel-react-best-practices` is the React performance skill. Follow its SPA-relevant rules (direct imports, passive listeners, lazy state, refs for transient cursor values, no inline components, versioned localStorage). Skip Next.js/RSC-only rules. Do not introduce `next/dynamic` or a Next.js app.
 
@@ -142,17 +145,19 @@ The “Čo robíme” block sits immediately under the hero: a real display `h2`
 
 ## Elevation & Depth
 
-Hierarchy comes from tonal layers, film grain, thin azure-to-lemon hairlines, and glass chrome — not heavy drop shadows. Featured surfaces (Caviar Komplet) use an azure ring and a faint azure-to-lemon wash. Hero depth is a muted liquid-chrome loop (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`) on near-black, with grain, a light sweep, a blue glow (left) and lemon glow (right), a vignette, and a dark gradient so the headline stays readable and the video stays visible. The loop plays even when `prefers-reduced-motion` is on (it is a slow muted ambient clip). Skip only on explicit Save-Data; pause it off-screen. No decorative ghost “Caviar” wordmark in the hero. The CSS silver field and lazy Three.js shader remain the fallback. Cards and hero type use open overflow and 1.08–1.15 display leading so serif italic never clips the frame.
+Hierarchy comes from tonal layers, film grain, translucent glass borders, and glass chrome — not heavy drop shadows. Featured surfaces (Caviar Komplet) use a faint azure border and an azure-to-lemon wash. Hero depth is a muted liquid-chrome loop (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`) on near-black, with grain, a light sweep, a blue glow (left) and lemon glow (right), a vignette, and a dark gradient so the wordmark stays readable and the video stays visible. The loop plays even when `prefers-reduced-motion` is on (it is a slow muted ambient clip). Skip only on explicit Save-Data; pause it off-screen. The hero centerpiece is the Caviar wordmark (serif + pearl/C mark), not a ghost overlay. The CSS silver field and lazy Three.js shader remain the fallback. Cards use open overflow so serif italic never clips the frame.
 
 ## Shapes
 
-Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The only full round is the 7px pearl kicker dot. Do not mix pill CTAs with sharp cards.
+Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns are `rounded-3xl`. Buttons and language chips are `rounded-full` pills. Inputs are `rounded-2xl`. Icon containers are circles. Borders are translucent white/azure at about 8–15% alpha — never a hard solid outline.
 
 ## Components
 
-- **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset). Ghost is a hairline that warms to lemon on hover. Uppercase labels, 52px min height, full width on small screens.
-- **Feature / service cards:** Elevated `#0E0E12` surface, 1px steel border, equal padding, hover hairline goes azure. Three-up on desktop with `--gap-panel`.
-- **Pricing cards:** Shared lemon launch-price badge; launch amounts in lemon. Caviar Komplet is visually louder: azure frame, faint azure-to-lemon wash, wider measure. Same gap as other panel grids.
+- **Logo:** Pearl bead with a silver/azure/lemon C-stroke plus italic Cormorant “Caviar”. Same mark on the favicon, nav, intro, and footer. Hero uses the large wordmark; the old headline sits under it as a smaller tagline.
+- **Icons:** Lucide, thin stroke (1.5), round caps, inside circular `.glass` discs. No decorative gradient dashes.
+- **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset), fully pill-shaped. Ghost/outline uses a translucent glass border. Uppercase labels, 52px min height, full width on small screens.
+- **Feature / service cards:** Elevated `#0E0E12` surface, translucent glass border, `rounded-3xl`, lucide icon in a glass disc. Three-up on desktop with `--gap-panel`.
+- **Pricing cards:** Shared lemon launch-price pill; launch amounts in lemon. Caviar Komplet is visually louder: faint azure border, azure-to-lemon wash, wider measure. Same gap as other panel grids.
 - **Header / menus:** Fixed `.glass` navbar over the hero so the loop shows through. Mobile sheet, language switcher, select, tooltip, popover, dropdown, and dialog use `.glass` / `.glass-panel`.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
@@ -167,7 +172,7 @@ Architectural sharpness. Buttons, cards, and inputs are square (0–2px). The on
 - Do respect `prefers-reduced-motion` for ken-burns, sheen, reveals, and cursor
 - Do leave a visible gap between every card/panel on mobile and desktop
 - Don't use metallic gold, mustard, or champagne metals; lemon yellow is the only yellow, and only in small doses
-- Don't use Inter, purple/violet gradients, or uniformly large rounded corners (web-artifacts-builder anti-slop)
+- Don't use Inter or purple/violet gradients (web-artifacts-builder anti-slop). Rounding is the Caviar glass system, not a default kit.
 - Don't invent testimonials, client counts, limited slots, or guaranteed results (no “more bookings”, no “first 10” counters)
 - Don't show the words TODO or Placeholder anywhere in the UI
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
@@ -181,7 +186,7 @@ Animate only what has a job: the first-load hero stagger (explanation), ken-burn
 
 ## Conversion
 
-One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero headline: “Váš podnik v najlepšom svetle.”
+One primary action: request a quote. Keep that CTA in the header, hero, each price card, after the price notes, and on the form. Secondary is see pricing. No fake social proof, slot counters, or promised booking results. Hero centerpiece is the Caviar wordmark; tagline: “Váš podnik v najlepšom svetle.”
 
 ## SEO
 
