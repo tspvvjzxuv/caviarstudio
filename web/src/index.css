@@ -200,6 +200,26 @@
   -webkit-text-fill-color: #f4f5f7;
 }
 
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--color-azure);
+}
+.kicker-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--color-azure);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

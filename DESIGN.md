@@ -121,6 +121,7 @@ Two families only: **Bodoni Moda** for the wordmark, price numbers, and short di
 - **Display:** Upright Bodoni, slightly tight tracking, only where a short mark can take it (logo, prices, card names). The logo is uppercase, tracked 0.12em, weight 500.
 - **Body:** 16–18px, long line-height, max ~42–58ch.
 - **Labels:** Small caps via uppercase + wide tracking. Never more than two weights on a screen (400 and 500/600).
+- **Section kickers:** Tracked uppercase azure (`.kicker`) with a 6px solid azure dot, vertically centered. No faded silver dash, no lucide chip. Same mark on Cenník, Postup, Práca, Tím, FAQ, Kontakt (SK/EN/DE). “Čo robíme” stays a display `h2` with no kicker.
 
 ## Layout
 
