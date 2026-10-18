@@ -18,7 +18,7 @@ export function IconDisc({
 }) {
   return (
     <span
-      className={cn("icon-disc", SIZE[size], className)}
+      className={cn("icon-disc text-pearl", SIZE[size], className)}
       aria-hidden="true"
     >
       {children}

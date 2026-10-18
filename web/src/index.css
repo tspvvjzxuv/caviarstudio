@@ -334,7 +334,6 @@
   background-color: rgb(14 14 18 / 32%);
   background-image: linear-gradient(180deg, rgb(61 138 255 / 22%) 0%, rgb(255 228 77 / 10%) 100%);
   line-height: 0;
-  color: var(--color-pearl);
   -webkit-backdrop-filter: blur(16px) saturate(1.5);
   backdrop-filter: blur(16px) saturate(1.5);
   box-shadow:
