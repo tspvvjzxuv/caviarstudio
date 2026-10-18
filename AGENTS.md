@@ -10,7 +10,7 @@ Static Vite + React + Tailwind v4 + shadcn/ui in `web/`, deployed as GitHub Page
 
 Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum type. **Azure `#3D8AFF` is the main accent; lemon `#FFE44D` is the secondary accent** (not metallic gold, not mustard). Azure-deep `#1D4ED8` fills primary CTAs. Two type families: Bodoni Moda (wordmark, prices, short display names) and DM Sans (body, UI, **section headings** — 600, pearl, no hairline serif, measure `min(100%, 20ch)` of the heading font). Soft glass radii (`--radius` 1.5rem, pills, `rounded-3xl` cards). Translucent borders. Panels never touch. Menus use `.glass` / `.glass-panel`.
 
-Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/hero/`), azure CTAs, and the Komplet card. Yellow only for small high-impact moments. Do not add numbered markers on parallel offerings (Web / Video / Foto). Process steps use larger lucide line icons (stroke 1.75, azure) in the same circular frosted-glass discs as the rest of the site (azure wash, lemon hairline) — no gradient dashes, no clipped strokes.
+Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/hero/`), azure CTAs, and the Komplet card. Yellow only for small high-impact moments. Do not add numbered markers on parallel offerings (Web / Video / Foto). Section kickers are tracked uppercase azure with a 6px azure dot — not a faded dash or a tiny lucide chip. Process steps use larger lucide line icons (stroke 1.75, azure) in the same circular frosted-glass discs as the rest of the site (azure wash, lemon hairline) — no gradient dashes, no clipped strokes.
 
 ## Motion that earns its place
 
