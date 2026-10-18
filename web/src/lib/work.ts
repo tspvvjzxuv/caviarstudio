@@ -19,7 +19,6 @@ export type WorkItem = {
   /** Filter membership. A tile may sit in more than one category. */
   categories: WorkCat[];
   href?: string;
-  repo?: string;
   /** feature = full-width tall tile. pair = two consecutive pair items sit side by side. */
   layout?: WorkLayout;
 };
@@ -41,7 +40,6 @@ const CAT_DICT: Record<WorkCat, keyof Dict> = {
  *   title: "Stredoveký festival Stropkov",
  *   categories: ["festival"],
  *   href: "https://ptra.sk/",
- *   repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
  * }
  */
 export const WORK: WorkItem[] = [
@@ -61,7 +59,6 @@ export const WORK: WorkItem[] = [
     },
     categories: ["web", "eshop"],
     href: "https://lililentilka.sk/",
-    repo: "https://github.com/tspvvjzxuv/lile-lentilka-pages",
     layout: "feature",
   },
   {
@@ -73,9 +70,9 @@ export const WORK: WorkItem[] = [
       de: "Mittelalterfestival Stropkov",
     },
     line: {
-      sk: "GitHub Pages. Web festivalu PTRA v Stropkove.",
-      en: "GitHub Pages. Site for the PTRA festival in Stropkov.",
-      de: "GitHub Pages. Website des PTRA-Festivals in Stropkov.",
+      sk: "Web festivalu PTRA v Stropkove.",
+      en: "Site for the PTRA festival in Stropkov.",
+      de: "Website des PTRA-Festivals in Stropkov.",
     },
     alt: {
       sk: "ptra.sk — úvod festivalového webu",
@@ -84,7 +81,6 @@ export const WORK: WorkItem[] = [
     },
     categories: ["festival"],
     href: "https://ptra.sk/",
-    repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
     layout: "pair",
   },
   {
@@ -96,18 +92,17 @@ export const WORK: WorkItem[] = [
       de: "Kinderschminken",
     },
     line: {
-      sk: "CSS. GitHub Pages.",
-      en: "CSS. GitHub Pages.",
-      de: "CSS. GitHub Pages.",
+      sk: "Web o maľovaní na tvár pre deti.",
+      en: "A site about face painting for children.",
+      de: "Eine Website über Kinderschminken.",
     },
     alt: {
-      sk: "Maľovanie na tvár — úvod GitHub Pages",
-      en: "Face painting — top of the GitHub Pages site",
-      de: "Kinderschminken — oberer Bereich der GitHub-Pages-Seite",
+      sk: "Maľovanie na tvár — úvod webu",
+      en: "Face painting — top of the site",
+      de: "Kinderschminken — oberer Bereich der Website",
     },
     categories: ["web"],
     href: "https://tspvvjzxuv.github.io/malovanienatvar2/",
-    repo: "https://github.com/tspvvjzxuv/malovanienatvar2",
     layout: "pair",
   },
 ];
@@ -201,12 +196,5 @@ export const WORK_SHOT_ROWS: WorkItem[][] = groupWorkRows(WORK_SHOTS);
 export const WORK_ROWS: WorkItem[][] = groupWorkRows(WORK);
 
 export function workPrimaryHref(item: WorkItem): string {
-  return (item.href || item.repo || "").trim();
-}
-
-export function workRepoHref(item: WorkItem): string {
-  const repo = item.repo?.trim() ?? "";
-  const live = item.href?.trim() ?? "";
-  if (!repo || !live || repo === live) return "";
-  return repo;
+  return item.href?.trim() ?? "";
 }

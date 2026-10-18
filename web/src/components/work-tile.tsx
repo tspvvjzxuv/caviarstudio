@@ -5,7 +5,6 @@ import {
   workIndex,
   workLabels,
   workPrimaryHref,
-  workRepoHref,
   workSrc,
   workText,
   type WorkItem,
@@ -127,7 +126,6 @@ function TypeTile({ item, index }: { item: WorkItem; index: number }) {
   const line = workText(item.line, lang);
   const labels = workLabels(item, t);
   const n = String(index + 1).padStart(2, "0");
-  const live = Boolean(item.href?.trim());
   return (
     <div className="project-media project-type absolute inset-0 overflow-hidden">
       <div className="absolute inset-0 z-[3] flex flex-col justify-end gap-3 p-[clamp(1.25rem,4vw,2.25rem)]">
@@ -142,9 +140,6 @@ function TypeTile({ item, index }: { item: WorkItem; index: number }) {
               </li>
             ))}
           </ul>
-        ) : null}
-        {!live ? (
-          <span className="text-[0.62rem] tracking-[0.18em] text-silver uppercase">{t.workGitHub}</span>
         ) : null}
       </div>
     </div>
@@ -163,10 +158,9 @@ function tileClass(item: WorkItem) {
 }
 
 export function WorkTile({ item }: { item: WorkItem }) {
-  const { lang, t } = useLanguage();
+  const { lang } = useLanguage();
   const title = workText(item.title, lang);
   const href = workPrimaryHref(item);
-  const repo = workRepoHref(item);
   const index = workIndex(item);
   const type = isTypographic(item);
   return (
@@ -185,16 +179,6 @@ export function WorkTile({ item }: { item: WorkItem }) {
           rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
           aria-label={title}
         />
-      ) : null}
-      {repo ? (
-        <a
-          className="work-git absolute top-4 right-4 z-[4] inline-flex rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[0.62rem] tracking-[0.18em] text-platinum uppercase backdrop-blur-md hover:border-lemon/40 hover:text-lemon focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
-          href={repo}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t.workGitHub}
-        </a>
       ) : null}
       {type ? <TypeTile item={item} index={index} /> : <WorkMedia item={item} index={index} />}
     </article>
