@@ -62,7 +62,7 @@ function Heading({
   return (
     <Reveal className={cn("grid gap-4", className)}>
       <Kicker>{kicker}</Kicker>
-      <h2 className="text-balance font-serif text-[clamp(2.2rem,5.6vw,4.4rem)] leading-[1.08] tracking-[-0.025em]">{title}</h2>
+      <h2 className="section-title">{title}</h2>
       {children}
     </Reveal>
   );

@@ -115,9 +115,10 @@ Do not use metallic gold, champagne, or mustard. Lemon is a vivid electric / lem
 
 ## Typography
 
-Two families only: **Bodoni Moda** for display, titles, price numbers, and the wordmark, **DM Sans** for UI, body, and labels.
+Two families only: **Bodoni Moda** for the wordmark, price numbers, and short display names, **DM Sans** for UI, body, labels, and **section headings**.
 
-- **Display:** Upright Bodoni, slightly tight tracking. The logo is the exception: uppercase, tracked 0.12em, weight 500.
+- **Section titles:** DM Sans 600, pearl `#F4F5F7`, no gradient and no hairline serif. Size `clamp(2.5rem, 7vw, 4rem)`. Long titles must stay readable on near-black at 390px and desktop.
+- **Display:** Upright Bodoni, slightly tight tracking, only where a short mark can take it (logo, prices, card names). The logo is uppercase, tracked 0.12em, weight 500.
 - **Body:** 16–18px, long line-height, max ~42–58ch.
 - **Labels:** Small caps via uppercase + wide tracking. Never more than two weights on a screen (400 and 500/600).
 

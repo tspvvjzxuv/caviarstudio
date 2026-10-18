@@ -125,7 +125,7 @@ export function Services() {
   return (
     <Section.Frame id="sluzby" density="compact" className="border-t border-border">
       <Section.Body>
-        <h2 className="max-w-[12ch] font-serif text-[clamp(2.4rem,6vw,4.6rem)] leading-[1.08] tracking-[-0.03em] text-balance">
+        <h2 className="section-title max-w-[12ch]">
           {t.doKicker}
         </h2>
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
@@ -272,7 +272,7 @@ export function Process() {
   return (
     <Section.Frame id="ako" className="slide-grid">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[16rem] md:mb-16 md:max-w-[26rem]" kicker={t.howKicker} title={t.howTitle} />
+        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16 md:max-w-[28ch]" kicker={t.howKicker} title={t.howTitle} />
         <ol className="grid list-none gap-6 md:gap-8 xl:gap-10">
           {steps.map((step) => {
             const Icon = step.Icon;
@@ -285,7 +285,7 @@ export function Process() {
                       <Icon />
                     </IconDisc>
                     <div className="min-w-0">
-                      <h3 className="font-serif text-[clamp(1.35rem,2.4vw,1.85rem)] leading-[1.2] font-normal">{step.title}</h3>
+                      <h3 className="font-sans text-[clamp(1.2rem,2.2vw,1.55rem)] leading-[1.25] font-semibold tracking-[-0.02em] text-pearl">{step.title}</h3>
                       <p className="mt-2 max-w-[52ch] leading-[1.55] text-muted-foreground">{step.body}</p>
                     </div>
                   </CardContent>
@@ -574,7 +574,7 @@ export function Faq() {
               value={`faq-${idx}`}
               className="rounded-3xl border border-border bg-card px-6 not-last:border-b-0 md:px-8"
             >
-              <AccordionTrigger className="rounded-full py-5 font-serif text-[clamp(1.25rem,2.4vw,1.6rem)] leading-[1.25] font-normal hover:no-underline">
+              <AccordionTrigger className="rounded-full py-5 font-sans text-[clamp(1.15rem,2.2vw,1.4rem)] leading-[1.3] font-semibold tracking-[-0.02em] text-pearl hover:no-underline">
                 {item.q}
               </AccordionTrigger>
               <AccordionContent className="max-w-[62ch] pb-6 leading-[1.55] text-muted-foreground">{item.a}</AccordionContent>
@@ -591,7 +591,7 @@ function ContactIntro() {
   return (
     <Reveal>
       <Kicker>{t.contactKicker}</Kicker>
-      <h2 className="mt-4 font-serif text-[clamp(2.4rem,8vw,3.85rem)] leading-[1.08] tracking-[-0.03em]">
+      <h2 className="section-title mt-4">
         <span className="block">{t.contactLine1}</span>
         <span className="block">{t.how1t}</span>
       </h2>
