@@ -1,7 +1,7 @@
 import type { Dict, Lang } from "@/lib/i18n";
 
 export type WorkLayout = "feature" | "pair";
-export type WorkCat = "web" | "eshop" | "landing" | "festival";
+export type WorkCat = "web" | "eshop" | "festival";
 export type WorkFilter = "all" | WorkCat;
 
 /** String for every language, or a SK/EN/DE map (falls back to SK). */
@@ -24,12 +24,11 @@ export type WorkItem = {
   layout?: WorkLayout;
 };
 
-export const WORK_CAT_ORDER: WorkCat[] = ["web", "eshop", "landing", "festival"];
+export const WORK_CAT_ORDER: WorkCat[] = ["web", "eshop", "festival"];
 
 const CAT_DICT: Record<WorkCat, keyof Dict> = {
   web: "workCatWeb",
   eshop: "workCatEshop",
-  landing: "workCatLanding",
   festival: "workCatFestival",
 };
 
@@ -47,25 +46,6 @@ const CAT_DICT: Record<WorkCat, keyof Dict> = {
  */
 export const WORK: WorkItem[] = [
   {
-    id: "thedesigns",
-    image: "/media/work/thedesigns.webp",
-    title: "thedesigns.org",
-    line: {
-      sk: "Landing s tromi sklenenými stĺpcami. Slovenčina a nemčina, jedna doména.",
-      en: "Landing page with three glass columns. Slovak and German, one domain.",
-      de: "Landingpage mit drei Glas-Säulen. Slowakisch und Deutsch, eine Domain.",
-    },
-    alt: {
-      sk: "thedesigns.org — úvod landingu s tromi stĺpcami",
-      en: "thedesigns.org — landing page with three columns",
-      de: "thedesigns.org — Landingpage mit drei Säulen",
-    },
-    categories: ["landing"],
-    href: "https://thedesigns.org/",
-    repo: "https://github.com/tspvvjzxuv/tri-sluzby-glass-landing",
-    layout: "pair",
-  },
-  {
     id: "lile-lentilka",
     image: "/media/work/lile-lentilka.webp",
     title: "LiLiLentilka",
@@ -82,7 +62,7 @@ export const WORK: WorkItem[] = [
     categories: ["web", "eshop"],
     href: "https://lililentilka.sk/",
     repo: "https://github.com/tspvvjzxuv/lile-lentilka-pages",
-    layout: "pair",
+    layout: "feature",
   },
   {
     id: "ptra",

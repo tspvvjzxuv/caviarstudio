@@ -55,7 +55,7 @@ To add a site:
 3. Push one object onto `WORK` in `web/src/lib/work.ts`.
 4. Rebuild: `cd web && npm run build:pages`.
 
-Optional fields: `video`, `line`, `alt`, `categories` (`web` | `eshop` | `landing` | `festival`), `href`, `repo`, `layout` (`feature` = full-width, `pair` = two-up). `title` / `line` / `alt` can be a string or `{ sk, en, de }`.
+Optional fields: `video`, `line`, `alt`, `categories` (`web` | `eshop` | `festival`), `href`, `repo`, `layout` (`feature` = full-width, `pair` = two-up). `title` / `line` / `alt` can be a string or `{ sk, en, de }`.
 
 Do not drop in stock photos. Do not invent clients or results.
 
