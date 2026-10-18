@@ -103,10 +103,10 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
           </video>
         ) : null}
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] grid gap-2 bg-linear-to-t from-[#070708]/78 to-transparent p-[clamp(1.25rem,4vw,2.25rem)]">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] grid gap-2 bg-linear-to-t from-[#070708] from-[8%] via-[#070708]/82 via-42% to-transparent p-[clamp(1.25rem,4vw,2.25rem)] pt-28">
         <span className="text-[0.62rem] tracking-[0.22em] text-silver uppercase">{n}</span>
-        <h3 className="font-serif text-[clamp(1.8rem,4vw,3.2rem)] leading-none font-normal tracking-[-0.02em]">{title}</h3>
-        {line ? <p className="max-w-[36ch] text-[0.95rem] text-muted-foreground">{line}</p> : null}
+        <h3 className="font-serif text-[clamp(1.8rem,4vw,3.2rem)] leading-none font-normal tracking-[-0.02em] text-pearl">{title}</h3>
+        {line ? <p className="max-w-[36ch] text-[0.95rem] text-platinum/85">{line}</p> : null}
         {label ? <TypePill label={label} /> : null}
       </div>
     </>
