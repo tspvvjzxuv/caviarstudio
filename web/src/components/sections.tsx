@@ -280,9 +280,9 @@ export function Process() {
             <li key={step.n}>
               <Reveal>
                 <Card className="overflow-visible rounded-3xl border border-border py-0 ring-0">
-                  <CardContent className="grid grid-cols-[auto_1fr] items-start gap-x-5 gap-y-4 p-6 md:p-8">
-                    <IconDisc>
-                      <Icon />
+                  <CardContent className="grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-4 p-6 md:gap-x-6 md:p-8">
+                    <IconDisc size="lg" className="text-azure">
+                      <Icon strokeWidth={1.75} />
                     </IconDisc>
                     <div className="min-w-0">
                       <h3 className="font-sans text-[clamp(1.2rem,2.2vw,1.55rem)] leading-[1.25] font-semibold tracking-[-0.02em] text-pearl">{step.title}</h3>

@@ -2,9 +2,9 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const SIZE = {
-  sm: "size-8 [&_svg]:size-3.5",
-  md: "size-12 [&_svg]:size-5",
-  lg: "size-14 [&_svg]:size-6",
+  sm: "size-8 [&_svg]:size-4",
+  md: "size-12 [&_svg]:size-6",
+  lg: "size-16 [&_svg]:size-8",
 } as const;
 
 export function IconDisc({
@@ -18,11 +18,7 @@ export function IconDisc({
 }) {
   return (
     <span
-      className={cn(
-        "icon-disc inline-flex shrink-0 items-center justify-center [&_svg]:stroke-[1.75] [&_svg]:stroke-current",
-        SIZE[size],
-        className,
-      )}
+      className={cn("icon-disc", SIZE[size], className)}
       aria-hidden="true"
     >
       {children}
