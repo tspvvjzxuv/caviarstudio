@@ -155,7 +155,7 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 ## Components
 
 - **Logo:** Upright uppercase **CAVIAR** in Bodoni Moda 500, letter-spacing 0.12em, silver gradient `#ffffff → #d9dee6 → #8f98a6`. Thin silver hairline (`#c9d0da`, fading at the ends) under the word, then **STUDIO · TRNAVA** in Bodoni 400, `#a7afbb`, tracked uppercase. Same lockup on the hero, nav, intro, footer, favicon, and apple-touch. No pearl circle, no italic. Hero size: about 80% width on 390px, clamp up to ~10.5rem on desktop. Azure/lemon glows stay around the hero, not in the letters.
-- **Icons:** Lucide, thin stroke (1.5), round caps, inside circular `.glass` discs. No decorative gradient dashes.
+- **Icons:** Lucide line icons, stroke 1.75, round caps/joins, overflow visible so nothing clips. They sit in circular `.icon-disc` frosted-glass circles (azure wash, lemon hairline) — the same discs as the menu, FAQ chevron, and service cards. Process step discs are larger (64px, 32px glyph, azure stroke). No decorative gradient dashes.
 - **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset), fully pill-shaped. Ghost/outline uses a translucent glass border. Uppercase labels, 52px min height, full width on small screens.
 - **Feature / service cards:** Elevated `#0E0E12` surface, translucent glass border, `rounded-3xl`, lucide icon in a glass disc. Three-up on desktop with `--gap-panel`.
 - **Pricing cards:** Shared lemon launch-price pill; launch amounts in lemon. Caviar Komplet is visually louder: faint azure border, azure-to-lemon wash, wider measure. Same gap as other panel grids.
