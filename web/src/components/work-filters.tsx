@@ -37,7 +37,7 @@ export function WorkFilters({
 }) {
   const { t } = useLanguage();
   const cats = usedWorkCats();
-  if (!cats.length) return null;
+  if (cats.length < 2) return null;
   return (
     <div role="toolbar" aria-label={t.workFilter} className="mb-6 flex flex-wrap gap-2 md:mb-8">
       <FilterPill active={value === "all"} onClick={() => onChange("all")}>

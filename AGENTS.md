@@ -22,7 +22,7 @@ Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/h
 
 ## Conversion
 
-Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, in the header, and on the form. Do not add a second quote button under the price notes. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Hero centerpiece is the CAVIAR lockup; brand tagline is “STUDIO · TRNAVA.” Work (**Naša práca**) lists public websites from `web/src/lib/work.ts`: live screenshot tiles, or typographic tiles when there is no live page. One type label per tile; no filter menu.
+Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, in the header, and on the form. Do not add a second quote button under the price notes. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Hero centerpiece is the CAVIAR lockup; brand tagline is “STUDIO · TRNAVA.” Work (**Naša práca**) lists **live** public websites only from `web/src/lib/work.ts`: screenshot + live href. Glass pill filters when two or more categories remain.
 
 ## SEO
 
