@@ -161,7 +161,7 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 - **Header / menus:** Fixed `.glass` navbar over the hero so the loop shows through. Mobile sheet, language switcher, select, tooltip, popover, dropdown, and dialog use `.glass` / `.glass-panel`.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
-- **Work tiles:** Section and nav stay visible. Empty `WORK` is one invite line plus a quote CTA — no empty tiles, no “Čoskoro” grid. Each owner item in `web/src/lib/work.ts` (image or video, title, category, optional link) becomes a large Attic Salt–style tile (hover parallax, scroll shift, hover film, custom cursor). Silver fallback only if that file is missing. Never “TODO”, “Placeholder”, or filler tiles.
+- **Work tiles:** Section heading is **Naša práca** / Our work / Unsere Arbeit. Each public website in `web/src/lib/work.ts` is a large round-glass tile (hover parallax, scroll shift, custom cursor). Live sites use a real screenshot; no live page uses a typographic glass field (name, one line, one type label). One small glass type pill under the title (`Web`, `Web + e-shop`, `Landing page`, `Festival`) — no filter menu. Tile links to the live site; GitHub is a secondary chip. Never “TODO”, “Placeholder”, stock photos, or invented clients.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
 - **Footer:** Hairline bar with stacked contacts (no middle-dot meta string). Azure link hover. Study shadcn navbar/footer block rhythm, keep Caviar type.
 

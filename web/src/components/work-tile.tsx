@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/lib/language";
 import {
+  isTypographic,
   workIndex,
-  workSilver,
+  workLabel,
+  workPrimaryHref,
+  workRepoHref,
   workSrc,
-  workTags,
   workText,
   type WorkItem,
 } from "@/lib/work";
@@ -23,8 +24,16 @@ function allowWorkVideo() {
   return true;
 }
 
+function TypePill({ label }: { label: string }) {
+  return (
+    <span className="inline-flex w-fit rounded-full border border-white/12 bg-white/[0.06] px-3 py-1 text-[0.62rem] tracking-[0.18em] text-platinum uppercase backdrop-blur-md">
+      {label}
+    </span>
+  );
+}
+
 function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
-  const { lang, t } = useLanguage();
+  const { lang } = useLanguage();
   const title = workText(item.title, lang);
   const line = workText(item.line, lang);
   const alt = workText(item.alt, lang, title);
@@ -36,9 +45,8 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const showImage = Boolean(image) && !brokenImage;
   const showVideo = Boolean(video) && !brokenVideo && mountVideo;
-  const showSilver = !showImage && !showVideo;
   const n = String(index + 1).padStart(2, "0");
-  const tags = workTags(item, t);
+  const label = workLabel(item, lang);
   const layout = item.layout ?? "feature";
 
   useEffect(() => {
@@ -67,12 +75,7 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
 
   return (
     <>
-      <div
-        className={cn(
-          "project-media absolute inset-0 overflow-hidden",
-          showSilver && `silver-sheen silver-${workSilver(index)}`,
-        )}
-      >
+      <div className="project-media absolute inset-0 overflow-hidden">
         {showImage ? (
           <img
             src={image}
@@ -104,36 +107,52 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
         <span className="text-[0.62rem] tracking-[0.22em] text-silver uppercase">{n}</span>
         <h3 className="font-serif text-[clamp(1.8rem,4vw,3.2rem)] leading-none font-normal tracking-[-0.02em]">{title}</h3>
         {line ? <p className="max-w-[36ch] text-[0.95rem] text-muted-foreground">{line}</p> : null}
-        {tags.length ? (
-          <ul className="mt-1.5 flex list-none flex-wrap gap-2">
-            {tags.map((tag) => (
-              <li key={tag}>
-                <Badge variant="outline" className="rounded-full border-white/12 text-[0.62rem] tracking-[0.18em] text-platinum uppercase">
-                  {tag}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-        ) : null}
+        {label ? <TypePill label={label} /> : null}
       </div>
     </>
   );
 }
 
+function TypeTile({ item, index }: { item: WorkItem; index: number }) {
+  const { lang, t } = useLanguage();
+  const title = workText(item.title, lang);
+  const line = workText(item.line, lang);
+  const label = workLabel(item, lang);
+  const n = String(index + 1).padStart(2, "0");
+  const live = Boolean(item.href?.trim());
+  return (
+    <div className="project-media project-type absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 z-[3] flex flex-col justify-end gap-3 p-[clamp(1.25rem,4vw,2.25rem)]">
+        <span className="text-[0.62rem] tracking-[0.22em] text-silver uppercase">{n}</span>
+        <h3 className="max-w-[16ch] font-serif text-[clamp(1.8rem,4vw,3.2rem)] leading-[0.95] font-normal tracking-[-0.02em]">{title}</h3>
+        {line ? <p className="max-w-[36ch] text-[0.95rem] text-muted-foreground">{line}</p> : null}
+        {label ? <TypePill label={label} /> : null}
+        {!live ? (
+          <span className="text-[0.62rem] tracking-[0.18em] text-silver uppercase">{t.workGitHub}</span>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function tileClass(item: WorkItem) {
   const layout = item.layout ?? "feature";
+  const type = isTypographic(item);
   return cn(
     "project relative isolate min-h-[64vh] overflow-hidden rounded-3xl border border-border bg-card",
-    layout === "feature" && "min-h-[78vh] md:min-h-[min(84vh,920px)]",
-    layout === "pair" && "md:min-h-[min(68vh,700px)]",
+    !type && layout === "feature" && "min-h-[78vh] md:min-h-[min(84vh,920px)]",
+    (type || layout === "pair") && "md:min-h-[min(68vh,700px)]",
+    type && "min-h-[min(52vh,560px)]",
   );
 }
 
 export function WorkTile({ item }: { item: WorkItem }) {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const title = workText(item.title, lang);
-  const href = item.href?.trim();
+  const href = workPrimaryHref(item);
+  const repo = workRepoHref(item);
   const index = workIndex(item);
+  const type = isTypographic(item);
   return (
     <article className={cn(tileClass(item), "reveal")} data-id={item.id} data-cursor={href ? "view" : undefined} aria-label={title}>
       {href ? (
@@ -145,7 +164,17 @@ export function WorkTile({ item }: { item: WorkItem }) {
           aria-label={title}
         />
       ) : null}
-      <WorkMedia item={item} index={index} />
+      {repo ? (
+        <a
+          className="work-git absolute top-4 right-4 z-[4] inline-flex rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[0.62rem] tracking-[0.18em] text-platinum uppercase backdrop-blur-md hover:border-lemon/40 hover:text-lemon focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"
+          href={repo}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t.workGitHub}
+        </a>
+      ) : null}
+      {type ? <TypeTile item={item} index={index} /> : <WorkMedia item={item} index={index} />}
     </article>
   );
 }

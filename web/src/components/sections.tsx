@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { useLanguage } from "@/lib/language";
-import { HAS_WORK, WORK_ROWS } from "@/lib/work";
+import { HAS_WORK, WORK_SHOT_ROWS, WORK_TYPE } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
@@ -469,7 +469,7 @@ export function Work() {
           </div>
           <Section.Wide className="mt-8">
             <div ref={stage} className="grid gap-4 md:gap-6 xl:gap-8">
-              {WORK_ROWS.map((row) =>
+              {WORK_SHOT_ROWS.map((row) =>
                 row.length === 2 ? (
                   <div key={row[0].id} className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
                     {row.map((item) => (
@@ -480,6 +480,13 @@ export function Work() {
                   <WorkTile key={row[0].id} item={row[0]} />
                 ),
               )}
+              {WORK_TYPE.length ? (
+                <div className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
+                  {WORK_TYPE.map((item) => (
+                    <WorkTile key={item.id} item={item} />
+                  ))}
+                </div>
+              ) : null}
             </div>
           </Section.Wide>
         </>

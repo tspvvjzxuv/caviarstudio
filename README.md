@@ -46,22 +46,17 @@ npm run build:pages
 
 ## Work / photos
 
-The Work section and its nav link stay **visible**. While `WORK` in `web/src/lib/work.ts` is empty, the section shows one invite line and a quote button. It does not render empty tiles or “coming soon” copy.
+The Work section (**Naša práca**) lists public websites already built. Data lives in `web/src/lib/work.ts`. Live sites get a screenshot in `media/work/`; otherwise the tile is typographic (no photo). Each tile may show one small type label. The tile opens the live site; GitHub is the secondary link.
 
-To add a photo (or a video):
+To add a site:
 
-1. Drop the file in `media/` (for example `media/cafe.webp`). Optional muted hover film: `media/cafe.mp4`.
-2. Open `web/src/lib/work.ts` and add one object to `WORK`:
-
-```ts
-{ id: "cafe", image: "/media/cafe.webp", title: "Café Ruža", category: "foto" }
-```
-
+1. If it is live, drop a 1440×900 screenshot in `media/work/<id>.webp` (under 250 KB).
+2. Push one object onto `WORK` in `web/src/lib/work.ts`.
 3. Rebuild: `cd web && npm run build:pages`.
 
-Optional fields: `video`, `line`, `alt`, `href`, `layout` (`feature` = full-width, `pair` = two consecutive pair items sit side by side). `title` / `line` / `alt` can be a string (all languages) or `{ sk, en, de }`. `category` is `foto`, `video`, `web`, or an array of those.
+Optional fields: `video`, `line`, `alt`, `tag`, `href`, `repo`, `layout` (`feature` = full-width, `pair` = two-up). `title` / `line` / `alt` / `tag` can be a string or `{ sk, en, de }`.
 
-Do not drop in stock photos. A missing file falls back to a silver field on that tile only. It is not a placeholder grid.
+Do not drop in stock photos. Do not invent clients or results.
 
 ## Credits
 
