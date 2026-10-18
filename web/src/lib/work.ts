@@ -34,8 +34,7 @@ const CAT_DICT: Record<WorkCat, keyof Dict> = {
 };
 
 /**
- * Public websites already built. Owner screenshots of live sites, or a
- * typographic tile when there is no live page / no usable visual.
+ * Live public websites only. Each item needs a working href and a screenshot.
  *
  * {
  *   id: "ptra",
@@ -64,7 +63,7 @@ export const WORK: WorkItem[] = [
     categories: ["landing"],
     href: "https://thedesigns.org/",
     repo: "https://github.com/tspvvjzxuv/tri-sluzby-glass-landing",
-    layout: "feature",
+    layout: "pair",
   },
   {
     id: "lile-lentilka",
@@ -83,7 +82,7 @@ export const WORK: WorkItem[] = [
     categories: ["web", "eshop"],
     href: "https://lililentilka.sk/",
     repo: "https://github.com/tspvvjzxuv/lile-lentilka-pages",
-    layout: "feature",
+    layout: "pair",
   },
   {
     id: "ptra",
@@ -106,7 +105,7 @@ export const WORK: WorkItem[] = [
     categories: ["festival"],
     href: "https://ptra.sk/",
     repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
-    layout: "feature",
+    layout: "pair",
   },
   {
     id: "malovanienatvar2",
@@ -129,47 +128,6 @@ export const WORK: WorkItem[] = [
     categories: ["web"],
     href: "https://tspvvjzxuv.github.io/malovanienatvar2/",
     repo: "https://github.com/tspvvjzxuv/malovanienatvar2",
-    layout: "feature",
-  },
-  {
-    id: "creative-creature",
-    title: "Creative Creature",
-    line: {
-      sk: "HTML, 2024. Maľovanie na tvár pre deti.",
-      en: "HTML, 2024. Face painting for kids.",
-      de: "HTML, 2024. Kinderschminken.",
-    },
-    categories: ["web"],
-    href: "https://tspvvjzxuv.github.io/creative-creature/",
-    repo: "https://github.com/tspvvjzxuv/creative-creature",
-    layout: "pair",
-  },
-  {
-    id: "malovanie-na-tvar",
-    title: {
-      sk: "Maľovanie na tvár",
-      en: "Face painting",
-      de: "Kinderschminken",
-    },
-    line: {
-      sk: "CSS. Živá stránka nie je.",
-      en: "CSS. No live site.",
-      de: "CSS. Keine Live-Seite.",
-    },
-    categories: ["web"],
-    repo: "https://github.com/tspvvjzxuv/malovanie-na-tvar",
-    layout: "pair",
-  },
-  {
-    id: "sofinkastranka",
-    title: "Sofinka stránka",
-    line: {
-      sk: "Web pre biznis, 2024. Živá stránka nie je.",
-      en: "Business website, 2024. No live site.",
-      de: "Business-Website, 2024. Keine Live-Seite.",
-    },
-    categories: ["web"],
-    repo: "https://github.com/tspvvjzxuv/sofinkastranka",
     layout: "pair",
   },
 ];
@@ -236,6 +194,9 @@ export function usedWorkCats(items: WorkItem[] = WORK): WorkCat[] {
   }
   return WORK_CAT_ORDER.filter((cat) => used.has(cat));
 }
+
+/** Hide the filter row when there are fewer than two categories left. */
+export const SHOW_WORK_FILTERS = usedWorkCats().length >= 2;
 
 export function groupWorkRows(items: WorkItem[]): WorkItem[][] {
   const rows: WorkItem[][] = [];

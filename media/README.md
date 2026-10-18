@@ -14,7 +14,7 @@ The hero plays it muted, looping, full-bleed. It stays on the poster if `prefers
 
 ## Work stills
 
-Live-site screenshots of public websites go in `media/work/` (`webp`/`jpg`, under 250 KB). Add one object to `WORK` in `web/src/lib/work.ts`. No live page, or a page with no usable visual: typographic tile, no photo.
+Live-site screenshots of public websites go in `media/work/` (`webp`/`jpg`, under 250 KB). Add one object to `WORK` in `web/src/lib/work.ts` only when the live URL loads with real content. Do not add a tile without a working live page.
 
 ```ts
 {

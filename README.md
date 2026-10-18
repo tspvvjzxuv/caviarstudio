@@ -46,13 +46,14 @@ npm run build:pages
 
 ## Work / photos
 
-The Work section (**Naša práca**) lists public websites already built. Data lives in `web/src/lib/work.ts`. Live sites get a screenshot in `media/work/`; otherwise the tile is typographic (no photo). A glass pill row filters by category (Všetko, plus only categories that have a tile). A tile may belong to more than one category. The tile opens the live site; GitHub is the secondary link.
+The Work section (**Naša práca**) lists **live** public websites only. Data lives in `web/src/lib/work.ts`. Each tile needs a working live URL and a screenshot in `media/work/`. A glass pill row filters by category (Všetko, plus only categories that have a tile) when two or more categories remain. A tile may belong to more than one category. The tile opens the live site; GitHub is a secondary chip when the public repo exists.
 
 To add a site:
 
-1. If it is live, drop a 1440×900 screenshot in `media/work/<id>.webp` (under 250 KB).
-2. Push one object onto `WORK` in `web/src/lib/work.ts`.
-3. Rebuild: `cd web && npm run build:pages`.
+1. Confirm the live URL loads with real content.
+2. Drop a 1440×900 screenshot in `media/work/<id>.webp` (under 250 KB).
+3. Push one object onto `WORK` in `web/src/lib/work.ts`.
+4. Rebuild: `cd web && npm run build:pages`.
 
 Optional fields: `video`, `line`, `alt`, `categories` (`web` | `eshop` | `landing` | `festival`), `href`, `repo`, `layout` (`feature` = full-width, `pair` = two-up). `title` / `line` / `alt` can be a string or `{ sk, en, de }`.
 

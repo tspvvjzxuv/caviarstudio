@@ -155,10 +155,10 @@ function tileClass(item: WorkItem) {
   const layout = item.layout ?? "feature";
   const type = isTypographic(item);
   return cn(
-    "project relative isolate min-h-[64vh] overflow-hidden rounded-3xl border border-border bg-card",
+    "project relative isolate min-h-[70vh] overflow-hidden rounded-3xl border border-border bg-card",
     !type && layout === "feature" && "min-h-[78vh] md:min-h-[min(84vh,920px)]",
-    (type || layout === "pair") && "md:min-h-[min(68vh,700px)]",
-    type && "min-h-[min(52vh,560px)]",
+    !type && layout === "pair" && "md:min-h-[min(78vh,820px)]",
+    type && "min-h-[min(52vh,560px)] md:min-h-[min(68vh,700px)]",
   );
 }
 
