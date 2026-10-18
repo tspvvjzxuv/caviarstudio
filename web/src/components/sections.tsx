@@ -272,7 +272,7 @@ export function Process() {
   return (
     <Section.Frame id="ako" className="slide-grid">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16 md:max-w-[28ch]" kicker={t.howKicker} title={t.howTitle} />
+        <Section.Heading className="mb-10 md:mb-16" kicker={t.howKicker} title={t.howTitle} />
         <ol className="grid list-none gap-6 md:gap-8 xl:gap-10">
           {steps.map((step) => {
             const Icon = step.Icon;
@@ -566,7 +566,7 @@ export function Faq() {
   return (
     <Section.Frame id="faq">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[22ch] md:mb-16" kicker={t.navFaq} title={t.faqTitle} />
+        <Section.Heading className="mb-10 md:mb-16" kicker={t.navFaq} title={t.faqTitle} />
         <Accordion type="single" collapsible className="grid gap-3">
           {items.map((item, idx) => (
             <AccordionItem
