@@ -21,7 +21,7 @@ Live-site screenshots of public websites go in `media/work/` (`webp`/`jpg`, unde
   id: "ptra",
   image: "/media/work/ptra.webp",
   title: "Stredoveký festival Stropkov",
-  tag: "Festival",
+  categories: ["festival"],
   href: "https://ptra.sk/",
   repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
   layout: "feature",

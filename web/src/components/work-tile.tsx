@@ -3,7 +3,7 @@ import { useLanguage } from "@/lib/language";
 import {
   isTypographic,
   workIndex,
-  workLabel,
+  workLabels,
   workPrimaryHref,
   workRepoHref,
   workSrc,
@@ -33,7 +33,7 @@ function TypePill({ label }: { label: string }) {
 }
 
 function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const title = workText(item.title, lang);
   const line = workText(item.line, lang);
   const alt = workText(item.alt, lang, title);
@@ -46,7 +46,7 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
   const showImage = Boolean(image) && !brokenImage;
   const showVideo = Boolean(video) && !brokenVideo && mountVideo;
   const n = String(index + 1).padStart(2, "0");
-  const label = workLabel(item, lang);
+  const labels = workLabels(item, t);
   const layout = item.layout ?? "feature";
 
   useEffect(() => {
@@ -107,7 +107,15 @@ function WorkMedia({ item, index }: { item: WorkItem; index: number }) {
         <span className="text-[0.62rem] tracking-[0.22em] text-silver uppercase">{n}</span>
         <h3 className="font-serif text-[clamp(1.8rem,4vw,3.2rem)] leading-none font-normal tracking-[-0.02em] text-pearl">{title}</h3>
         {line ? <p className="max-w-[36ch] text-[0.95rem] text-platinum/85">{line}</p> : null}
-        {label ? <TypePill label={label} /> : null}
+        {labels.length ? (
+          <ul className="flex list-none flex-wrap gap-2">
+            {labels.map((label) => (
+              <li key={label}>
+                <TypePill label={label} />
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     </>
   );
@@ -117,7 +125,7 @@ function TypeTile({ item, index }: { item: WorkItem; index: number }) {
   const { lang, t } = useLanguage();
   const title = workText(item.title, lang);
   const line = workText(item.line, lang);
-  const label = workLabel(item, lang);
+  const labels = workLabels(item, t);
   const n = String(index + 1).padStart(2, "0");
   const live = Boolean(item.href?.trim());
   return (
@@ -126,7 +134,15 @@ function TypeTile({ item, index }: { item: WorkItem; index: number }) {
         <span className="text-[0.62rem] tracking-[0.22em] text-silver uppercase">{n}</span>
         <h3 className="max-w-[16ch] font-serif text-[clamp(1.8rem,4vw,3.2rem)] leading-[0.95] font-normal tracking-[-0.02em]">{title}</h3>
         {line ? <p className="max-w-[36ch] text-[0.95rem] text-muted-foreground">{line}</p> : null}
-        {label ? <TypePill label={label} /> : null}
+        {labels.length ? (
+          <ul className="flex list-none flex-wrap gap-2">
+            {labels.map((label) => (
+              <li key={label}>
+                <TypePill label={label} />
+              </li>
+            ))}
+          </ul>
+        ) : null}
         {!live ? (
           <span className="text-[0.62rem] tracking-[0.18em] text-silver uppercase">{t.workGitHub}</span>
         ) : null}
@@ -154,7 +170,13 @@ export function WorkTile({ item }: { item: WorkItem }) {
   const index = workIndex(item);
   const type = isTypographic(item);
   return (
-    <article className={cn(tileClass(item), "reveal")} data-id={item.id} data-cursor={href ? "view" : undefined} aria-label={title}>
+    <article
+      className={cn(tileClass(item), "reveal")}
+      data-id={item.id}
+      data-cursor={href ? "view" : undefined}
+      aria-label={title}
+      style={{ viewTransitionName: `work-${item.id}` }}
+    >
       {href ? (
         <a
           className="project-hit absolute inset-0 z-[2] rounded-3xl focus-visible:ring-3 focus-visible:ring-ring focus-visible:outline-none"

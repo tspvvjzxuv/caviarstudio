@@ -1,6 +1,8 @@
-import type { Lang } from "@/lib/i18n";
+import type { Dict, Lang } from "@/lib/i18n";
 
 export type WorkLayout = "feature" | "pair";
+export type WorkCat = "web" | "eshop" | "landing" | "festival";
+export type WorkFilter = "all" | WorkCat;
 
 /** String for every language, or a SK/EN/DE map (falls back to SK). */
 export type WorkCopy = string | { sk: string; en?: string; de?: string };
@@ -14,12 +16,21 @@ export type WorkItem = {
   title: WorkCopy;
   line?: WorkCopy;
   alt?: WorkCopy;
-  /** One small type label under the title, e.g. Web / Landing page. */
-  tag?: WorkCopy;
+  /** Filter membership. A tile may sit in more than one category. */
+  categories: WorkCat[];
   href?: string;
   repo?: string;
   /** feature = full-width tall tile. pair = two consecutive pair items sit side by side. */
   layout?: WorkLayout;
+};
+
+export const WORK_CAT_ORDER: WorkCat[] = ["web", "eshop", "landing", "festival"];
+
+const CAT_DICT: Record<WorkCat, keyof Dict> = {
+  web: "workCatWeb",
+  eshop: "workCatEshop",
+  landing: "workCatLanding",
+  festival: "workCatFestival",
 };
 
 /**
@@ -30,7 +41,7 @@ export type WorkItem = {
  *   id: "ptra",
  *   image: "/media/work/ptra.webp",
  *   title: "Stredoveký festival Stropkov",
- *   tag: "Festival",
+ *   categories: ["festival"],
  *   href: "https://ptra.sk/",
  *   repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
  * }
@@ -50,11 +61,7 @@ export const WORK: WorkItem[] = [
       en: "thedesigns.org — landing page with three columns",
       de: "thedesigns.org — Landingpage mit drei Säulen",
     },
-    tag: {
-      sk: "Landing page",
-      en: "Landing page",
-      de: "Landingpage",
-    },
+    categories: ["landing"],
     href: "https://thedesigns.org/",
     repo: "https://github.com/tspvvjzxuv/tri-sluzby-glass-landing",
     layout: "feature",
@@ -73,11 +80,7 @@ export const WORK: WorkItem[] = [
       en: "lililentilka.sk — top of the site",
       de: "lililentilka.sk — oberer Bereich der Website",
     },
-    tag: {
-      sk: "Web + e-shop",
-      en: "Web + e-shop",
-      de: "Web + E-Shop",
-    },
+    categories: ["web", "eshop"],
     href: "https://lililentilka.sk/",
     repo: "https://github.com/tspvvjzxuv/lile-lentilka-pages",
     layout: "feature",
@@ -100,7 +103,7 @@ export const WORK: WorkItem[] = [
       en: "ptra.sk — top of the festival site",
       de: "ptra.sk — oberer Bereich der Festival-Website",
     },
-    tag: "Festival",
+    categories: ["festival"],
     href: "https://ptra.sk/",
     repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
     layout: "feature",
@@ -123,7 +126,7 @@ export const WORK: WorkItem[] = [
       en: "Face painting — top of the GitHub Pages site",
       de: "Kinderschminken — oberer Bereich der GitHub-Pages-Seite",
     },
-    tag: "Web",
+    categories: ["web"],
     href: "https://tspvvjzxuv.github.io/malovanienatvar2/",
     repo: "https://github.com/tspvvjzxuv/malovanienatvar2",
     layout: "feature",
@@ -136,7 +139,7 @@ export const WORK: WorkItem[] = [
       en: "HTML, 2024. Face painting for kids.",
       de: "HTML, 2024. Kinderschminken.",
     },
-    tag: "Web",
+    categories: ["web"],
     href: "https://tspvvjzxuv.github.io/creative-creature/",
     repo: "https://github.com/tspvvjzxuv/creative-creature",
     layout: "pair",
@@ -153,7 +156,7 @@ export const WORK: WorkItem[] = [
       en: "CSS. No live site.",
       de: "CSS. Keine Live-Seite.",
     },
-    tag: "Web",
+    categories: ["web"],
     repo: "https://github.com/tspvvjzxuv/malovanie-na-tvar",
     layout: "pair",
   },
@@ -165,7 +168,7 @@ export const WORK: WorkItem[] = [
       en: "Business website, 2024. No live site.",
       de: "Business-Website, 2024. Keine Live-Seite.",
     },
-    tag: "Web",
+    categories: ["web"],
     repo: "https://github.com/tspvvjzxuv/sofinkastranka",
     layout: "pair",
   },
@@ -205,8 +208,33 @@ export function isTypographic(item: WorkItem): boolean {
   return !item.image && !item.video;
 }
 
-export function workLabel(item: WorkItem, lang: Lang): string {
-  return workText(item.tag, lang);
+export function workCatLabel(cat: WorkCat, pack: Dict): string {
+  return pack[CAT_DICT[cat]];
+}
+
+export function workLabels(item: WorkItem, pack: Dict): string[] {
+  return (item.categories ?? [])
+    .slice()
+    .sort((a, b) => WORK_CAT_ORDER.indexOf(a) - WORK_CAT_ORDER.indexOf(b))
+    .map((cat) => workCatLabel(cat, pack))
+    .filter(Boolean);
+}
+
+export function workHasCat(item: WorkItem, filter: WorkFilter): boolean {
+  if (filter === "all") return true;
+  return item.categories.includes(filter);
+}
+
+export function filterWork(items: WorkItem[], filter: WorkFilter): WorkItem[] {
+  return items.filter((item) => workHasCat(item, filter));
+}
+
+export function usedWorkCats(items: WorkItem[] = WORK): WorkCat[] {
+  const used = new Set<WorkCat>();
+  for (const item of items) {
+    for (const cat of item.categories) used.add(cat);
+  }
+  return WORK_CAT_ORDER.filter((cat) => used.has(cat));
 }
 
 export function groupWorkRows(items: WorkItem[]): WorkItem[][] {
