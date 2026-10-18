@@ -1,46 +1,178 @@
 import type { Dict, Lang } from "@/lib/i18n";
 
 export type WorkLayout = "feature" | "pair";
+export type WorkCat = "web" | "eshop" | "landing" | "festival";
+export type WorkFilter = "all" | WorkCat;
 
 /** String for every language, or a SK/EN/DE map (falls back to SK). */
 export type WorkCopy = string | { sk: string; en?: string; de?: string };
 
 export type WorkItem = {
   id: string;
-  /** Still in /media. Example: "/media/cafe.webp" */
+  /** Still in /media. Example: "/media/work/ptra.webp" */
   image?: string;
   /** Optional muted hover film, or the tile media when there is no still. */
   video?: string;
   title: WorkCopy;
   line?: WorkCopy;
   alt?: WorkCopy;
-  /** "foto" | "video" | "web", or an array. Shown as tags. */
-  category?: string | string[];
+  /** Filter membership. A tile may sit in more than one category. */
+  categories: WorkCat[];
   href?: string;
+  repo?: string;
   /** feature = full-width tall tile. pair = two consecutive pair items sit side by side. */
   layout?: WorkLayout;
 };
 
+export const WORK_CAT_ORDER: WorkCat[] = ["web", "eshop", "landing", "festival"];
+
+const CAT_DICT: Record<WorkCat, keyof Dict> = {
+  web: "workCatWeb",
+  eshop: "workCatEshop",
+  landing: "workCatLanding",
+  festival: "workCatFestival",
+};
+
 /**
- * Owner photos only. Leave this array empty and the Work section stays on the
- * page with one invite line (no empty tiles, no “coming soon” grid).
- *
- * Add a still:
- *   1. Drop the file in media/  (e.g. media/cafe.webp)
- *   2. Push one object onto WORK
- *   3. cd web && npm run build:pages
+ * Public websites already built. Owner screenshots of live sites, or a
+ * typographic tile when there is no live page / no usable visual.
  *
  * {
- *   id: "cafe",
- *   image: "/media/cafe.webp",
- *   title: "Café Ruža",
- *   category: "foto",
+ *   id: "ptra",
+ *   image: "/media/work/ptra.webp",
+ *   title: "Stredoveký festival Stropkov",
+ *   categories: ["festival"],
+ *   href: "https://ptra.sk/",
+ *   repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
  * }
- *
- * Optional: video, line, alt, href, layout ("feature" | "pair").
- * title / line / alt may be a string (all languages) or { sk, en, de }.
  */
-export const WORK: WorkItem[] = [];
+export const WORK: WorkItem[] = [
+  {
+    id: "thedesigns",
+    image: "/media/work/thedesigns.webp",
+    title: "thedesigns.org",
+    line: {
+      sk: "Landing s tromi sklenenými stĺpcami. Slovenčina a nemčina, jedna doména.",
+      en: "Landing page with three glass columns. Slovak and German, one domain.",
+      de: "Landingpage mit drei Glas-Säulen. Slowakisch und Deutsch, eine Domain.",
+    },
+    alt: {
+      sk: "thedesigns.org — úvod landingu s tromi stĺpcami",
+      en: "thedesigns.org — landing page with three columns",
+      de: "thedesigns.org — Landingpage mit drei Säulen",
+    },
+    categories: ["landing"],
+    href: "https://thedesigns.org/",
+    repo: "https://github.com/tspvvjzxuv/tri-sluzby-glass-landing",
+    layout: "feature",
+  },
+  {
+    id: "lile-lentilka",
+    image: "/media/work/lile-lentilka.webp",
+    title: "LiLiLentilka",
+    line: {
+      sk: "Web s e-shopom. Hudba plná farieb, smiechu a lentiliek.",
+      en: "Website with an e-shop. Music full of colour, laughter and lentil sweets.",
+      de: "Website mit E-Shop. Musik voller Farbe, Lachen und Lentilkas.",
+    },
+    alt: {
+      sk: "lililentilka.sk — úvod webu",
+      en: "lililentilka.sk — top of the site",
+      de: "lililentilka.sk — oberer Bereich der Website",
+    },
+    categories: ["web", "eshop"],
+    href: "https://lililentilka.sk/",
+    repo: "https://github.com/tspvvjzxuv/lile-lentilka-pages",
+    layout: "feature",
+  },
+  {
+    id: "ptra",
+    image: "/media/work/ptra.webp",
+    title: {
+      sk: "Stredoveký festival Stropkov",
+      en: "Medieval festival Stropkov",
+      de: "Mittelalterfestival Stropkov",
+    },
+    line: {
+      sk: "GitHub Pages. Web festivalu PTRA v Stropkove.",
+      en: "GitHub Pages. Site for the PTRA festival in Stropkov.",
+      de: "GitHub Pages. Website des PTRA-Festivals in Stropkov.",
+    },
+    alt: {
+      sk: "ptra.sk — úvod festivalového webu",
+      en: "ptra.sk — top of the festival site",
+      de: "ptra.sk — oberer Bereich der Festival-Website",
+    },
+    categories: ["festival"],
+    href: "https://ptra.sk/",
+    repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
+    layout: "feature",
+  },
+  {
+    id: "malovanienatvar2",
+    image: "/media/work/malovanienatvar2.webp",
+    title: {
+      sk: "Maľovanie na tvár",
+      en: "Face painting",
+      de: "Kinderschminken",
+    },
+    line: {
+      sk: "CSS. GitHub Pages.",
+      en: "CSS. GitHub Pages.",
+      de: "CSS. GitHub Pages.",
+    },
+    alt: {
+      sk: "Maľovanie na tvár — úvod GitHub Pages",
+      en: "Face painting — top of the GitHub Pages site",
+      de: "Kinderschminken — oberer Bereich der GitHub-Pages-Seite",
+    },
+    categories: ["web"],
+    href: "https://tspvvjzxuv.github.io/malovanienatvar2/",
+    repo: "https://github.com/tspvvjzxuv/malovanienatvar2",
+    layout: "feature",
+  },
+  {
+    id: "creative-creature",
+    title: "Creative Creature",
+    line: {
+      sk: "HTML, 2024. Maľovanie na tvár pre deti.",
+      en: "HTML, 2024. Face painting for kids.",
+      de: "HTML, 2024. Kinderschminken.",
+    },
+    categories: ["web"],
+    href: "https://tspvvjzxuv.github.io/creative-creature/",
+    repo: "https://github.com/tspvvjzxuv/creative-creature",
+    layout: "pair",
+  },
+  {
+    id: "malovanie-na-tvar",
+    title: {
+      sk: "Maľovanie na tvár",
+      en: "Face painting",
+      de: "Kinderschminken",
+    },
+    line: {
+      sk: "CSS. Živá stránka nie je.",
+      en: "CSS. No live site.",
+      de: "CSS. Keine Live-Seite.",
+    },
+    categories: ["web"],
+    repo: "https://github.com/tspvvjzxuv/malovanie-na-tvar",
+    layout: "pair",
+  },
+  {
+    id: "sofinkastranka",
+    title: "Sofinka stránka",
+    line: {
+      sk: "Web pre biznis, 2024. Živá stránka nie je.",
+      en: "Business website, 2024. No live site.",
+      de: "Business-Website, 2024. Keine Live-Seite.",
+    },
+    categories: ["web"],
+    repo: "https://github.com/tspvvjzxuv/sofinkastranka",
+    layout: "pair",
+  },
+];
 
 export const HAS_WORK = WORK.length > 0;
 
@@ -72,25 +204,37 @@ export function workSrc(path: string | undefined): string {
   return `/${trimmed.replace(/^\/+/, "")}`;
 }
 
-export function workCategories(item: WorkItem): string[] {
-  if (!item.category) return [];
-  return (Array.isArray(item.category) ? item.category : [item.category])
-    .map((entry) => String(entry).trim())
+export function isTypographic(item: WorkItem): boolean {
+  return !item.image && !item.video;
+}
+
+export function workCatLabel(cat: WorkCat, pack: Dict): string {
+  return pack[CAT_DICT[cat]];
+}
+
+export function workLabels(item: WorkItem, pack: Dict): string[] {
+  return (item.categories ?? [])
+    .slice()
+    .sort((a, b) => WORK_CAT_ORDER.indexOf(a) - WORK_CAT_ORDER.indexOf(b))
+    .map((cat) => workCatLabel(cat, pack))
     .filter(Boolean);
 }
 
-const CAT_KEY: Record<string, keyof Dict> = {
-  foto: "tagFoto",
-  photo: "tagFoto",
-  video: "tagVideo",
-  web: "tagWeb",
-};
+export function workHasCat(item: WorkItem, filter: WorkFilter): boolean {
+  if (filter === "all") return true;
+  return item.categories.includes(filter);
+}
 
-export function workTags(item: WorkItem, pack: Dict): string[] {
-  return workCategories(item).map((entry) => {
-    const key = CAT_KEY[entry.toLowerCase()];
-    return key ? pack[key] : entry;
-  });
+export function filterWork(items: WorkItem[], filter: WorkFilter): WorkItem[] {
+  return items.filter((item) => workHasCat(item, filter));
+}
+
+export function usedWorkCats(items: WorkItem[] = WORK): WorkCat[] {
+  const used = new Set<WorkCat>();
+  for (const item of items) {
+    for (const cat of item.categories) used.add(cat);
+  }
+  return WORK_CAT_ORDER.filter((cat) => used.has(cat));
 }
 
 export function groupWorkRows(items: WorkItem[]): WorkItem[][] {
@@ -110,8 +254,18 @@ export function groupWorkRows(items: WorkItem[]): WorkItem[][] {
   return rows;
 }
 
+export const WORK_SHOTS = WORK.filter((item) => !isTypographic(item));
+export const WORK_TYPE = WORK.filter(isTypographic);
+export const WORK_SHOT_ROWS: WorkItem[][] = groupWorkRows(WORK_SHOTS);
 export const WORK_ROWS: WorkItem[][] = groupWorkRows(WORK);
 
-export function workSilver(index: number): "a" | "b" | "c" {
-  return (["a", "b", "c"] as const)[index % 3];
+export function workPrimaryHref(item: WorkItem): string {
+  return (item.href || item.repo || "").trim();
+}
+
+export function workRepoHref(item: WorkItem): string {
+  const repo = item.repo?.trim() ?? "";
+  const live = item.href?.trim() ?? "";
+  if (!repo || !live || repo === live) return "";
+  return repo;
 }

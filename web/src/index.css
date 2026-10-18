@@ -507,6 +507,25 @@
   transition: border-color 200ms ease-out;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .project {
+    view-transition-name: none !important;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-group(*) {
+    animation-duration: 0.48s;
+    animation-timing-function: var(--ease-out-expo);
+  }
+}
+
+.project-type {
+  background:
+    radial-gradient(ellipse 80% 55% at 8% 0%, rgb(61 138 255 / 16%), transparent 52%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, rgb(255 228 77 / 8%), transparent 48%),
+    linear-gradient(165deg, #14141a 0%, #0a0a0c 58%, #070708 100%);
+}
+
 .project-media img,
 .project-media video {
   position: absolute;

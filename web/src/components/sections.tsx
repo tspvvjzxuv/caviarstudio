@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
   AtSign,
   Camera,
@@ -34,10 +34,18 @@ import {
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { useLanguage } from "@/lib/language";
-import { HAS_WORK, WORK_ROWS } from "@/lib/work";
+import {
+  filterWork,
+  groupWorkRows,
+  HAS_WORK,
+  isTypographic,
+  WORK,
+  type WorkFilter,
+} from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
+import { WorkFilters } from "@/components/work-filters";
 import { WorkTile } from "@/components/work-tile";
 
 const PANEL =
@@ -301,10 +309,29 @@ function pauseTileVideo(video: HTMLVideoElement) {
   }
 }
 
+function applyWorkFilter(next: WorkFilter, current: WorkFilter, setFilter: (value: WorkFilter) => void) {
+  if (next === current) return;
+  const go = () => setFilter(next);
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+  if (!reduce && typeof doc.startViewTransition === "function") {
+    doc.startViewTransition(go);
+    return;
+  }
+  go();
+}
+
 export function Work() {
   const { t } = useLanguage();
   const stage = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
+  const [filter, setFilter] = useState<WorkFilter>("all");
+  const visible = useMemo(() => filterWork(WORK, filter), [filter]);
+  const shotRows = useMemo(
+    () => groupWorkRows(visible.filter((item) => !isTypographic(item))),
+    [visible],
+  );
+  const typeItems = useMemo(() => visible.filter(isTypographic), [visible]);
   usePauseOffscreen(sectionRef);
 
   useEffect(() => {
@@ -337,7 +364,7 @@ export function Work() {
       return () => io.disconnect();
     }
     projects().forEach((el) => el.classList.add("in"));
-  }, []);
+  }, [filter]);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -468,8 +495,9 @@ export function Work() {
             </div>
           </div>
           <Section.Wide className="mt-8">
+            <WorkFilters value={filter} onChange={(next) => applyWorkFilter(next, filter, setFilter)} />
             <div ref={stage} className="grid gap-4 md:gap-6 xl:gap-8">
-              {WORK_ROWS.map((row) =>
+              {shotRows.map((row) =>
                 row.length === 2 ? (
                   <div key={row[0].id} className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
                     {row.map((item) => (
@@ -480,6 +508,13 @@ export function Work() {
                   <WorkTile key={row[0].id} item={row[0]} />
                 ),
               )}
+              {typeItems.length ? (
+                <div className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
+                  {typeItems.map((item) => (
+                    <WorkTile key={item.id} item={item} />
+                  ))}
+                </div>
+              ) : null}
             </div>
           </Section.Wide>
         </>

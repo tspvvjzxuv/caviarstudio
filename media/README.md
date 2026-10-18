@@ -14,17 +14,17 @@ The hero plays it muted, looping, full-bleed. It stays on the poster if `prefers
 
 ## Work stills
 
-Owner stills only. Drop a file here, then add one object to `WORK` in `web/src/lib/work.ts`. While that array is empty, the Work section shows an invite line and a quote button — no empty tiles.
+Live-site screenshots of public websites go in `media/work/` (`webp`/`jpg`, under 250 KB). Add one object to `WORK` in `web/src/lib/work.ts`. No live page, or a page with no usable visual: typographic tile, no photo.
 
 ```ts
 {
-  id: "cafe",
-  image: "/media/cafe.webp",   // this folder
-  video: "/media/cafe.mp4",    // optional muted hover film
-  title: "Café Ruža",          // or { sk, en, de }
-  category: "foto",            // foto | video | web, or an array
-  href: "https://example.com", // optional
-  layout: "feature",           // feature (full-width) | pair (two-up)
+  id: "ptra",
+  image: "/media/work/ptra.webp",
+  title: "Stredoveký festival Stropkov",
+  categories: ["festival"],
+  href: "https://ptra.sk/",
+  repo: "https://github.com/tspvvjzxuv/stredoveky-festival-stropkov",
+  layout: "feature",
 }
 ```
 
