@@ -1,14 +1,14 @@
 # UI sounds
 
-Quiet cinematic one-shots for caviarstudio.sk. Play only after a user gesture. Mute is a glass disc in the header (`localStorage` `caviar-sound:v1`, default on). No ambient loops.
+Quiet tactile one-shots for caviarstudio.sk. Play only after a user gesture. Mute is a glass disc in the header (`localStorage` `caviar-sound:v1`, default on). No ambient loops.
 
-Shipped files live in `media/ui/` as WebM/Opus plus MP3. Each is trimmed under 1.5 s, loudness-normalized around −24 LUFS, and under 40 KB.
+Shipped files live in `media/ui/` as WebM/Opus plus MP3. Each is trimmed under 0.5 s, peak-limited, and under 8 KB.
 
 | Cue | Files | Mapping |
 | --- | --- | --- |
-| Soft cinematic whoosh | `whoosh-open.webm` / `.mp3` | Fotky / Videá / Weby **open** |
-| Reverse whoosh | `whoosh-close.webm` / `.mp3` | Same cards **close** (reverse edit of the open whoosh) |
-| Low hit + glassy shimmer | `hit.webm` / `.mp3` | Primary `.metal-fill` buttons; unmute confirm |
+| Lens bayonet lock (mount click) + quiet piano | `lens-open.webm` / `.mp3` | Fotky / Videá / Weby **open** |
+| Lighter lens take-out click | `lens-close.webm` / `.mp3` | Same cards **close** |
+| Short DSLR shutter | `hit.webm` / `.mp3` | Primary `.metal-fill` buttons; unmute confirm |
 
 The mute control itself is unchanged (same disc, same persistence). It does not play a sound when turning audio off.
 
@@ -16,17 +16,18 @@ The mute control itself is unchanged (same disc, same persistence). It does not 
 
 Verified 2026-10-19 on each file page and on the catalog license. Every source is **CC0 1.0** (public domain): free commercial website use, modification, and redistribution, **no attribution required**. Credits below are optional.
 
-Catalog license: [SFXMint CC0 1.0](https://sfxmint.com/license) — “every SFXMint sound is CC0 1.0 public domain… no attribution required.” Legal code: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+- Freesound 516490: page link [Creative Commons 0](http://creativecommons.org/publicdomain/zero/1.0/) — “You can copy, modify, distribute and perform the sound, even for commercial purposes, all without the need of asking permission to the author.”
+- SFXMint catalog: [CC0 1.0](https://sfxmint.com/license) — “every SFXMint sound is CC0 1.0 public domain… no attribution required.” Legal code: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
 
 | Shipped cue | Original title | Source page | Download | License |
 | --- | --- | --- | --- | --- |
-| Open whoosh (trimmed 0.28–1.50 s of the original) | Slow Deep Air Whoosh Transition 03 | [sfxmint.com/sounds/transition-whoosh-03](https://sfxmint.com/sounds/transition-whoosh-03) | [transition-whoosh-03.wav](https://sfxmint.com/dl/transition-whoosh-03.wav) | CC0 1.0 |
-| Close whoosh | Reverse of the trimmed open whoosh (same source) | same | same | CC0 1.0 |
-| Hit — impact layer (first 0.50 s; drop padded tail) | Soft Transition Impact 01 | [sfxmint.com/sounds/soft-transition-impact-01](https://sfxmint.com/sounds/soft-transition-impact-01) | [soft-transition-impact-01.wav](https://sfxmint.com/dl/soft-transition-impact-01.wav) | CC0 1.0 |
-| Hit — glassy shimmer layer (first 0.45 s, quieter mix) | Glassy Notification Chime 68 | [sfxmint.com/sounds/ui-chime-68](https://sfxmint.com/sounds/ui-chime-68) | [ui-chime-68.wav](https://sfxmint.com/dl/ui-chime-68.wav) | CC0 1.0 |
+| Open — lens mount / bayonet lock (trim ~22.442–22.762 s of the recording; transient aligned to the start) | Old SLR manual lens - Taking out and putting back in camera | [freesound.org/people/khenshom/sounds/516490](https://freesound.org/people/khenshom/sounds/516490/) | HQ preview used (original WAV requires login; same CC0 recording) | CC0 1.0 |
+| Open — quiet piano underlay (~0.09 mix, faded with the click) | Piano Major Chord 01 | [sfxmint.com/sounds/piano-major-chord-01](https://sfxmint.com/sounds/piano-major-chord-01) | [piano-major-chord-01.wav](https://sfxmint.com/dl/piano-major-chord-01.wav) | CC0 1.0 |
+| Close — lighter take-out click (trim ~4.682–4.922 s) | same Konica SLR lens recording | same Freesound page | same | CC0 1.0 |
+| Hit — camera shutter (trim ~0.01–0.39 s of a 2 s file) | Single Dslr Camera Shutter 39 (No Reverb) | [sfxmint.com/sounds/office-camera-39](https://sfxmint.com/sounds/office-camera-39) | [office-camera-39.wav](https://sfxmint.com/dl/office-camera-39.wav) | CC0 1.0 |
 
-Edits (trim, fade, reverse, mix, loudnorm, Opus/MP3 encode) are allowed under CC0.
+Edits (trim, fade, mix, peak limit, Opus/MP3 encode) are allowed under CC0.
 
 ## Playback
 
-`web/src/lib/sound.ts` fetches WebM/Opus when the browser reports `probably`, otherwise MP3. Decode happens lazily after the first pointer/key gesture. Gain stays low on a shared `AudioContext` master bus.
+`web/src/lib/sound.ts` prefetches the WebM/Opus or MP3 `ArrayBuffer`s on module load, creates an `AudioContext`, and `decodeAudioData`s even while the context is suspended. The first pointer/key gesture calls `resume()` (capture phase) plus a 1-sample silent warmup. `playUiSound` starts the decoded buffer at `ctx.currentTime` on the card’s `pointerdown` / `keydown` — it does not wait on fetch or decode if the buffer is already ready. Gain stays low on a shared master bus.

@@ -65,4 +65,4 @@ Do not drop in stock photos. Do not invent clients or results.
 
 Hero background loop: [Pexels video 29848606](https://www.pexels.com/video/29848606/) (liquid chrome). Pexels license allows free commercial use; attribution is not required.
 
-UI sounds: CC0 cinematic pack from SFXMint (whoosh, reverse whoosh, soft impact, glassy shimmer). File list, source URLs, and licenses: [`SOUNDS.md`](SOUNDS.md).
+UI sounds: CC0 lens-mount / shutter pack (Freesound Konica bayonet recording + SFXMint shutter and quiet piano). File list, source URLs, and licenses: [`SOUNDS.md`](SOUNDS.md).
