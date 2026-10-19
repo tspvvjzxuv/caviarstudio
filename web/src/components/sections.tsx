@@ -181,6 +181,7 @@ export function Services() {
     };
     const measure = () => Math.ceil(inner.scrollHeight);
     let first = true;
+    let kicked = false;
 
     const apply = () => {
       if (cancelled) return;
@@ -192,18 +193,22 @@ export function Services() {
           panel.style.transition = "none";
           panel.style.gridTemplateRows = "1fr";
           void panel.offsetHeight;
-          const usedFr = panel.getBoundingClientRect().height >= 8;
-          if (!usedFr) {
-            panel.style.gridTemplateRows = `${from}px`;
-            void panel.offsetHeight;
-          }
+          const hold = Math.ceil(panel.getBoundingClientRect().height);
+          panel.style.gridTemplateRows = `${hold >= 8 ? hold : from}px`;
+          void panel.offsetHeight;
           panel.style.removeProperty("transition");
-          panel.style.gridTemplateRows = usedFr ? "0fr" : "0px";
+          panel.style.gridTemplateRows = "0px";
         } else {
           panel.style.removeProperty("transition");
           panel.style.gridTemplateRows = "0fr";
         }
         return;
+      }
+      if (!kicked) {
+        kicked = true;
+        inner.classList.remove("is-shown");
+        void inner.offsetWidth;
+        inner.classList.add("is-shown");
       }
       const next = Math.max(measure(), 8);
       lastOpenHeight.current = next;
@@ -250,6 +255,19 @@ export function Services() {
       raf = requestAnimationFrame(apply);
     });
     for (const ms of [280, 900, 1600, 2200]) laters.push(window.setTimeout(apply, ms));
+    laters.push(
+      window.setTimeout(() => {
+        if (cancelled) return;
+        inner.querySelectorAll<HTMLElement>(".panel-enter").forEach((el) => {
+          if (Number(getComputedStyle(el).opacity) > 0.05) return;
+          el.style.transition = "none";
+          el.style.opacity = "1";
+          el.style.transform = "none";
+          void el.offsetWidth;
+          el.style.removeProperty("transition");
+        });
+      }, 140),
+    );
     void document.fonts?.ready.then(apply);
 
     return () => {
@@ -318,7 +336,7 @@ export function Services() {
           className={cn("service-panel", open && "is-open")}
         >
           <div className="service-panel-clip">
-            <div ref={innerRef} className="service-panel-inner">
+            <div ref={innerRef} className={cn("service-panel-inner", open && "is-shown")}>
             {active ? (
               <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
                 <div className="panel-enter">
