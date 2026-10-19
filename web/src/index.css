@@ -366,8 +366,8 @@
 
 .hero-depth {
   background:
-    radial-gradient(ellipse 72% 58% at 8% 16%, rgb(61 138 255 / 26%), transparent 58%),
-    radial-gradient(ellipse 58% 48% at 94% 82%, rgb(255 228 77 / 13%), transparent 54%),
+    radial-gradient(ellipse 72% 58% at 8% 16%, rgb(61 138 255 / 26%), transparent 70%),
+    radial-gradient(ellipse 58% 48% at 94% 82%, rgb(255 228 77 / 13%), transparent 68%),
     radial-gradient(ellipse 85% 65% at 50% 38%, transparent 22%, rgb(7 7 8 / 52%) 100%),
     linear-gradient(180deg, rgb(7 7 8 / 16%) 0%, rgb(7 7 8 / 10%) 18%, rgb(7 7 8 / 20%) 48%, #070708 100%),
     linear-gradient(90deg, rgb(7 7 8 / 52%) 0%, rgb(7 7 8 / 22%) 36%, transparent 58%);
@@ -492,9 +492,11 @@
 .js .reveal.in {
   opacity: 1;
   transform: none;
+  filter: none;
   transition:
     opacity 0.9s var(--ease-out-expo),
-    transform 1.12s var(--ease-out-expo);
+    transform 1.12s var(--ease-out-expo),
+    filter 1s var(--ease-out-expo);
   transition-delay: calc(var(--d, 0) * 140ms);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -502,20 +504,13 @@
     filter: blur(8px);
   }
   .js .reveal.in {
-    filter: blur(0);
-    transition:
-      opacity 0.9s var(--ease-out-expo),
-      transform 1.12s var(--ease-out-expo),
-      filter 1s var(--ease-out-expo);
+    filter: none;
   }
 }
 .work-sec .project:nth-child(1) { transition-delay: 60ms; }
 .work-sec .project:nth-child(2) { transition-delay: 180ms; }
 .work-sec .grid .project:nth-child(1) { transition-delay: 80ms; }
 .work-sec .grid .project:nth-child(2) { transition-delay: 200ms; }
-.work-sec .project.reveal.in {
-  filter: none;
-}
 
 /* Title-slide stagger after the intro veil (frontend-slides: one orchestrated load). */
 .hero-stage > * {
@@ -572,9 +567,11 @@
   .service-chrome::after {
     animation: none !important;
   }
-  .service-panel[data-open],
-  .service-panel[data-closed] {
-    animation-duration: 0.28s !important;
+  .service-panel {
+    transition-duration: 0.28s;
+  }
+  .service-panel.is-open .panel-enter {
+    animation-duration: 0.32s;
   }
   .project-media img,
   .project-media video {
@@ -641,6 +638,7 @@
 
 .project {
   min-width: 0;
+  overflow: visible;
 }
 .project-hit {
   display: flex;
@@ -676,6 +674,7 @@
 .device-stage {
   position: relative;
   isolation: isolate;
+  overflow: visible;
   min-height: 13.5rem;
   padding: 1.15rem 0.55rem 2.4rem 0.35rem;
   perspective: 1400px;
@@ -683,14 +682,13 @@
 }
 .device-glow {
   position: absolute;
-  inset: 12% 8% 8% 4%;
   z-index: 0;
   pointer-events: none;
+  inset: 6% 2% 2% 0;
   background:
-    radial-gradient(ellipse 55% 70% at 12% 30%, rgb(61 138 255 / 28%), transparent 62%),
-    radial-gradient(ellipse 50% 60% at 88% 78%, rgb(255 228 77 / 16%), transparent 58%);
-  filter: blur(18px);
-  opacity: 0.62;
+    radial-gradient(ellipse 42% 48% at 22% 42%, rgb(61 138 255 / 42%), transparent 72%),
+    radial-gradient(ellipse 38% 44% at 78% 70%, rgb(255 228 77 / 22%), transparent 70%);
+  opacity: 0.7;
   transition: opacity 0.9s var(--ease-out-expo);
 }
 .device-laptop,
@@ -708,7 +706,7 @@
 .device-lid,
 .device-phone {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   color: #f4f5f7;
   border: 1px solid rgb(244 245 247 / 18%);
   background:
@@ -875,7 +873,7 @@
 .service-chrome {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow: visible;
   color: #f4f5f7;
   border: 1px solid rgb(244 245 247 / 18%);
   background:
@@ -895,6 +893,7 @@
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
+  clip-path: inset(0 round 1.5rem);
   background:
     radial-gradient(ellipse 70% 80% at 8% 20%, rgb(61 138 255 / 28%), transparent 58%),
     radial-gradient(ellipse 60% 70% at 92% 86%, rgb(255 228 77 / 18%), transparent 54%),
@@ -907,6 +906,8 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  border-radius: inherit;
+  clip-path: inset(0 round 1.5rem);
   background: linear-gradient(
     115deg,
     transparent 30%,
@@ -949,15 +950,36 @@
 }
 
 .service-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.92s var(--ease-out-expo);
+}
+.service-panel:not(.is-open) {
+  pointer-events: none;
+}
+.service-panel.is-open {
+  grid-template-rows: 1fr;
+}
+.service-panel-inner {
+  min-height: 0;
   overflow: hidden;
 }
-.service-panel[data-open],
-.service-panel[data-state="open"] {
-  animation: var(--animate-panel-down);
+.service-panel.is-open > .service-panel-inner {
+  overflow: visible;
 }
-.service-panel[data-closed],
-.service-panel[data-state="closed"] {
-  animation: var(--animate-panel-up);
+.service-panel.is-open .panel-enter {
+  animation: stage-up 0.8s var(--ease-out-expo) both;
+}
+.service-panel.is-open .work-sec .panel-enter:nth-child(1) { animation-delay: 0.06s; }
+.service-panel.is-open .work-sec .panel-enter:nth-child(2) { animation-delay: 0.14s; }
+.service-panel.is-open .work-sec .panel-enter:nth-child(3) { animation-delay: 0.22s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .service-panel.is-open .panel-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .hero-ghost,

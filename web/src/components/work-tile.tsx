@@ -120,7 +120,7 @@ export function WorkTile({ item }: { item: WorkItem }) {
 
   return (
     <article
-      className="project reveal"
+      className="project panel-enter"
       data-id={item.id}
       data-cursor={href ? "view" : undefined}
       aria-label={title}

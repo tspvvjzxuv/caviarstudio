@@ -42,7 +42,7 @@ export function Reveal({
   return (
     <div
       ref={ref}
-      className={cn("reveal", className)}
+      className={cn("reveal overflow-visible", className)}
       style={{ "--d": delay } as CSSProperties}
     >
       {children}

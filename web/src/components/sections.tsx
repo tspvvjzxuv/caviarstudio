@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
   AtSign,
@@ -21,7 +21,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -152,9 +151,27 @@ export function Services() {
   const { t } = useLanguage();
   const panelId = useId();
   const frameRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState("");
-  const active = SERVICES.find((item) => item.id === open);
+  const [shown, setShown] = useState("");
+  const active = SERVICES.find((item) => item.id === shown);
   usePauseOffscreen(frameRef);
+
+  const toggleService = (id: string) => {
+    if (open === id) {
+      setOpen("");
+      return;
+    }
+    setShown(id);
+    setOpen(id);
+  };
+
+  useLayoutEffect(() => {
+    const root = panelRef.current;
+    if (!open || !root) return;
+    root.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
+  }, [open, shown]);
+
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <Section.Body>
@@ -167,12 +184,12 @@ export function Services() {
             const Icon = item.Icon;
             const expanded = open === item.id;
             return (
-              <Reveal key={item.id} className="h-full" delay={idx}>
+              <Reveal key={item.id} className="h-full overflow-visible" delay={idx}>
                 <button
                   type="button"
                   aria-expanded={expanded}
                   aria-controls={panelId}
-                  onClick={() => setOpen(expanded ? "" : item.id)}
+                  onClick={() => toggleService(item.id)}
                   className={cn(
                     "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
                     expanded && "is-open",
@@ -198,20 +215,24 @@ export function Services() {
             );
           })}
         </div>
-        <Collapsible open={Boolean(active)}>
-          <CollapsibleContent
-            id={panelId}
-            role="region"
-            className="service-panel"
-          >
+        <div
+          ref={panelRef}
+          id={panelId}
+          role="region"
+          aria-hidden={!open}
+          className={cn("service-panel", open && "is-open")}
+        >
+          <div className="service-panel-inner">
             {active ? (
               <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
-                <ServiceExamples items={dictList(t, active.examples)} />
+                <div className="panel-enter">
+                  <ServiceExamples items={dictList(t, active.examples)} />
+                </div>
                 <WorkGallery items={active.media as readonly WorkItem[]} />
               </div>
             ) : null}
-          </CollapsibleContent>
-        </Collapsible>
+          </div>
+        </div>
       </Section.Body>
     </Section.Frame>
   );
