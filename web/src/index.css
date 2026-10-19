@@ -71,8 +71,12 @@
   --animate-line-grow: line-grow 0.55s var(--ease-caviar) 0.08s forwards;
   --animate-cue: cue 2.4s var(--ease-caviar) infinite;
   --animate-ticker: ticker 36s linear infinite;
-  --animate-tile-sheen: tile-sheen 10s ease-in-out infinite;
-  --animate-logo-in: logo-in 1.05s var(--ease-out-expo) both;
+  --animate-tile-sheen: tile-sheen 14s ease-in-out infinite;
+  --animate-logo-in: logo-in 1.15s var(--ease-out-expo) both;
+  --animate-glow-breathe: glow-breathe 5.6s ease-in-out infinite;
+  --animate-dot-pulse: dot-pulse 3.8s ease-in-out infinite;
+  --animate-panel-down: panel-down 0.92s var(--ease-out-expo) both;
+  --animate-panel-up: panel-up 0.72s var(--ease-out-expo) both;
 
   @keyframes fade-in {
     from { opacity: 0; }
@@ -112,6 +116,34 @@
   @keyframes logo-in {
     from { opacity: 0; transform: translateY(18px) scale(0.94); }
     to { opacity: 1; transform: none; }
+  }
+  @keyframes glow-breathe {
+    0%, 100% { opacity: 0.42; }
+    50% { opacity: 0.88; }
+  }
+  @keyframes dot-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.72); opacity: 0.55; }
+  }
+  @keyframes panel-down {
+    from {
+      height: 0;
+      opacity: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+      opacity: 1;
+    }
+  }
+  @keyframes panel-up {
+    from {
+      height: var(--radix-collapsible-content-height);
+      opacity: 1;
+    }
+    to {
+      height: 0;
+      opacity: 0;
+    }
   }
 }
 
@@ -218,6 +250,7 @@
   flex-shrink: 0;
   border-radius: 9999px;
   background: var(--color-azure);
+  box-shadow: 0 0 10px rgb(61 138 255 / 55%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -227,18 +260,14 @@
   .hero-silver {
     display: none;
   }
-  .js .reveal {
-    opacity: 1;
-    transform: none;
-  }
   .project {
     transition: none;
   }
   .metal-fill {
-    transition: none;
+    transition: transform 120ms ease-out, background-image 120ms ease-out;
   }
   .metal-fill:active {
-    transform: none;
+    transform: scale(0.99);
   }
 }
 
@@ -302,13 +331,14 @@
   background-image: var(--metal);
   color: var(--color-pearl);
   box-shadow: inset 0 1px 0 rgb(255 228 77 / 42%);
-  transition: background-image 160ms ease-out, transform 160ms ease-out;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: background-image 160ms ease-out, transform 180ms var(--ease-out-expo);
 }
 .metal-fill:hover {
   background-image: var(--metal-hover);
 }
 .metal-fill:active {
-  transform: scale(0.97);
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0) scale(0.97);
 }
 
 .hero-field {
@@ -432,7 +462,9 @@
   .hero-ken.is-paused .hero-field,
   .hero-ken.is-paused .hero-shine,
   .work-sec.is-paused .silver-sheen::after,
-  .work-sec.is-paused .marquee-track {
+  .work-sec.is-paused .marquee-track,
+  .service-sec.is-paused .service-chrome::after,
+  .service-sec.is-paused .service-chrome::before {
     animation-play-state: paused;
   }
   @media (hover: hover) and (pointer: fine) {
@@ -451,16 +483,32 @@
 
 .js .reveal {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translate3d(0, 28px, 0);
 }
 .js .reveal.in {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.95s var(--ease-out-expo),
-    transform 1.05s var(--ease-out-expo);
-  transition-delay: calc(var(--d, 0) * 90ms);
+    opacity 0.9s var(--ease-out-expo),
+    transform 1.12s var(--ease-out-expo);
+  transition-delay: calc(var(--d, 0) * 140ms);
 }
+@media (hover: hover) and (pointer: fine) {
+  .js .reveal {
+    filter: blur(8px);
+  }
+  .js .reveal.in {
+    filter: blur(0);
+    transition:
+      opacity 0.9s var(--ease-out-expo),
+      transform 1.12s var(--ease-out-expo),
+      filter 1s var(--ease-out-expo);
+  }
+}
+.work-sec .project:nth-child(1) { transition-delay: 60ms; }
+.work-sec .project:nth-child(2) { transition-delay: 180ms; }
+.work-sec .grid .project:nth-child(1) { transition-delay: 80ms; }
+.work-sec .grid .project:nth-child(2) { transition-delay: 200ms; }
 
 /* Title-slide stagger after the intro veil (frontend-slides: one orchestrated load). */
 .hero-stage > * {
@@ -470,8 +518,11 @@
   opacity: 0;
 }
 @media (prefers-reduced-motion: no-preference) {
+  .kicker-dot {
+    animation: var(--animate-dot-pulse);
+  }
   .hero-stage > * {
-    animation: stage-up 0.9s var(--ease-out-expo) both;
+    animation: stage-up 1.12s var(--ease-out-expo) both;
   }
   .hero-stage > *:nth-child(1) { animation-delay: 1.55s; }
   .hero-stage > *:nth-child(2) { animation-delay: 1.68s; }
@@ -497,6 +548,26 @@
   .hero-stage > *,
   .hero-cue {
     opacity: 1;
+  }
+  .js .reveal {
+    filter: none;
+    transform: translate3d(0, 8px, 0);
+  }
+  .js .reveal.in {
+    filter: none;
+    transition:
+      opacity 0.4s ease-out,
+      transform 0.45s ease-out;
+    transition-delay: calc(var(--d, 0) * 40ms);
+  }
+  .kicker-dot,
+  .service-chrome::before,
+  .service-chrome::after {
+    animation: none !important;
+  }
+  .service-panel[data-open],
+  .service-panel[data-closed] {
+    animation-duration: 0.28s !important;
   }
   .project-media img,
   .project-media video {
@@ -667,8 +738,12 @@
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  background: linear-gradient(180deg, rgb(255 255 255 / 18%) 0%, transparent 36%);
+  background:
+    radial-gradient(ellipse 70% 80% at 8% 20%, rgb(61 138 255 / 28%), transparent 58%),
+    radial-gradient(ellipse 60% 70% at 92% 86%, rgb(255 228 77 / 18%), transparent 54%),
+    linear-gradient(180deg, rgb(255 255 255 / 18%) 0%, transparent 36%);
   mix-blend-mode: overlay;
+  opacity: 0.55;
 }
 .service-chrome::after {
   content: "";
@@ -704,11 +779,44 @@
     0 0 28px rgb(255 228 77 / 12%);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .service-chrome:hover::after,
-  .service-chrome.is-open::after,
-  .service-chrome[aria-expanded="true"]::after {
+  .service-chrome::after {
     animation: var(--animate-tile-sheen);
   }
+  .service-chrome::before {
+    animation: var(--animate-glow-breathe);
+  }
+}
+.service-sec.is-paused .service-chrome::after,
+.service-sec.is-paused .service-chrome::before {
+  animation-play-state: paused;
+}
+
+.service-panel {
+  overflow: hidden;
+}
+.service-panel[data-open],
+.service-panel[data-state="open"] {
+  animation: var(--animate-panel-down);
+}
+.service-panel[data-closed],
+.service-panel[data-state="closed"] {
+  animation: var(--animate-panel-up);
+}
+
+.hero-ghost,
+.icon-disc[data-magnetic],
+button[data-magnetic]:not(.metal-fill) {
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: transform 180ms var(--ease-out-expo), border-color 160ms ease-out, background-color 160ms ease-out, color 160ms ease-out;
+}
+
+.hero-parallax {
+  will-change: transform;
+  transform: translate3d(0, var(--hero-py, 0px), 0);
+}
+.hero-logo-par {
+  will-change: transform;
+  transform: translate3d(0, var(--logo-py, 0px), 0);
 }
 
 .hero-ghost {
@@ -732,7 +840,7 @@
   to { opacity: 1; }
 }
 @keyframes stage-up {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(36px); }
   to { opacity: 1; transform: none; }
 }
 ::view-transition-old(.fade-out) {

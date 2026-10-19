@@ -184,7 +184,9 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 
 ## Motion that earns its place
 
-Animate only what has a job: the first-load hero stagger (explanation), ken-burns/sheen/shader on the still (atmosphere), accordion and sheet (spatial), metal-fill press scale 0.97 (feedback). Do not add hover lift on every card. Honor `prefers-reduced-motion`. Primary CTA press uses `transition` on `transform` and `background-image` only, 160ms ease-out.
+Motion is slow and cinematic (`cubic-bezier(0.16, 1, 0.3, 1)`, 700–1200 ms). Scroll reveals fade, rise, and on fine pointers blur-to-sharp, once, staggered. Service chrome keeps a slow sheen sweep and a quiet azure/lemon glow pulse (opacity only). Hero logo and field ease on a gentle parallax. Fotky / Videá / Weby panels open on a long height+opacity ease. Primary pills take a small magnetic translate on fine pointers. Animate `transform` and `opacity` (blur only on desktop). Do not add hover lift on every card. `prefers-reduced-motion` shortens and shrinks motion — it does not snap everything off. Primary CTA press still scales to 0.97.
+
+Quiet Web Audio UI sounds (synthesized glass click / whoosh) play only after a user gesture, never as ambient loops. Default on, low gain. A round glass mute disc in the header remembers `localStorage` key `caviar-sound:v1`.
 
 ## Conversion
 

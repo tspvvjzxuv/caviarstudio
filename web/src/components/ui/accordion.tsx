@@ -50,7 +50,7 @@ function AccordionTrigger({
           aria-hidden="true"
         >
           <ChevronDownIcon
-            className="size-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-aria-expanded/accordion-trigger:rotate-180"
+            className="size-4 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/accordion-trigger:rotate-180"
             strokeWidth={1.75}
           />
         </span>
