@@ -173,7 +173,7 @@ export function Services() {
     if (!panel || !inner) return;
 
     let raf = 0;
-    let later = 0;
+    const laters: number[] = [];
     let cancelled = false;
     const reveal = () => {
       inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
@@ -193,16 +193,20 @@ export function Services() {
         panel.style.gridTemplateRows = "0fr";
         return;
       }
+      if (panel.getBoundingClientRect().height < 8) {
+        panel.style.gridTemplateRows = "1fr";
+      }
       const next = measure();
-      if (next < 1) return;
       const panelH = panel.getBoundingClientRect().height;
-      if (panelH < 8) {
+      if (next > 8 && panelH < 8) {
+        panel.style.transition = "none";
         panel.style.gridTemplateRows = "0fr";
         void panel.offsetHeight;
+        panel.style.removeProperty("transition");
         panel.style.gridTemplateRows = `${next}px`;
         return;
       }
-      if (Math.abs(panelH - next) > 8) {
+      if (next > 8 && Math.abs(panelH - next) > 8) {
         panel.style.gridTemplateRows = `${next}px`;
       }
     };
@@ -214,23 +218,22 @@ export function Services() {
     ro.observe(inner);
     const imgs = [...inner.querySelectorAll("img")];
     imgs.forEach((img) => {
-      if (!img.complete) {
-        img.addEventListener("load", apply);
-        img.addEventListener("error", apply);
-      }
+      ro.observe(img);
+      img.addEventListener("load", apply);
+      img.addEventListener("error", apply);
     });
     raf = requestAnimationFrame(() => {
       apply();
       raf = requestAnimationFrame(apply);
     });
-    later = window.setTimeout(apply, 480);
+    for (const ms of [280, 900, 1600]) laters.push(window.setTimeout(apply, ms));
     void document.fonts?.ready.then(apply);
 
     return () => {
       cancelled = true;
       ro.disconnect();
       cancelAnimationFrame(raf);
-      window.clearTimeout(later);
+      laters.forEach((id) => window.clearTimeout(id));
       imgs.forEach((img) => {
         img.removeEventListener("load", apply);
         img.removeEventListener("error", apply);
