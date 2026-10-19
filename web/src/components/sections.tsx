@@ -283,7 +283,8 @@ export function Services() {
 
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
-      <Section.Body className="overflow-visible">
+      <div className="service-glow-field" aria-hidden="true" />
+      <Section.Body className="relative z-10 overflow-visible">
         <h2 className="section-title max-w-[12ch]">{t.doKicker}</h2>
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
@@ -293,9 +294,9 @@ export function Services() {
             const Icon = item.Icon;
             const expanded = open === item.id;
             return (
-              <Reveal key={item.id} className="h-full overflow-visible" delay={idx}>
-                <div className="service-card">
-                  <span className="service-glow" aria-hidden="true" />
+              <div key={item.id} className="service-card">
+                <span className="service-glow" aria-hidden="true" />
+                <Reveal className="relative z-1 h-full overflow-visible" delay={idx}>
                   <button
                     type="button"
                     aria-expanded={expanded}
@@ -316,8 +317,8 @@ export function Services() {
                     <i className="service-mark-plus" />
                   </span>
                   </button>
-                </div>
-              </Reveal>
+                </Reveal>
+              </div>
             );
           })}
         </div>
