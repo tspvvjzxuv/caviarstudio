@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
   AtSign,
@@ -21,7 +21,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -152,9 +151,99 @@ export function Services() {
   const { t } = useLanguage();
   const panelId = useId();
   const frameRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState("");
-  const active = SERVICES.find((item) => item.id === open);
+  const [shown, setShown] = useState("");
+  const active = SERVICES.find((item) => item.id === shown);
   usePauseOffscreen(frameRef);
+
+  const toggleService = (id: string) => {
+    if (open === id) {
+      setOpen("");
+      return;
+    }
+    setShown(id);
+    setOpen(id);
+  };
+
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    const inner = innerRef.current;
+    if (!panel || !inner) return;
+
+    let raf = 0;
+    const laters: number[] = [];
+    let cancelled = false;
+    const reveal = () => {
+      inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
+    };
+    const measure = () => Math.ceil(inner.scrollHeight);
+    let first = true;
+
+    const apply = () => {
+      if (cancelled) return;
+      reveal();
+      if (!open) {
+        const h = panel.getBoundingClientRect().height;
+        if (h > 8) {
+          panel.style.gridTemplateRows = `${Math.ceil(h)}px`;
+          void panel.offsetHeight;
+        }
+        panel.style.gridTemplateRows = "0fr";
+        return;
+      }
+      const next = Math.max(measure(), 8);
+      const panelH = panel.getBoundingClientRect().height;
+      if (panelH < 8) {
+        panel.style.transition = "none";
+        panel.style.gridTemplateRows = `${next}px`;
+        void panel.offsetHeight;
+        panel.style.removeProperty("transition");
+        first = false;
+        return;
+      }
+      if (first || next > panelH + 8) {
+        first = false;
+        if (Math.abs(panelH - next) > 8) panel.style.gridTemplateRows = `${next}px`;
+      }
+    };
+
+    apply();
+    if (!open) return;
+
+    const ro = new ResizeObserver(apply);
+    ro.observe(inner);
+    const imgs = [...inner.querySelectorAll("img")];
+    const onImg = () => {
+      apply();
+      requestAnimationFrame(apply);
+    };
+    imgs.forEach((img) => {
+      img.addEventListener("load", onImg);
+      img.addEventListener("error", onImg);
+      if (img.complete) onImg();
+      else void img.decode?.().then(onImg).catch(() => {});
+    });
+    raf = requestAnimationFrame(() => {
+      apply();
+      raf = requestAnimationFrame(apply);
+    });
+    for (const ms of [280, 900, 1600, 2200]) laters.push(window.setTimeout(apply, ms));
+    void document.fonts?.ready.then(apply);
+
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+      laters.forEach((id) => window.clearTimeout(id));
+      imgs.forEach((img) => {
+        img.removeEventListener("load", onImg);
+        img.removeEventListener("error", onImg);
+      });
+    };
+  }, [open, shown]);
+
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <Section.Body>
@@ -167,17 +256,19 @@ export function Services() {
             const Icon = item.Icon;
             const expanded = open === item.id;
             return (
-              <Reveal key={item.id} className="h-full" delay={idx}>
-                <button
-                  type="button"
-                  aria-expanded={expanded}
-                  aria-controls={panelId}
-                  onClick={() => setOpen(expanded ? "" : item.id)}
-                  className={cn(
-                    "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
-                    expanded && "is-open",
-                  )}
-                >
+              <Reveal key={item.id} className="h-full overflow-visible" delay={idx}>
+                <div className="service-card">
+                  <span className="service-glow" aria-hidden="true" />
+                  <button
+                    type="button"
+                    aria-expanded={expanded}
+                    aria-controls={panelId}
+                    onClick={() => toggleService(item.id)}
+                    className={cn(
+                      "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+                      expanded && "is-open",
+                    )}
+                  >
                   <IconDisc>
                     <Icon />
                   </IconDisc>
@@ -193,25 +284,32 @@ export function Services() {
                       strokeWidth={1.75}
                     />
                   </span>
-                </button>
+                  </button>
+                </div>
               </Reveal>
             );
           })}
         </div>
-        <Collapsible open={Boolean(active)}>
-          <CollapsibleContent
-            id={panelId}
-            role="region"
-            className="service-panel"
-          >
+        <div
+          ref={panelRef}
+          id={panelId}
+          role="region"
+          aria-hidden={!open}
+          className={cn("service-panel", open && "is-open")}
+        >
+          <div className="service-panel-clip">
+            <div ref={innerRef} className="service-panel-inner">
             {active ? (
               <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
-                <ServiceExamples items={dictList(t, active.examples)} />
+                <div className="panel-enter">
+                  <ServiceExamples items={dictList(t, active.examples)} />
+                </div>
                 <WorkGallery items={active.media as readonly WorkItem[]} />
               </div>
             ) : null}
-          </CollapsibleContent>
-        </Collapsible>
+            </div>
+          </div>
+        </div>
       </Section.Body>
     </Section.Frame>
   );
