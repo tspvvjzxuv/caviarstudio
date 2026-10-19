@@ -63,12 +63,12 @@ const TEAM = [
 ] as const;
 
 const LAUNCH_PACKS = [
-  { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc" },
-  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc" },
-  { key: "webOnePager", name: "pWebName", desc: "pWebDesc" },
+  { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc", ex: "pFotoEx" },
+  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc", ex: "pVideoEx" },
+  { key: "webOnePager", name: "pWebName", desc: "pWebDesc", ex: "pWebEx" },
 ] as const;
 
-const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc" } as const;
+const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc", ex: "pKompletEx" } as const;
 
 type PricePack = (typeof LAUNCH_PACKS)[number] | typeof FEATURED_PACK;
 
@@ -185,6 +185,23 @@ function PriceIdentity({ name, desc }: { name: string; desc: string }) {
   );
 }
 
+function PriceExamples({ items }: { items: readonly string[] }) {
+  const { t } = useLanguage();
+  return (
+    <div className="rounded-2xl border border-white/12 bg-linear-to-b from-azure/12 to-lemon/6 p-4 md:p-5">
+      <p className="text-[0.62rem] font-medium tracking-[0.2em] text-azure uppercase">{t.pExLabel}</p>
+      <ul className="mt-3 grid gap-2">
+        {items.map((item) => (
+          <li key={item} className="grid grid-cols-[auto_1fr] items-start gap-2.5 text-[0.88rem] leading-[1.45] text-platinum">
+            <span className="mt-[0.45em] size-1.5 shrink-0 rounded-full bg-azure" aria-hidden="true" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function PriceAmounts({ launch, standard, vat }: { launch: number; standard: number; vat: string }) {
   const { t } = useLanguage();
   return (
@@ -210,6 +227,7 @@ function LaunchPriceCard({ pack, vat }: { pack: PricePack; vat: string }) {
         <CardHeader className={PANEL_HEAD}>
           <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
           <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+          <PriceExamples items={t[pack.ex]} />
           <Button asChild variant="outline" className="mt-1 h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
@@ -232,6 +250,9 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
             <Button asChild className="metal-fill h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
+          </div>
+          <div className="lg:col-span-2">
+            <PriceExamples items={t[pack.ex]} />
           </div>
         </CardHeader>
       </Card>

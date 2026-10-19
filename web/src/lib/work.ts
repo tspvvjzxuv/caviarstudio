@@ -25,11 +25,11 @@ export type WorkItem = {
 
 export const WORK_CAT_ORDER: WorkCat[] = ["web", "eshop", "festival"];
 
-const CAT_DICT: Record<WorkCat, keyof Dict> = {
+const CAT_DICT = {
   web: "workCatWeb",
   eshop: "workCatEshop",
   festival: "workCatFestival",
-};
+} as const;
 
 /**
  * Live public websites only. Each item needs a working href and a screenshot.
@@ -84,34 +84,12 @@ export const WORK: WorkItem[] = [
     layout: "pair",
   },
   {
-    id: "malovanie-na-tvar",
-    image: "/media/work/malovanie-na-tvar.webp",
+    id: "malovanienatvar2",
+    image: "/media/work/malovanienatvar2.webp",
     title: {
       sk: "Maľovanie na tvár",
       en: "Face painting",
       de: "Kinderschminken",
-    },
-    line: {
-      sk: "Profesionálne maľovanie pre detské oslavy, festivaly a špeciálne príležitosti.",
-      en: "Professional face painting for children's parties, festivals and special occasions.",
-      de: "Professionelles Kinderschminken für Kinderfeste, Festivals und besondere Anlässe.",
-    },
-    alt: {
-      sk: "Maľovanie na tvár — úvod webu so službami a darčekovým poukazom",
-      en: "Face painting — top of the site with services and a gift voucher",
-      de: "Kinderschminken — oberer Bereich mit Leistungen und Gutschein",
-    },
-    categories: ["web"],
-    href: "https://tspvvjzxuv.github.io/malovanie-na-tvar/",
-    layout: "pair",
-  },
-  {
-    id: "malovanienatvar2",
-    image: "/media/work/malovanienatvar2.webp",
-    title: {
-      sk: "Maľovanie na tvár — O mne",
-      en: "Face painting — About me",
-      de: "Kinderschminken — Über mich",
     },
     line: {
       sk: "Osobná stránka maliarky. Oslavy, festivaly a špeciálne príležitosti.",
