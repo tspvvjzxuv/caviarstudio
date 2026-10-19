@@ -178,8 +178,7 @@ export function Services() {
     const reveal = () => {
       inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
     };
-    const measure = () =>
-      Math.ceil(Math.max(inner.scrollHeight, inner.offsetHeight, inner.getBoundingClientRect().height));
+    const measure = () => Math.ceil(inner.scrollHeight);
 
     const apply = () => {
       if (cancelled) return;
@@ -193,20 +192,16 @@ export function Services() {
         panel.style.gridTemplateRows = "0fr";
         return;
       }
-      if (panel.getBoundingClientRect().height < 8) {
-        panel.style.gridTemplateRows = "1fr";
-      }
-      const next = measure();
+      const next = Math.max(measure(), 8);
       const panelH = panel.getBoundingClientRect().height;
-      if (next > 8 && panelH < 8) {
+      if (panelH < 8) {
         panel.style.transition = "none";
-        panel.style.gridTemplateRows = "0fr";
+        panel.style.gridTemplateRows = `${next}px`;
         void panel.offsetHeight;
         panel.style.removeProperty("transition");
-        panel.style.gridTemplateRows = `${next}px`;
         return;
       }
-      if (next > 8 && Math.abs(panelH - next) > 8) {
+      if (Math.abs(panelH - next) > 8) {
         panel.style.gridTemplateRows = `${next}px`;
       }
     };
@@ -218,10 +213,21 @@ export function Services() {
     ro.observe(inner);
     const imgs = [...inner.querySelectorAll("img")];
     imgs.forEach((img) => {
-      ro.observe(img);
       img.addEventListener("load", apply);
       img.addEventListener("error", apply);
+      void img.decode?.().then(apply).catch(() => {});
     });
+    const onEnd = (event: TransitionEvent) => {
+      if (event.target !== panel || !event.propertyName.includes("grid")) return;
+      if (!open) return;
+      const h = panel.getBoundingClientRect().height;
+      panel.style.gridTemplateRows = "1fr";
+      void panel.offsetHeight;
+      if (panel.getBoundingClientRect().height < h - 8) {
+        panel.style.gridTemplateRows = `${Math.ceil(h)}px`;
+      }
+    };
+    panel.addEventListener("transitionend", onEnd);
     raf = requestAnimationFrame(() => {
       apply();
       raf = requestAnimationFrame(apply);
@@ -234,6 +240,7 @@ export function Services() {
       ro.disconnect();
       cancelAnimationFrame(raf);
       laters.forEach((id) => window.clearTimeout(id));
+      panel.removeEventListener("transitionend", onEnd);
       imgs.forEach((img) => {
         img.removeEventListener("load", apply);
         img.removeEventListener("error", apply);
