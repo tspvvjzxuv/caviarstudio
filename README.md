@@ -53,8 +53,8 @@ Photo and video examples use `PHOTO_EXAMPLES` and `VIDEO_EXAMPLES` in the same f
 To add a site:
 
 1. Confirm the live URL loads with real content.
-2. Drop a 1440×900 screenshot in `media/work/<id>.webp` (under 250 KB).
-3. Push one object onto `WORK` in `web/src/lib/work.ts`.
+2. Drop a 1440×900 desktop screenshot in `media/work/<id>.webp` and a 390×844 mobile screenshot in `media/work/<id>-mobile.webp` (each under 250 KB).
+3. Push one object onto `WORK` in `web/src/lib/work.ts` (`image`, `imageMobile`, live `href`).
 4. Rebuild: `cd web && npm run build:pages`.
 
 Optional fields: `video`, `line`, `alt`, `categories` (`web` | `eshop` | `festival`), `href`, `layout` (`feature` = full-width, `pair` = two-up). `title` / `line` / `alt` can be a string or `{ sk, en, de }`.

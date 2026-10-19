@@ -9,8 +9,10 @@ export type WorkCopy = string | { sk: string; en?: string; de?: string };
 
 export type WorkItem = {
   id: string;
-  /** Still in /media. Example: "/media/work/ptra.webp" */
+  /** Desktop still in /media. Example: "/media/work/ptra.webp" */
   image?: string;
+  /** Mobile still of the same live site. Example: "/media/work/ptra-mobile.webp" */
+  imageMobile?: string;
   /** Optional muted hover film, or the tile media when there is no still. */
   video?: string;
   title: WorkCopy;
@@ -37,6 +39,7 @@ const CAT_DICT = {
  * {
  *   id: "ptra",
  *   image: "/media/work/ptra.webp",
+ *   imageMobile: "/media/work/ptra-mobile.webp",
  *   title: "Stredoveký festival Stropkov",
  *   categories: ["festival"],
  *   href: "https://ptra.sk/",
@@ -46,6 +49,7 @@ export const WORK: WorkItem[] = [
   {
     id: "lile-lentilka",
     image: "/media/work/lile-lentilka.webp",
+    imageMobile: "/media/work/lile-lentilka-mobile.webp",
     title: "LiLiLentilka",
     line: {
       sk: "Web s e-shopom. Hudba plná farieb, smiechu a lentiliek.",
@@ -64,6 +68,7 @@ export const WORK: WorkItem[] = [
   {
     id: "ptra",
     image: "/media/work/ptra.webp",
+    imageMobile: "/media/work/ptra-mobile.webp",
     title: {
       sk: "Stredoveký festival Stropkov",
       en: "Medieval festival Stropkov",
@@ -86,6 +91,7 @@ export const WORK: WorkItem[] = [
   {
     id: "malovanienatvar2",
     image: "/media/work/malovanienatvar2.webp",
+    imageMobile: "/media/work/malovanienatvar2-mobile.webp",
     title: {
       sk: "Maľovanie na tvár",
       en: "Face painting",

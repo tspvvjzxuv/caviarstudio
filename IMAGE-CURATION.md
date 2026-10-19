@@ -9,7 +9,7 @@
 | Open Graph | `img/og.png` | Typographic silver field, not a photograph |
 | Hero | Liquid chrome loop + overlay | `media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`. CSS field if the loop is skipped |
 | Hero loop | `media/hero/liquid-chrome.*` | Pexels 29848606. Muted autoplay loop; skip only on explicit Save-Data |
-| Work stills | `media/work/<id>.webp` | Live-site screenshots only. Empty `WORK` = invite line, no filler or typographic tiles |
+| Work stills | `media/work/<id>.webp` + `<id>-mobile.webp` | Live desktop 1440×900 and mobile 390×844. CSS laptop/phone frames in the Weby expander |
 | Hover films | `media/<id>.mp4` | Optional muted hover film on a still; or the tile itself if there is no image |
 | Founders | CSS monograms | MK · SK until the owner adds portraits |
 

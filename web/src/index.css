@@ -261,7 +261,7 @@
     display: none;
   }
   .project {
-    transition: none;
+    transition-duration: 0.4s;
   }
   .metal-fill {
     transition: transform 120ms ease-out, background-image 120ms ease-out;
@@ -456,27 +456,31 @@
   .marquee-track {
     animation: var(--animate-ticker);
   }
-  .silver-sheen::after {
+  .silver-sheen::after,
+  .device-sheen {
     animation: var(--animate-tile-sheen);
   }
   .hero-ken.is-paused .hero-field,
   .hero-ken.is-paused .hero-shine,
   .work-sec.is-paused .silver-sheen::after,
+  .work-sec.is-paused .device-sheen,
   .work-sec.is-paused .marquee-track,
   .service-sec.is-paused .service-chrome::after,
   .service-sec.is-paused .service-chrome::before {
     animation-play-state: paused;
   }
   @media (hover: hover) and (pointer: fine) {
-    .project:hover {
-      border-color: rgb(61 138 255 / 55%);
+    .project:hover .device-laptop {
+      transform: translate3d(0, -0.42rem, 0) rotateX(5deg) rotateY(-6deg);
     }
-    .project:hover .project-media {
-      --zs: 1.14;
+    .project:hover .device-phone {
+      transform: translate3d(0.1rem, -0.7rem, 0) rotateZ(-2.4deg);
     }
-    .project:hover .project-media img,
-    .project:hover .project-media video {
-      filter: grayscale(0.08) contrast(1.08) brightness(0.96);
+    .project:hover .device-sheen {
+      opacity: 0.72;
+    }
+    .project:hover .device-glow {
+      opacity: 0.95;
     }
   }
 }
@@ -509,6 +513,9 @@
 .work-sec .project:nth-child(2) { transition-delay: 180ms; }
 .work-sec .grid .project:nth-child(1) { transition-delay: 80ms; }
 .work-sec .grid .project:nth-child(2) { transition-delay: 200ms; }
+.work-sec .project.reveal.in {
+  filter: none;
+}
 
 /* Title-slide stagger after the intro veil (frontend-slides: one orchestrated load). */
 .hero-stage > * {
@@ -633,7 +640,18 @@
 }
 
 .project {
-  transition: border-color 200ms ease-out;
+  min-width: 0;
+}
+.project-hit {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+}
+.project-copy {
+  display: grid;
+  gap: 0.55rem;
+  padding-inline: 0.15rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -655,39 +673,178 @@
     linear-gradient(165deg, #14141a 0%, #0a0a0c 58%, #070708 100%);
 }
 
-.project-media img,
-.project-media video {
+.device-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 13.5rem;
+  padding: 1.15rem 0.55rem 2.4rem 0.35rem;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+}
+.device-glow {
   position: absolute;
-  inset: -8%;
-  width: 116%;
-  height: 116%;
-  object-fit: cover;
-  filter: grayscale(0.42) contrast(1.06) brightness(0.88);
-  transform: translate3d(var(--mx, 0px), calc(var(--my, 0px) + var(--py, 0px)), 0) scale(var(--zs, 1.08));
+  inset: 12% 8% 8% 4%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 70% at 12% 30%, rgb(61 138 255 / 28%), transparent 62%),
+    radial-gradient(ellipse 50% 60% at 88% 78%, rgb(255 228 77 / 16%), transparent 58%);
+  filter: blur(18px);
+  opacity: 0.62;
+  transition: opacity 0.9s var(--ease-out-expo);
+}
+.device-laptop,
+.device-phone {
+  transform: translateZ(0);
+  transition: transform 0.9s var(--ease-out-expo);
   will-change: transform;
 }
-
-.project-media video {
+.device-laptop {
+  position: relative;
   z-index: 1;
-  opacity: 0;
-  transition: opacity 0.45s var(--ease-caviar);
+  width: 78%;
+  transform-origin: 42% 88%;
+}
+.device-lid,
+.device-phone {
+  position: relative;
+  overflow: hidden;
+  color: #f4f5f7;
+  border: 1px solid rgb(244 245 247 / 18%);
+  background:
+    linear-gradient(155deg, rgb(244 245 247 / 20%) 0%, rgb(196 204 214 / 9%) 18%, rgb(14 14 18 / 94%) 46%, rgb(10 10 12 / 98%) 100%),
+    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(61 138 255 / 26%), transparent 58%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgb(255 228 77 / 14%), transparent 52%),
+    #0e0e12;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 32%),
+    inset 0 0 0 1px rgb(61 138 255 / 16%),
+    0 0 28px rgb(61 138 255 / 10%),
+    0 0 16px rgb(255 228 77 / 8%);
+}
+.device-lid {
+  border-radius: 0.85rem 0.85rem 0.45rem 0.45rem;
+  padding: 0.55rem 0.55rem 0.7rem;
+}
+.device-camera {
+  display: block;
+  width: 0.32rem;
+  height: 0.32rem;
+  margin: 0 auto 0.38rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, #9aa3ae, #14141a 62%);
+  box-shadow: 0 0 0 1px rgb(244 245 247 / 12%);
+}
+.device-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.28rem;
+  background: #070708;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 45%);
+}
+.device-lid .device-screen {
+  aspect-ratio: 1440 / 900;
+}
+.device-phone .device-screen {
+  aspect-ratio: 390 / 844;
+  border-radius: 0.7rem;
+}
+.device-screen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: top center;
+}
+.device-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgb(61 138 255 / 18%) 46%,
+    rgb(255 255 255 / 28%) 50%,
+    rgb(255 228 77 / 16%) 54%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  mix-blend-mode: screen;
+  opacity: 0.34;
+  transition: opacity 0.7s var(--ease-out-expo);
+}
+.device-hinge {
+  display: block;
+  height: 0.28rem;
+  margin-inline: 4%;
+  background: linear-gradient(90deg, #1a1c22, #c5cad3 18%, #8f98a6 50%, #c5cad3 82%, #1a1c22);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 18%);
+}
+.device-base {
+  display: block;
+  height: 0.72rem;
+  margin: 0 -4% 0 -3%;
+  background:
+    linear-gradient(180deg, #d9dee6 0%, #8f98a6 14%, #2a2c32 42%, #121318 100%);
+  clip-path: polygon(3% 0, 97% 0, 93.5% 100%, 6.5% 100%);
+  box-shadow: 0 10px 22px rgb(0 0 0 / 35%);
+}
+.device-phone {
+  position: absolute;
+  z-index: 2;
+  right: 2%;
+  bottom: 0.15rem;
+  width: min(34%, 9.6rem);
+  border-radius: 1.15rem;
+  padding: 0.55rem 0.38rem 0.62rem;
+  transform-origin: 70% 100%;
+}
+.device-island {
+  display: block;
+  width: 38%;
+  height: 0.42rem;
+  margin: 0 auto 0.32rem;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #070708, #1a1c22);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%);
+}
+.device-home {
+  display: block;
+  width: 28%;
+  height: 0.22rem;
+  margin: 0.38rem auto 0;
+  border-radius: 9999px;
+  background: rgb(244 245 247 / 22%);
 }
 
-.project.is-playing .project-media:has(img) video,
-.project:hover .project-media:has(img) video {
-  opacity: 1;
+@media (max-width: 639px) {
+  .device-stage {
+    min-height: 12.5rem;
+    padding: 0.85rem 0.2rem 2.1rem 0.1rem;
+  }
+  .device-laptop {
+    width: 84%;
+  }
+  .device-phone {
+    width: min(42%, 8.4rem);
+    right: 1%;
+    bottom: 0;
+  }
 }
 
-.project-media:not(:has(img)) video {
-  opacity: 1;
-}
-
-.project.in .project-media img,
-.project.in .project-media video {
-  --zs: 1.03;
-  transition:
-    transform 1.35s var(--ease-caviar),
-    filter 0.9s var(--ease-caviar);
+@media (prefers-reduced-motion: reduce) {
+  .device-laptop,
+  .device-phone,
+  .device-sheen,
+  .device-glow {
+    transition-duration: 0.4s;
+  }
+  .project:hover .device-laptop {
+    transform: translate3d(0, -0.16rem, 0);
+  }
+  .project:hover .device-phone {
+    transform: translate3d(0, -0.2rem, 0);
+  }
 }
 
 .silver-sheen::after {
