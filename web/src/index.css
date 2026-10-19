@@ -954,14 +954,22 @@
 }
 
 .service-panel {
-  height: 0;
-  overflow: hidden;
-  transition: height 0.92s var(--ease-out-expo);
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.92s var(--ease-out-expo);
+}
+.service-panel.is-open {
+  grid-template-rows: 1fr;
 }
 .service-panel:not(.is-open) {
   pointer-events: none;
 }
+.service-panel-clip {
+  min-height: 0;
+  overflow: hidden;
+}
 .service-panel-inner {
+  min-height: min-content;
   overflow: visible;
   padding-block: 0.55rem 2rem;
 }

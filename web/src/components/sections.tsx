@@ -178,18 +178,33 @@ export function Services() {
     const reveal = () => {
       inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
     };
+    const measure = () =>
+      Math.ceil(Math.max(inner.scrollHeight, inner.offsetHeight, inner.getBoundingClientRect().height));
+
     const apply = () => {
       if (cancelled) return;
       reveal();
       if (!open) {
-        panel.style.overflow = "hidden";
-        panel.style.height = "0px";
+        const h = panel.getBoundingClientRect().height;
+        if (h > 8) {
+          panel.style.gridTemplateRows = `${Math.ceil(h)}px`;
+          void panel.offsetHeight;
+        }
+        panel.style.gridTemplateRows = "0fr";
         return;
       }
-      const next = Math.ceil(
-        Math.max(inner.scrollHeight, inner.offsetHeight, inner.getBoundingClientRect().height),
-      );
-      panel.style.height = `${next}px`;
+      const next = measure();
+      if (next < 1) return;
+      const panelH = panel.getBoundingClientRect().height;
+      if (panelH < 8) {
+        panel.style.gridTemplateRows = "0fr";
+        void panel.offsetHeight;
+        panel.style.gridTemplateRows = `${next}px`;
+        return;
+      }
+      if (Math.abs(panelH - next) > 8) {
+        panel.style.gridTemplateRows = `${next}px`;
+      }
     };
 
     apply();
@@ -204,11 +219,6 @@ export function Services() {
         img.addEventListener("error", apply);
       }
     });
-    const onEnd = (event: TransitionEvent) => {
-      if (event.target !== panel || event.propertyName !== "height") return;
-      if (open) panel.style.overflow = "visible";
-    };
-    panel.addEventListener("transitionend", onEnd);
     raf = requestAnimationFrame(() => {
       apply();
       raf = requestAnimationFrame(apply);
@@ -221,7 +231,6 @@ export function Services() {
       ro.disconnect();
       cancelAnimationFrame(raf);
       window.clearTimeout(later);
-      panel.removeEventListener("transitionend", onEnd);
       imgs.forEach((img) => {
         img.removeEventListener("load", apply);
         img.removeEventListener("error", apply);
@@ -282,7 +291,8 @@ export function Services() {
           aria-hidden={!open}
           className={cn("service-panel", open && "is-open")}
         >
-          <div ref={innerRef} className="service-panel-inner">
+          <div className="service-panel-clip">
+            <div ref={innerRef} className="service-panel-inner">
             {active ? (
               <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
                 <div className="panel-enter">
@@ -291,6 +301,7 @@ export function Services() {
                 <WorkGallery items={active.media as readonly WorkItem[]} />
               </div>
             ) : null}
+            </div>
           </div>
         </div>
       </Section.Body>
