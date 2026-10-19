@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import { WorkTile } from "@/components/work-tile";
 import { examplesWithMedia, groupWorkRows, isTypographic, type WorkItem } from "@/lib/work";
@@ -19,34 +19,10 @@ export function WorkGallery({ items }: { items: readonly WorkItem[] }) {
   const shotRows = groupWorkRows(visible.filter((item) => !isTypographic(item)));
   usePauseOffscreen(rootRef);
 
-  useEffect(() => {
-    const root = stage.current;
-    if (!root) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const projects = () => root.querySelectorAll<HTMLElement>(".project");
-    const flushIn = (el: HTMLElement) => {
-      const r = el.getBoundingClientRect();
-      if (r.bottom > 24 && r.top < window.innerHeight - 24) el.classList.add("in");
-    };
-    if (!reduce && "IntersectionObserver" in window) {
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("in");
-              io.unobserve(entry.target);
-            }
-          }
-        },
-        { threshold: 0.08, rootMargin: "0px 0px -6% 0px" },
-      );
-      projects().forEach((el) => {
-        io.observe(el);
-        flushIn(el);
-      });
-      return () => io.disconnect();
-    }
-    projects().forEach((el) => el.classList.add("in"));
+  useLayoutEffect(() => {
+    stage.current?.querySelectorAll<HTMLElement>(".project").forEach((el) => {
+      el.classList.add("in");
+    });
   }, [visible]);
 
   useEffect(() => {
