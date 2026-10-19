@@ -194,6 +194,7 @@
   html {
     @apply font-sans scroll-smooth;
     color-scheme: dark;
+    overflow-x: clip;
   }
   body {
     @apply bg-background text-foreground antialiased;
@@ -863,6 +864,23 @@
   background: linear-gradient(115deg, #0c0c10 0%, #3a3f48 42%, #121318 68%, #0a0a0c 100%);
 }
 
+.service-sec {
+  position: relative;
+  overflow: visible;
+}
+.service-glow-field {
+  position: absolute;
+  z-index: 0;
+  top: -22%;
+  right: 0;
+  bottom: -28%;
+  left: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 34% 58% at 18% 46%, rgb(61 138 255 / 32%), rgb(61 138 255 / 10%) 38%, transparent 72%),
+    radial-gradient(ellipse 28% 52% at 50% 54%, rgb(61 138 255 / 16%), transparent 70%),
+    radial-gradient(ellipse 34% 58% at 82% 52%, rgb(255 228 77 / 18%), rgb(255 228 77 / 6%) 40%, transparent 74%);
+}
 .service-card {
   position: relative;
   height: 100%;
@@ -871,16 +889,26 @@
 .service-glow {
   position: absolute;
   z-index: 0;
-  inset: -22% -16%;
+  inset: -160% -130%;
   pointer-events: none;
-  border-radius: 2.25rem;
   background:
-    radial-gradient(ellipse 62% 70% at 18% 28%, rgb(61 138 255 / 36%), transparent 72%),
-    radial-gradient(ellipse 54% 62% at 86% 78%, rgb(255 228 77 / 18%), transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse 78% 82% at 50% 50%, #000 0%, #000 42%, transparent 78%);
-  mask-image: radial-gradient(ellipse 78% 82% at 50% 50%, #000 0%, #000 42%, transparent 78%);
-  opacity: 0.7;
+    radial-gradient(ellipse 36% 40% at 28% 30%, rgb(61 138 255 / 40%) 0%, rgb(61 138 255 / 18%) 26%, rgb(61 138 255 / 6%) 48%, transparent 68%),
+    radial-gradient(ellipse 32% 36% at 74% 72%, rgb(255 228 77 / 20%) 0%, rgb(255 228 77 / 7%) 30%, transparent 64%);
+  opacity: 0.92;
   transition: opacity 0.9s var(--ease-out-expo);
+}
+@media (max-width: 767px) {
+  .service-glow-field {
+    top: -10%;
+    bottom: -14%;
+    background:
+      radial-gradient(ellipse 88% 22% at 50% 18%, rgb(61 138 255 / 30%), transparent 72%),
+      radial-gradient(ellipse 88% 24% at 50% 50%, rgb(61 138 255 / 16%), transparent 74%),
+      radial-gradient(ellipse 90% 24% at 50% 82%, rgb(255 228 77 / 14%), transparent 74%);
+  }
+  .service-glow {
+    inset: -110% -86%;
+  }
 }
 .service-card:has(.service-chrome.is-open) .service-glow,
 .service-card:has(.service-chrome[aria-expanded="true"]) .service-glow {
@@ -945,6 +973,57 @@
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 38%),
     inset 0 0 0 1px rgb(61 138 255 / 28%);
+}
+.service-mark {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid rgb(197 202 211 / 46%);
+  background: rgb(14 14 18 / 42%);
+  color: #e8eaee;
+  -webkit-backdrop-filter: blur(16px) saturate(1.45);
+  backdrop-filter: blur(16px) saturate(1.45);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 36%),
+    inset 0 0 0 1px rgb(232 234 238 / 14%);
+}
+.service-mark-plus {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  transition: transform 0.92s var(--ease-out-expo);
+}
+.service-chrome.is-open .service-mark-plus,
+.service-chrome[aria-expanded="true"] .service-mark-plus {
+  transform: rotate(45deg);
+}
+.service-mark-plus::before,
+.service-mark-plus::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 1px;
+  background: currentColor;
+}
+.service-mark-plus::before {
+  width: 100%;
+  height: 1.25px;
+  transform: translate(-50%, -50%);
+}
+.service-mark-plus::after {
+  width: 1.25px;
+  height: 100%;
+  transform: translate(-50%, -50%);
+}
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .service-mark {
+    background: rgb(22 26 36 / 94%);
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
   .service-chrome::after {

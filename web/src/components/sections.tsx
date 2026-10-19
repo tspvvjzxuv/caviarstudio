@@ -3,7 +3,6 @@ import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
   AtSign,
   Camera,
-  ChevronDown,
   Clapperboard,
   Globe,
   Mail,
@@ -284,19 +283,20 @@ export function Services() {
 
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
-      <Section.Body>
+      <div className="service-glow-field" aria-hidden="true" />
+      <Section.Body className="relative z-10 overflow-visible">
         <h2 className="section-title max-w-[12ch]">{t.doKicker}</h2>
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
         </p>
-        <div className="grid items-stretch gap-6 md:grid-cols-3 md:gap-8 xl:gap-10">
+        <div className="grid items-stretch gap-6 overflow-visible md:grid-cols-3 md:gap-8 xl:gap-10">
           {SERVICES.map((item, idx) => {
             const Icon = item.Icon;
             const expanded = open === item.id;
             return (
-              <Reveal key={item.id} className="h-full overflow-visible" delay={idx}>
-                <div className="service-card">
-                  <span className="service-glow" aria-hidden="true" />
+              <div key={item.id} className="service-card">
+                <span className="service-glow" aria-hidden="true" />
+                <Reveal className="relative z-1 h-full overflow-visible" delay={idx}>
                   <button
                     type="button"
                     aria-expanded={expanded}
@@ -313,18 +313,12 @@ export function Services() {
                   <span className="min-w-0 flex-1 font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
                     {dictText(t, item.name)}
                   </span>
-                  <span
-                    className="icon-disc ml-auto inline-flex size-9 shrink-0 items-center justify-center text-pearl transition-colors duration-300 group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15"
-                    aria-hidden="true"
-                  >
-                    <ChevronDown
-                      className="size-4 transition-transform duration-[0.92s] ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/service:rotate-180"
-                      strokeWidth={1.75}
-                    />
+                  <span className="service-mark" aria-hidden="true">
+                    <i className="service-mark-plus" />
                   </span>
                   </button>
-                </div>
-              </Reveal>
+                </Reveal>
+              </div>
             );
           })}
         </div>

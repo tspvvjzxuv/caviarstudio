@@ -3,19 +3,26 @@ const SOUND_KEY = "caviar-sound:v1";
 export type SoundKind = "open" | "close" | "hit";
 
 const FILES: Record<SoundKind, string> = {
-  open: "lens-open",
-  close: "lens-close",
-  hit: "hit",
+  open: "piano-open",
+  close: "piano-close",
+  hit: "piano-open",
+};
+
+const VOICE: Record<SoundKind, number> = {
+  open: 1,
+  close: 1,
+  hit: 0.42,
 };
 
 const KINDS = Object.keys(FILES) as SoundKind[];
+const UNIQUE_FILES = [...new Set(Object.values(FILES))];
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 let warmed = false;
 let muted = readMuted();
 const buffers: Partial<Record<SoundKind, AudioBuffer>> = {};
-const raw: Partial<Record<SoundKind, ArrayBuffer>> = {};
+const raw: Partial<Record<string, ArrayBuffer>> = {};
 let prefetchPromise: Promise<void> | null = null;
 let decodePromise: Promise<void> | null = null;
 
@@ -54,26 +61,26 @@ function sampleExt() {
   return probe.canPlayType('audio/webm; codecs="opus"') === "probably" ? "webm" : "mp3";
 }
 
-async function fetchKind(kind: SoundKind) {
-  if (raw[kind]) return raw[kind];
+async function fetchFile(file: string) {
+  if (raw[file]) return raw[file];
   const ext = sampleExt();
-  const base = `/media/ui/${FILES[kind]}`;
+  const base = `/media/ui/${file}`;
   try {
     const res = await fetch(`${base}.${ext}`);
     if (!res.ok) throw new Error(`sound ${res.status}`);
-    raw[kind] = await res.arrayBuffer();
+    raw[file] = await res.arrayBuffer();
   } catch {
     if (ext !== "mp3") {
       const res = await fetch(`${base}.mp3`);
-      if (res.ok) raw[kind] = await res.arrayBuffer();
+      if (res.ok) raw[file] = await res.arrayBuffer();
     }
   }
-  return raw[kind];
+  return raw[file];
 }
 
 function prefetchPack() {
   if (typeof window === "undefined") return;
-  prefetchPromise ??= Promise.all(KINDS.map((kind) => fetchKind(kind))).then(() => {
+  prefetchPromise ??= Promise.all(UNIQUE_FILES.map((file) => fetchFile(file))).then(() => {
     void decodePack();
   });
 }
@@ -82,18 +89,22 @@ async function decodePack() {
   const audio = ensureCtx();
   if (!audio) return;
   decodePromise ??= (async () => {
+    const decoded: Partial<Record<string, AudioBuffer>> = {};
     await Promise.all(
-      KINDS.map(async (kind) => {
-        if (buffers[kind]) return;
-        const data = raw[kind] ?? (await fetchKind(kind));
+      UNIQUE_FILES.map(async (file) => {
+        const data = raw[file] ?? (await fetchFile(file));
         if (!data) return;
         try {
-          buffers[kind] = await audio.decodeAudioData(data.slice(0));
+          decoded[file] = await audio.decodeAudioData(data.slice(0));
         } catch {
-          /* one-kind failure */
+          /* one-file failure */
         }
       }),
     );
+    for (const kind of KINDS) {
+      const buf = decoded[FILES[kind]];
+      if (buf) buffers[kind] = buf;
+    }
   })();
   await decodePromise;
 }
@@ -124,7 +135,10 @@ function startBuffer(kind: SoundKind) {
   resume(audio);
   const src = audio.createBufferSource();
   src.buffer = buffer;
-  src.connect(master);
+  const voice = audio.createGain();
+  voice.gain.value = VOICE[kind];
+  src.connect(voice);
+  voice.connect(master);
   src.start(audio.currentTime);
   return true;
 }
