@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useSound } from "@/components/sound-root";
 import { useLanguage } from "@/lib/language";
-import { playUiSound, unlockSound } from "@/lib/sound";
+import { unlockSound } from "@/lib/sound";
 
 export function SoundToggle() {
   const { t } = useLanguage();
@@ -24,9 +24,7 @@ export function SoundToggle() {
           onClick={() => {
             const next = !muted;
             setMuted(next);
-            void unlockSound().then(() => {
-              if (!next) playUiSound("hit");
-            });
+            if (!next) void unlockSound();
           }}
         >
           {muted ? <VolumeX className="size-4" strokeWidth={1.75} /> : <Volume2 className="size-4" strokeWidth={1.75} />}

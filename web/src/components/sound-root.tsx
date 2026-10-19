@@ -34,21 +34,12 @@ export function SoundRoot({ children }: { children: ReactNode }) {
       if (!(el instanceof HTMLElement)) return;
       playUiSound(el.getAttribute("aria-expanded") === "true" ? "close" : "open");
     };
-    const playHit = (target: EventTarget | null) => {
-      const el = target instanceof Element ? target.closest("a, button") : null;
-      if (!(el instanceof HTMLElement)) return;
-      if (el.closest("[data-sound-toggle]")) return;
-      if (el.classList.contains("service-chrome")) return;
-      if (el.classList.contains("metal-fill")) playUiSound("hit");
-    };
     const onPointerDown = (event: PointerEvent) => {
       playCard(event.target);
-      playHit(event.target);
     };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
       playCard(event.target);
-      playHit(event.target);
     };
     document.addEventListener("pointerdown", onPointerDown, { capture: true, passive: true });
     document.addEventListener("keydown", onKeyDown, { capture: true });

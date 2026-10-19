@@ -1,18 +1,22 @@
 const SOUND_KEY = "caviar-sound:v1";
 
-export type SoundKind = "open" | "close" | "hit";
+export type SoundKind = "open" | "close";
 
 const FILES: Record<SoundKind, string> = {
   open: "piano-open",
   close: "piano-close",
-  hit: "piano-open",
 };
 
 const VOICE: Record<SoundKind, number> = {
   open: 1,
-  close: 1,
-  hit: 0.42,
+  close: 0.72,
 };
+
+const ATTACK = 0.032;
+const HOLD = 0.3;
+const RELEASE = 0.28;
+const STOP = ATTACK + HOLD + RELEASE + 0.02;
+const LOWPASS = 2700;
 
 const KINDS = Object.keys(FILES) as SoundKind[];
 const UNIQUE_FILES = [...new Set(Object.values(FILES))];
@@ -49,7 +53,7 @@ function ensureCtx(): AudioContext | null {
   if (!ctx) {
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = 0.42;
+    master.gain.value = 0.9;
     master.connect(ctx.destination);
   }
   return ctx;
@@ -133,13 +137,28 @@ function startBuffer(kind: SoundKind) {
   const buffer = buffers[kind];
   if (!audio || !master || !buffer) return false;
   resume(audio);
+  const t0 = audio.currentTime;
   const src = audio.createBufferSource();
   src.buffer = buffer;
+  const filter = audio.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = LOWPASS;
+  filter.Q.value = 0.7;
   const voice = audio.createGain();
-  voice.gain.value = VOICE[kind];
-  src.connect(voice);
+  const peak = VOICE[kind];
+  voice.gain.setValueAtTime(0, t0);
+  voice.gain.linearRampToValueAtTime(peak, t0 + ATTACK);
+  voice.gain.setValueAtTime(peak, t0 + HOLD);
+  voice.gain.linearRampToValueAtTime(0, t0 + HOLD + RELEASE);
+  src.connect(filter);
+  filter.connect(voice);
   voice.connect(master);
-  src.start(audio.currentTime);
+  src.start(t0);
+  try {
+    src.stop(t0 + STOP);
+  } catch {
+    /* stop not required */
+  }
   return true;
 }
 
