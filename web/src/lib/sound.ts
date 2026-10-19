@@ -5,13 +5,13 @@ export type SoundKind = "open" | "close" | "hit";
 const FILES: Record<SoundKind, string> = {
   open: "piano-open",
   close: "piano-close",
-  hit: "piano-open",
+  hit: "glass-tap",
 };
 
-const VOICE: Record<SoundKind, number> = {
-  open: 1,
-  close: 1,
-  hit: 0.42,
+const ENVELOPE: Record<SoundKind, { attack: number; hold: number; release: number; lowpass: number; voice: number }> = {
+  open: { attack: 0.032, hold: 0.3, release: 0.28, lowpass: 2700, voice: 1 },
+  close: { attack: 0.032, hold: 0.3, release: 0.28, lowpass: 2700, voice: 0.72 },
+  hit: { attack: 0.008, hold: 0.028, release: 0.055, lowpass: 4500, voice: 0.62 },
 };
 
 const KINDS = Object.keys(FILES) as SoundKind[];
@@ -49,7 +49,7 @@ function ensureCtx(): AudioContext | null {
   if (!ctx) {
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = 0.42;
+    master.gain.value = 0.9;
     master.connect(ctx.destination);
   }
   return ctx;
@@ -133,13 +133,28 @@ function startBuffer(kind: SoundKind) {
   const buffer = buffers[kind];
   if (!audio || !master || !buffer) return false;
   resume(audio);
+  const env = ENVELOPE[kind];
+  const t0 = audio.currentTime;
   const src = audio.createBufferSource();
   src.buffer = buffer;
+  const filter = audio.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = env.lowpass;
+  filter.Q.value = 0.7;
   const voice = audio.createGain();
-  voice.gain.value = VOICE[kind];
-  src.connect(voice);
+  voice.gain.setValueAtTime(0, t0);
+  voice.gain.linearRampToValueAtTime(env.voice, t0 + env.attack);
+  voice.gain.setValueAtTime(env.voice, t0 + env.hold);
+  voice.gain.linearRampToValueAtTime(0, t0 + env.hold + env.release);
+  src.connect(filter);
+  filter.connect(voice);
   voice.connect(master);
-  src.start(audio.currentTime);
+  src.start(t0);
+  try {
+    src.stop(t0 + env.hold + env.release + 0.02);
+  } catch {
+    /* stop not required */
+  }
   return true;
 }
 
