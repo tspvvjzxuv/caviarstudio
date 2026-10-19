@@ -40,7 +40,7 @@ export const dictionary = {
         pExLabel: "Napríklad dostanete",
         pFotoEx: [
           "1 hodina fotenia u vás",
-          "15 upravených fotiek vo plnom JPG (min. 24 MP, cca 6000×4000 px) na tlač aj web",
+          "15 upravených fotiek, plné JPG (min. 24 MP, cca 6000×4000 px) na tlač aj web",
           "Menšie verzie na web a Instagram (2048 px, 4:5 alebo 1:1)",
           "Súbory na web, menu aj sociálne siete",
         ],
