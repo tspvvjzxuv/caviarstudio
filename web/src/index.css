@@ -194,6 +194,7 @@
   html {
     @apply font-sans scroll-smooth;
     color-scheme: dark;
+    overflow-x: clip;
   }
   body {
     @apply bg-background text-foreground antialiased;
@@ -863,6 +864,9 @@
   background: linear-gradient(115deg, #0c0c10 0%, #3a3f48 42%, #121318 68%, #0a0a0c 100%);
 }
 
+.service-sec {
+  overflow: visible;
+}
 .service-card {
   position: relative;
   height: 100%;
@@ -871,16 +875,19 @@
 .service-glow {
   position: absolute;
   z-index: 0;
-  inset: -22% -16%;
+  inset: -78% -68%;
   pointer-events: none;
-  border-radius: 2.25rem;
+  border-radius: 50%;
   background:
-    radial-gradient(ellipse 62% 70% at 18% 28%, rgb(61 138 255 / 36%), transparent 72%),
-    radial-gradient(ellipse 54% 62% at 86% 78%, rgb(255 228 77 / 18%), transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse 78% 82% at 50% 50%, #000 0%, #000 42%, transparent 78%);
-  mask-image: radial-gradient(ellipse 78% 82% at 50% 50%, #000 0%, #000 42%, transparent 78%);
-  opacity: 0.7;
+    radial-gradient(ellipse 56% 62% at 24% 28%, rgb(61 138 255 / 46%), rgb(61 138 255 / 16%) 34%, transparent 72%),
+    radial-gradient(ellipse 50% 56% at 80% 76%, rgb(255 228 77 / 26%), rgb(255 228 77 / 8%) 40%, transparent 74%);
+  opacity: 0.86;
   transition: opacity 0.9s var(--ease-out-expo);
+}
+@media (max-width: 767px) {
+  .service-glow {
+    inset: -62% -52%;
+  }
 }
 .service-card:has(.service-chrome.is-open) .service-glow,
 .service-card:has(.service-chrome[aria-expanded="true"]) .service-glow {
@@ -945,6 +952,57 @@
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 38%),
     inset 0 0 0 1px rgb(61 138 255 / 28%);
+}
+.service-mark {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid rgb(197 202 211 / 46%);
+  background: rgb(14 14 18 / 42%);
+  color: #e8eaee;
+  -webkit-backdrop-filter: blur(16px) saturate(1.45);
+  backdrop-filter: blur(16px) saturate(1.45);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 36%),
+    inset 0 0 0 1px rgb(232 234 238 / 14%);
+}
+.service-mark-plus {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  transition: transform 0.92s var(--ease-out-expo);
+}
+.service-chrome.is-open .service-mark-plus,
+.service-chrome[aria-expanded="true"] .service-mark-plus {
+  transform: rotate(45deg);
+}
+.service-mark-plus::before,
+.service-mark-plus::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 1px;
+  background: currentColor;
+}
+.service-mark-plus::before {
+  width: 100%;
+  height: 1.25px;
+  transform: translate(-50%, -50%);
+}
+.service-mark-plus::after {
+  width: 1.25px;
+  height: 100%;
+  transform: translate(-50%, -50%);
+}
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .service-mark {
+    background: rgb(22 26 36 / 94%);
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
   .service-chrome::after {

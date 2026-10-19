@@ -186,7 +186,7 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 
 Motion is slow and cinematic (`cubic-bezier(0.16, 1, 0.3, 1)`, 700–1200 ms). Scroll reveals fade, rise, and on fine pointers blur-to-sharp, once, staggered. Service chrome keeps a slow sheen sweep and a quiet azure/lemon glow pulse (opacity only). Hero logo and field ease on a gentle parallax. Fotky / Videá / Weby panels open and close on a long `1fr`↔`0fr` height ease with a short content stagger. Primary pills take a small magnetic translate on fine pointers. Animate `transform` and `opacity` (blur only on desktop). Do not add hover lift on every card. `prefers-reduced-motion` shortens and shrinks motion — it does not snap everything off. Primary CTA press still scales to 0.97.
 
-Quiet tactile UI samples (`media/ui/`, CC0) play only after a user gesture, never as ambient loops. Service cards use a camera lens bayonet lock on open and a lighter take-out click on close; primary pills use a short shutter. Default on, low gain. A round glass mute disc in the header remembers `localStorage` key `caviar-sound:v1`. See `SOUNDS.md`.
+Quiet tactile UI samples (`media/ui/`, CC0) play only after a user gesture, never as ambient loops. Service cards play a single soft piano note on open and a lower, quieter note on close; primary pills reuse the open note at lower gain. Default on, low gain. A round glass mute disc in the header remembers `localStorage` key `caviar-sound:v1`. See `SOUNDS.md`.
 
 ## Conversion
 
