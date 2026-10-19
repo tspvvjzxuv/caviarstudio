@@ -95,7 +95,7 @@ components:
 
 Caviar is a small creative studio in Trnava. The site should feel like a quiet gallery: cool, high-end, and artistic — never like a SaaS template. Near-black fields, platinum type, generous empty space, azure as the main accent, and lemon only for small high-impact moments. Motion is slow and cinematic. Copy stays plain and concrete. No metallic gold, mustard, neon kits, or invented social proof.
 
-**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — with azure and a clean electric yellow as restrained accents, not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero wordmark), everything else quieter. Parallel offerings (Web / Video / Foto) are not numbered. Process steps use lucide icons in circular glass discs, not italic numerals or gradient dashes. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
+**Design direction (taste / frontend-design):** the idea is the material of the name — caviar black, cool silver, platinum sheen — with azure and a clean electric yellow as restrained accents, not a generic dark SaaS kit. Left-aligned display over a full-bleed still. One memorable surface (the hero wordmark), everything else quieter. Parallel offerings (Fotky / Videá / Weby) are not numbered. Agent follow-up rules live in `AGENTS.md`. Marketing facts live in `.agents/product-marketing.md`.
 
 ## Colors
 
@@ -107,7 +107,7 @@ The palette is pearl on caviar black. Silver and platinum stay on type. **Azure 
 - **Platinum (#E8EAEE):** Highlights and italic display sheen.
 - **Steel (#9AA3AE):** Quiet metadata.
 - **Elevated (#0E0E12):** Cards and featured pricing, one step off black.
-- **Azure (#3D8AFF):** Main accent — kickers, links, process numbers, larger glows, tile hover borders.
+- **Azure (#3D8AFF):** Main accent — kickers, links, larger glows, tile hover borders.
 - **Azure deep (#1D4ED8):** Primary CTA fills (`--primary`). Pearl on this blue must stay WCAG AA.
 - **Lemon (#FFE44D):** Secondary accent — small high-impact only: price numbers, launch badges, focus rings, cursor dot, hairline sheen. Not metallic gold, not mustard.
 
@@ -121,13 +121,13 @@ Two families only: **Bodoni Moda** for the wordmark, price numbers, and short di
 - **Display:** Upright Bodoni, slightly tight tracking, only where a short mark can take it (logo, prices, card names). The logo is uppercase, tracked 0.12em, weight 500.
 - **Body:** 16–18px, long line-height, max ~42–58ch.
 - **Labels:** Small caps via uppercase + wide tracking. Never more than two weights on a screen (400 and 500/600).
-- **Section kickers:** Tracked uppercase azure (`.kicker`) with a 6px solid azure dot, vertically centered. No faded silver dash, no lucide chip. Same mark on Cenník, Postup, Práca, Tím, FAQ, Kontakt (SK/EN/DE). “Čo robíme” stays a display `h2` with no kicker.
+- **Section kickers:** Tracked uppercase azure (`.kicker`) with a 6px solid azure dot, vertically centered. No faded silver dash, no lucide chip. Same mark on Cenník, Kontakt, Tím, FAQ (SK/EN/DE). “Čo robíme” stays a display `h2` with no kicker.
 
 ## Layout
 
 Mobile-first. Spacing follows the **Tailwind 4px scale** (`4 / 8 / 12 / 16 / 24 / 32 / 40 / 48 / 64`). Content width caps at 1120px. Section padding scales from 72px to 140px.
 
-**Panels never touch.** Service, pricing, process, work, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (24px mobile, 32px from `md`, 40px from `xl`) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
+**Panels never touch.** Service, pricing, work tiles, team, FAQ, and form cards are independent surfaces with `--gap-panel` between them (24px mobile, 32px from `md`, 40px from `xl`) and `--pad-panel` inside (24px / 32px). Do not join columns with a shared 1px divider and `gap: 0`.
 
 The UI is built with the **full Tailwind CSS utility system** and the **full shadcn/ui component set + CSS-variable theming** ([components](https://ui.shadcn.com/docs/components), [blocks](https://ui.shadcn.com/blocks)): Button, Card, Badge, Accordion (FAQ), Tabs, Input/Select/Label (form), Navigation Menu, Sheet (mobile menu), Separator, Tooltip, Toggle Group (SK/EN/DE), Field. Tokens live in `web/src/index.css` (`@theme` semantic colors, `--radius` 1.5rem, class-based `.dark` always on). Agent skills in `.agents/skills/`: `tailwind-design-system` (wshobson/agents), `shadcn` (shadcn-ui/ui), `web-artifacts-builder` (anthropics/skills), `vercel-react-best-practices` (vercel-labs/agent-skills), and `frontend-slides` (zarazhangrui).
 
@@ -137,13 +137,13 @@ The UI is built with the **full Tailwind CSS utility system** and the **full sha
 
 Language changes use React `<ViewTransition>` (fade) triggered with `startTransition`. Header, footer, grain, and cursor are isolated so chrome does not cross-fade. `prefers-reduced-motion` zeros view-transition durations. This is a one-page site: no directional page slides (those are for hierarchical routes).
 
-`frontend-slides` (zarazhangrui) is for presentation-style beats on this site, not a 16:9 HTML deck: one orchestrated hero stagger after the intro veil, speaker-led process steps (one idea each), silver grid atmosphere, hairline chrome, expo easing, `prefers-reduced-motion`. Do not copy its mustard/gold Studio templates or reflow the marketing page as a fixed 1920×1080 stage. Caviar’s lemon is a restrained secondary accent, not a slide-deck fill.
+`frontend-slides` (zarazhangrui) is for presentation-style beats on this site, not a 16:9 HTML deck: one orchestrated hero stagger after the intro veil, silver grid atmosphere, hairline chrome, expo easing, `prefers-reduced-motion`. Do not copy its mustard/gold Studio templates or reflow the marketing page as a fixed 1920×1080 stage. Caviar’s lemon is a restrained secondary accent, not a slide-deck fill.
 
 Project skills inventory: `SKILLS.md`. Use copywriting/humanizer/SEO skills for SK/EN/DE prose; never invent testimonials, counts, or stock photography. Three.js is a lazy silver/pearl hero shader on desktop (CSS silver-field fallback on mobile, coarse pointer, Save-Data, and `prefers-reduced-motion`). WordPress, Expo, and Remotion skills stay installed but unused: this is not WordPress, and a CSS silver field is lighter than a Remotion runtime.
 
 Source: `web/` (Vite + React). GitHub Pages still needs a static output: commit the built `index.html` + `assets/` at the repo root **and** use `.github/workflows/pages.yml`. Do not rely on GitHub Pages to run `npm` unless Pages source is **GitHub Actions**.
 
-The “Čo robíme” block sits immediately under the hero: a real display `h2` (not a tracked kicker), a one-line lead, three equal Web / Video / Foto cards, plus a full-width “Pre koho” panel. Visible address is **Trnava** only (JSON-LD may still use `addressCountry: SK`).
+The “Čo robíme” block sits immediately under the hero: a real display `h2` (not a tracked kicker), a one-line lead, and three expandable chrome cards — **Fotky / Videá / Weby** (EN Photos / Videos / Websites, DE Fotos / Videos / Websites). One card open at a time. Clicking a card reveals a “Napríklad dostanete” list (quality and size included) plus a data-driven examples area. Weby shows the live website tiles. Fotky and Videá show nothing until the owner adds media — no empty tiles. Page order after that is Cenník, then Kontakt, then Tím and FAQ. Visible address is **Trnava** only (JSON-LD may still use `addressCountry: SK`).
 
 ## Elevation & Depth
 
@@ -156,14 +156,14 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 ## Components
 
 - **Logo:** Upright uppercase **CAVIAR** in Bodoni Moda 500, letter-spacing 0.12em, silver gradient `#ffffff → #d9dee6 → #8f98a6`. Thin silver hairline (`#c9d0da`, fading at the ends) under the word, then **STUDIO · TRNAVA** in Bodoni 400, `#a7afbb`, tracked uppercase. Same lockup on the hero, nav, intro, footer, favicon, and apple-touch. No pearl circle, no italic. Hero size: about 80% width on 390px, clamp up to ~10.5rem on desktop. Azure/lemon glows stay around the hero, not in the letters.
-- **Icons:** Lucide line icons, stroke 1.75, round caps/joins, overflow visible so nothing clips. They sit in circular `.icon-disc` frosted-glass circles (azure wash, lemon hairline) — the same discs as the menu, FAQ chevron, and service cards. Process step discs are larger (64px, 32px glyph, azure stroke). No decorative gradient dashes.
+- **Icons:** Lucide line icons, stroke 1.75, round caps/joins, overflow visible so nothing clips. They sit in circular `.icon-disc` frosted-glass circles (azure wash, lemon hairline) — the same discs as the menu, FAQ chevron, and service cards. No decorative gradient dashes.
 - **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset), fully pill-shaped. Ghost/outline uses a translucent glass border. Uppercase labels, 52px min height, full width on small screens.
-- **Feature / service cards:** Elevated `#0E0E12` surface, translucent glass border, `rounded-3xl`, lucide icon in a glass disc. Three-up on desktop with `--gap-panel`.
-- **Pricing cards:** Shared lemon launch-price pill; launch amounts in lemon. Caviar Komplet is visually louder: faint azure border, azure-to-lemon wash, wider measure. Same gap as other panel grids.
+- **Feature / service cards:** Super-mirror chrome (`.service-chrome`): liquid-silver gradient, azure and lemon edge light, translucent border, `rounded-3xl`. Slow sheen sweep on hover/open; pause the sheen under `prefers-reduced-motion`. Three-up on desktop with `--gap-panel`. Each card is a keyboard-accessible expander (`aria-expanded`, rotating round-glass chevron). Names only on the face — Fotky, Videá, Weby. The “what you get” list and examples sit in the open panel, not on the closed card.
+- **Pricing cards:** Shared lemon launch-price pill; launch amounts in lemon. Caviar Komplet is visually louder: faint azure border, azure-to-lemon wash, wider measure. Same gap as other panel grids. No example lists under the prices — those live in Čo robíme.
 - **Header / menus:** Fixed `.glass` navbar over the hero so the loop shows through. Mobile sheet, language switcher, select, tooltip, popover, dropdown, and dialog use `.glass` / `.glass-panel`.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only.
-- **Work tiles:** Section heading is **Naša práca** / Our work / Unsere Arbeit. Only **live** public websites in `web/src/lib/work.ts`: real screenshot, live href, large round-glass tile (two-up on desktop; a leftover pair sits full-width). Title, a short plain description of the site, and category labels — no GitHub chips, repo links, or tech/hosting talk. No typographic tiles for dead or empty repos. Glass pill filters (**Všetko** plus categories that still have a tile) only if two or more categories remain. A tile may sit in more than one category. Never “TODO”, “Placeholder”, stock photos, or invented clients.
+- **Work tiles:** Live website examples sit inside the **Weby** expander in Čo robíme, not a separate Naša práca section. Data in `web/src/lib/work.ts`: real screenshot, live href, large round-glass tile (two-up on desktop; a leftover pair sits full-width). Title, a short plain description of the site, and category labels — no GitHub chips, repo links, or tech/hosting talk. Photo and video example arrays (`PHOTO_EXAMPLES`, `VIDEO_EXAMPLES`) stay empty until the owner adds media; render nothing rather than empty tiles. Never “TODO”, “Placeholder”, stock photos, or invented clients.
 - **Team tiles:** Serif monograms on brushed silver fields instead of missing photos.
 - **Footer:** Hairline bar with stacked contacts (no middle-dot meta string). Azure link hover. Study shadcn navbar/footer block rhythm, keep Caviar type.
 

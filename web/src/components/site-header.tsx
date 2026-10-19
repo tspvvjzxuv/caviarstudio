@@ -26,9 +26,8 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { href: "#sluzby", key: "navServices" as const },
   { href: "#cennik", key: "navPricing" as const },
-  { href: "#praca", key: "navWork" as const },
-  { href: "#faq", key: "navFaq" as const },
   { href: "#kontakt", key: "navContact" as const },
+  { href: "#faq", key: "navFaq" as const },
 ];
 
 const LANG_NAME: Record<Lang, "langSk" | "langEn" | "langDe"> = {

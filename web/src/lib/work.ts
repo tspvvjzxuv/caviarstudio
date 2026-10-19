@@ -25,11 +25,11 @@ export type WorkItem = {
 
 export const WORK_CAT_ORDER: WorkCat[] = ["web", "eshop", "festival"];
 
-const CAT_DICT: Record<WorkCat, keyof Dict> = {
+const CAT_DICT = {
   web: "workCatWeb",
   eshop: "workCatEshop",
   festival: "workCatFestival",
-};
+} as const;
 
 /**
  * Live public websites only. Each item needs a working href and a screenshot.
@@ -84,34 +84,12 @@ export const WORK: WorkItem[] = [
     layout: "pair",
   },
   {
-    id: "malovanie-na-tvar",
-    image: "/media/work/malovanie-na-tvar.webp",
+    id: "malovanienatvar2",
+    image: "/media/work/malovanienatvar2.webp",
     title: {
       sk: "Maľovanie na tvár",
       en: "Face painting",
       de: "Kinderschminken",
-    },
-    line: {
-      sk: "Profesionálne maľovanie pre detské oslavy, festivaly a špeciálne príležitosti.",
-      en: "Professional face painting for children's parties, festivals and special occasions.",
-      de: "Professionelles Kinderschminken für Kinderfeste, Festivals und besondere Anlässe.",
-    },
-    alt: {
-      sk: "Maľovanie na tvár — úvod webu so službami a darčekovým poukazom",
-      en: "Face painting — top of the site with services and a gift voucher",
-      de: "Kinderschminken — oberer Bereich mit Leistungen und Gutschein",
-    },
-    categories: ["web"],
-    href: "https://tspvvjzxuv.github.io/malovanie-na-tvar/",
-    layout: "pair",
-  },
-  {
-    id: "malovanienatvar2",
-    image: "/media/work/malovanienatvar2.webp",
-    title: {
-      sk: "Maľovanie na tvár — O mne",
-      en: "Face painting — About me",
-      de: "Kinderschminken — Über mich",
     },
     line: {
       sk: "Osobná stránka maliarky. Oslavy, festivaly a špeciálne príležitosti.",
@@ -129,7 +107,17 @@ export const WORK: WorkItem[] = [
   },
 ];
 
+/** Owner photo examples. Empty until media is added — the UI shows nothing. */
+export const PHOTO_EXAMPLES: WorkItem[] = [];
+
+/** Owner video examples. Empty until media is added — the UI shows nothing. */
+export const VIDEO_EXAMPLES: WorkItem[] = [];
+
 export const HAS_WORK = WORK.length > 0;
+
+export function examplesWithMedia(items: readonly WorkItem[]): WorkItem[] {
+  return items.filter((item) => Boolean(item.image || item.video));
+}
 
 export const WORK_INDEX = new Map(WORK.map((item, index) => [item.id, index]));
 
@@ -164,7 +152,8 @@ export function isTypographic(item: WorkItem): boolean {
 }
 
 export function workCatLabel(cat: WorkCat, pack: Dict): string {
-  return pack[CAT_DICT[cat]];
+  const value = pack[CAT_DICT[cat]];
+  return typeof value === "string" ? value : value[0] ?? "";
 }
 
 export function workLabels(item: WorkItem, pack: Dict): string[] {
