@@ -211,6 +211,15 @@
   [data-slot="select-trigger"]:focus-visible {
     outline-color: var(--color-lemon);
   }
+  select,
+  [data-slot="native-select"] {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: none;
+  }
+  select::-ms-expand {
+    display: none;
+  }
   h1,
   h3,
   .font-heading {
@@ -974,22 +983,44 @@
     inset 0 1px 0 rgb(255 255 255 / 38%),
     inset 0 0 0 1px rgb(61 138 255 / 28%);
 }
+.glass-mark,
 .service-mark {
-  display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  margin-left: auto;
+  display: flex;
   flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   border-radius: 9999px;
   border: 1px solid rgb(197 202 211 / 46%);
   background: rgb(14 14 18 / 42%);
   color: #e8eaee;
+  line-height: 0;
   -webkit-backdrop-filter: blur(16px) saturate(1.45);
   backdrop-filter: blur(16px) saturate(1.45);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 36%),
     inset 0 0 0 1px rgb(232 234 238 / 14%);
+}
+.glass-mark {
+  width: 2rem;
+  height: 2rem;
+}
+.service-mark {
+  width: 3rem;
+  height: 3rem;
+  margin-left: auto;
+}
+.glass-mark svg,
+.glass-mark-chevron {
+  display: block;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  margin: 0;
+  overflow: visible;
 }
 .service-mark-plus {
   position: relative;
@@ -1021,6 +1052,7 @@
   transform: translate(-50%, -50%);
 }
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass-mark,
   .service-mark {
     background: rgb(22 26 36 / 94%);
   }
