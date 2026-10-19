@@ -19,7 +19,7 @@ Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/h
 - Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only. Fine-pointer pills may take a small magnetic translate (`--mx` / `--my`).
 - Scroll reveals: slow fade + rise (blur-to-sharp on desktop only), staggered, expo easing. Do not add hover lift on every card.
 - Honor `prefers-reduced-motion` by shortening and shrinking motion, not by removing it. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, glow, and marquee when off-screen.
-- UI sound is synthesized in Web Audio (no third-party samples). Play only after a gesture. Mute toggle in the header; persist `caviar-sound:v1`. No ambient autoplay.
+- UI sound is a quiet CC0 cinematic pack in `media/ui/` (whoosh open/close, low hit + shimmer). Play only after a gesture; lazy-preload then. Mute toggle in the header; persist `caviar-sound:v1`. No ambient autoplay. Sources and licenses: `SOUNDS.md`.
 
 ## Conversion
 

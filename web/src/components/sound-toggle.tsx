@@ -25,7 +25,7 @@ export function SoundToggle() {
             const next = !muted;
             setMuted(next);
             void unlockSound().then(() => {
-              if (!next) playUiSound("click");
+              if (!next) playUiSound("hit");
             });
           }}
         >
