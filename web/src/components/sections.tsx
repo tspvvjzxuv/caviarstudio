@@ -152,6 +152,7 @@ export function Services() {
   const panelId = useId();
   const frameRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState("");
   const [shown, setShown] = useState("");
   const active = SERVICES.find((item) => item.id === shown);
@@ -167,9 +168,65 @@ export function Services() {
   };
 
   useLayoutEffect(() => {
-    const root = panelRef.current;
-    if (!open || !root) return;
-    root.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
+    const panel = panelRef.current;
+    const inner = innerRef.current;
+    if (!panel || !inner) return;
+
+    let raf = 0;
+    let later = 0;
+    let cancelled = false;
+    const reveal = () => {
+      inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
+    };
+    const apply = () => {
+      if (cancelled) return;
+      reveal();
+      if (!open) {
+        panel.style.overflow = "hidden";
+        panel.style.height = "0px";
+        return;
+      }
+      const next = Math.ceil(
+        Math.max(inner.scrollHeight, inner.offsetHeight, inner.getBoundingClientRect().height),
+      );
+      panel.style.height = `${next}px`;
+    };
+
+    apply();
+    if (!open) return;
+
+    const ro = new ResizeObserver(apply);
+    ro.observe(inner);
+    const imgs = [...inner.querySelectorAll("img")];
+    imgs.forEach((img) => {
+      if (!img.complete) {
+        img.addEventListener("load", apply);
+        img.addEventListener("error", apply);
+      }
+    });
+    const onEnd = (event: TransitionEvent) => {
+      if (event.target !== panel || event.propertyName !== "height") return;
+      if (open) panel.style.overflow = "visible";
+    };
+    panel.addEventListener("transitionend", onEnd);
+    raf = requestAnimationFrame(() => {
+      apply();
+      raf = requestAnimationFrame(apply);
+    });
+    later = window.setTimeout(apply, 480);
+    void document.fonts?.ready.then(apply);
+
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+      window.clearTimeout(later);
+      panel.removeEventListener("transitionend", onEnd);
+      imgs.forEach((img) => {
+        img.removeEventListener("load", apply);
+        img.removeEventListener("error", apply);
+      });
+    };
   }, [open, shown]);
 
   return (
@@ -185,16 +242,18 @@ export function Services() {
             const expanded = open === item.id;
             return (
               <Reveal key={item.id} className="h-full overflow-visible" delay={idx}>
-                <button
-                  type="button"
-                  aria-expanded={expanded}
-                  aria-controls={panelId}
-                  onClick={() => toggleService(item.id)}
-                  className={cn(
-                    "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
-                    expanded && "is-open",
-                  )}
-                >
+                <div className="service-card">
+                  <span className="service-glow" aria-hidden="true" />
+                  <button
+                    type="button"
+                    aria-expanded={expanded}
+                    aria-controls={panelId}
+                    onClick={() => toggleService(item.id)}
+                    className={cn(
+                      "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+                      expanded && "is-open",
+                    )}
+                  >
                   <IconDisc>
                     <Icon />
                   </IconDisc>
@@ -210,7 +269,8 @@ export function Services() {
                       strokeWidth={1.75}
                     />
                   </span>
-                </button>
+                  </button>
+                </div>
               </Reveal>
             );
           })}
@@ -222,7 +282,7 @@ export function Services() {
           aria-hidden={!open}
           className={cn("service-panel", open && "is-open")}
         >
-          <div className="service-panel-inner">
+          <div ref={innerRef} className="service-panel-inner">
             {active ? (
               <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
                 <div className="panel-enter">
