@@ -31,4 +31,4 @@ See the root `README.md` section **Work / photos**.
 
 ## UI sounds
 
-Quiet UI cues in `media/ui/` (`webm` + `mp3`): soft piano on the service cards, a short glass tap on primary buttons. Sources, licenses, and mapping: root `SOUNDS.md`.
+One quiet glass tap in `media/ui/` (`webm` + `mp3`) for service cards and primary buttons. Sources, licenses, and mapping: root `SOUNDS.md`.

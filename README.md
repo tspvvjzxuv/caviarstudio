@@ -65,4 +65,4 @@ Do not drop in stock photos. Do not invent clients or results.
 
 Hero background loop: [Pexels video 29848606](https://www.pexels.com/video/29848606/) (liquid chrome). Pexels license allows free commercial use; attribution is not required.
 
-UI sounds: CC0 single piano notes on the service cards (TEDAgame A4 open, quieter A3 close; ~−30 dBFS) and a short CC0 glass tap on primary buttons. File list, source URLs, and licenses: [`SOUNDS.md`](SOUNDS.md).
+UI sounds: one short CC0 glass tap (phone-screen finger tap) on the service cards and primary buttons. File list, source URL, and license: [`SOUNDS.md`](SOUNDS.md).
