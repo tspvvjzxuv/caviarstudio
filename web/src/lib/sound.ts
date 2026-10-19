@@ -3,8 +3,8 @@ const SOUND_KEY = "caviar-sound:v1";
 export type SoundKind = "open" | "close" | "hit";
 
 const FILES: Record<SoundKind, string> = {
-  open: "whoosh-open",
-  close: "whoosh-close",
+  open: "lens-open",
+  close: "lens-close",
   hit: "hit",
 };
 
@@ -12,10 +12,12 @@ const KINDS = Object.keys(FILES) as SoundKind[];
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
-let unlocked = false;
+let warmed = false;
 let muted = readMuted();
-let loadPromise: Promise<void> | null = null;
 const buffers: Partial<Record<SoundKind, AudioBuffer>> = {};
+const raw: Partial<Record<SoundKind, ArrayBuffer>> = {};
+let prefetchPromise: Promise<void> | null = null;
+let decodePromise: Promise<void> | null = null;
 
 function readMuted(): boolean {
   try {
@@ -52,27 +54,79 @@ function sampleExt() {
   return probe.canPlayType('audio/webm; codecs="opus"') === "probably" ? "webm" : "mp3";
 }
 
-async function decodeUrl(audio: AudioContext, url: string) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`sound ${res.status}`);
-  const data = await res.arrayBuffer();
-  return audio.decodeAudioData(data.slice(0));
+async function fetchKind(kind: SoundKind) {
+  if (raw[kind]) return raw[kind];
+  const ext = sampleExt();
+  const base = `/media/ui/${FILES[kind]}`;
+  try {
+    const res = await fetch(`${base}.${ext}`);
+    if (!res.ok) throw new Error(`sound ${res.status}`);
+    raw[kind] = await res.arrayBuffer();
+  } catch {
+    if (ext !== "mp3") {
+      const res = await fetch(`${base}.mp3`);
+      if (res.ok) raw[kind] = await res.arrayBuffer();
+    }
+  }
+  return raw[kind];
 }
 
-async function loadPack() {
+function prefetchPack() {
+  if (typeof window === "undefined") return;
+  prefetchPromise ??= Promise.all(KINDS.map((kind) => fetchKind(kind))).then(() => {
+    void decodePack();
+  });
+}
+
+async function decodePack() {
   const audio = ensureCtx();
   if (!audio) return;
-  const ext = sampleExt();
-  await Promise.all(
-    KINDS.map(async (kind) => {
-      const base = `/media/ui/${FILES[kind]}`;
-      try {
-        buffers[kind] = await decodeUrl(audio, `${base}.${ext}`);
-      } catch {
-        if (ext !== "mp3") buffers[kind] = await decodeUrl(audio, `${base}.mp3`);
-      }
-    }),
-  );
+  decodePromise ??= (async () => {
+    await Promise.all(
+      KINDS.map(async (kind) => {
+        if (buffers[kind]) return;
+        const data = raw[kind] ?? (await fetchKind(kind));
+        if (!data) return;
+        try {
+          buffers[kind] = await audio.decodeAudioData(data.slice(0));
+        } catch {
+          /* one-kind failure */
+        }
+      }),
+    );
+  })();
+  await decodePromise;
+}
+
+function warmSilent(audio: AudioContext) {
+  if (warmed) return;
+  warmed = true;
+  const buf = audio.createBuffer(1, 1, audio.sampleRate);
+  const src = audio.createBufferSource();
+  src.buffer = buf;
+  src.connect(audio.destination);
+  try {
+    src.start(0);
+  } catch {
+    warmed = false;
+  }
+}
+
+function resume(audio: AudioContext) {
+  if (audio.state === "suspended") void audio.resume();
+}
+
+function startBuffer(kind: SoundKind) {
+  if (muted) return false;
+  const audio = ensureCtx();
+  const buffer = buffers[kind];
+  if (!audio || !master || !buffer) return false;
+  resume(audio);
+  const src = audio.createBufferSource();
+  src.buffer = buffer;
+  src.connect(master);
+  src.start(audio.currentTime);
+  return true;
 }
 
 export function isSoundMuted() {
@@ -87,36 +141,17 @@ export function setSoundMuted(next: boolean) {
 export async function unlockSound() {
   const audio = ensureCtx();
   if (!audio) return;
-  if (audio.state === "suspended") {
-    try {
-      await audio.resume();
-    } catch {
-      return;
-    }
-  }
-  unlocked = audio.state === "running";
-  if (!unlocked) return;
-  loadPromise ??= loadPack().catch(() => {
-    loadPromise = null;
-  });
-  await loadPromise;
+  resume(audio);
+  warmSilent(audio);
+  await decodePack();
 }
 
 export function playUiSound(kind: SoundKind) {
   if (muted) return;
-  const start = () => {
-    if (muted || !unlocked) return;
-    const audio = ensureCtx();
-    const buffer = buffers[kind];
-    if (!audio || !master || !buffer || audio.state !== "running") return;
-    const src = audio.createBufferSource();
-    src.buffer = buffer;
-    src.connect(master);
-    src.start();
-  };
-  if (!unlocked || !buffers[kind]) {
-    void unlockSound().then(start);
-    return;
-  }
-  start();
+  if (startBuffer(kind)) return;
+  void unlockSound().then(() => {
+    startBuffer(kind);
+  });
 }
+
+prefetchPack();

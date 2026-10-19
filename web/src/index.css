@@ -985,9 +985,17 @@
 .service-panel.is-open .work-sec .panel-enter:nth-child(1) { animation-delay: 0.06s; }
 .service-panel.is-open .work-sec .panel-enter:nth-child(2) { animation-delay: 0.14s; }
 .service-panel.is-open .work-sec .panel-enter:nth-child(3) { animation-delay: 0.22s; }
+.service-panel:not(.is-open) .panel-enter {
+  animation: stage-down 0.4s var(--ease-out-expo) forwards;
+  animation-delay: 0.12s;
+}
+.service-panel:not(.is-open) .work-sec .panel-enter:nth-child(1) { animation-delay: 0.08s; }
+.service-panel:not(.is-open) .work-sec .panel-enter:nth-child(2) { animation-delay: 0.04s; }
+.service-panel:not(.is-open) .work-sec .panel-enter:nth-child(3) { animation-delay: 0s; }
 
 @media (prefers-reduced-motion: reduce) {
-  .service-panel.is-open .panel-enter {
+  .service-panel.is-open .panel-enter,
+  .service-panel:not(.is-open) .panel-enter {
     animation: none;
     opacity: 1;
     transform: none;
@@ -1034,6 +1042,10 @@ button[data-magnetic]:not(.metal-fill) {
 @keyframes stage-up {
   from { opacity: 0; transform: translateY(36px); }
   to { opacity: 1; transform: none; }
+}
+@keyframes stage-down {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(18px); }
 }
 ::view-transition-old(.fade-out) {
   animation: var(--duration-exit) ease-in fade reverse;
