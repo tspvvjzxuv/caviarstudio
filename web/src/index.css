@@ -195,6 +195,7 @@
     @apply font-sans scroll-smooth;
     color-scheme: dark;
     overflow-x: clip;
+    overflow-y: auto;
   }
   body {
     @apply bg-background text-foreground antialiased;
@@ -872,11 +873,10 @@
   position: absolute;
   z-index: 0;
   top: -22%;
+  right: 0;
   bottom: -28%;
-  left: 50%;
-  width: 100vw;
+  left: 0;
   pointer-events: none;
-  transform: translateX(-50%);
   background:
     radial-gradient(ellipse 34% 58% at 18% 46%, rgb(61 138 255 / 32%), rgb(61 138 255 / 10%) 38%, transparent 72%),
     radial-gradient(ellipse 28% 52% at 50% 54%, rgb(61 138 255 / 16%), transparent 70%),
