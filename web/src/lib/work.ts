@@ -107,7 +107,17 @@ export const WORK: WorkItem[] = [
   },
 ];
 
+/** Owner photo examples. Empty until media is added — the UI shows nothing. */
+export const PHOTO_EXAMPLES: WorkItem[] = [];
+
+/** Owner video examples. Empty until media is added — the UI shows nothing. */
+export const VIDEO_EXAMPLES: WorkItem[] = [];
+
 export const HAS_WORK = WORK.length > 0;
+
+export function examplesWithMedia(items: readonly WorkItem[]): WorkItem[] {
+  return items.filter((item) => Boolean(item.image || item.video));
+}
 
 export const WORK_INDEX = new Map(WORK.map((item, index) => [item.id, index]));
 
@@ -142,7 +152,8 @@ export function isTypographic(item: WorkItem): boolean {
 }
 
 export function workCatLabel(cat: WorkCat, pack: Dict): string {
-  return pack[CAT_DICT[cat]];
+  const value = pack[CAT_DICT[cat]];
+  return typeof value === "string" ? value : value[0] ?? "";
 }
 
 export function workLabels(item: WorkItem, pack: Dict): string[] {

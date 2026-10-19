@@ -10,7 +10,7 @@ Static Vite + React + Tailwind v4 + shadcn/ui in `web/`, deployed as GitHub Page
 
 Quiet gallery, not a SaaS kit. Near-black `#070708`, pearl/silver/platinum type. **Azure `#3D8AFF` is the main accent; lemon `#FFE44D` is the secondary accent** (not metallic gold, not mustard). Azure-deep `#1D4ED8` fills primary CTAs. Two type families: Bodoni Moda (wordmark, prices, short display names) and DM Sans (body, UI, **section headings** — 600, pearl, no hairline serif, measure `min(100%, 20ch)` of the heading font). Soft glass radii (`--radius` 1.5rem, pills, `rounded-3xl` cards). Translucent borders. Panels never touch. Menus use `.glass` / `.glass-panel`.
 
-Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/hero/`), azure CTAs, and the Komplet card. Yellow only for small high-impact moments. Do not add numbered markers on parallel offerings (Web / Video / Foto). Section kickers are tracked uppercase azure with a 6px azure dot — not a faded dash or a tiny lucide chip. Process steps use larger lucide line icons (stroke 1.75, azure) in the same circular frosted-glass discs as the rest of the site (azure wash, lemon hairline) — no gradient dashes, no clipped strokes.
+Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/hero/`), azure CTAs, the Komplet card, and the Čo robíme chrome expanders. Yellow only for small high-impact moments. Do not add numbered markers on parallel offerings (Fotky / Videá / Weby). Section kickers are tracked uppercase azure with a 6px azure dot — not a faded dash or a tiny lucide chip. There is no process / Postup section.
 
 ## Motion that earns its place
 
@@ -22,7 +22,7 @@ Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/h
 
 ## Conversion
 
-Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, in the header, and on the form. Do not add a second quote button under the price notes. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Hero centerpiece is the CAVIAR lockup; brand tagline is “STUDIO · TRNAVA.” Work (**Naša práca**) lists **live** public websites only from `web/src/lib/work.ts`: screenshot + live href. Glass pill filters when two or more categories remain.
+Primary action is a quote: “Chcem cenovú ponuku” / “I want a quote” / “Angebot anfordern”. Keep it on the hero, on pricing cards, in the header, and on the form. Do not add a second quote button under the price notes. Secondary is “Pozrieť cenník”. Reply copy is immediate: “Ozveme sa hneď.” / “We reply right away.” / “Wir melden uns sofort.” Do not invent testimonials, client counts, limited slots, bonuses, or guaranteed results. Hero centerpiece is the CAVIAR lockup; brand tagline is “STUDIO · TRNAVA.” Live website examples sit inside the Weby expander (`web/src/lib/work.ts`: screenshot + live href). Photo/video example arrays stay empty until the owner adds media.
 
 ## SEO
 

@@ -44,9 +44,11 @@ npm run build:pages
 - Palette: near-black `#070708`, silver/platinum type, azure `#3D8AFF` main accent, lemon `#FFE44D` secondary — **no metallic gold**. Display type is **Bodoni Moda**; body is DM Sans. Soft glass radii; translucent borders. Logo is upright CAVIAR + STUDIO · TRNAVA.
 - No stock photos and no assistant-chosen portraits. Hero is a muted liquid-chrome loop (`media/hero/`) over a silver field. Team uses monograms.
 
-## Work / photos
+## Work / photos / video examples
 
-The Work section (**Naša práca**) lists **live** public websites only. Data lives in `web/src/lib/work.ts`. Each tile needs a working live URL and a screenshot in `media/work/`. A glass pill row filters by category (Všetko, plus only categories that have a tile) when two or more categories remain. A tile may belong to more than one category. The whole tile opens the live site. No GitHub chips, repo links, or tech/hosting talk on the tiles.
+Live website tiles sit inside the **Weby** expander in Čo robíme. Data lives in `web/src/lib/work.ts`. Each tile needs a working live URL and a screenshot in `media/work/`. The whole tile opens the live site. No GitHub chips, repo links, or tech/hosting talk on the tiles.
+
+Photo and video examples use `PHOTO_EXAMPLES` and `VIDEO_EXAMPLES` in the same file. Leave those arrays empty until you have your own media — the UI shows nothing rather than empty tiles.
 
 To add a site:
 

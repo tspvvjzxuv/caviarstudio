@@ -1,16 +1,15 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
+import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
   AtSign,
   Camera,
+  ChevronDown,
   Clapperboard,
   Globe,
-  Hammer,
   Mail,
   MessageCircle,
-  PackageCheck,
   Phone,
 } from "lucide-react";
-import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +21,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -33,29 +33,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
+import type { Dict } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
-import {
-  filterWork,
-  groupWorkRows,
-  HAS_WORK,
-  isTypographic,
-  WORK,
-  type WorkFilter,
-} from "@/lib/work";
+import { PHOTO_EXAMPLES, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
-import { WorkFilters } from "@/components/work-filters";
-import { WorkTile } from "@/components/work-tile";
+import { WorkGallery } from "@/components/work-gallery";
+import { cn } from "@/lib/utils";
 
-const PANEL =
-  "h-full min-h-[14rem] overflow-visible rounded-3xl border border-border py-0 ring-0";
 const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
-const SERVICE_WASH = ["service-wash-web", "service-wash-video", "service-wash-foto"] as const;
-const SERVICE_ICON = [Globe, Clapperboard, Camera] as const;
 const HERO_GHOST =
   "hero-ghost h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full";
-const PROCESS_ICON = [MessageCircle, Phone, Hammer, PackageCheck] as const;
+
+const SERVICES = [
+  { id: "foto", name: "fotoName", examples: "pFotoEx", Icon: Camera, media: PHOTO_EXAMPLES },
+  { id: "video", name: "videoName", examples: "pVideoEx", Icon: Clapperboard, media: VIDEO_EXAMPLES },
+  { id: "web", name: "webName", examples: "pWebEx", Icon: Globe, media: WORK },
+] as const;
 
 const TEAM = [
   { mono: "MK", name: "Miroslav Kotvas" },
@@ -63,14 +58,24 @@ const TEAM = [
 ] as const;
 
 const LAUNCH_PACKS = [
-  { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc", ex: "pFotoEx" },
-  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc", ex: "pVideoEx" },
-  { key: "webOnePager", name: "pWebName", desc: "pWebDesc", ex: "pWebEx" },
+  { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc" },
+  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc" },
+  { key: "webOnePager", name: "pWebName", desc: "pWebDesc" },
 ] as const;
 
-const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc", ex: "pKompletEx" } as const;
+const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc" } as const;
 
 type PricePack = (typeof LAUNCH_PACKS)[number] | typeof FEATURED_PACK;
+
+function dictText(pack: Dict, key: keyof Dict): string {
+  const value = pack[key];
+  return typeof value === "string" ? value : value[0] ?? "";
+}
+
+function dictList(pack: Dict, key: keyof Dict): readonly string[] {
+  const value = pack[key];
+  return typeof value === "string" ? [value] : value;
+}
 
 const NEED_OPTIONS = [
   { value: "Web", label: "needWeb" },
@@ -117,58 +122,85 @@ export function Hero() {
 
 export function Services() {
   const { t } = useLanguage();
-  const items = [
-    { name: t.webName, lead: t.webLead, gets: t.webGets },
-    { name: t.videoName, lead: t.videoLead, gets: t.videoGets },
-    { name: t.fotoName, lead: t.fotoLead, gets: t.fotoGets },
-  ];
+  const panelId = useId();
+  const [open, setOpen] = useState("");
+  const active = SERVICES.find((item) => item.id === open);
   return (
     <Section.Frame id="sluzby" density="compact" className="border-t border-border">
       <Section.Body>
-        <h2 className="section-title max-w-[12ch]">
-          {t.doKicker}
-        </h2>
+        <h2 className="section-title max-w-[12ch]">{t.doKicker}</h2>
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
         </p>
         <div className="grid items-stretch gap-6 md:grid-cols-3 md:gap-8 xl:gap-10">
-          {items.map((item, idx) => (
-            <ServiceCard key={item.name} item={item} wash={SERVICE_WASH[idx]} Icon={SERVICE_ICON[idx]} />
-          ))}
+          {SERVICES.map((item) => {
+            const Icon = item.Icon;
+            const expanded = open === item.id;
+            return (
+              <Reveal key={item.id} className="h-full">
+                <button
+                  type="button"
+                  aria-expanded={expanded}
+                  aria-controls={panelId}
+                  onClick={() => setOpen(expanded ? "" : item.id)}
+                  className={cn(
+                    "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+                    expanded && "is-open",
+                  )}
+                >
+                  <IconDisc>
+                    <Icon />
+                  </IconDisc>
+                  <span className="min-w-0 flex-1 font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
+                    {dictText(t, item.name)}
+                  </span>
+                  <span
+                    className="icon-disc ml-auto inline-flex size-9 shrink-0 items-center justify-center text-pearl transition-colors duration-300 group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15"
+                    aria-hidden="true"
+                  >
+                    <ChevronDown
+                      className="size-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-aria-expanded/service:rotate-180"
+                      strokeWidth={1.75}
+                    />
+                  </span>
+                </button>
+              </Reveal>
+            );
+          })}
         </div>
-        <Reveal className="mt-6 overflow-visible rounded-3xl border border-border bg-card p-6 md:mt-8 md:p-8 xl:mt-10">
-          <span className="block text-[0.68rem] tracking-[0.22em] text-azure uppercase">{t.forWhomLabel}</span>
-          <span className="mt-2 block font-serif text-[clamp(1.2rem,2.4vw,1.55rem)] leading-[1.55] italic">{t.forWhom}</span>
-        </Reveal>
+        <Collapsible open={Boolean(active)}>
+          <CollapsibleContent
+            id={panelId}
+            role="region"
+            className="overflow-hidden data-closed:animate-accordion-up data-open:animate-accordion-down"
+          >
+            {active ? (
+              <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
+                <ServiceExamples items={dictList(t, active.examples)} />
+                <WorkGallery items={active.media as readonly WorkItem[]} />
+              </div>
+            ) : null}
+          </CollapsibleContent>
+        </Collapsible>
       </Section.Body>
     </Section.Frame>
   );
 }
 
-function ServiceCard({
-  item,
-  wash,
-  Icon,
-}: {
-  item: { name: string; lead: string; gets: string };
-  wash: string;
-  Icon: (typeof SERVICE_ICON)[number];
-}) {
+function ServiceExamples({ items }: { items: readonly string[] }) {
+  const { t } = useLanguage();
   return (
-    <Reveal className="h-full">
-      <Card className={`${PANEL} ${wash}`}>
-        <CardHeader className={PANEL_HEAD}>
-          <IconDisc>
-            <Icon />
-          </IconDisc>
-          <CardTitle className="font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em]">
-            {item.name}
-          </CardTitle>
-          <p className="max-w-[34ch] text-[1.05rem] leading-[1.55]">{item.lead}</p>
-          <p className="max-w-[38ch] text-[0.82rem] leading-[1.55] tracking-[0.03em] text-silver">{item.gets}</p>
-        </CardHeader>
-      </Card>
-    </Reveal>
+    <div className="rounded-3xl border border-white/12 bg-linear-to-b from-azure/12 to-lemon/6 p-5 md:p-6">
+      <p className="text-[0.62rem] font-medium tracking-[0.2em] text-azure uppercase">{t.pExLabel}</p>
+      <ul className="mt-3 grid gap-2">
+        {items.map((item) => (
+          <li key={item} className="grid grid-cols-[auto_1fr] items-start gap-2.5 text-[0.95rem] leading-[1.5] text-platinum">
+            <span className="mt-[0.45em] size-1.5 shrink-0 rounded-full bg-azure" aria-hidden="true" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -181,23 +213,6 @@ function PriceIdentity({ name, desc }: { name: string; desc: string }) {
       </Badge>
       <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal">{name}</CardTitle>
       <CardDescription className="max-w-[36ch] text-[0.95rem] leading-[1.55]">{desc}</CardDescription>
-    </div>
-  );
-}
-
-function PriceExamples({ items }: { items: readonly string[] }) {
-  const { t } = useLanguage();
-  return (
-    <div className="rounded-2xl border border-white/12 bg-linear-to-b from-azure/12 to-lemon/6 p-4 md:p-5">
-      <p className="text-[0.62rem] font-medium tracking-[0.2em] text-azure uppercase">{t.pExLabel}</p>
-      <ul className="mt-3 grid gap-2">
-        {items.map((item) => (
-          <li key={item} className="grid grid-cols-[auto_1fr] items-start gap-2.5 text-[0.88rem] leading-[1.45] text-platinum">
-            <span className="mt-[0.45em] size-1.5 shrink-0 rounded-full bg-azure" aria-hidden="true" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
@@ -225,9 +240,8 @@ function LaunchPriceCard({ pack, vat }: { pack: PricePack; vat: string }) {
     <Reveal className="h-full">
       <Card className="h-full min-h-[20rem] overflow-visible rounded-3xl border border-border bg-card py-0 ring-0">
         <CardHeader className={PANEL_HEAD}>
-          <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
+          <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
           <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
-          <PriceExamples items={t[pack.ex]} />
           <Button asChild variant="outline" className="mt-1 h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
@@ -244,15 +258,12 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
       <Reveal className="h-full md:col-span-2 xl:col-span-3">
       <Card className="h-full min-h-[16rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
         <CardHeader className="flex flex-col gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
-          <PriceIdentity name={t[pack.name]} desc={t[pack.desc]} />
+          <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
           <div className="grid gap-4 justify-items-start">
             <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
             <Button asChild className="metal-fill h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
-          </div>
-          <div className="lg:col-span-2">
-            <PriceExamples items={t[pack.ex]} />
           </div>
         </CardHeader>
       </Card>
@@ -278,268 +289,6 @@ export function Pricing() {
           <p>{t.vatYes}</p>
         </Reveal>
       </Section.Body>
-    </Section.Frame>
-  );
-}
-
-export function Process() {
-  const { t } = useLanguage();
-  const steps = [
-    { n: "01", title: t.how1t, body: t.how1p, Icon: PROCESS_ICON[0] },
-    { n: "02", title: t.how2t, body: t.how2p, Icon: PROCESS_ICON[1] },
-    { n: "03", title: t.how3t, body: t.how3p, Icon: PROCESS_ICON[2] },
-    { n: "04", title: t.how4t, body: t.how4p, Icon: PROCESS_ICON[3] },
-  ];
-  return (
-    <Section.Frame id="ako" className="slide-grid">
-      <Section.Body>
-        <Section.Heading className="mb-10 md:mb-16" kicker={t.howKicker} title={t.howTitle} />
-        <ol className="grid list-none gap-6 md:gap-8 xl:gap-10">
-          {steps.map((step) => {
-            const Icon = step.Icon;
-            return (
-            <li key={step.n}>
-              <Reveal>
-                <Card className="overflow-visible rounded-3xl border border-border py-0 ring-0">
-                  <CardContent className="grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-4 p-6 md:gap-x-6 md:p-8">
-                    <IconDisc size="lg" className="text-azure">
-                      <Icon strokeWidth={1.75} />
-                    </IconDisc>
-                    <div className="min-w-0">
-                      <h3 className="font-sans text-[clamp(1.2rem,2.2vw,1.55rem)] leading-[1.25] font-semibold tracking-[-0.02em] text-pearl">{step.title}</h3>
-                      <p className="mt-2 max-w-[52ch] leading-[1.55] text-muted-foreground">{step.body}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Reveal>
-            </li>
-            );
-          })}
-        </ol>
-      </Section.Body>
-    </Section.Frame>
-  );
-}
-
-function pauseTileVideo(video: HTMLVideoElement) {
-  video.pause();
-  try {
-    video.currentTime = 0;
-  } catch {
-    /* ignore */
-  }
-}
-
-function applyWorkFilter(next: WorkFilter, current: WorkFilter, setFilter: (value: WorkFilter) => void) {
-  if (next === current) return;
-  const go = () => setFilter(next);
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
-  if (!reduce && typeof doc.startViewTransition === "function") {
-    doc.startViewTransition(go);
-    return;
-  }
-  go();
-}
-
-export function Work() {
-  const { t } = useLanguage();
-  const stage = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [filter, setFilter] = useState<WorkFilter>("all");
-  const visible = useMemo(() => filterWork(WORK, filter), [filter]);
-  const shotRows = useMemo(
-    () => groupWorkRows(visible.filter((item) => !isTypographic(item))),
-    [visible],
-  );
-  const typeItems = useMemo(() => visible.filter(isTypographic), [visible]);
-  usePauseOffscreen(sectionRef);
-
-  useEffect(() => {
-    const root = stage.current;
-    if (!root) return;
-
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const projects = () => root.querySelectorAll<HTMLElement>(".project");
-
-    const flushIn = (el: HTMLElement) => {
-      const r = el.getBoundingClientRect();
-      if (r.bottom > 24 && r.top < window.innerHeight - 24) el.classList.add("in");
-    };
-    if (!reduce && "IntersectionObserver" in window) {
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("in");
-              io.unobserve(entry.target);
-            }
-          }
-        },
-        { threshold: 0.08, rootMargin: "0px 0px -6% 0px" },
-      );
-      projects().forEach((el) => {
-        io.observe(el);
-        flushIn(el);
-      });
-      return () => io.disconnect();
-    }
-    projects().forEach((el) => el.classList.add("in"));
-  }, [filter]);
-
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-    const root = stage.current;
-    const section = sectionRef.current;
-    if (!root) return;
-    let scrolling = false;
-    const paint = () => {
-      const vh = window.innerHeight;
-      const projects = root.querySelectorAll<HTMLElement>(".project");
-      const writes: { el: HTMLElement; py: string }[] = [];
-      for (let i = 0; i < projects.length; i++) {
-        const p = projects[i];
-        const r = p.getBoundingClientRect();
-        const top = r.top;
-        const height = r.height;
-        if (r.bottom < 0 || top > vh) continue;
-        const v = (vh - top) / (vh + height) - 0.5;
-        writes.push({ el: p, py: `${(v * 36).toFixed(2)}px` });
-      }
-      for (let i = 0; i < writes.length; i++) {
-        writes[i].el.style.setProperty("--py", writes[i].py);
-      }
-      scrolling = false;
-    };
-    const onScroll = () => {
-      if (!scrolling) {
-        scrolling = true;
-        requestAnimationFrame(paint);
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const onMove = (e: PointerEvent) => {
-      const p = (e.target as HTMLElement | null)?.closest(".project") as HTMLElement | null;
-      if (!p) return;
-      const r = p.getBoundingClientRect();
-      const width = r.width;
-      const height = r.height;
-      if (!width || !height) return;
-      p.style.setProperty("--mx", `${(((e.clientX - r.left) / width - 0.5) * 18).toFixed(1)}px`);
-      p.style.setProperty("--my", `${(((e.clientY - r.top) / height - 0.5) * 12).toFixed(1)}px`);
-    };
-    const onLeaveParallax = (e: PointerEvent) => {
-      const p = (e.target as HTMLElement | null)?.closest(".project") as HTMLElement | null;
-      if (!p) return;
-      p.style.setProperty("--mx", "0px");
-      p.style.setProperty("--my", "0px");
-    };
-    const projectFrom = (node: EventTarget | null) =>
-      node instanceof Element ? (node.closest(".project") as HTMLElement | null) : null;
-    const onEnterFilm = (e: PointerEvent) => {
-      const p = projectFrom(e.target);
-      if (!p || p === projectFrom(e.relatedTarget)) return;
-      p.classList.add("is-playing");
-      const vid = p.querySelector("video");
-      if (vid) void vid.play().catch(() => {});
-    };
-    const onLeaveFilm = (e: PointerEvent) => {
-      const p = projectFrom(e.target);
-      if (!p || p === projectFrom(e.relatedTarget)) return;
-      p.classList.remove("is-playing");
-      if (!p.querySelector(".project-media img")) return;
-      const vid = p.querySelector("video");
-      if (vid) pauseTileVideo(vid);
-    };
-    const pauseAll = () => {
-      root.querySelectorAll("video").forEach((vid) => {
-        pauseTileVideo(vid);
-        vid.closest(".project")?.classList.remove("is-playing");
-      });
-    };
-    const onVis = () => {
-      if (document.hidden || section?.classList.contains("is-paused")) pauseAll();
-    };
-
-    if (fine) {
-      root.addEventListener("pointermove", onMove, { passive: true });
-      root.addEventListener("pointerleave", onLeaveParallax, { passive: true });
-      root.addEventListener("pointerenter", onEnterFilm, { passive: true, capture: true });
-      root.addEventListener("pointerleave", onLeaveFilm, { passive: true, capture: true });
-    }
-    document.addEventListener("visibilitychange", onVis);
-    const mo = section
-      ? new MutationObserver(onVis)
-      : null;
-    if (section && mo) mo.observe(section, { attributes: true, attributeFilter: ["class"] });
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      root.removeEventListener("pointermove", onMove);
-      root.removeEventListener("pointerleave", onLeaveParallax);
-      root.removeEventListener("pointerenter", onEnterFilm, true);
-      root.removeEventListener("pointerleave", onLeaveFilm, true);
-      document.removeEventListener("visibilitychange", onVis);
-      mo?.disconnect();
-    };
-  }, []);
-
-  return (
-    <Section.Frame id="praca" className="work-sec" ref={sectionRef} density={HAS_WORK ? "default" : "compact"}>
-      <Section.Body className={HAS_WORK ? "mb-10 md:mb-16" : ""}>
-        <Section.Heading className="max-w-[38ch]" kicker={t.workKicker} title={t.workTitle}>
-          {HAS_WORK ? (
-            <p className="text-[1.02rem] text-muted-foreground">{t.workLead}</p>
-          ) : (
-            <>
-              <p className="max-w-[42ch] text-[1.02rem] text-muted-foreground">{t.workEmpty}</p>
-              <p className="mt-3">
-                <a href="#kontakt" className="text-[0.95rem] text-azure underline-offset-4 hover:text-lemon hover:underline">
-                  {t.ctaQuote}
-                </a>
-              </p>
-            </>
-          )}
-        </Section.Heading>
-      </Section.Body>
-      {HAS_WORK ? (
-        <>
-          <div className="marquee overflow-hidden border-y border-border py-4" aria-hidden="true">
-            <div className="marquee-track flex w-max gap-8 text-[0.72rem] tracking-[0.28em] text-silver uppercase">
-              <span>{t.marquee}</span>
-              <span>{t.marquee}</span>
-              <span>{t.marquee}</span>
-              <span>{t.marquee}</span>
-            </div>
-          </div>
-          <Section.Wide className="mt-8">
-            <WorkFilters value={filter} onChange={(next) => applyWorkFilter(next, filter, setFilter)} />
-            <div ref={stage} className="grid gap-4 md:gap-6 xl:gap-8">
-              {shotRows.map((row) =>
-                row.length === 2 ? (
-                  <div key={row[0].id} className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
-                    {row.map((item) => (
-                      <WorkTile key={item.id} item={item} />
-                    ))}
-                  </div>
-                ) : (
-                  <WorkTile key={row[0].id} item={row[0]} />
-                ),
-              )}
-              {typeItems.length ? (
-                <div className="grid gap-4 md:grid-cols-2 md:gap-6 xl:gap-8">
-                  {typeItems.map((item) => (
-                    <WorkTile key={item.id} item={item} />
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          </Section.Wide>
-        </>
-      ) : null}
     </Section.Frame>
   );
 }
@@ -614,7 +363,7 @@ function ContactIntro() {
       <Kicker>{t.contactKicker}</Kicker>
       <h2 className="section-title mt-4">
         <span className="block">{t.contactLine1}</span>
-        <span className="block">{t.how1t}</span>
+        <span className="block">{t.contactLine2}</span>
       </h2>
       <div className="mt-8 flex flex-wrap gap-3">
         <Button asChild className="metal-fill h-[52px] gap-2.5 rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
@@ -713,7 +462,7 @@ function ContactForm() {
                     <SelectGroup>
                       {NEED_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
-                          {t[option.label]}
+                          {dictText(t, option.label)}
                         </SelectItem>
                       ))}
                     </SelectGroup>

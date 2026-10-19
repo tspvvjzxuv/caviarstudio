@@ -6,10 +6,8 @@ import {
   Faq,
   Hero,
   Pricing,
-  Process,
   Services,
   Team,
-  Work,
 } from "@/components/sections";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -54,11 +52,9 @@ function Page() {
             <Hero />
             <Services />
             <Pricing />
-            <Process />
-            <Work />
+            <Contact />
             <Team />
             <Faq />
-            <Contact />
           </>
         </ViewTransition>
       </main>
