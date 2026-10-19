@@ -741,6 +741,12 @@
   object-fit: cover;
   object-position: top center;
 }
+.device-lid .device-screen img {
+  aspect-ratio: 1440 / 900;
+}
+.device-phone .device-screen img {
+  aspect-ratio: 390 / 844;
+}
 .device-sheen {
   position: absolute;
   inset: 0;
