@@ -178,21 +178,8 @@ export function Services() {
     const reveal = () => {
       inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
     };
-    const measure = () => {
-      const top = inner.getBoundingClientRect().top;
-      let bottom = top;
-      inner.querySelectorAll("img, article, li, p, h3").forEach((node) => {
-        const box = node.getBoundingClientRect();
-        if (box.bottom > bottom) bottom = box.bottom;
-      });
-      const pad = Number.parseFloat(getComputedStyle(inner).paddingBottom) || 0;
-      const fromBoxes = Math.ceil(Math.max(0, bottom - top + pad));
-      const prev = inner.style.overflow;
-      inner.style.overflow = "auto";
-      const fromScroll = inner.scrollHeight;
-      inner.style.overflow = prev;
-      return Math.ceil(Math.max(fromBoxes, fromScroll));
-    };
+    const measure = () => Math.ceil(inner.scrollHeight);
+    let first = true;
 
     const apply = () => {
       if (cancelled) return;
@@ -213,10 +200,12 @@ export function Services() {
         panel.style.gridTemplateRows = `${next}px`;
         void panel.offsetHeight;
         panel.style.removeProperty("transition");
+        first = false;
         return;
       }
-      if (Math.abs(panelH - next) > 8) {
-        panel.style.gridTemplateRows = `${next}px`;
+      if (first || next > panelH + 8) {
+        first = false;
+        if (Math.abs(panelH - next) > 8) panel.style.gridTemplateRows = `${next}px`;
       }
     };
 
@@ -233,13 +222,14 @@ export function Services() {
     imgs.forEach((img) => {
       img.addEventListener("load", onImg);
       img.addEventListener("error", onImg);
-      void img.decode?.().then(onImg).catch(() => {});
+      if (img.complete) onImg();
+      else void img.decode?.().then(onImg).catch(() => {});
     });
     raf = requestAnimationFrame(() => {
       apply();
       raf = requestAnimationFrame(apply);
     });
-    for (const ms of [280, 900, 1600]) laters.push(window.setTimeout(apply, ms));
+    for (const ms of [280, 900, 1600, 2200]) laters.push(window.setTimeout(apply, ms));
     void document.fonts?.ready.then(apply);
 
     return () => {
