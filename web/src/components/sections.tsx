@@ -178,7 +178,21 @@ export function Services() {
     const reveal = () => {
       inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
     };
-    const measure = () => Math.ceil(inner.scrollHeight);
+    const measure = () => {
+      const top = inner.getBoundingClientRect().top;
+      let bottom = top;
+      inner.querySelectorAll("img, article, li, p, h3").forEach((node) => {
+        const box = node.getBoundingClientRect();
+        if (box.bottom > bottom) bottom = box.bottom;
+      });
+      const pad = Number.parseFloat(getComputedStyle(inner).paddingBottom) || 0;
+      const fromBoxes = Math.ceil(Math.max(0, bottom - top + pad));
+      const prev = inner.style.overflow;
+      inner.style.overflow = "auto";
+      const fromScroll = inner.scrollHeight;
+      inner.style.overflow = prev;
+      return Math.ceil(Math.max(fromBoxes, fromScroll));
+    };
 
     const apply = () => {
       if (cancelled) return;
@@ -212,22 +226,15 @@ export function Services() {
     const ro = new ResizeObserver(apply);
     ro.observe(inner);
     const imgs = [...inner.querySelectorAll("img")];
-    imgs.forEach((img) => {
-      img.addEventListener("load", apply);
-      img.addEventListener("error", apply);
-      void img.decode?.().then(apply).catch(() => {});
-    });
-    const onEnd = (event: TransitionEvent) => {
-      if (event.target !== panel || !event.propertyName.includes("grid")) return;
-      if (!open) return;
-      const h = panel.getBoundingClientRect().height;
-      panel.style.gridTemplateRows = "1fr";
-      void panel.offsetHeight;
-      if (panel.getBoundingClientRect().height < h - 8) {
-        panel.style.gridTemplateRows = `${Math.ceil(h)}px`;
-      }
+    const onImg = () => {
+      apply();
+      requestAnimationFrame(apply);
     };
-    panel.addEventListener("transitionend", onEnd);
+    imgs.forEach((img) => {
+      img.addEventListener("load", onImg);
+      img.addEventListener("error", onImg);
+      void img.decode?.().then(onImg).catch(() => {});
+    });
     raf = requestAnimationFrame(() => {
       apply();
       raf = requestAnimationFrame(apply);
@@ -240,10 +247,9 @@ export function Services() {
       ro.disconnect();
       cancelAnimationFrame(raf);
       laters.forEach((id) => window.clearTimeout(id));
-      panel.removeEventListener("transitionend", onEnd);
       imgs.forEach((img) => {
-        img.removeEventListener("load", apply);
-        img.removeEventListener("error", apply);
+        img.removeEventListener("load", onImg);
+        img.removeEventListener("error", onImg);
       });
     };
   }, [open, shown]);
