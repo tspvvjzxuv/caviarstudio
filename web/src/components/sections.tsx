@@ -602,13 +602,13 @@ function ContactForm() {
                 <FieldLabel htmlFor="f-name" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
                   {t.fName}
                 </FieldLabel>
-                <Input id="f-name" name="name" autoComplete="name" required className="h-11 rounded-2xl bg-background" />
+                <Input id="f-name" name="name" autoComplete="name" required className="h-11 rounded-2xl bg-background px-3 leading-none" />
               </Field>
               <Field>
                 <FieldLabel htmlFor="f-biz" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
                   {t.fBiz}
                 </FieldLabel>
-                <Input id="f-biz" name="business" autoComplete="organization" required className="h-11 rounded-2xl bg-background" />
+                <Input id="f-biz" name="business" autoComplete="organization" required className="h-11 rounded-2xl bg-background px-3 leading-none" />
               </Field>
               <Field>
                 <FieldLabel htmlFor="f-need" className="text-[0.68rem] tracking-[0.2em] text-silver uppercase">
@@ -638,7 +638,7 @@ function ContactForm() {
                   name="budget"
                   inputMode="decimal"
                   placeholder={t.fBudgetPh}
-                  className="h-11 rounded-2xl bg-background"
+                  className="h-11 rounded-2xl bg-background px-3 leading-none"
                 />
               </Field>
             </FieldGroup>
