@@ -52,9 +52,9 @@ export const WORK: WorkItem[] = [
     imageMobile: "/media/work/lile-lentilka-mobile.webp",
     title: "LiLiLentilka",
     line: {
-      sk: "Web s e-shopom. Hudba plná farieb, smiechu a lentiliek.",
-      en: "Website with an e-shop. Music full of colour, laughter and lentil sweets.",
-      de: "Website mit E-Shop. Musik voller Farbe, Lachen und Lentilkas.",
+      sk: "E-shop pre hudbu plnú farieb a lentiliek.",
+      en: "A shop for music full of colour and lentil sweets.",
+      de: "Ein Shop für Musik voller Farbe und Lentilkas.",
     },
     alt: {
       sk: "lililentilka.sk — úvod webu",
@@ -75,9 +75,9 @@ export const WORK: WorkItem[] = [
       de: "Mittelalterfestival Stropkov",
     },
     line: {
-      sk: "Web festivalu PTRA v Stropkove.",
-      en: "Site for the PTRA festival in Stropkov.",
-      de: "Website des PTRA-Festivals in Stropkov.",
+      sk: "Web stredovekého festivalu v Stropkove.",
+      en: "A site for the medieval festival in Stropkov.",
+      de: "Website für das Mittelalterfestival in Stropkov.",
     },
     alt: {
       sk: "ptra.sk — úvod festivalového webu",
@@ -98,9 +98,9 @@ export const WORK: WorkItem[] = [
       de: "Kinderschminken",
     },
     line: {
-      sk: "Osobná stránka maliarky. Oslavy, festivaly a špeciálne príležitosti.",
-      en: "A personal page for a face painter. Parties, festivals and special occasions.",
-      de: "Persönliche Seite einer Kinderschminkerin. Feste, Festivals und besondere Anlässe.",
+      sk: "Stránka, z ktorej si rezervujú maľovanie na tvár.",
+      en: "A page people use to book face painting.",
+      de: "Eine Seite, über die man Kinderschminken bucht.",
     },
     alt: {
       sk: "Maľovanie na tvár — osobná stránka, úvod",

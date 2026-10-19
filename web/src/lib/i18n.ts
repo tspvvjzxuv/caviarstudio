@@ -72,6 +72,8 @@ export const dictionary = {
         contactLine1: "Napíšte.",
         contactLine2: "Ozveme sa hneď.",
         faqTitle: "Stručne a na rovinu.",
+        faqWhyQ: "Prečo web, foto aj video spolu?",
+        faqWhyA: "Web, fotky aj reel robíme my. Majú rovnaký vzhľad a nemusíte volať troch ľudí.",
         faq1q: "Ako dlho to trvá?",
         faq1a: "Web 5–7 dní od odsúhlasenia. Foto a video 3–5 dní po natáčaní. Termín natáčania dohodneme na hovore.",
         faq2q: "Čo od vás potrebujem?",
@@ -168,6 +170,8 @@ export const dictionary = {
         contactLine1: "Write to us.",
         contactLine2: "We reply right away.",
         faqTitle: "Straight answers.",
+        faqWhyQ: "Why website, photo and video together?",
+        faqWhyA: "We make the site, the photos and the reel. One look, one studio.",
         faq1q: "How long does it take?",
         faq1a: "Web in 5–7 days after approval. Photo and video 3–5 days after the shoot. We set the shoot date on the call.",
         faq2q: "What do I need to provide?",
@@ -264,6 +268,8 @@ export const dictionary = {
         contactLine1: "Schreiben Sie.",
         contactLine2: "Wir melden uns sofort.",
         faqTitle: "Kurz und klar.",
+        faqWhyQ: "Warum Website, Foto und Video zusammen?",
+        faqWhyA: "Website, Fotos und Reel machen wir. Eine Optik, ein Studio.",
         faq1q: "Wie lange dauert es?",
         faq1a: "Web in 5–7 Tagen nach Freigabe. Foto und Video 3–5 Tage nach dem Dreh. Den Drehtermin klären wir am Gespräch.",
         faq2q: "Was muss ich liefern?",
@@ -291,6 +297,19 @@ export const dictionary = {
 
 export type Lang = "sk" | "en" | "de";
 export type Dict = (typeof dictionary)["sk"];
+type FaqKey = {
+  [K in keyof Dict]: Dict[K] extends string ? K : never;
+}[keyof Dict];
+
+export const FAQ_KEYS = [
+  ["faqWhyQ", "faqWhyA"],
+  ["faq1q", "faq1a"],
+  ["faq2q", "faq2a"],
+  ["faq3q", "faq3a"],
+  ["faq4q", "faq4a"],
+  ["faq5q", "faq5a"],
+  ["faq6q", "faq6a"],
+] as const satisfies ReadonlyArray<readonly [FaqKey, FaqKey]>;
 
 export const LANGS: Lang[] = ["sk", "en", "de"];
 
