@@ -28,3 +28,7 @@ Live-site screenshots of public websites go in `media/work/` (`webp`/`jpg`, unde
 ```
 
 See the root `README.md` section **Work / photos**.
+
+## UI sounds
+
+Cinematic one-shots in `media/ui/` (`webm` + `mp3`). Sources, licenses, and mapping: root `SOUNDS.md`.

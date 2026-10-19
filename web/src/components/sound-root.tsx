@@ -29,18 +29,33 @@ export function SoundRoot({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    const playCard = (target: EventTarget | null) => {
+      const el = target instanceof Element ? target.closest("button.service-chrome") : null;
+      if (!(el instanceof HTMLElement)) return;
+      playUiSound(el.getAttribute("aria-expanded") === "true" ? "close" : "open");
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      playCard(event.target);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.repeat || (event.key !== "Enter" && event.key !== " ")) return;
+      playCard(event.target);
+    };
     const onClick = (event: MouseEvent) => {
       const el = event.target instanceof Element ? event.target.closest("a, button") : null;
       if (!(el instanceof HTMLElement)) return;
       if (el.closest("[data-sound-toggle]")) return;
-      if (el.classList.contains("service-chrome")) {
-        playUiSound(el.getAttribute("aria-expanded") === "true" ? "click" : "whoosh");
-        return;
-      }
-      if (el.classList.contains("metal-fill")) playUiSound("click");
+      if (el.classList.contains("service-chrome")) return;
+      if (el.classList.contains("metal-fill")) playUiSound("hit");
     };
+    document.addEventListener("pointerdown", onPointerDown, { capture: true, passive: true });
+    document.addEventListener("keydown", onKeyDown, { capture: true });
     document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown, { capture: true });
+      document.removeEventListener("keydown", onKeyDown, { capture: true });
+      document.removeEventListener("click", onClick);
+    };
   }, []);
 
   const value = useMemo(() => ({ muted, setMuted }), [muted, setMuted]);
