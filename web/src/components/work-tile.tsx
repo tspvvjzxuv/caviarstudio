@@ -20,11 +20,15 @@ function Screen({
   src,
   alt,
   sizes,
+  width,
+  height,
   decorative,
 }: {
   src: string;
   alt: string;
   sizes: string;
+  width: number;
+  height: number;
   decorative?: boolean;
 }) {
   return (
@@ -32,7 +36,9 @@ function Screen({
       <img
         src={src}
         alt={decorative ? "" : alt}
-        loading="lazy"
+        width={width}
+        height={height}
+        loading="eager"
         decoding="async"
         sizes={sizes}
         draggable={false}
@@ -54,7 +60,7 @@ function DevicePair({ item }: { item: WorkItem }) {
       <div className="device-laptop">
         <div className="device-lid">
           <span className="device-camera" aria-hidden="true" />
-          <Screen src={desktop} alt={alt} sizes="(min-width: 768px) 42vw, 88vw" />
+          <Screen src={desktop} alt={alt} sizes="(min-width: 768px) 42vw, 88vw" width={1440} height={900} />
         </div>
         <span className="device-hinge" aria-hidden="true" />
         <span className="device-base" aria-hidden="true" />
@@ -62,7 +68,7 @@ function DevicePair({ item }: { item: WorkItem }) {
       {mobile ? (
         <div className="device-phone" aria-hidden="true">
           <span className="device-island" />
-          <Screen src={mobile} alt="" sizes="(min-width: 768px) 12vw, 38vw" decorative />
+          <Screen src={mobile} alt="" sizes="(min-width: 768px) 12vw, 38vw" width={390} height={844} decorative />
           <span className="device-home" />
         </div>
       ) : null}
