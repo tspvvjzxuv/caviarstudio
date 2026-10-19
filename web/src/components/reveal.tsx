@@ -15,12 +15,11 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const flush = () => {
       const r = el.getBoundingClientRect();
       if (r.bottom > 24 && r.top < window.innerHeight - 24) el.classList.add("in");
     };
-    if (reduce || !("IntersectionObserver" in window)) {
+    if (!("IntersectionObserver" in window)) {
       el.classList.add("in");
       return;
     }

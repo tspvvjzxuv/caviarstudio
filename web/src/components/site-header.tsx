@@ -19,6 +19,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Menu, X } from "lucide-react";
 import { CaviarLogo } from "@/components/caviar-logo";
+import { SoundToggle } from "@/components/sound-toggle";
 import { isLang, LANGS, type Lang } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,7 @@ export function LangSwitch({ className }: { className?: string }) {
           key={code}
           value={code}
           aria-label={t[LANG_NAME[code]]}
+          data-magnetic=""
           className="h-8 rounded-full px-2.5 text-[0.68rem] tracking-[0.16em] uppercase data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
         >
           {code}
@@ -114,9 +116,10 @@ export function SiteHeader() {
 
       <div className="flex items-center gap-3">
         <LangSwitch className="hidden sm:inline-flex" />
+        <SoundToggle />
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button asChild className="metal-fill hidden h-10 shrink-0 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
+            <Button asChild data-magnetic="" className="metal-fill hidden h-10 shrink-0 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
           </TooltipTrigger>
@@ -160,7 +163,7 @@ export function SiteHeader() {
             <Separator className="my-8" />
             <LangSwitch />
             <SheetClose asChild>
-              <Button asChild className="metal-fill mt-6 h-[52px] w-full rounded-full text-[0.72rem] tracking-[0.16em] uppercase">
+              <Button asChild data-magnetic="" className="metal-fill mt-6 h-[52px] w-full rounded-full text-[0.72rem] tracking-[0.16em] uppercase">
                 <a href="#kontakt">{t.ctaQuote}</a>
               </Button>
             </SheetClose>

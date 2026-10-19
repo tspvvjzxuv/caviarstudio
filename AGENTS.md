@@ -16,9 +16,10 @@ Spend boldness on the Caviar wordmark over the liquid-chrome hero loop (`media/h
 
 - One orchestrated hero stagger after the intro veil (first-time / explanation).
 - Muted looping liquid-chrome hero (`media/hero/liquid-chrome.webm` / `.mp4`, poster `.jpg`, 1080p). Always play, including when `prefers-reduced-motion` is on (Windows “Animation effects” off). Skip only on explicit Save-Data. Retry play on canplay, loadeddata, visibility, and first pointer/key/scroll. Pause when off-screen or the tab is hidden. CSS field + lazy Three.js shader if Save-Data blocks the loop. Keep the video visible under the azure/lemon glows. Hero centerpiece is the upright Bodoni CAVIAR lockup (same mark as favicon/nav). Do not clip display type or card copy.
-- Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only.
-- Scroll reveals: fade in once. Do not add hover motion on every card.
-- Honor `prefers-reduced-motion`. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, and marquee when off-screen.
+- Button press: `transform: scale(0.97)` on `.metal-fill`, 160ms ease-out, specific properties only. Fine-pointer pills may take a small magnetic translate (`--mx` / `--my`).
+- Scroll reveals: slow fade + rise (blur-to-sharp on desktop only), staggered, expo easing. Do not add hover lift on every card.
+- Honor `prefers-reduced-motion` by shortening and shrinking motion, not by removing it. Skip the shader on mobile, coarse pointer, and Save-Data. Pause ken-burns, sheen, glow, and marquee when off-screen.
+- UI sound is synthesized in Web Audio (no third-party samples). Play only after a gesture. Mute toggle in the header; persist `caviar-sound:v1`. No ambient autoplay.
 
 ## Conversion
 

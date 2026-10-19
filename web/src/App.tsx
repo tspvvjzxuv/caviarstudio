@@ -1,6 +1,8 @@
 import { useEffect, ViewTransition } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { MagneticLayer } from "@/components/magnetic";
 import { CustomCursor, Grain, IntroVeil } from "@/components/motion";
+import { SoundRoot } from "@/components/sound-root";
 import {
   Contact,
   Faq,
@@ -44,6 +46,7 @@ function Page() {
       <Grain />
       <IntroVeil />
       <CustomCursor />
+      <MagneticLayer />
       <SkipLink />
       <SiteHeader />
       <main id="obsah">
@@ -66,9 +69,11 @@ function Page() {
 export default function App() {
   return (
     <LanguageProvider>
-      <TooltipProvider delayDuration={200}>
-        <Page />
-      </TooltipProvider>
+      <SoundRoot>
+        <TooltipProvider delayDuration={200}>
+          <Page />
+        </TooltipProvider>
+      </SoundRoot>
     </LanguageProvider>
   );
 }

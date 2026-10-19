@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
   AtSign,
@@ -88,20 +88,48 @@ const NEED_OPTIONS = [
 export function Hero() {
   const { t } = useLanguage();
   const kenRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   usePauseOffscreen(kenRef);
+  useEffect(() => {
+    const root = heroRef.current;
+    const ken = kenRef.current;
+    if (!root) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let ticking = false;
+    const paint = () => {
+      const y = Math.max(0, window.scrollY);
+      const cap = window.innerHeight;
+      const p = Math.min(y, cap);
+      const hero = reduce ? p * 0.05 : p * 0.22;
+      const logo = reduce ? p * 0.03 : p * 0.12;
+      root.style.setProperty("--logo-py", `${logo.toFixed(1)}px`);
+      ken?.style.setProperty("--hero-py", `${hero.toFixed(1)}px`);
+      ticking = false;
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(paint);
+    };
+    paint();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   return (
-    <section className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
+    <section ref={heroRef} className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
       <HeroBackdrop kenRef={kenRef} />
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
-        <h1 className="hero-logo w-fit max-w-[80%] text-[clamp(3.9rem,16vw,10.5rem)]">
-          <CaviarLogo />
-        </h1>
+        <div className="hero-logo-par">
+          <h1 className="hero-logo w-fit max-w-[80%] text-[clamp(3.9rem,16vw,10.5rem)]">
+            <CaviarLogo />
+          </h1>
+        </div>
         <p className="mt-8 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.5] text-pretty">{t.heroExplain}</p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Button asChild className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+          <Button asChild data-magnetic="" className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
-          <Button asChild variant="outline" className={HERO_GHOST}>
+          <Button asChild variant="outline" data-magnetic="" className={HERO_GHOST}>
             <a href="#cennik">{t.ctaPricing}</a>
           </Button>
         </div>
@@ -123,21 +151,23 @@ export function Hero() {
 export function Services() {
   const { t } = useLanguage();
   const panelId = useId();
+  const frameRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState("");
   const active = SERVICES.find((item) => item.id === open);
+  usePauseOffscreen(frameRef);
   return (
-    <Section.Frame id="sluzby" density="compact" className="border-t border-border">
+    <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <Section.Body>
         <h2 className="section-title max-w-[12ch]">{t.doKicker}</h2>
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
         </p>
         <div className="grid items-stretch gap-6 md:grid-cols-3 md:gap-8 xl:gap-10">
-          {SERVICES.map((item) => {
+          {SERVICES.map((item, idx) => {
             const Icon = item.Icon;
             const expanded = open === item.id;
             return (
-              <Reveal key={item.id} className="h-full">
+              <Reveal key={item.id} className="h-full" delay={idx}>
                 <button
                   type="button"
                   aria-expanded={expanded}
@@ -159,7 +189,7 @@ export function Services() {
                     aria-hidden="true"
                   >
                     <ChevronDown
-                      className="size-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-aria-expanded/service:rotate-180"
+                      className="size-4 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/service:rotate-180"
                       strokeWidth={1.75}
                     />
                   </span>
@@ -172,7 +202,7 @@ export function Services() {
           <CollapsibleContent
             id={panelId}
             role="region"
-            className="overflow-hidden data-closed:animate-accordion-up data-open:animate-accordion-down"
+            className="service-panel"
           >
             {active ? (
               <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
@@ -233,11 +263,11 @@ function PriceAmounts({ launch, standard, vat }: { launch: number; standard: num
   );
 }
 
-function LaunchPriceCard({ pack, vat }: { pack: PricePack; vat: string }) {
+function LaunchPriceCard({ pack, vat, delay = 0 }: { pack: PricePack; vat: string; delay?: number }) {
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
   return (
-    <Reveal className="h-full">
+    <Reveal className="h-full" delay={delay}>
       <Card className="h-full min-h-[20rem] overflow-visible rounded-3xl border border-border bg-card py-0 ring-0">
         <CardHeader className={PANEL_HEAD}>
           <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
@@ -255,13 +285,13 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
   return (
-      <Reveal className="h-full md:col-span-2 xl:col-span-3">
+      <Reveal className="h-full md:col-span-2 xl:col-span-3" delay={3}>
       <Card className="h-full min-h-[16rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
         <CardHeader className="flex flex-col gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
           <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
           <div className="grid gap-4 justify-items-start">
             <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
-            <Button asChild className="metal-fill h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
+            <Button asChild data-magnetic="" className="metal-fill h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
           </div>
@@ -279,8 +309,8 @@ export function Pricing() {
       <Section.Body>
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.priceKicker} title={t.priceTitle} />
         <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
-          {LAUNCH_PACKS.map((pack) => (
-            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} />
+          {LAUNCH_PACKS.map((pack, idx) => (
+            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
           ))}
           <FeaturedPriceCard pack={FEATURED_PACK} vat={vat} />
         </div>
@@ -366,7 +396,7 @@ function ContactIntro() {
         <span className="block">{t.contactLine2}</span>
       </h2>
       <div className="mt-8 flex flex-wrap gap-3">
-        <Button asChild className="metal-fill h-[52px] gap-2.5 rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+        <Button asChild data-magnetic="" className="metal-fill h-[52px] gap-2.5 rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
           <a href={`mailto:${CAVIAR.EMAIL}`}>
             <IconDisc size="sm">
               <Mail />
@@ -482,7 +512,7 @@ function ContactForm() {
                 />
               </Field>
             </FieldGroup>
-            <Button type="submit" className="metal-fill h-[52px] rounded-full text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
+            <Button type="submit" data-magnetic="" className="metal-fill h-[52px] rounded-full text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
               {t.ctaQuote}
             </Button>
           </form>
