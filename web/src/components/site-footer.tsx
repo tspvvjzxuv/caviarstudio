@@ -2,6 +2,7 @@ import { CaviarLogo } from "@/components/caviar-logo";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CAVIAR, formatPhone } from "@/lib/config";
+import { PAGE_TINT } from "@/lib/page-tint";
 import { isLang, LANGS, type Lang } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 
@@ -14,7 +15,10 @@ const LANG_NAME: Record<Lang, "langSk" | "langEn" | "langDe"> = {
 export function SiteFooter() {
   const { t, lang, setLang } = useLanguage();
   return (
-    <footer className="px-[clamp(1.25rem,5vw,5rem)] pt-8 pb-[max(3rem,env(safe-area-inset-bottom,0px))] [view-transition-name:site-footer]">
+    <footer
+      data-page-tint={PAGE_TINT.footer}
+      className="px-[clamp(1.25rem,5vw,5rem)] pt-8 pb-[max(3rem,env(safe-area-inset-bottom,0px))] [view-transition-name:site-footer]"
+    >
       <Separator className="mb-8 bg-[image:var(--hair)]" />
       <div className="flex flex-wrap items-start justify-between gap-8">
         <div className="grid gap-2 text-[0.82rem] leading-6 text-muted-foreground">

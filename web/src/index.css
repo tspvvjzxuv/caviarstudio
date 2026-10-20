@@ -185,6 +185,7 @@
   --metal-hover: linear-gradient(180deg, #6aa8ff 0%, #3d8aff 46%, #2f7bff 100%);
   --hair: linear-gradient(90deg, transparent, #3d8aff 18%, #ffe44d 50%, #3d8aff 82%, transparent);
   --header-h: calc(4.75rem + env(safe-area-inset-top, 0px));
+  --page-bg: #070708;
 }
 
 @layer base {
@@ -195,9 +196,11 @@
     @apply font-sans scroll-smooth;
     color-scheme: dark;
     overflow-x: clip;
+    background-color: var(--page-bg, #070708);
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply text-foreground antialiased;
+    background-color: transparent;
     overflow-x: clip;
     font-size: 16px;
     line-height: 1.6;
