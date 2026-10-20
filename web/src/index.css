@@ -185,7 +185,6 @@
   --metal-hover: linear-gradient(180deg, #6aa8ff 0%, #3d8aff 46%, #2f7bff 100%);
   --hair: linear-gradient(90deg, transparent, #3d8aff 18%, #ffe44d 50%, #3d8aff 82%, transparent);
   --header-h: calc(4.75rem + env(safe-area-inset-top, 0px));
-  --page-bg: #070708;
 }
 
 @layer base {
@@ -196,12 +195,26 @@
     @apply font-sans scroll-smooth;
     color-scheme: dark;
     overflow-x: clip;
-    background-color: var(--page-bg, #070708);
+    background-color: #000;
   }
   body {
     @apply text-foreground antialiased;
-    background-color: transparent;
     overflow-x: clip;
+    background-color: #000;
+    background-image: linear-gradient(
+      180deg,
+      #000 0%,
+      color-mix(in srgb, #1d4ed8 5%, #000) 12%,
+      color-mix(in srgb, #1d4ed8 9%, #000) 24%,
+      color-mix(in srgb, #1d4ed8 14%, #000) 38%,
+      color-mix(in srgb, #1d4ed8 19%, #000) 52%,
+      color-mix(in srgb, #1d4ed8 24%, #000) 66%,
+      color-mix(in srgb, #1d4ed8 29%, #000) 82%,
+      color-mix(in srgb, #1d4ed8 33%, #000) 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-attachment: scroll;
     font-size: 16px;
     line-height: 1.6;
     letter-spacing: 0.01em;
