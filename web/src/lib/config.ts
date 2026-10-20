@@ -9,8 +9,8 @@ export const CAVIAR = {
   WHATSAPP: "421905173086",
   WHATSAPP_TEXT: "Dobrý deň, mám záujem o cenovú ponuku od Caviar.",
   EMAIL: "mircoft.sk@gmail.com",
-  INSTAGRAM: "https://www.instagram.com/mircoft",
-  IG_HANDLE: "/mircoft",
+  INSTAGRAM: "https://www.instagram.com/caviarstudio.sk/",
+  IG_HANDLE: "/caviarstudio.sk",
   HUB: "https://thedesigns.org/",
   EVERLIGHT: "https://thedesigns.org/foto/",
   SITE: "https://caviarstudio.sk/",
@@ -21,20 +21,39 @@ export const CAVIAR = {
     eshop: { launch: 590, monthly: 19 },
     komplet: { launch: 379 },
   },
+  monthly: {
+    socialStart: { monthly: 249 },
+    socialPlus: { monthly: 449 },
+    marketingKomplet: { monthly: 690 },
+  },
 } as const;
 
 export const OG_LOCALES = { sk: "sk_SK", en: "en_US", de: "de_DE" } as const;
 
 export const PRICE_RANGE = (() => {
-  let min = Number.POSITIVE_INFINITY;
-  let max = Number.NEGATIVE_INFINITY;
-  for (const pack of Object.values(CAVIAR.prices)) {
-    const launch = pack.launch;
-    if (launch < min) min = launch;
-    if (launch > max) max = launch;
-  }
-  return { min, max };
+  const amounts = [
+    ...Object.values(CAVIAR.prices).map((pack) => pack.launch),
+    ...Object.values(CAVIAR.monthly).map((pack) => pack.monthly),
+  ];
+  return { min: Math.min(...amounts), max: Math.max(...amounts) };
 })();
+
+export function monthlyOffer(name: string, price: number) {
+  return {
+    "@type": "Offer",
+    name,
+    price: String(price),
+    priceCurrency: "EUR",
+    valueAddedTaxIncluded: true,
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price: String(price),
+      priceCurrency: "EUR",
+      valueAddedTaxIncluded: true,
+      unitText: "MONTH",
+    },
+  };
+}
 
 export function formatPhone(raw: string) {
   const d = String(raw).replace(/[^\d+]/g, "");

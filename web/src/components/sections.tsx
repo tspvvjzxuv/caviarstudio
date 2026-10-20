@@ -66,7 +66,14 @@ const LAUNCH_PACKS = [
 
 const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc" } as const;
 
+const MONTHLY_PACKS = [
+  { key: "socialStart", name: "pMktStartName", desc: "pMktStartDesc", includes: "pMktStartEx" },
+  { key: "socialPlus", name: "pMktPlusName", desc: "pMktPlusDesc", includes: "pMktPlusEx", featured: true },
+  { key: "marketingKomplet", name: "pMktKompletName", desc: "pMktKompletDesc", includes: "pMktKompletEx" },
+] as const;
+
 type PricePack = (typeof LAUNCH_PACKS)[number] | typeof FEATURED_PACK;
+type MonthlyPack = (typeof MONTHLY_PACKS)[number];
 
 function dictText(pack: Dict, key: keyof Dict): string {
   const value = pack[key];
@@ -84,6 +91,7 @@ const NEED_OPTIONS = [
   { value: "Video", label: "needVideo" },
   { value: "Foto", label: "needFoto" },
   { value: "Komplet", label: "needKomplet" },
+  { value: "Marketing", label: "needMkt" },
   { value: "Mix", label: "needMix" },
 ] as const;
 
@@ -377,12 +385,12 @@ function ServiceExamples({ items }: { items: readonly string[] }) {
   );
 }
 
-function PriceIdentity({ name, desc }: { name: string; desc: string }) {
+function PriceIdentity({ name, desc, badge }: { name: string; desc: string; badge?: string }) {
   const { t } = useLanguage();
   return (
     <div className="grid gap-3">
       <Badge variant="outline" className="rounded-full border-lemon/35 bg-lemon/10 tracking-[0.2em] text-lemon uppercase">
-        {t.launchBadge}
+        {badge ?? t.launchBadge}
       </Badge>
       <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal">{name}</CardTitle>
       <CardDescription className="max-w-[36ch] text-[0.95rem] leading-[1.55]">{desc}</CardDescription>
@@ -395,12 +403,14 @@ function PriceAmounts({
   standard,
   monthly,
   monthlyLabel,
+  period,
   vat,
 }: {
   launch: number;
   standard?: number;
   monthly?: number;
   monthlyLabel?: string;
+  period?: string;
   vat: string;
 }) {
   const { t } = useLanguage();
@@ -408,7 +418,10 @@ function PriceAmounts({
     <div>
       <p className="font-serif text-[clamp(2rem,3.2vw,2.7rem)] leading-[1.12]">
         {t.priceFrom} <span className="text-lemon">{launch} EUR</span>{" "}
-        <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">{vat}</span>
+        <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">
+          {vat}
+          {period ? ` ${period}` : ""}
+        </span>
       </p>
       {monthly != null && monthlyLabel ? (
         <p className="mt-3 text-[0.95rem] leading-[1.5] text-muted-foreground">
@@ -492,6 +505,45 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
   );
 }
 
+function MonthlyPriceCard({ pack, vat, delay = 0 }: { pack: MonthlyPack; vat: string; delay?: number }) {
+  const { t } = useLanguage();
+  const price = CAVIAR.monthly[pack.key];
+  const featured = "featured" in pack && pack.featured;
+  return (
+    <Reveal className="h-full" delay={delay}>
+      <Card
+        className={cn(
+          "h-full min-h-[20rem] overflow-visible rounded-3xl py-0 ring-0",
+          featured
+            ? "border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6"
+            : "border border-border bg-card",
+        )}
+      >
+        <CardHeader className={PANEL_HEAD}>
+          <PriceIdentity
+            name={dictText(t, pack.name)}
+            desc={dictText(t, pack.desc)}
+            badge={featured ? t.mktRec : t.mktBadge}
+          />
+          <PriceAmounts launch={price.monthly} period={t.mktPerMonth} vat={vat} />
+          <PriceIncludes items={dictList(t, pack.includes)} />
+          <Button
+            asChild
+            data-magnetic=""
+            variant={featured ? undefined : "outline"}
+            className={cn(
+              "mt-1 h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase",
+              featured && "metal-fill px-6",
+            )}
+          >
+            <a href="#kontakt">{t.ctaQuote}</a>
+          </Button>
+        </CardHeader>
+      </Card>
+    </Reveal>
+  );
+}
+
 export function Pricing() {
   const { t } = useLanguage();
   const vat = t.vatTag;
@@ -505,8 +557,18 @@ export function Pricing() {
           ))}
           <FeaturedPriceCard pack={FEATURED_PACK} vat={vat} />
         </div>
+        <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
+          <Kicker>{t.mktKicker}</Kicker>
+          <h3 className="section-title">{t.mktTitle}</h3>
+        </Reveal>
+        <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
+          {MONTHLY_PACKS.map((pack, idx) => (
+            <MonthlyPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
+          ))}
+        </div>
         <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
-          <p>{t.priceFoot}</p>
+          <p>{t.mktNote}</p>
+          <p className="mt-3">{t.priceFoot}</p>
         </Reveal>
       </Section.Body>
     </Section.Frame>

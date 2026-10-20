@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -10,6 +10,11 @@ mkdirSync(pub, { recursive: true });
 const files = ["CNAME", "robots.txt", "sitemap.xml", "icon.svg", "apple-touch-icon.png"];
 for (const file of files) {
   cpSync(resolve(root, file), resolve(pub, file));
+}
+for (const file of readdirSync(root)) {
+  if (/^[0-9a-f]{32}\.txt$/i.test(file)) {
+    cpSync(resolve(root, file), resolve(pub, file));
+  }
 }
 writeFileSync(resolve(pub, ".nojekyll"), "");
 for (const folder of ["img", "media"]) {
