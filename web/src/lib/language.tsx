@@ -55,6 +55,7 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
     if (el) el.setAttribute(attr, value);
   };
   set('meta[name="description"]', pack.docDesc);
+  set('meta[name="keywords"]', pack.docKeywords);
   set('meta[property="og:title"]', pack.docTitle);
   set('meta[property="og:description"]', pack.docDesc);
   set('meta[property="og:locale"]', OG_LOCALES[lang]);
@@ -76,6 +77,9 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
         webOnePager: pack.pWebName,
         eshop: pack.pEshopName,
         komplet: pack.pKompletName,
+        brandStart: pack.pBrandStartName,
+        brandKomplet: pack.pBrandKompletName,
+        brandRebrand: pack.pBrandRebrandName,
       };
       const monthlyNames: Record<string, string> = {
         socialStart: pack.pMktStartName,

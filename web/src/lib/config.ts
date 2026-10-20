@@ -23,6 +23,9 @@ export const CAVIAR = {
     webOnePager: { launch: 219 },
     eshop: { launch: 590, monthly: 19 },
     komplet: { launch: 379 },
+    brandStart: { launch: 249 },
+    brandKomplet: { launch: 490 },
+    brandRebrand: { launch: 349 },
   },
   monthly: {
     socialStart: { monthly: 249 },

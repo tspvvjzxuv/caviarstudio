@@ -7,6 +7,7 @@ import {
   Clapperboard,
   Drone,
   Globe,
+  Palette,
   Mail,
   MessageCircle,
   Phone,
@@ -35,7 +36,7 @@ import {
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { FAQ_KEYS, type Dict } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
-import { DRONE_EXAMPLES, examplesWithMedia, PHOTO_EXAMPLES, preloadWorkShots, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
+import { BRAND_EXAMPLES, DRONE_EXAMPLES, examplesWithMedia, PHOTO_EXAMPLES, preloadWorkShots, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
@@ -51,6 +52,7 @@ const SERVICES = [
   { id: "video", name: "videoName", examples: "pVideoEx", Icon: Clapperboard, media: VIDEO_EXAMPLES },
   { id: "web", name: "webName", examples: "pWebEx", Icon: Globe, media: WORK },
   { id: "dron", name: "dronName", examples: "pDronEx", Icon: Drone, media: DRONE_EXAMPLES },
+  { id: "brand", name: "brandName", examples: "pBrandEx", Icon: Palette, media: BRAND_EXAMPLES },
 ] as const;
 
 const INITIAL_SERVICE = examplesWithMedia(WORK).length > 0 ? "web" : "";
@@ -75,13 +77,19 @@ const DRONE_PACKS = [
   { key: "droneCombo", name: "pDronComboName", desc: "pDronComboDesc" },
 ] as const;
 
+const BRAND_PACKS = [
+  { key: "brandStart", name: "pBrandStartName", desc: "pBrandStartDesc" },
+  { key: "brandKomplet", name: "pBrandKompletName", desc: "pBrandKompletDesc", includes: "pBrandKompletEx" },
+  { key: "brandRebrand", name: "pBrandRebrandName", desc: "pBrandRebrandDesc" },
+] as const;
+
 const MONTHLY_PACKS = [
   { key: "socialStart", name: "pMktStartName", desc: "pMktStartDesc", includes: "pMktStartEx" },
   { key: "socialPlus", name: "pMktPlusName", desc: "pMktPlusDesc", includes: "pMktPlusEx", featured: true },
   { key: "marketingKomplet", name: "pMktKompletName", desc: "pMktKompletDesc", includes: "pMktKompletEx" },
 ] as const;
 
-type PricePack = (typeof LAUNCH_PACKS)[number] | (typeof DRONE_PACKS)[number] | typeof FEATURED_PACK;
+type PricePack = (typeof LAUNCH_PACKS)[number] | (typeof DRONE_PACKS)[number] | (typeof BRAND_PACKS)[number] | typeof FEATURED_PACK;
 type MonthlyPack = (typeof MONTHLY_PACKS)[number];
 
 function dictText(pack: Dict, key: keyof Dict): string {
@@ -100,6 +108,7 @@ const NEED_OPTIONS = [
   { value: "Video", label: "needVideo" },
   { value: "Foto", label: "needFoto" },
   { value: "Dron", label: "needDron" },
+  { value: "Branding", label: "needBrand" },
   { value: "Komplet", label: "needKomplet" },
   { value: "Marketing", label: "needMkt" },
   { value: "Mix", label: "needMix" },
@@ -205,7 +214,7 @@ export function Services() {
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
         </p>
-        <div className="grid items-stretch gap-6 overflow-visible md:grid-cols-2 md:gap-8 xl:gap-10">
+        <div className="service-grid items-stretch gap-6 overflow-visible md:gap-8 xl:gap-10">
           {SERVICES.map((item, idx) => {
             const Icon = item.Icon;
             const expanded = open === item.id;
@@ -231,7 +240,7 @@ export function Services() {
                       <IconDisc>
                         <Icon />
                       </IconDisc>
-                      <span className="min-w-0 flex-1 font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
+                      <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
                         {dictText(t, item.name)}
                       </span>
                       <span className="service-mark" aria-hidden="true">
@@ -267,7 +276,6 @@ export function Services() {
               followId={open || shown}
               buttonRefs={btnRefs}
               skipEnter={Boolean(INITIAL_SERVICE)}
-              className="md:col-span-2"
             />
           ) : null}
         </div>
@@ -459,6 +467,18 @@ export function Pricing() {
         </div>
         <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
           <p>{t.pDronNote}</p>
+        </Reveal>
+        <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
+          <Kicker>{t.brandKicker}</Kicker>
+          <h3 className="section-title">{t.brandTitle}</h3>
+        </Reveal>
+        <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
+          {BRAND_PACKS.map((pack, idx) => (
+            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
+          ))}
+        </div>
+        <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
+          <p>{t.pBrandNote}</p>
         </Reveal>
         <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
           <Kicker>{t.mktKicker}</Kicker>

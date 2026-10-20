@@ -122,6 +122,9 @@ export const VIDEO_EXAMPLES: WorkItem[] = [];
 /** Owner drone examples. Empty until media is added — the UI shows nothing. */
 export const DRONE_EXAMPLES: WorkItem[] = [];
 
+/** Owner branding examples. Empty until media is added — the UI shows nothing. */
+export const BRAND_EXAMPLES: WorkItem[] = [];
+
 export const HAS_WORK = WORK.length > 0;
 
 export function examplesWithMedia(items: readonly WorkItem[]): WorkItem[] {

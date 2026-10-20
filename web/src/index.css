@@ -910,6 +910,23 @@
   overflow-x: clip;
   overflow-anchor: none;
 }
+.service-grid {
+  display: grid;
+}
+@media (min-width: 768px) {
+  .service-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .service-card {
+    grid-column: span 2;
+  }
+  .service-card[data-service="dron"] {
+    grid-column: 2 / span 2;
+  }
+  .service-panel {
+    grid-column: 1 / -1;
+  }
+}
 .service-glow-field {
   position: absolute;
   z-index: 0;
