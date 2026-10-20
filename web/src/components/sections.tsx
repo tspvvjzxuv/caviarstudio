@@ -34,7 +34,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
-import { PAGE_TINT } from "@/lib/page-tint";
 import { FAQ_KEYS, type Dict } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 import { BRAND_EXAMPLES, DRONE_EXAMPLES, examplesWithMedia, PHOTO_EXAMPLES, preloadWorkShots, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
@@ -149,12 +148,7 @@ export function Hero() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <section
-      ref={heroRef}
-      className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]"
-      id="top"
-      data-page-tint={PAGE_TINT.hero}
-    >
+    <section ref={heroRef} className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
       <HeroBackdrop kenRef={kenRef} />
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
         <div className="hero-logo-par">
@@ -273,7 +267,7 @@ export function Services() {
   const row2Open = SERVICE_ROW_2.some((item) => item.id === open);
 
   return (
-    <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef} tint={PAGE_TINT.services}>
+    <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <div className="service-glow-field" aria-hidden="true" />
       <Section.Body className="relative z-10 overflow-visible">
         <h2 className="section-title max-w-[12ch]">{t.doKicker}</h2>
@@ -530,7 +524,7 @@ export function Pricing() {
   const { t } = useLanguage();
   const vat = t.vatTag;
   return (
-    <Section.Frame id="cennik" tint={PAGE_TINT.pricing}>
+    <Section.Frame id="cennik">
       <Section.Body>
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.priceKicker} title={t.priceTitle} />
         <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
@@ -584,7 +578,7 @@ export function Pricing() {
 export function Team() {
   const { t } = useLanguage();
   return (
-    <Section.Frame id="onas" tint={PAGE_TINT.team}>
+    <Section.Frame id="onas">
       <Section.Body>
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.teamKicker} title={t.aboutTitle}>
           <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.aboutLead}</p>
@@ -615,7 +609,7 @@ export function Faq() {
   const { t } = useLanguage();
   const items = FAQ_KEYS.map(([q, a]) => ({ q: t[q], a: t[a] }));
   return (
-    <Section.Frame id="faq" tint={PAGE_TINT.faq}>
+    <Section.Frame id="faq">
       <Section.Body>
         <Section.Heading className="mb-10 md:mb-16" kicker={t.navFaq} title={t.faqTitle} />
         <Accordion type="single" collapsible className="grid gap-3">
@@ -775,7 +769,7 @@ function ContactForm() {
 
 export function Contact() {
   return (
-    <Section.Frame id="kontakt" tint={PAGE_TINT.contact}>
+    <Section.Frame id="kontakt">
       <Section.Body className="grid gap-10 md:grid-cols-2 md:gap-16">
         <ContactIntro />
         <ContactForm />

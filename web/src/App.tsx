@@ -14,7 +14,6 @@ import {
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { LanguageProvider, useLanguage } from "@/lib/language";
-import { usePageTint } from "@/hooks/use-page-tint";
 
 function SkipLink() {
   const { t } = useLanguage();
@@ -31,7 +30,6 @@ function SkipLink() {
 let didHonorHash = false;
 
 function Page() {
-  usePageTint();
   useEffect(() => {
     if (didHonorHash) return;
     didHonorHash = true;
