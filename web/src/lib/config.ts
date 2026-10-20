@@ -17,6 +17,9 @@ export const CAVIAR = {
   prices: {
     fotoMini: { launch: 79 },
     videoReel: { launch: 59 },
+    droneFoto: { launch: 89 },
+    droneVideo: { launch: 129 },
+    droneCombo: { launch: 179 },
     webOnePager: { launch: 219 },
     eshop: { launch: 590, monthly: 19 },
     komplet: { launch: 379 },

@@ -901,9 +901,11 @@
   .service-card[data-service="foto"] { order: 1; }
   .service-card[data-service="video"] { order: 3; }
   .service-card[data-service="web"] { order: 5; }
+  .service-card[data-service="dron"] { order: 7; }
   .service-panel[data-after="foto"] { order: 2; }
   .service-panel[data-after="video"] { order: 4; }
   .service-panel[data-after="web"] { order: 6; }
+  .service-panel[data-after="dron"] { order: 8; }
 }
 .service-glow {
   position: absolute;

@@ -6,7 +6,7 @@ One shipped cue lives in `media/ui/` as WebM/Opus plus MP3.
 
 | Cue | Files | Mapping |
 | --- | --- | --- |
-| Soft glass tap | `glass-tap.webm` / `.mp3` | Fotky / Videá / Weby **open** (voice 1.0); same cards **close** (voice 0.62, quieter); primary `.metal-fill` buttons and unmute confirm (voice 0.88) |
+| Soft glass tap | `glass-tap.webm` / `.mp3` | Fotky / Videá / Weby / Dron **open** (voice 1.0); same cards **close** (voice 0.62, quieter); primary `.metal-fill` buttons and unmute confirm (voice 0.88) |
 
 The mute control itself is unchanged (same disc, same persistence). It does not play a sound when turning audio **off**.
 

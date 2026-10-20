@@ -70,6 +70,9 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
       const names: Record<string, string> = {
         fotoMini: pack.pFotoName,
         videoReel: pack.pVideoName,
+        droneFoto: pack.pDronFotoName,
+        droneVideo: pack.pDronVideoName,
+        droneCombo: pack.pDronComboName,
         webOnePager: pack.pWebName,
         eshop: pack.pEshopName,
         komplet: pack.pKompletName,
