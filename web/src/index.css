@@ -928,6 +928,7 @@
   height: 100%;
   overflow: clip;
   border-radius: 1.5rem;
+  scroll-margin-top: calc(var(--header-h) + 0.75rem);
 }
 .service-glow {
   position: absolute;
@@ -1109,6 +1110,7 @@
   display: grid;
   grid-template-rows: 0fr;
   overflow-anchor: none;
+  scroll-margin-top: calc(var(--header-h) + 0.75rem);
   transition: grid-template-rows 0.92s var(--ease-out-expo);
 }
 .service-panel:not(.is-open) {

@@ -4,43 +4,24 @@ import { useLanguage } from "@/lib/language";
 import type { WorkItem } from "@/lib/work";
 import { cn } from "@/lib/utils";
 
-const OPEN_MS = 920;
-
 function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function headerH() {
-  const el = document.querySelector("header");
-  return el instanceof HTMLElement ? el.getBoundingClientRect().height : 76;
-}
-
-/** Keep the tapped card parked under the nav while the panel grows or a neighbour collapses. */
-function pinTrigger(el: HTMLElement, ms: number) {
-  const destEnd = headerH() + 12;
-  const startTop = el.getBoundingClientRect().top;
-  if (reducedMotion()) {
-    const delta = el.getBoundingClientRect().top - destEnd;
-    if (Math.abs(delta) > 2) window.scrollBy(0, delta);
-    return () => {};
+function revealAfterOpen(trigger: HTMLElement | null, panel: HTMLElement) {
+  const mobile = window.matchMedia("(max-width: 767px)").matches;
+  const reduce = reducedMotion();
+  const box = panel.getBoundingClientRect();
+  if (mobile) {
+    const card = (trigger?.closest(".service-card") as HTMLElement | null) || trigger;
+    const cardBox = card?.getBoundingClientRect();
+    const hidden = (cardBox && cardBox.top < 64) || box.bottom > window.innerHeight - 12;
+    if (!hidden) return;
+    card?.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+    return;
   }
-  const t0 = performance.now();
-  let raf = 0;
-  let stop = false;
-  const ease = (t: number) => 1 - (1 - t) ** 4;
-  const tick = (now: number) => {
-    if (stop) return;
-    const p = Math.min(1, (now - t0) / ms);
-    const dest = startTop + (destEnd - startTop) * ease(p);
-    const delta = el.getBoundingClientRect().top - dest;
-    if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
-    if (p < 1) raf = requestAnimationFrame(tick);
-  };
-  raf = requestAnimationFrame(tick);
-  return () => {
-    stop = true;
-    cancelAnimationFrame(raf);
-  };
+  if (box.top < window.innerHeight - 48) return;
+  panel.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
 }
 
 function measureOpenHeight(panel: HTMLElement, inner: HTMLElement) {
@@ -55,7 +36,13 @@ function measureOpenHeight(panel: HTMLElement, inner: HTMLElement) {
   return height;
 }
 
-function tweenRows(panel: HTMLElement, from: number, to: number, settle: string) {
+function tweenRows(
+  panel: HTMLElement,
+  from: number,
+  to: number,
+  settle: string,
+  onSettled?: () => void,
+) {
   panel.style.transition = "none";
   panel.style.gridTemplateRows = `${Math.max(0, Math.round(from))}px`;
   void panel.offsetHeight;
@@ -65,6 +52,7 @@ function tweenRows(panel: HTMLElement, from: number, to: number, settle: string)
     if (event.target !== panel || event.propertyName !== "grid-template-rows") return;
     panel.removeEventListener("transitionend", onEnd);
     panel.style.gridTemplateRows = settle;
+    onSettled?.();
   };
   panel.addEventListener("transitionend", onEnd);
   return () => panel.removeEventListener("transitionend", onEnd);
@@ -177,12 +165,12 @@ export function ServicePanel({
       return;
     }
 
-    const stopTween = tweenRows(panel, from, to, open ? "1fr" : "0fr");
     const trigger = open && followId ? buttonRefs?.current[followId] ?? null : null;
-    const stopFollow = trigger ? pinTrigger(trigger, OPEN_MS) : () => {};
+    const stopTween = tweenRows(panel, from, to, open ? "1fr" : "0fr", () => {
+      if (open) revealAfterOpen(trigger, panel);
+    });
     return () => {
       stopTween();
-      stopFollow();
     };
   }, [open, contentKey, followId, buttonRefs]);
 
