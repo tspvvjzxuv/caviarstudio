@@ -11,7 +11,7 @@ export const dictionary = {
         navServices: "Čo robíme", navPricing: "Cenník", navFaq: "FAQ", navContact: "Kontakt",
         navHub: "thedesigns.org",
         ctaQuote: "Chcem cenovú ponuku", ctaPricing: "Pozrieť cenník",
-        ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Zavolať", ctaWa: "WhatsApp", ctaIg: "/mircoft",
+        ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Zavolať", ctaWa: "WhatsApp", ctaIg: "/caviarstudio.sk",
         heroKicker: "Trnava a okolie",
         heroTitle: "Caviar",
         heroTagline: "Váš podnik v najlepšom svetle.",
@@ -105,8 +105,8 @@ export const dictionary = {
         mailSubject: "Caviar: cenová ponuka",
         mailName: "Meno", mailBiz: "Podnik", mailNeed: "Potrebujem", mailBudget: "Rozpočet",
         waText: "Dobrý deň, mám záujem o cenovú ponuku od Caviar.",
-        docTitle: "Caviar: weby, video a fotky | Trnava",
-        docDesc: "Caviar je štúdio v Trnave. Weby, videá a fotky pre podniky, aby vás ľudia našli, uvideli a zavolali. Napíšte, ozveme sa hneď."
+        docTitle: "Caviar: weby, videá a fotky pre podniky | Trnava",
+        docDesc: "Caviar je štúdio v Trnave. Weby, videá a fotky pre podniky Trnava a okolie, aby vás ľudia našli, uvideli a zavolali. Napíšte, ozveme sa hneď."
       },
       en: {
         skip: "Skip to content",
@@ -120,7 +120,7 @@ export const dictionary = {
         navServices: "What we do", navPricing: "Pricing", navFaq: "FAQ", navContact: "Contact",
         navHub: "thedesigns.org",
         ctaQuote: "I want a quote", ctaPricing: "See pricing",
-        ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Call", ctaWa: "WhatsApp", ctaIg: "/mircoft",
+        ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Call", ctaWa: "WhatsApp", ctaIg: "/caviarstudio.sk",
         heroKicker: "Trnava and nearby",
         heroTitle: "Caviar",
         heroTagline: "Your business in its best light.",
@@ -214,8 +214,8 @@ export const dictionary = {
         mailSubject: "Caviar: quote request",
         mailName: "Name", mailBiz: "Business", mailNeed: "Need", mailBudget: "Budget",
         waText: "Hello, I would like a quote from Caviar.",
-        docTitle: "Caviar: websites, video and photo | Trnava",
-        docDesc: "Caviar is a studio in Trnava. Websites, videos and photos for businesses so people find you, see you, and call. Write to us. We reply right away."
+        docTitle: "Caviar: websites, videos and photos for businesses | Trnava",
+        docDesc: "Caviar is a studio in Trnava. Websites, videos and photos for businesses in Trnava and nearby, so people find you, see you, and call. Write to us. We reply right away."
       },
       de: {
         skip: "Zum Inhalt springen",
@@ -229,7 +229,7 @@ export const dictionary = {
         navServices: "Was wir tun", navPricing: "Preise", navFaq: "FAQ", navContact: "Kontakt",
         navHub: "thedesigns.org",
         ctaQuote: "Angebot anfordern", ctaPricing: "Preise ansehen",
-        ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Anrufen", ctaWa: "WhatsApp", ctaIg: "/mircoft",
+        ctaMail: "mircoft.sk@gmail.com", ctaPhone: "Anrufen", ctaWa: "WhatsApp", ctaIg: "/caviarstudio.sk",
         heroKicker: "Trnava und Umgebung",
         heroTitle: "Caviar",
         heroTagline: "Ihr Unternehmen im besten Licht.",
@@ -323,8 +323,8 @@ export const dictionary = {
         mailSubject: "Caviar: Angebotsanfrage",
         mailName: "Name", mailBiz: "Betrieb", mailNeed: "Bedarf", mailBudget: "Budget",
         waText: "Guten Tag, ich möchte ein Angebot von Caviar.",
-        docTitle: "Caviar: Websites, Video und Foto | Trnava",
-        docDesc: "Caviar ist ein Studio in Trnava. Websites, Videos und Fotos für Betriebe, damit man Sie findet, sieht und anruft. Schreiben Sie. Wir melden uns sofort."
+        docTitle: "Caviar: Websites, Videos und Fotos für Betriebe | Trnava",
+        docDesc: "Caviar ist ein Studio in Trnava. Websites, Videos und Fotos für Betriebe in Trnava und Umgebung, damit man Sie findet, sieht und anruft. Schreiben Sie. Wir melden uns sofort."
       }
     };
 
