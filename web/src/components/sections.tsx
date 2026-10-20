@@ -1,4 +1,5 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { usePrefersMd } from "@/hooks/use-mobile";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
   AtSign,
@@ -34,11 +35,11 @@ import {
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { FAQ_KEYS, type Dict } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
-import { DRONE_EXAMPLES, examplesWithMedia, PHOTO_EXAMPLES, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
+import { DRONE_EXAMPLES, examplesWithMedia, PHOTO_EXAMPLES, preloadWorkShots, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
-import { WorkGallery } from "@/components/work-gallery";
+import { ServicePanel } from "@/components/service-panel";
 import { cn } from "@/lib/utils";
 
 const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
@@ -173,15 +174,17 @@ export function Hero() {
 export function Services() {
   const { t } = useLanguage();
   const panelId = useId();
+  const isMd = usePrefersMd();
   const frameRef = useRef<HTMLElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+  const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [open, setOpen] = useState(INITIAL_SERVICE);
   const [shown, setShown] = useState(INITIAL_SERVICE);
-  const skipEnterKick = useRef(Boolean(INITIAL_SERVICE));
-  const lastOpenHeight = useRef(0);
   const active = SERVICES.find((item) => item.id === shown);
   usePauseOffscreen(frameRef);
+
+  useEffect(() => {
+    preloadWorkShots();
+  }, []);
 
   const toggleService = (id: string) => {
     if (open === id) {
@@ -192,124 +195,7 @@ export function Services() {
     setOpen(id);
   };
 
-  useLayoutEffect(() => {
-    const panel = panelRef.current;
-    const inner = innerRef.current;
-    if (!panel || !inner) return;
-
-    let raf = 0;
-    const laters: number[] = [];
-    let cancelled = false;
-    const reveal = () => {
-      inner.querySelectorAll<HTMLElement>(".reveal").forEach((el) => el.classList.add("in"));
-    };
-    const measure = () => Math.ceil(inner.scrollHeight);
-    let first = true;
-    let kicked = false;
-
-    const apply = () => {
-      if (cancelled) return;
-      reveal();
-      if (!open) {
-        const h = panel.getBoundingClientRect().height;
-        const from = h > 8 ? Math.ceil(h) : lastOpenHeight.current;
-        if (from > 8) {
-          panel.style.transition = "none";
-          panel.style.gridTemplateRows = "1fr";
-          void panel.offsetHeight;
-          const hold = Math.ceil(panel.getBoundingClientRect().height);
-          panel.style.gridTemplateRows = `${hold >= 8 ? hold : from}px`;
-          void panel.offsetHeight;
-          panel.style.removeProperty("transition");
-          panel.style.gridTemplateRows = "0px";
-        } else {
-          panel.style.removeProperty("transition");
-          panel.style.gridTemplateRows = "0fr";
-        }
-        return;
-      }
-      if (!kicked) {
-        kicked = true;
-        if (skipEnterKick.current) {
-          skipEnterKick.current = false;
-          inner.classList.add("is-shown");
-        } else {
-          inner.classList.remove("is-shown");
-          void inner.offsetWidth;
-          inner.classList.add("is-shown");
-        }
-      }
-      const next = Math.max(measure(), 8);
-      lastOpenHeight.current = next;
-      const panelH = panel.getBoundingClientRect().height;
-      if (panelH < 8) {
-        panel.style.transition = "none";
-        panel.style.gridTemplateRows = `${next}px`;
-        void panel.offsetHeight;
-        panel.style.removeProperty("transition");
-        first = false;
-        return;
-      }
-      const specified = panel.style.gridTemplateRows;
-      if (specified === "0fr" || specified === "0px") {
-        if (Math.abs(panelH - next) > 8) panel.style.gridTemplateRows = `${next}px`;
-        else panel.style.gridTemplateRows = "1fr";
-        first = false;
-        return;
-      }
-      if (first || next > panelH + 8) {
-        first = false;
-        if (Math.abs(panelH - next) > 8) panel.style.gridTemplateRows = `${next}px`;
-      }
-    };
-
-    apply();
-    if (!open) return;
-
-    const ro = new ResizeObserver(apply);
-    ro.observe(inner);
-    const imgs = [...inner.querySelectorAll("img")];
-    const onImg = () => {
-      apply();
-      requestAnimationFrame(apply);
-    };
-    imgs.forEach((img) => {
-      img.addEventListener("load", onImg);
-      img.addEventListener("error", onImg);
-      if (img.complete) onImg();
-      else void img.decode?.().then(onImg).catch(() => {});
-    });
-    raf = requestAnimationFrame(() => {
-      apply();
-      raf = requestAnimationFrame(apply);
-    });
-    for (const ms of [280, 900, 1600, 2200]) laters.push(window.setTimeout(apply, ms));
-    laters.push(
-      window.setTimeout(() => {
-        if (cancelled) return;
-        inner.querySelectorAll<HTMLElement>(".panel-enter").forEach((el) => {
-          if (Number(getComputedStyle(el).opacity) > 0.05) return;
-          el.style.transition = "none";
-          el.style.opacity = "1";
-          el.style.transform = "none";
-          void el.offsetWidth;
-          el.style.removeProperty("transition");
-        });
-      }, 140),
-    );
-    void document.fonts?.ready.then(apply);
-
-    return () => {
-      cancelled = true;
-      ro.disconnect();
-      cancelAnimationFrame(raf);
-      laters.forEach((id) => window.clearTimeout(id));
-      imgs.forEach((img) => {
-        img.removeEventListener("load", onImg);
-        img.removeEventListener("error", onImg);
-      });
-    };
-  }, [open, shown]);
+  const desktopId = `${panelId}-desktop`;
 
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
@@ -323,75 +209,70 @@ export function Services() {
           {SERVICES.map((item, idx) => {
             const Icon = item.Icon;
             const expanded = open === item.id;
+            const itemPanelId = isMd ? desktopId : `${panelId}-${item.id}`;
             return (
-              <div key={item.id} className="service-card" data-service={item.id}>
-                <span className="service-glow" aria-hidden="true" />
-                <Reveal className="relative z-1 h-full overflow-visible" delay={idx}>
-                  <button
-                    type="button"
-                    aria-expanded={expanded}
-                    aria-controls={panelId}
-                    onClick={() => toggleService(item.id)}
-                    className={cn(
-                      "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
-                      expanded && "is-open",
-                    )}
-                  >
-                  <IconDisc>
-                    <Icon />
-                  </IconDisc>
-                  <span className="min-w-0 flex-1 font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
-                    {dictText(t, item.name)}
-                  </span>
-                  <span className="service-mark" aria-hidden="true">
-                    <i className="service-mark-plus" />
-                  </span>
-                  </button>
-                </Reveal>
+              <div key={item.id} className="contents">
+                <div className="service-card" data-service={item.id}>
+                  <span className="service-glow" aria-hidden="true" />
+                  <Reveal className="relative z-1 h-full overflow-visible" delay={idx}>
+                    <button
+                      ref={(el) => {
+                        btnRefs.current[item.id] = el;
+                      }}
+                      type="button"
+                      aria-expanded={expanded}
+                      aria-controls={itemPanelId}
+                      onClick={() => toggleService(item.id)}
+                      className={cn(
+                        "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+                        expanded && "is-open",
+                      )}
+                    >
+                      <IconDisc>
+                        <Icon />
+                      </IconDisc>
+                      <span className="min-w-0 flex-1 font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
+                        {dictText(t, item.name)}
+                      </span>
+                      <span className="service-mark" aria-hidden="true">
+                        <i className="service-mark-plus" />
+                      </span>
+                    </button>
+                  </Reveal>
+                </div>
+                {isMd ? null : (
+                  <ServicePanel
+                    id={`${panelId}-${item.id}`}
+                    open={expanded}
+                    title={dictText(t, item.name)}
+                    examples={dictList(t, item.examples)}
+                    media={item.media as readonly WorkItem[]}
+                    contentKey={item.id}
+                    followId={item.id}
+                    buttonRefs={btnRefs}
+                    skipEnter={item.id === INITIAL_SERVICE}
+                  />
+                )}
               </div>
             );
           })}
-        <div
-          ref={panelRef}
-          id={panelId}
-          data-after={shown || "web"}
-          role="region"
-          aria-hidden={!open}
-          className={cn("service-panel md:col-span-2", open && "is-open")}
-        >
-          <div className="service-panel-clip">
-            <div ref={innerRef} className={cn("service-panel-inner", open && "is-shown")}>
-            {active ? (
-              <div className="pt-6 md:pt-8" aria-label={dictText(t, active.name)}>
-                <div className="panel-enter">
-                  <ServiceExamples items={dictList(t, active.examples)} />
-                </div>
-                <WorkGallery items={active.media as readonly WorkItem[]} />
-              </div>
-            ) : null}
-            </div>
-          </div>
-        </div>
+          {isMd && active ? (
+            <ServicePanel
+              id={desktopId}
+              open={Boolean(open)}
+              title={dictText(t, active.name)}
+              examples={dictList(t, active.examples)}
+              media={active.media as readonly WorkItem[]}
+              contentKey={shown}
+              followId={open || shown}
+              buttonRefs={btnRefs}
+              skipEnter={Boolean(INITIAL_SERVICE)}
+              className="md:col-span-2"
+            />
+          ) : null}
         </div>
       </Section.Body>
     </Section.Frame>
-  );
-}
-
-function ServiceExamples({ items }: { items: readonly string[] }) {
-  const { t } = useLanguage();
-  return (
-    <div className="rounded-3xl border border-white/12 bg-linear-to-b from-azure/12 to-lemon/6 p-5 md:p-6">
-      <p className="text-[0.62rem] font-medium tracking-[0.2em] text-azure uppercase">{t.pExLabel}</p>
-      <ul className="mt-3 grid gap-2">
-        {items.map((item) => (
-          <li key={item} className="grid grid-cols-[auto_1fr] items-start gap-2.5 text-[0.95rem] leading-[1.5] text-platinum">
-            <span className="mt-[0.45em] size-1.5 shrink-0 rounded-full bg-azure" aria-hidden="true" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 

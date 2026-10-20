@@ -23,6 +23,7 @@ function Screen({
   width,
   height,
   decorative,
+  priority,
 }: {
   src: string;
   alt: string;
@@ -30,6 +31,7 @@ function Screen({
   width: number;
   height: number;
   decorative?: boolean;
+  priority?: boolean;
 }) {
   return (
     <div className="device-screen">
@@ -38,7 +40,8 @@ function Screen({
         alt={decorative ? "" : alt}
         width={width}
         height={height}
-        loading="eager"
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "low"}
         decoding="async"
         sizes={sizes}
         draggable={false}
@@ -48,7 +51,7 @@ function Screen({
   );
 }
 
-function DevicePair({ item }: { item: WorkItem }) {
+function DevicePair({ item, priority }: { item: WorkItem; priority?: boolean }) {
   const { lang } = useLanguage();
   const title = workText(item.title, lang);
   const alt = workText(item.alt, lang, title);
@@ -60,7 +63,14 @@ function DevicePair({ item }: { item: WorkItem }) {
       <div className="device-laptop">
         <div className="device-lid">
           <span className="device-camera" aria-hidden="true" />
-          <Screen src={desktop} alt={alt} sizes="(min-width: 768px) 42vw, 88vw" width={1440} height={900} />
+          <Screen
+            src={desktop}
+            alt={alt}
+            sizes="(min-width: 768px) 42vw, 88vw"
+            width={1440}
+            height={900}
+            priority={priority}
+          />
         </div>
         <span className="device-hinge" aria-hidden="true" />
         <span className="device-base" aria-hidden="true" />
@@ -68,7 +78,15 @@ function DevicePair({ item }: { item: WorkItem }) {
       {mobile ? (
         <div className="device-phone" aria-hidden="true">
           <span className="device-island" />
-          <Screen src={mobile} alt="" sizes="(min-width: 768px) 12vw, 38vw" width={390} height={844} decorative />
+          <Screen
+            src={mobile}
+            alt=""
+            sizes="(min-width: 768px) 12vw, 38vw"
+            width={390}
+            height={844}
+            decorative
+            priority={priority}
+          />
           <span className="device-home" />
         </div>
       ) : null}
@@ -100,7 +118,7 @@ function TileCopy({ item }: { item: WorkItem }) {
   );
 }
 
-export function WorkTile({ item }: { item: WorkItem }) {
+export function WorkTile({ item, priority }: { item: WorkItem; priority?: boolean }) {
   const { lang } = useLanguage();
   const title = workText(item.title, lang);
   const href = workPrimaryHref(item);
@@ -112,7 +130,7 @@ export function WorkTile({ item }: { item: WorkItem }) {
           <TileCopy item={item} />
         </div>
       ) : (
-        <DevicePair item={item} />
+        <DevicePair item={item} priority={priority} />
       )}
       {type ? null : <TileCopy item={item} />}
     </>
