@@ -8,7 +8,7 @@
 **What it does:** Caviar is a small studio in Trnava that makes a one-page website, short vertical reels, and edited photos so a local business can be found, seen, and called. Work is delivered in days, not months. Files belong to the client after payment.
 **Product category:** Local creative studio / web + photo + video for small businesses
 **Product type:** Service (project packages)
-**Business model:** One-off packages, launch prices including VAT. Foto Mini 79 EUR, Video Reel 59 EUR (three reels 129 EUR), Web Jednostránka 219 EUR, Caviar Komplet 379 EUR, E-shop 590 EUR one-time plus 19 EUR/month (server, backups, maintenance).
+**Business model:** One-off packages, launch prices including VAT, plus monthly marketing retainers. Foto Mini 79 EUR, Video Reel 59 EUR (three reels 129 EUR), Web Jednostránka 219 EUR, Caviar Komplet 379 EUR, E-shop 590 EUR one-time plus 19 EUR/month (server, backups, maintenance). Monthly: Social Štart 249 EUR, Social Plus 449 EUR, Marketing Komplet 690 EUR (ad budget paid to Meta and Google; minimum 3 months).
 
 ## Target Audience
 **Target companies:** Restaurants, lodging, services, online shops, craftspeople, and small firms in Trnava and nearby.
@@ -57,7 +57,7 @@
 | How many edits? | Two rounds are included, plus small fixes for 2 weeks after handover. Further rounds are agreed up front. |
 | Who owns the files? | After payment, the client owns the site, photos, and video. |
 
-**Anti-persona:** Enterprises that need a CMS, ongoing ads, or a multi-page product catalog.
+**Anti-persona:** Enterprises that need a CMS or a multi-page product catalog.
 
 ## Switching Dynamics
 **Push:** Current site or photos do not get calls.
@@ -102,7 +102,7 @@
 | Theme | Proof |
 |-------|-------|
 | Speed | Reply right away; web 5–7 days; photo/video 3–5 days after shoot |
-| Price | 59 / 79 / 219 / 379 / 590 EUR s DPH; three reels 129 EUR; E-shop also 19 EUR/month |
+| Price | 59 / 79 / 219 / 379 / 590 EUR s DPH; three reels 129 EUR; E-shop also 19 EUR/month; monthly marketing 249 / 449 / 690 EUR |
 | Ownership | Files belong to the client after payment |
 
 ## Goals

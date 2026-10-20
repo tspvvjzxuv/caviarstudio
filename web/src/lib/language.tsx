@@ -1,5 +1,5 @@
 import { createContext, startTransition, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { CAVIAR, OG_LOCALES, PRICE_RANGE } from "@/lib/config";
+import { CAVIAR, OG_LOCALES, PRICE_RANGE, monthlyOffer } from "@/lib/config";
 import { dictionary, FAQ_KEYS, isLang, type Dict, type Lang } from "@/lib/i18n";
 
 const LANG_STORAGE_KEY = "td-weby-lang:v1";
@@ -68,19 +68,29 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
     try {
       const data = JSON.parse(ld.textContent || "{}") as Record<string, unknown>;
       const names: Record<string, string> = {
-        fotoMini: "Foto Mini",
-        videoReel: "Video Reel",
-        webOnePager: "Web Jednostránka",
-        eshop: "E-shop",
-        komplet: "Caviar Komplet",
+        fotoMini: pack.pFotoName,
+        videoReel: pack.pVideoName,
+        webOnePager: pack.pWebName,
+        eshop: pack.pEshopName,
+        komplet: pack.pKompletName,
       };
-      data.makesOffer = Object.entries(CAVIAR.prices).map(([key, p]) => ({
-        "@type": "Offer",
-        name: names[key] || key,
-        price: String(p.launch),
-        priceCurrency: "EUR",
-        valueAddedTaxIncluded: true,
-      }));
+      const monthlyNames: Record<string, string> = {
+        socialStart: pack.pMktStartName,
+        socialPlus: pack.pMktPlusName,
+        marketingKomplet: pack.pMktKompletName,
+      };
+      data.makesOffer = [
+        ...Object.entries(CAVIAR.prices).map(([key, p]) => ({
+          "@type": "Offer",
+          name: names[key] || key,
+          price: String(p.launch),
+          priceCurrency: "EUR",
+          valueAddedTaxIncluded: true,
+        })),
+        ...Object.entries(CAVIAR.monthly).map(([key, p]) =>
+          monthlyOffer(monthlyNames[key] || key, p.monthly),
+        ),
+      ];
       data.priceRange = `€${PRICE_RANGE.min}–€${PRICE_RANGE.max}`;
       data.description = pack.docDesc;
       ld.textContent = JSON.stringify(data);
