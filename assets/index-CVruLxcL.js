@@ -136,15 +136,16 @@ float splatWarp(vec2 p, vec4 s) {
 
 float cardEdge(vec2 p, vec2 mouse, float t) {
   vec2 c = uOrigin;
-  vec2 r = vec2(0.72 + 0.03 * sin(uSeed * 6.2), 0.54 + 0.03 * cos(uSeed * 4.1));
-  r += 0.03 * vec2(snoise(vec2(t * 0.21 + uSeed, 0.2)), snoise(vec2(1.4, t * 0.17 - uSeed)));
+  float ratio = uRes.x / max(uRes.y, 1.0);
+  vec2 r = vec2(ratio * 0.80, 0.60);
+  r += 0.025 * vec2(snoise(vec2(t * 0.21 + uSeed, 0.2)), snoise(vec2(1.4, t * 0.17 - uSeed)));
   float body = length((p - c) / r);
-  vec2 dripC = c + vec2(0.0, -0.68);
-  float drip = length((p - dripC) / vec2(0.22, 0.34));
-  float d = mix(body, smin(body, drip, 0.28), uOpen);
-  d -= uHover * 0.16 * exp(-length(p - mouse) * 2.6);
-  d += ripple(p, uRipple0) * 0.12 + ripple(p, uRipple1) * 0.12;
-  d -= splatWarp(p, uSplat0) * 0.08 + splatWarp(p, uSplat1) * 0.08;
+  vec2 dripC = c + vec2(0.0, -0.72);
+  float drip = length((p - dripC) / vec2(ratio * 0.16, 0.36));
+  float d = mix(body, smin(body, drip, 0.32), uOpen);
+  d -= uHover * 0.14 * exp(-length(p - mouse) * 2.4);
+  d += ripple(p, uRipple0) * 0.10 + ripple(p, uRipple1) * 0.10;
+  d -= splatWarp(p, uSplat0) * 0.06 + splatWarp(p, uSplat1) * 0.06;
   return clamp(d, 0.0, 1.8);
 }
 
@@ -172,9 +173,7 @@ void main() {
   float edge = cardEdge(q, mouse, t);
 
   vec3 color2 = vec3(0.99, 0.99, 1.0);
-  vec3 color1 = vec3(0.08, 0.08, 0.08 + 0.08 * smoothstep(0.7, 1.3, suv.x + suv.y));
-  color1 += vec3(0.04, 0.08, 0.16) * 0.12 * smoothstep(1.1, 0.2, length(suv - vec2(0.15 * ratio, 0.2)));
-  color1 += vec3(0.16, 0.12, 0.02) * 0.10 * smoothstep(1.1, 0.2, length(suv - vec2(0.85 * ratio, 0.85)));
+  vec3 color1 = vec3(0.07, 0.07, 0.075 + 0.05 * smoothstep(0.7, 1.3, suv.x + suv.y));
 
   vec2 grad_uv = suv - 0.5;
   float dist = length(grad_uv + vec2(0.0, 0.2 * diagonal));
@@ -184,9 +183,9 @@ void main() {
   bulge *= pow(clamp(suv.y, 0.0, 1.0), 0.3);
   bulge += uHover * 0.12 * exp(-length(q - mouse) * 2.2);
 
-  float cycle_width = 1.5;
-  float thin_strip_1_ratio = 0.12 / cycle_width * (1.0 - 0.4 * bulge);
-  float thin_strip_2_ratio = 0.07 / cycle_width * (1.0 + 0.4 * bulge);
+  float cycle_width = 3.4;
+  float thin_strip_1_ratio = 0.18 / cycle_width * (1.0 - 0.35 * bulge);
+  float thin_strip_2_ratio = 0.10 / cycle_width * (1.0 + 0.35 * bulge);
   float wide_strip_ratio = (1.0 - thin_strip_1_ratio - thin_strip_2_ratio);
   float thin_strip_1_width = cycle_width * thin_strip_1_ratio;
   float thin_strip_2_width = cycle_width * thin_strip_2_ratio;
@@ -198,15 +197,11 @@ void main() {
   edge += (1.0 - edge) * 0.15 * noise;
 
   float refr = clamp(1.0 - bulge, 0.0, 1.0);
-  float dir = grad_uv.x;
-  dir += diagonal;
+  float dir = suv.x * 1.35 + diagonal * 0.55;
   dir -= 2.0 * noise * diagonal * (smoothstep(0.0, 1.0, edge) * smoothstep(1.0, 0.0, edge));
   bulge *= clamp(pow(clamp(suv.y, 0.0, 1.0), 0.1), 0.3, 1.0);
-  dir *= (0.1 + (1.1 - edge) * bulge);
-  dir *= smoothstep(1.0, 0.7, edge);
+  dir *= (0.35 + 0.75 * bulge);
   dir += 0.18 * (smoothstep(0.1, 0.2, suv.y) * smoothstep(0.4, 0.2, suv.y));
-  dir += 0.03 * (smoothstep(0.1, 0.2, 1.0 - suv.y) * smoothstep(0.4, 0.2, 1.0 - suv.y));
-  dir *= (0.5 + 0.5 * pow(clamp(suv.y, 0.0, 1.0), 2.0));
   dir *= cycle_width;
   dir -= t;
   dir += splatWarp(q, uSplat0) * 0.08 + splatWarp(q, uSplat1) * 0.08;
@@ -222,18 +217,20 @@ void main() {
   refr_r *= u_refraction;
   refr_b *= u_refraction;
 
-  vec3 w = vec3(thin_strip_1_width, thin_strip_2_width, wide_strip_ratio);
+  vec3 w = vec3(0.20, 0.14, 0.66);
   w[1] -= 0.02 * smoothstep(0.0, 1.0, edge + bulge);
 
-  float stripe_r = mod(dir + refr_r, 1.0);
+  float stripe_r = fract(dir + refr_r);
   float r = get_color_channel(color1.r, color2.r, stripe_r, w, 0.02 + 0.03 * u_refraction * bulge, bulge);
-  float stripe_g = mod(dir, 1.0);
+  float stripe_g = fract(dir);
   float g = get_color_channel(color1.g, color2.g, stripe_g, w, 0.01 / max(1.0 - diagonal, 0.08), bulge);
-  float stripe_b = mod(dir - refr_b, 1.0);
+  float stripe_b = fract(dir - refr_b);
   float b = get_color_channel(color1.b, color2.b, stripe_b, w, 0.01, bulge);
 
-  vec3 color = vec3(r, g, b) * opacity;
-  gl_FragColor = vec4(color, opacity);
+  vec3 color = vec3(r, g, b);
+  color += vec3(0.24, 0.54, 1.0) * 0.04 * smoothstep(1.15, 0.2, length(suv - vec2(0.18 * ratio, 0.22)));
+  color += vec3(1.0, 0.89, 0.30) * 0.03 * smoothstep(1.15, 0.2, length(suv - vec2(0.86 * ratio, 0.84)));
+  gl_FragColor = vec4(color * opacity, opacity);
 }`;function Cg(e,t,n){let r=e.createShader(t);return r?(e.shaderSource(r,n),e.compileShader(r),e.getShaderParameter(r,e.COMPILE_STATUS)?r:(console.warn(e.getShaderInfoLog(r)),e.deleteShader(r),null)):null}function wg(e){let t=e.getContext(`webgl`,{alpha:!0,antialias:!0,depth:!1,stencil:!1,premultipliedAlpha:!0,powerPreference:`low-power`});if(!t)return null;let n=Cg(t,t.VERTEX_SHADER,xg),r=Cg(t,t.FRAGMENT_SHADER,Sg);if(!n||!r)return null;let i=t.createProgram();if(!i||(t.attachShader(i,n),t.attachShader(i,r),t.bindAttribLocation(i,0,`aPos`),t.linkProgram(i),!t.getProgramParameter(i,t.LINK_STATUS)))return null;let a=t.createBuffer();return t.bindBuffer(t.ARRAY_BUFFER,a),t.bufferData(t.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),t.STATIC_DRAW),t.enableVertexAttribArray(0),t.vertexAttribPointer(0,2,t.FLOAT,!1,0,0),{gl:t,prog:i,buf:a,loc:{res:t.getUniformLocation(i,`uRes`),time:t.getUniformLocation(i,`uTime`),hover:t.getUniformLocation(i,`uHover`),open:t.getUniformLocation(i,`uOpen`),seed:t.getUniformLocation(i,`uSeed`),mouse:t.getUniformLocation(i,`uMouse`),vel:t.getUniformLocation(i,`uVel`),origin:t.getUniformLocation(i,`uOrigin`),r0:t.getUniformLocation(i,`uRipple0`),r1:t.getUniformLocation(i,`uRipple1`),s0:t.getUniformLocation(i,`uSplat0`),s1:t.getUniformLocation(i,`uSplat1`)}}}function Tg(e){return e===`foto`?.11:e===`video`?.37:e===`web`?.58:e===`dron`?.79:e===`brand`?.93:.2}var Eg=`(hover: hover) and (pointer: fine)`,Dg=`(prefers-reduced-motion: reduce)`,Og=`(hover: none), (pointer: coarse)`;function kg(e){return!!e.closest(`.service-sec.is-paused`)}function Ag(e,t,n){return e+(t-e)*n}function jg(e){return e.classList.contains(`is-open`)||e.getAttribute(`aria-expanded`)===`true`}function Mg(e){(0,_.useEffect)(()=>{let t=e.current,n=t?.parentElement,r=t?.closest(`.service-chrome`);if(!t||!n||!r)return;let i=window.matchMedia(Eg),a=window.matchMedia(Dg),o=window.matchMedia(Og),s=a.matches?null:wg(t),c=s?null:t.getContext(`2d`,{alpha:!0}),l=Tg(r.closest(`.service-card`)?.getAttribute(`data-service`)??``),u={x:0,y:0,tx:0,ty:0,vx:0,vy:0,hover:0,thover:0,open:0},d=[{x:0,y:0,age:99,amp:0},{x:0,y:0,age:99,amp:0}],f=[{x:0,y:0,vx:0,vy:0},{x:0,y:0,vx:0,vy:0}],p=0,m=0,h=0,g=0,_=0,v=!1,y=performance.now(),b=0,x=1,S=1,C=1,w=1,T=1,E=0,D=0,O=(e,t)=>({x:e*T,y:t}),k=()=>{let e=n.getBoundingClientRect();x=Math.max(1,Math.round(e.width)),S=Math.max(1,Math.round(e.height));let i=o.matches?1.25:1.5,a=Math.min(i,window.devicePixelRatio||1);C=Math.max(1,Math.round(x*a)),w=Math.max(1,Math.round(S*a)),t.width=C,t.height=w,t.style.width=`${x}px`,t.style.height=`${S}px`,T=x/Math.max(S,1);let c=r.getBoundingClientRect();E=((c.left+c.width/2-e.left)/Math.max(e.width,1)*2-1)*T,D=1-(c.top+c.height/2-e.top)/Math.max(e.height,1)*2,s&&s.gl.viewport(0,0,C,w)},A=e=>{let t=n.getBoundingClientRect();return{nx:(e.clientX-t.left)/Math.max(1,t.width)*2-1,ny:1-(e.clientY-t.top)/Math.max(1,t.height)*2}},ee=(e,t,n)=>{if(a.matches||kg(r))return;let i=d[p++%d.length],o=O(e,t);i.x=o.x,i.y=o.y,i.age=0,i.amp=n},te=(e,t,n,i)=>{if(a.matches||kg(r))return;let o=Math.hypot(n,i);if(o<.05)return;let s=f[m++%f.length],c=O(e,t);s.x=c.x,s.y=c.y;let l=Math.min(.4,o*.7);s.vx=n*l,s.vy=i*l},ne=e=>{if(!c)return;c.setTransform(C/x,0,0,w/S,0,0),c.clearRect(0,0,x,S);let t=c.createLinearGradient(0,0,x,S);t.addColorStop(0,`#f2f3f6`),t.addColorStop(.18,`#9aa1ab`),t.addColorStop(.42,`#1a1c20`),t.addColorStop(1,`#070708`),c.fillStyle=t,c.beginPath(),c.ellipse(x*.5,S*.5,x*.48,S*.42,-.2,0,Math.PI*2),c.fill();let n=c.createRadialGradient(x*.32,S*.22,6,x*.5,S*.5,x*.55);n.addColorStop(0,`rgba(255,255,255,${.5+.2*e})`),n.addColorStop(1,`rgba(0,0,0,0)`),c.globalCompositeOperation=`screen`,c.fillStyle=n,c.fill(),c.globalCompositeOperation=`source-over`},j=e=>{if(!s)return;let{gl:t,prog:n,buf:r,loc:i}=s;t.viewport(0,0,C,w),t.disable(t.DEPTH_TEST),t.enable(t.BLEND),t.blendFunc(t.SRC_ALPHA,t.ONE_MINUS_SRC_ALPHA),t.clearColor(0,0,0,0),t.clear(t.COLOR_BUFFER_BIT),t.useProgram(n),t.bindBuffer(t.ARRAY_BUFFER,r),t.enableVertexAttribArray(0),t.vertexAttribPointer(0,2,t.FLOAT,!1,0,0),t.uniform2f(i.res,C,w),t.uniform1f(i.time,e),t.uniform1f(i.hover,u.hover),t.uniform1f(i.open,u.open),t.uniform1f(i.seed,l),t.uniform2f(i.mouse,u.x*T,u.y),t.uniform2f(i.vel,u.vx,u.vy),t.uniform2f(i.origin,E,D),t.uniform4f(i.r0,d[0].x,d[0].y,d[0].age,d[0].amp),t.uniform4f(i.r1,d[1].x,d[1].y,d[1].age,d[1].amp),t.uniform4f(i.s0,f[0].x,f[0].y,f[0].vx,f[0].vy),t.uniform4f(i.s1,f[1].x,f[1].y,f[1].vx,f[1].vy),t.drawArrays(t.TRIANGLES,0,3)},M=e=>{v=!0;let t=Math.min((e-y)/1e3,.2);if(y=e,kg(r)||a.matches){v=!1;return}let n=1-Math.exp(-4.2*t),i=u.x,c=u.y;u.x=Ag(u.x,u.tx,n),u.y=Ag(u.y,u.ty,n),u.vx=Ag(u.vx,(u.x-i)/Math.max(t,.001),.35),u.vy=Ag(u.vy,(u.y-c)/Math.max(t,.001),.35),u.hover=Ag(u.hover,u.thover,n),u.open=Ag(u.open,+!!jg(r),n),r.style.setProperty(`--drop-x`,u.x.toFixed(3)),r.style.setProperty(`--drop-y`,(-u.y).toFixed(3));for(let e of d)e.age+=t;for(let e of f)e.vx*=Math.exp(-t*1.8),e.vy*=Math.exp(-t*1.8);let l=e*.001;s?j(l):ne(u.hover);let p=u.thover>.01||u.hover>.02||Math.abs(u.open-+!!jg(r))>.01||d.some(e=>e.age<2.6&&e.amp>0)||f.some(e=>Math.hypot(e.vx,e.vy)>.008);p&&(b=e);let m=!!(s&&e-b<(o.matches?2400:9e3));p||m?_=requestAnimationFrame(M):v=!1},N=()=>{v||a.matches||(y=performance.now(),b=y,_=requestAnimationFrame(M))},re=e=>{if(!i.matches||a.matches)return;let t=A(e);u.tx=Math.max(-1,Math.min(1,t.nx)),u.ty=Math.max(-1,Math.min(1,t.ny)),u.thover=1;let n=performance.now();n-g>32&&(g=n,te(u.tx,u.ty,u.vx,u.vy)),n-h>90&&(h=n,ee(u.tx,u.ty,.45)),N()},ie=e=>{if(a.matches)return;let t=A(e);u.tx=Math.max(-1,Math.min(1,t.nx)),u.ty=Math.max(-1,Math.min(1,t.ny)),u.thover=1,ee(u.tx,u.ty,1),te(u.tx,u.ty,u.vx*1.2,u.vy*1.2),N()},ae=()=>{u.thover=0,u.tx=0,u.ty=0,N()};k();let oe=new ResizeObserver(k);oe.observe(n);let se=r.closest(`.service-sec`),ce=new MutationObserver(()=>{kg(r)||N()});return se&&ce.observe(se,{attributes:!0,attributeFilter:[`class`]}),ce.observe(r,{attributes:!0,attributeFilter:[`class`,`aria-expanded`]}),r.addEventListener(`pointermove`,re,{passive:!0}),r.addEventListener(`pointerdown`,ie,{passive:!0}),r.addEventListener(`pointerleave`,ae),r.addEventListener(`pointercancel`,ae),s&&!a.matches&&N(),()=>{cancelAnimationFrame(_),oe.disconnect(),ce.disconnect(),r.removeEventListener(`pointermove`,re),r.removeEventListener(`pointerdown`,ie),r.removeEventListener(`pointerleave`,ae),r.removeEventListener(`pointercancel`,ae),r.style.removeProperty(`--drop-x`),r.style.removeProperty(`--drop-y`),s&&s.gl.getExtension(`WEBGL_lose_context`)?.loseContext()}},[e])}function Ng(){let e=(0,_.useRef)(null);return Mg(e),(0,R.jsx)(`span`,{className:`drop-ripple-clip`,"aria-hidden":`true`,children:(0,R.jsx)(`canvas`,{ref:e,className:`drop-ripple`})})}function Pg(){return(0,R.jsxs)(R.Fragment,{children:[(0,R.jsx)(`svg`,{className:`drop-goo-def`,"aria-hidden":`true`,width:`0`,height:`0`,children:(0,R.jsxs)(`filter`,{id:`caviar-goo`,x:`-35%`,y:`-35%`,width:`170%`,height:`170%`,children:[(0,R.jsx)(`feGaussianBlur`,{in:`SourceGraphic`,stdDeviation:`7`,result:`blur`}),(0,R.jsx)(`feColorMatrix`,{in:`blur`,mode:`matrix`,values:`1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10`,result:`goo`}),(0,R.jsx)(`feComposite`,{in:`SourceGraphic`,in2:`goo`,operator:`atop`})]})}),(0,R.jsx)(`style`,{children:`
         @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
           .service-sec:not(.is-paused) .service-spill { filter: url(#caviar-goo); }

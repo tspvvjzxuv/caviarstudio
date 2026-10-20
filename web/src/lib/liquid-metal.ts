@@ -102,15 +102,16 @@ float splatWarp(vec2 p, vec4 s) {
 
 float cardEdge(vec2 p, vec2 mouse, float t) {
   vec2 c = uOrigin;
-  vec2 r = vec2(0.72 + 0.03 * sin(uSeed * 6.2), 0.54 + 0.03 * cos(uSeed * 4.1));
-  r += 0.03 * vec2(snoise(vec2(t * 0.21 + uSeed, 0.2)), snoise(vec2(1.4, t * 0.17 - uSeed)));
+  float ratio = uRes.x / max(uRes.y, 1.0);
+  vec2 r = vec2(ratio * 0.80, 0.60);
+  r += 0.025 * vec2(snoise(vec2(t * 0.21 + uSeed, 0.2)), snoise(vec2(1.4, t * 0.17 - uSeed)));
   float body = length((p - c) / r);
-  vec2 dripC = c + vec2(0.0, -0.68);
-  float drip = length((p - dripC) / vec2(0.22, 0.34));
-  float d = mix(body, smin(body, drip, 0.28), uOpen);
-  d -= uHover * 0.16 * exp(-length(p - mouse) * 2.6);
-  d += ripple(p, uRipple0) * 0.12 + ripple(p, uRipple1) * 0.12;
-  d -= splatWarp(p, uSplat0) * 0.08 + splatWarp(p, uSplat1) * 0.08;
+  vec2 dripC = c + vec2(0.0, -0.72);
+  float drip = length((p - dripC) / vec2(ratio * 0.16, 0.36));
+  float d = mix(body, smin(body, drip, 0.32), uOpen);
+  d -= uHover * 0.14 * exp(-length(p - mouse) * 2.4);
+  d += ripple(p, uRipple0) * 0.10 + ripple(p, uRipple1) * 0.10;
+  d -= splatWarp(p, uSplat0) * 0.06 + splatWarp(p, uSplat1) * 0.06;
   return clamp(d, 0.0, 1.8);
 }
 
@@ -138,9 +139,7 @@ void main() {
   float edge = cardEdge(q, mouse, t);
 
   vec3 color2 = vec3(0.99, 0.99, 1.0);
-  vec3 color1 = vec3(0.08, 0.08, 0.08 + 0.08 * smoothstep(0.7, 1.3, suv.x + suv.y));
-  color1 += vec3(0.04, 0.08, 0.16) * 0.12 * smoothstep(1.1, 0.2, length(suv - vec2(0.15 * ratio, 0.2)));
-  color1 += vec3(0.16, 0.12, 0.02) * 0.10 * smoothstep(1.1, 0.2, length(suv - vec2(0.85 * ratio, 0.85)));
+  vec3 color1 = vec3(0.07, 0.07, 0.075 + 0.05 * smoothstep(0.7, 1.3, suv.x + suv.y));
 
   vec2 grad_uv = suv - 0.5;
   float dist = length(grad_uv + vec2(0.0, 0.2 * diagonal));
@@ -150,9 +149,9 @@ void main() {
   bulge *= pow(clamp(suv.y, 0.0, 1.0), 0.3);
   bulge += uHover * 0.12 * exp(-length(q - mouse) * 2.2);
 
-  float cycle_width = 1.5;
-  float thin_strip_1_ratio = 0.12 / cycle_width * (1.0 - 0.4 * bulge);
-  float thin_strip_2_ratio = 0.07 / cycle_width * (1.0 + 0.4 * bulge);
+  float cycle_width = 3.4;
+  float thin_strip_1_ratio = 0.18 / cycle_width * (1.0 - 0.35 * bulge);
+  float thin_strip_2_ratio = 0.10 / cycle_width * (1.0 + 0.35 * bulge);
   float wide_strip_ratio = (1.0 - thin_strip_1_ratio - thin_strip_2_ratio);
   float thin_strip_1_width = cycle_width * thin_strip_1_ratio;
   float thin_strip_2_width = cycle_width * thin_strip_2_ratio;
@@ -164,15 +163,11 @@ void main() {
   edge += (1.0 - edge) * 0.15 * noise;
 
   float refr = clamp(1.0 - bulge, 0.0, 1.0);
-  float dir = grad_uv.x;
-  dir += diagonal;
+  float dir = suv.x * 1.35 + diagonal * 0.55;
   dir -= 2.0 * noise * diagonal * (smoothstep(0.0, 1.0, edge) * smoothstep(1.0, 0.0, edge));
   bulge *= clamp(pow(clamp(suv.y, 0.0, 1.0), 0.1), 0.3, 1.0);
-  dir *= (0.1 + (1.1 - edge) * bulge);
-  dir *= smoothstep(1.0, 0.7, edge);
+  dir *= (0.35 + 0.75 * bulge);
   dir += 0.18 * (smoothstep(0.1, 0.2, suv.y) * smoothstep(0.4, 0.2, suv.y));
-  dir += 0.03 * (smoothstep(0.1, 0.2, 1.0 - suv.y) * smoothstep(0.4, 0.2, 1.0 - suv.y));
-  dir *= (0.5 + 0.5 * pow(clamp(suv.y, 0.0, 1.0), 2.0));
   dir *= cycle_width;
   dir -= t;
   dir += splatWarp(q, uSplat0) * 0.08 + splatWarp(q, uSplat1) * 0.08;
@@ -188,18 +183,20 @@ void main() {
   refr_r *= u_refraction;
   refr_b *= u_refraction;
 
-  vec3 w = vec3(thin_strip_1_width, thin_strip_2_width, wide_strip_ratio);
+  vec3 w = vec3(0.20, 0.14, 0.66);
   w[1] -= 0.02 * smoothstep(0.0, 1.0, edge + bulge);
 
-  float stripe_r = mod(dir + refr_r, 1.0);
+  float stripe_r = fract(dir + refr_r);
   float r = get_color_channel(color1.r, color2.r, stripe_r, w, 0.02 + 0.03 * u_refraction * bulge, bulge);
-  float stripe_g = mod(dir, 1.0);
+  float stripe_g = fract(dir);
   float g = get_color_channel(color1.g, color2.g, stripe_g, w, 0.01 / max(1.0 - diagonal, 0.08), bulge);
-  float stripe_b = mod(dir - refr_b, 1.0);
+  float stripe_b = fract(dir - refr_b);
   float b = get_color_channel(color1.b, color2.b, stripe_b, w, 0.01, bulge);
 
-  vec3 color = vec3(r, g, b) * opacity;
-  gl_FragColor = vec4(color, opacity);
+  vec3 color = vec3(r, g, b);
+  color += vec3(0.24, 0.54, 1.0) * 0.04 * smoothstep(1.15, 0.2, length(suv - vec2(0.18 * ratio, 0.22)));
+  color += vec3(1.0, 0.89, 0.30) * 0.03 * smoothstep(1.15, 0.2, length(suv - vec2(0.86 * ratio, 0.84)));
+  gl_FragColor = vec4(color * opacity, opacity);
 }`;
 
 export function compile(gl: WebGLRenderingContext, type: number, src: string) {
