@@ -101,7 +101,7 @@ Caviar is a small creative studio in Trnava. The site should feel like a quiet g
 
 The palette is pearl on caviar black. Silver and platinum stay on type. **Azure is the main accent. Lemon yellow is the secondary accent.**
 
-- **Background (#070708):** Near-black field for every page surface.
+- **Background (#070708):** Near-black field. As the page scrolls, `html` `--page-bg` eases through quiet tints of that field (deep navy, dark azure, graphite, a whisper of violet) — always dark enough for pearl/steel type (AA). Cards, chrome, and the hero loop stay on their own surfaces. `prefers-reduced-motion` snaps instead of interpolating.
 - **Pearl (#F4F5F7):** Primary reading color and headlines.
 - **Silver (#C5CAD3):** Captions and secondary metal type.
 - **Platinum (#E8EAEE):** Highlights and italic display sheen.

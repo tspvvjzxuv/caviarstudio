@@ -19,14 +19,16 @@ function Frame({
   className,
   density,
   ref,
+  tint,
 }: {
   id: string;
   children: ReactNode;
   className?: string;
   ref?: Ref<HTMLElement>;
+  tint?: string;
 } & VariantProps<typeof frameVariants>) {
   return (
-    <section id={id} ref={ref} className={cn(frameVariants({ density }), className)}>
+    <section id={id} ref={ref} data-page-tint={tint} className={cn(frameVariants({ density }), className)}>
       {children}
     </section>
   );
