@@ -31,9 +31,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
-import type { Dict } from "@/lib/i18n";
+import { FAQ_KEYS, type Dict } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
-import { PHOTO_EXAMPLES, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
+import { examplesWithMedia, PHOTO_EXAMPLES, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
@@ -49,6 +49,8 @@ const SERVICES = [
   { id: "video", name: "videoName", examples: "pVideoEx", Icon: Clapperboard, media: VIDEO_EXAMPLES },
   { id: "web", name: "webName", examples: "pWebEx", Icon: Globe, media: WORK },
 ] as const;
+
+const INITIAL_SERVICE = examplesWithMedia(WORK).length > 0 ? "web" : "";
 
 const TEAM = [
   { mono: "MK", name: "Miroslav Kotvas" },
@@ -122,7 +124,10 @@ export function Hero() {
             <CaviarLogo />
           </h1>
         </div>
-        <p className="mt-8 max-w-[36ch] text-[clamp(1.05rem,2.1vw,1.32rem)] leading-[1.5] text-pretty">{t.heroExplain}</p>
+        <p className="mt-8 max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl">
+          {t.heroTagline}
+        </p>
+        <p className="mt-4 max-w-[36ch] text-[0.98rem] leading-[1.5] text-pretty text-muted-foreground">{t.heroExplain}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild data-magnetic="" className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
@@ -152,8 +157,9 @@ export function Services() {
   const frameRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState("");
-  const [shown, setShown] = useState("");
+  const [open, setOpen] = useState(INITIAL_SERVICE);
+  const [shown, setShown] = useState(INITIAL_SERVICE);
+  const skipEnterKick = useRef(Boolean(INITIAL_SERVICE));
   const lastOpenHeight = useRef(0);
   const active = SERVICES.find((item) => item.id === shown);
   usePauseOffscreen(frameRef);
@@ -205,9 +211,14 @@ export function Services() {
       }
       if (!kicked) {
         kicked = true;
-        inner.classList.remove("is-shown");
-        void inner.offsetWidth;
-        inner.classList.add("is-shown");
+        if (skipEnterKick.current) {
+          skipEnterKick.current = false;
+          inner.classList.add("is-shown");
+        } else {
+          inner.classList.remove("is-shown");
+          void inner.offsetWidth;
+          inner.classList.add("is-shown");
+        }
       }
       const next = Math.max(measure(), 8);
       lastOpenHeight.current = next;
@@ -485,14 +496,7 @@ export function Team() {
 
 export function Faq() {
   const { t } = useLanguage();
-  const items = [
-    { q: t.faq1q, a: t.faq1a },
-    { q: t.faq2q, a: t.faq2a },
-    { q: t.faq3q, a: t.faq3a },
-    { q: t.faq4q, a: t.faq4a },
-    { q: t.faq5q, a: t.faq5a },
-    { q: t.faq6q, a: t.faq6a },
-  ];
+  const items = FAQ_KEYS.map(([q, a]) => ({ q: t[q], a: t[a] }));
   return (
     <Section.Frame id="faq">
       <Section.Body>

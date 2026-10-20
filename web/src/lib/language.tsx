@@ -1,6 +1,6 @@
 import { createContext, startTransition, use, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { CAVIAR, OG_LOCALES, PRICE_RANGE } from "@/lib/config";
-import { dictionary, isLang, type Dict, type Lang } from "@/lib/i18n";
+import { dictionary, FAQ_KEYS, isLang, type Dict, type Lang } from "@/lib/i18n";
 
 const LANG_STORAGE_KEY = "td-weby-lang:v1";
 const LANG_STORAGE_LEGACY = "td-weby-lang";
@@ -98,10 +98,10 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
   faqLd.textContent = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: ([1, 2, 3, 4, 5, 6] as const).map((n) => ({
+    mainEntity: FAQ_KEYS.map(([q, a]) => ({
       "@type": "Question",
-      name: pack[`faq${n}q`],
-      acceptedAnswer: { "@type": "Answer", text: pack[`faq${n}a`] },
+      name: pack[q],
+      acceptedAnswer: { "@type": "Answer", text: pack[a] },
     })),
   });
 }
