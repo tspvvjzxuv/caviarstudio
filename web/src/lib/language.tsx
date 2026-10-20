@@ -71,6 +71,7 @@ function applyDocumentMeta(lang: Lang, pack: Dict) {
         fotoMini: "Foto Mini",
         videoReel: "Video Reel",
         webOnePager: "Web Jednostránka",
+        eshop: "E-shop",
         komplet: "Caviar Komplet",
       };
       data.makesOffer = Object.entries(CAVIAR.prices).map(([key, p]) => ({
