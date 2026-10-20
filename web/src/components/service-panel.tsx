@@ -108,10 +108,6 @@ export function ServiceDetail({
 }) {
   return (
     <div className="service-panel-shell" aria-label={title}>
-      <i className="service-spill" aria-hidden="true">
-        <i className="service-spill-head" />
-        <i className="service-spill-neck" />
-      </i>
       <div className="service-panel-head panel-enter">
         {Icon ? (
           <IconDisc size="sm">
