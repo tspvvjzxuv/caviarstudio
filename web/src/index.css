@@ -764,7 +764,7 @@
 .device-screen img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
   object-position: top center;
 }
@@ -908,6 +908,7 @@
 .service-sec {
   position: relative;
   overflow-x: clip;
+  overflow-anchor: none;
 }
 .service-glow-field {
   position: absolute;
@@ -927,16 +928,7 @@
   height: 100%;
   overflow: clip;
   border-radius: 1.5rem;
-}
-@media (max-width: 767px) {
-  .service-card[data-service="foto"] { order: 1; }
-  .service-card[data-service="video"] { order: 3; }
-  .service-card[data-service="web"] { order: 5; }
-  .service-card[data-service="dron"] { order: 7; }
-  .service-panel[data-after="foto"] { order: 2; }
-  .service-panel[data-after="video"] { order: 4; }
-  .service-panel[data-after="web"] { order: 6; }
-  .service-panel[data-after="dron"] { order: 8; }
+  scroll-margin-top: calc(var(--header-h) + 0.75rem);
 }
 .service-glow {
   position: absolute;
@@ -1117,10 +1109,9 @@
 .service-panel {
   display: grid;
   grid-template-rows: 0fr;
+  overflow-anchor: none;
+  scroll-margin-top: calc(var(--header-h) + 0.75rem);
   transition: grid-template-rows 0.92s var(--ease-out-expo);
-}
-.service-panel.is-open {
-  grid-template-rows: 1fr;
 }
 .service-panel:not(.is-open) {
   pointer-events: none;

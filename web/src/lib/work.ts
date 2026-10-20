@@ -140,6 +140,19 @@ export function workText(value: WorkCopy | undefined, lang: Lang, fallback = "")
   return value[lang] || value.sk || fallback;
 }
 
+/** Decode live-site stills before the Weby panel opens so height does not jump. */
+export function preloadWorkShots() {
+  if (typeof window === "undefined") return;
+  for (const item of WORK) {
+    for (const src of [workSrc(item.image), workSrc(item.imageMobile)]) {
+      if (!src) continue;
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+    }
+  }
+}
+
 export function workSrc(path: string | undefined): string {
   if (!path) return "";
   const trimmed = path.trim();
