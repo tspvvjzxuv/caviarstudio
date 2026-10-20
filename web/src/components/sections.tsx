@@ -41,6 +41,7 @@ import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
 import { ServicePanel } from "@/components/service-panel";
+import { DropGooDefs, DropSurface } from "@/components/drop-surface";
 import { cn } from "@/lib/utils";
 
 const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
@@ -212,17 +213,19 @@ function ServiceCard({
           aria-controls={panelId}
           onClick={() => onToggle(item.id)}
           className={cn(
-            "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+            "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
             expanded && "is-open",
           )}
         >
-          <IconDisc>
+          <DropSurface />
+          <i className="drop-drip" aria-hidden="true" />
+          <IconDisc className="relative z-[3]">
             <Icon />
           </IconDisc>
-          <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
+          <span className="relative z-[3] min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
             {dictText(t, item.name)}
           </span>
-          <span className="service-mark" aria-hidden="true">
+          <span className="service-mark relative z-[3]" aria-hidden="true">
             <i className="service-mark-plus" />
           </span>
         </button>
@@ -267,6 +270,7 @@ export function Services() {
 
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
+      <DropGooDefs />
       <div className="service-glow-field" aria-hidden="true" />
       <Section.Body className="relative z-10 overflow-visible">
         <h2 className="section-title max-w-[12ch]">{t.doKicker}</h2>
