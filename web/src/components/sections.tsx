@@ -4,6 +4,7 @@ import {
   AtSign,
   Camera,
   Clapperboard,
+  Drone,
   Globe,
   Mail,
   MessageCircle,
@@ -33,7 +34,7 @@ import {
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { FAQ_KEYS, type Dict } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
-import { examplesWithMedia, PHOTO_EXAMPLES, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
+import { DRONE_EXAMPLES, examplesWithMedia, PHOTO_EXAMPLES, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
@@ -48,6 +49,7 @@ const SERVICES = [
   { id: "foto", name: "fotoName", examples: "pFotoEx", Icon: Camera, media: PHOTO_EXAMPLES },
   { id: "video", name: "videoName", examples: "pVideoEx", Icon: Clapperboard, media: VIDEO_EXAMPLES },
   { id: "web", name: "webName", examples: "pWebEx", Icon: Globe, media: WORK },
+  { id: "dron", name: "dronName", examples: "pDronEx", Icon: Drone, media: DRONE_EXAMPLES },
 ] as const;
 
 const INITIAL_SERVICE = examplesWithMedia(WORK).length > 0 ? "web" : "";
@@ -66,13 +68,19 @@ const LAUNCH_PACKS = [
 
 const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc" } as const;
 
+const DRONE_PACKS = [
+  { key: "droneFoto", name: "pDronFotoName", desc: "pDronFotoDesc" },
+  { key: "droneVideo", name: "pDronVideoName", desc: "pDronVideoDesc" },
+  { key: "droneCombo", name: "pDronComboName", desc: "pDronComboDesc" },
+] as const;
+
 const MONTHLY_PACKS = [
   { key: "socialStart", name: "pMktStartName", desc: "pMktStartDesc", includes: "pMktStartEx" },
   { key: "socialPlus", name: "pMktPlusName", desc: "pMktPlusDesc", includes: "pMktPlusEx", featured: true },
   { key: "marketingKomplet", name: "pMktKompletName", desc: "pMktKompletDesc", includes: "pMktKompletEx" },
 ] as const;
 
-type PricePack = (typeof LAUNCH_PACKS)[number] | typeof FEATURED_PACK;
+type PricePack = (typeof LAUNCH_PACKS)[number] | (typeof DRONE_PACKS)[number] | typeof FEATURED_PACK;
 type MonthlyPack = (typeof MONTHLY_PACKS)[number];
 
 function dictText(pack: Dict, key: keyof Dict): string {
@@ -90,6 +98,7 @@ const NEED_OPTIONS = [
   { value: "E-shop", label: "needEshop" },
   { value: "Video", label: "needVideo" },
   { value: "Foto", label: "needFoto" },
+  { value: "Dron", label: "needDron" },
   { value: "Komplet", label: "needKomplet" },
   { value: "Marketing", label: "needMkt" },
   { value: "Mix", label: "needMix" },
@@ -310,7 +319,7 @@ export function Services() {
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
         </p>
-        <div className="grid items-stretch gap-6 overflow-visible md:grid-cols-3 md:gap-8 xl:gap-10">
+        <div className="grid items-stretch gap-6 overflow-visible md:grid-cols-2 md:gap-8 xl:gap-10">
           {SERVICES.map((item, idx) => {
             const Icon = item.Icon;
             const expanded = open === item.id;
@@ -348,7 +357,7 @@ export function Services() {
           data-after={shown || "web"}
           role="region"
           aria-hidden={!open}
-          className={cn("service-panel md:col-span-3", open && "is-open")}
+          className={cn("service-panel md:col-span-2", open && "is-open")}
         >
           <div className="service-panel-clip">
             <div ref={innerRef} className={cn("service-panel-inner", open && "is-shown")}>
@@ -558,6 +567,18 @@ export function Pricing() {
           ))}
           <FeaturedPriceCard pack={FEATURED_PACK} vat={vat} />
         </div>
+        <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
+          <Kicker>{t.dronKicker}</Kicker>
+          <h3 className="section-title">{t.dronTitle}</h3>
+        </Reveal>
+        <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
+          {DRONE_PACKS.map((pack, idx) => (
+            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
+          ))}
+        </div>
+        <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
+          <p>{t.pDronNote}</p>
+        </Reveal>
         <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
           <Kicker>{t.mktKicker}</Kicker>
           <h3 className="section-title">{t.mktTitle}</h3>
