@@ -59,8 +59,9 @@ const TEAM = [
 
 const LAUNCH_PACKS = [
   { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc" },
-  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc" },
+  { key: "videoReel", name: "pVideoName", desc: "pVideoDesc", note: "pVideoNote" },
   { key: "webOnePager", name: "pWebName", desc: "pWebDesc" },
+  { key: "eshop", name: "pEshopName", desc: "pEshopDesc", includes: "pEshopEx", note: "pEshopNote" },
 ] as const;
 
 const FEATURED_PACK = { key: "komplet", name: "pKompletName", desc: "pKompletDesc" } as const;
@@ -79,6 +80,7 @@ function dictList(pack: Dict, key: keyof Dict): readonly string[] {
 
 const NEED_OPTIONS = [
   { value: "Web", label: "needWeb" },
+  { value: "E-shop", label: "needEshop" },
   { value: "Video", label: "needVideo" },
   { value: "Foto", label: "needFoto" },
   { value: "Komplet", label: "needKomplet" },
@@ -388,7 +390,19 @@ function PriceIdentity({ name, desc }: { name: string; desc: string }) {
   );
 }
 
-function PriceAmounts({ launch, standard, vat }: { launch: number; standard: number; vat: string }) {
+function PriceAmounts({
+  launch,
+  standard,
+  monthly,
+  monthlyLabel,
+  vat,
+}: {
+  launch: number;
+  standard?: number;
+  monthly?: number;
+  monthlyLabel?: string;
+  vat: string;
+}) {
   const { t } = useLanguage();
   return (
     <div>
@@ -396,23 +410,59 @@ function PriceAmounts({ launch, standard, vat }: { launch: number; standard: num
         {t.priceFrom} <span className="text-lemon">{launch} EUR</span>{" "}
         <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">{vat}</span>
       </p>
-      <p className="mt-3 text-[0.85rem] text-muted-foreground">
-        <s className="text-foreground/40">{standard} EUR</s>
-        <span className="mt-0.5 block text-[0.62rem] tracking-[0.16em] uppercase">{t.stdLabel}</span>
-      </p>
+      {monthly != null && monthlyLabel ? (
+        <p className="mt-3 text-[0.95rem] leading-[1.5] text-muted-foreground">
+          + <span className="text-lemon">{monthly} EUR</span>
+          {monthlyLabel}
+        </p>
+      ) : null}
+      {standard != null ? (
+        <p className="mt-3 text-[0.85rem] text-muted-foreground">
+          <s className="text-foreground/40">{standard} EUR</s>
+          <span className="mt-0.5 block text-[0.62rem] tracking-[0.16em] uppercase">{t.stdLabel}</span>
+        </p>
+      ) : null}
     </div>
   );
+}
+
+function PriceIncludes({ items, note }: { items: readonly string[]; note?: string }) {
+  return (
+    <div className="grid gap-3">
+      <ul className="grid gap-2">
+        {items.map((item) => (
+          <li key={item} className="grid grid-cols-[auto_1fr] items-start gap-2.5 text-[0.95rem] leading-[1.5] text-platinum">
+            <span className="mt-[0.45em] size-1.5 shrink-0 rounded-full bg-azure" aria-hidden="true" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      {note ? <p className="text-[0.85rem] leading-[1.5] text-muted-foreground">{note}</p> : null}
+    </div>
+  );
+}
+
+function optionalAmount(price: object, key: string): number | undefined {
+  const value = (price as Record<string, unknown>)[key];
+  return typeof value === "number" ? value : undefined;
 }
 
 function LaunchPriceCard({ pack, vat, delay = 0 }: { pack: PricePack; vat: string; delay?: number }) {
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
+  const standard = optionalAmount(price, "standard");
+  const monthly = optionalAmount(price, "monthly");
+  const includes = "includes" in pack ? dictList(t, pack.includes) : null;
+  const note = "note" in pack ? dictText(t, pack.note) : undefined;
   return (
     <Reveal className="h-full" delay={delay}>
       <Card className="h-full min-h-[20rem] overflow-visible rounded-3xl border border-border bg-card py-0 ring-0">
         <CardHeader className={PANEL_HEAD}>
           <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
-          <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+          <PriceAmounts launch={price.launch} standard={standard} monthly={monthly} monthlyLabel={monthly != null ? t.pEshopMonthly : undefined} vat={vat} />
+          {includes ? <PriceIncludes items={includes} note={note} /> : note ? (
+            <p className="text-[0.85rem] leading-[1.5] text-muted-foreground">{note}</p>
+          ) : null}
           <Button asChild variant="outline" className="mt-1 h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase">
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
@@ -426,12 +476,12 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
   return (
-      <Reveal className="h-full md:col-span-2 xl:col-span-3" delay={3}>
+      <Reveal className="h-full md:col-span-2 xl:col-span-2" delay={3}>
       <Card className="h-full min-h-[16rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
         <CardHeader className="flex flex-col gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
           <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
           <div className="grid gap-4 justify-items-start">
-            <PriceAmounts launch={price.launch} standard={price.standard} vat={vat} />
+            <PriceAmounts launch={price.launch} standard={optionalAmount(price, "standard")} vat={vat} />
             <Button asChild data-magnetic="" className="metal-fill h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
               <a href="#kontakt">{t.ctaQuote}</a>
             </Button>
@@ -455,9 +505,8 @@ export function Pricing() {
           ))}
           <FeaturedPriceCard pack={FEATURED_PACK} vat={vat} />
         </div>
-        <Reveal className="mt-7 grid gap-2 text-[0.88rem] text-muted-foreground">
-          <p>{t.noHidden}</p>
-          <p>{t.vatYes}</p>
+        <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
+          <p>{t.priceFoot}</p>
         </Reveal>
       </Section.Body>
     </Section.Frame>

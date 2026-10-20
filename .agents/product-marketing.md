@@ -1,14 +1,14 @@
 # Product Marketing Context
 
 **Document version:** v1
-**Last updated:** 2026-10-15
+**Last updated:** 2026-10-20
 
 ## Product Overview
 **One-liner:** Weby, videá a fotky pre podniky: aby vás ľudia našli, uvideli a zavolali.
 **What it does:** Caviar is a small studio in Trnava that makes a one-page website, short vertical reels, and edited photos so a local business can be found, seen, and called. Work is delivered in days, not months. Files belong to the client after payment.
 **Product category:** Local creative studio / web + photo + video for small businesses
 **Product type:** Service (project packages)
-**Business model:** One-off packages, launch prices including VAT. Foto Mini 49 EUR, Video Reel 69 EUR, Web Jednostránka 190 EUR, Caviar Komplet 349 EUR.
+**Business model:** One-off packages, launch prices including VAT. Foto Mini 79 EUR, Video Reel 59 EUR (three reels 129 EUR), Web Jednostránka 219 EUR, Caviar Komplet 379 EUR, E-shop 590 EUR one-time plus 19 EUR/month (server, backups, maintenance).
 
 ## Target Audience
 **Target companies:** Restaurants, lodging, services, online shops, craftspeople, and small firms in Trnava and nearby.
@@ -45,7 +45,7 @@
 - One visual language across web, video, and photo
 - Launch prices (úvodná cena), all including VAT
 - Reply right away; web in 5–7 days; photo/video 3–5 days after the shoot
-- Two revision rounds in every package; files belong to the client after payment
+- Two revision rounds in every package, plus small fixes for 2 weeks after handover; files belong to the client after payment
 **How we do it differently:** One studio, one look, Trnava and nearby, no invented case studies.
 **Why that's better:** The owner does not have to coordinate three vendors.
 **Why customers choose us:** Speed, a clear package, and a single visual.
@@ -53,8 +53,8 @@
 ## Objections
 | Objection | Response |
 |-----------|----------|
-| Hosting is extra | Domain is connected. Hosting can stay with the client, or a cheap option is named. It is not in the web price unless agreed. |
-| How many edits? | Two rounds are included. Further rounds are agreed up front. |
+| Hosting is extra | Domain is connected. For the one-pager, hosting can stay with the client, or a cheap option is named — it is not in the web price unless agreed. The e-shop includes its own server for 19 EUR/month. |
+| How many edits? | Two rounds are included, plus small fixes for 2 weeks after handover. Further rounds are agreed up front. |
 | Who owns the files? | After payment, the client owns the site, photos, and video. |
 
 **Anti-persona:** Enterprises that need a CMS, ongoing ads, or a multi-page product catalog.
@@ -102,7 +102,7 @@
 | Theme | Proof |
 |-------|-------|
 | Speed | Reply right away; web 5–7 days; photo/video 3–5 days after shoot |
-| Price | 49 / 69 / 190 / 349 EUR s DPH |
+| Price | 59 / 79 / 219 / 379 / 590 EUR s DPH; three reels 129 EUR; E-shop also 19 EUR/month |
 | Ownership | Files belong to the client after payment |
 
 ## Goals

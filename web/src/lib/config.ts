@@ -15,10 +15,11 @@ export const CAVIAR = {
   EVERLIGHT: "https://thedesigns.org/foto/",
   SITE: "https://caviarstudio.sk/",
   prices: {
-    fotoMini: { launch: 49, standard: 120 },
-    videoReel: { launch: 69, standard: 180 },
-    webOnePager: { launch: 190, standard: 490 },
-    komplet: { launch: 349, standard: 890 },
+    fotoMini: { launch: 79 },
+    videoReel: { launch: 59 },
+    webOnePager: { launch: 219 },
+    eshop: { launch: 590, monthly: 19 },
+    komplet: { launch: 379 },
   },
 } as const;
 

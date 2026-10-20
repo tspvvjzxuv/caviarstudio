@@ -159,7 +159,7 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 - **Icons:** Lucide line icons, stroke 1.75, round caps/joins, overflow visible so nothing clips. Menu and contact chips sit in circular `.icon-disc` frosted-glass circles (azure wash, lemon hairline). Form selects and Fotky/Videá/Weby expanders use a silver-hairline `.glass-mark` / `.service-mark` disc with a thin centered plus or chevron. No decorative gradient dashes.
 - **Buttons:** Primary is an azure-deep metal fill with pearl type (lemon hairline inset), fully pill-shaped. Ghost/outline uses a translucent glass border. Uppercase labels, 52px min height, full width on small screens.
 - **Feature / service cards:** Super-mirror chrome (`.service-chrome`): liquid-silver gradient, azure and lemon edge light, translucent border, `rounded-3xl`. Slow sheen sweep on hover/open; pause the sheen under `prefers-reduced-motion`. Three-up on desktop with `--gap-panel`. Each card is a keyboard-accessible expander (`aria-expanded`, thin plus in a silver-hairline glass disc that rotates into ×). Azure/lemon glows sit in a full-width section field plus a large soft bloom behind each card; they fade to transparent past the chrome, with `overflow-x: clip` only on `html`. Names only on the face — Fotky, Videá, Weby. The “what you get” list and examples sit in the open panel, not on the closed card.
-- **Pricing cards:** Shared lemon launch-price pill; launch amounts in lemon. Caviar Komplet is visually louder: faint azure border, azure-to-lemon wash, wider measure. Same gap as other panel grids. No example lists under the prices — those live in Čo robíme.
+- **Pricing cards:** Shared lemon launch-price pill; launch amounts in lemon. Caviar Komplet is visually louder: faint azure border, azure-to-lemon wash, wider measure. Same gap as other panel grids. Foto / video / one-pager lists live in Čo robíme. The E-shop card lists what is included (and a short gateway note) on the card itself.
 - **Header / menus:** Fixed `.glass` navbar over the hero so the loop shows through. Mobile sheet, language switcher, select, tooltip, popover, dropdown, and dialog use `.glass` / `.glass-panel`.
 - **FAQ:** Each question is its own bordered panel (accordion), not a flush stacked divider list.
 - **Form fields:** Bordered inputs on elevated ground (shadcn-style field), not underline-only. Select chevrons sit in a 32px silver-hairline glass disc, flex-centered in a square with even right padding (`pr-2.5`); native `appearance` is reset.
@@ -178,7 +178,7 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 - Don't invent testimonials, client counts, limited slots, or guaranteed results (no “more bookings”, no “first 10” counters)
 - Don't show the words TODO or Placeholder anywhere in the UI
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
-- Do keep prices 49 / 69 / 190 / 349 EUR including VAT
+- Do keep prices 59 / 79 / 219 / 379 / 590 EUR including VAT. Video Reel is 59 EUR (three reels 129 EUR). E-shop is 590 EUR one-time plus 19 EUR/month (server, backups, maintenance).
 - Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, address **Trnava** only
 - Do pause ken-burns, sheen, and marquee when off-screen or the tab is hidden
 

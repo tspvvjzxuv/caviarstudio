@@ -39,7 +39,7 @@ npm run build:pages
 
 ## Content rules
 
-- Prices: 49 / 69 / 190 / 349 EUR including VAT (always s DPH)
+- Prices: 59 / 79 / 219 / 379 / 590 EUR including VAT (always s DPH). Video Reel is 59 EUR (three reels 129 EUR). E-shop is 590 EUR one-time plus 19 EUR/month for server, backups and maintenance.
 - Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /mircoft, Trnava
 - Palette: near-black `#070708`, silver/platinum type, azure `#3D8AFF` main accent, lemon `#FFE44D` secondary — **no metallic gold**. Display type is **Bodoni Moda**; body is DM Sans. Soft glass radii; translucent borders. Logo is upright CAVIAR + STUDIO · TRNAVA.
 - No stock photos and no assistant-chosen portraits. Hero is a muted liquid-chrome loop (`media/hero/`) over a silver field. Team uses monograms.
