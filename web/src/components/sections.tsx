@@ -315,7 +315,7 @@ export function Services() {
             const Icon = item.Icon;
             const expanded = open === item.id;
             return (
-              <div key={item.id} className="service-card">
+              <div key={item.id} className="service-card" data-service={item.id}>
                 <span className="service-glow" aria-hidden="true" />
                 <Reveal className="relative z-1 h-full overflow-visible" delay={idx}>
                   <button
@@ -342,13 +342,13 @@ export function Services() {
               </div>
             );
           })}
-        </div>
         <div
           ref={panelRef}
           id={panelId}
+          data-after={shown || "web"}
           role="region"
           aria-hidden={!open}
-          className={cn("service-panel", open && "is-open")}
+          className={cn("service-panel md:col-span-3", open && "is-open")}
         >
           <div className="service-panel-clip">
             <div ref={innerRef} className={cn("service-panel-inner", open && "is-shown")}>
@@ -362,6 +362,7 @@ export function Services() {
             ) : null}
             </div>
           </div>
+        </div>
         </div>
       </Section.Body>
     </Section.Frame>
@@ -519,7 +520,7 @@ function MonthlyPriceCard({ pack, vat, delay = 0 }: { pack: MonthlyPack; vat: st
             : "border border-border bg-card",
         )}
       >
-        <CardHeader className={PANEL_HEAD}>
+        <CardHeader className={cn(PANEL_HEAD, "h-full")}>
           <PriceIdentity
             name={dictText(t, pack.name)}
             desc={dictText(t, pack.desc)}
@@ -532,7 +533,7 @@ function MonthlyPriceCard({ pack, vat, delay = 0 }: { pack: MonthlyPack; vat: st
             data-magnetic=""
             variant={featured ? undefined : "outline"}
             className={cn(
-              "mt-1 h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase",
+              "mt-auto h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase",
               featured && "metal-fill px-6",
             )}
           >
