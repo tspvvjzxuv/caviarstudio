@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState, type RefObject, type SyntheticEvent } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { HeroSilverField } from "@/components/hero-silver-field";
 import { HERO_LOOP } from "@/lib/config";
-import { cn } from "@/lib/utils";
 
 type Conn = Navigator & {
   connection?: { saveData?: boolean };
@@ -12,25 +11,13 @@ function saveDataOn() {
   return Boolean((navigator as Conn).connection?.saveData);
 }
 
-function restartLoop(video: HTMLVideoElement) {
-  try {
-    video.currentTime = 0;
-  } catch {
-    /* ignore */
-  }
-  void video.play().catch(() => {});
-}
-
 function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null> }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [waiting, setWaiting] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     const root = pausedRoot.current;
     if (!video || !root) return;
-
-    const offscreen = () => document.hidden || root.classList.contains("is-paused");
 
     const arm = () => {
       video.muted = true;
@@ -40,82 +27,59 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       video.setAttribute("webkit-playsinline", "true");
     };
 
-    const tryPlay = () => {
+    let inView = true;
+    const sync = () => {
       arm();
-      if (offscreen()) {
+      const hide = document.hidden || !inView || root.classList.contains("is-paused");
+      if (hide) {
         video.pause();
         return;
       }
-      if (!video.paused) {
-        setWaiting(false);
-        return;
-      }
-      void video.play()
-        .then(() => setWaiting(false))
-        .catch(() => {});
+      void video.play().catch(() => {});
     };
 
-    const onPlaying = () => setWaiting(false);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0, rootMargin: "40px 0px" },
+    );
+    io.observe(video);
 
-    const mo = new MutationObserver(tryPlay);
+    const mo = new MutationObserver(sync);
     mo.observe(root, { attributes: true, attributeFilter: ["class"] });
-
-    video.addEventListener("canplay", tryPlay);
-    video.addEventListener("loadeddata", tryPlay);
-    video.addEventListener("playing", onPlaying);
-    document.addEventListener("visibilitychange", tryPlay);
-    window.addEventListener("pointerdown", tryPlay, { passive: true });
-    window.addEventListener("touchstart", tryPlay, { passive: true });
-    window.addEventListener("scroll", tryPlay, { passive: true });
-    window.addEventListener("keydown", tryPlay);
-
-    tryPlay();
-    const stall = window.setTimeout(() => {
-      if (video.paused && !offscreen()) setWaiting(true);
-    }, 1500);
-    const watchdog = window.setInterval(() => {
-      if (!offscreen() && video.paused) tryPlay();
-    }, 1000);
+    video.addEventListener("canplay", sync);
+    document.addEventListener("visibilitychange", sync);
+    sync();
 
     return () => {
+      io.disconnect();
       mo.disconnect();
-      video.removeEventListener("canplay", tryPlay);
-      video.removeEventListener("loadeddata", tryPlay);
-      video.removeEventListener("playing", onPlaying);
-      document.removeEventListener("visibilitychange", tryPlay);
-      window.removeEventListener("pointerdown", tryPlay);
-      window.removeEventListener("touchstart", tryPlay);
-      window.removeEventListener("scroll", tryPlay);
-      window.removeEventListener("keydown", tryPlay);
-      window.clearTimeout(stall);
-      window.clearInterval(watchdog);
+      video.removeEventListener("canplay", sync);
+      document.removeEventListener("visibilitychange", sync);
+      video.pause();
     };
   }, [pausedRoot]);
-
-  const onEnded = (event: SyntheticEvent<HTMLVideoElement>) => {
-    restartLoop(event.currentTarget);
-  };
 
   return (
     <video
       ref={videoRef}
-      className={cn(
-        "hero-loop pointer-events-none absolute inset-0 z-[1] size-full object-cover",
-        waiting && "opacity-0",
-      )}
+      className="hero-loop pointer-events-none absolute inset-0 z-[1] size-full object-cover"
       autoPlay
       muted
       loop
       playsInline
-      preload="auto"
+      preload="metadata"
       poster={HERO_LOOP.poster}
+      width={1920}
+      height={1080}
       aria-hidden="true"
       disablePictureInPicture
       disableRemotePlayback
-      onEnded={onEnded}
     >
-      <source src={HERO_LOOP.mp4} type="video/mp4" />
       <source src={HERO_LOOP.webm} type="video/webm" />
+      <source src={HERO_LOOP.mp4} type="video/mp4" />
     </video>
   );
 }

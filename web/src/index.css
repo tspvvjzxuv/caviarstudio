@@ -91,8 +91,8 @@
     to { transform: scale(1.12); }
   }
   @keyframes sheen {
-    0%, 100% { background-position: 0 0, 0% 0; opacity: 0.75; }
-    50% { background-position: 0 0, 100% 0; opacity: 1; }
+    0%, 100% { transform: translate3d(-90%, 0, 0); opacity: 0.7; }
+    50% { transform: translate3d(160%, 0, 0); opacity: 1; }
   }
   @keyframes intro-out {
     to { opacity: 0; visibility: hidden; }
@@ -110,8 +110,8 @@
     to { transform: translateX(-50%); }
   }
   @keyframes tile-sheen {
-    0%, 100% { background-position: 0% 0; opacity: 0.55; }
-    50% { background-position: 100% 0; opacity: 1; }
+    0%, 100% { transform: translate3d(-90%, 0, 0); opacity: 0.5; }
+    50% { transform: translate3d(160%, 0, 0); opacity: 1; }
   }
   @keyframes logo-in {
     from { opacity: 0; transform: translateY(18px) scale(0.94); }
@@ -289,7 +289,8 @@
   pointer-events: none;
   opacity: 0.05;
   mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("/media/ui/grain.png");
+  background-size: 128px 128px;
 }
 
 .pearl {
@@ -361,18 +362,32 @@
     linear-gradient(168deg, #1d1f26 0%, #121318 34%, #0a0a0c 62%, #070708 100%);
 }
 
-.hero-shine {
-  background:
-    radial-gradient(ellipse 85% 58% at 14% 6%, rgb(244 245 247 / 24%), transparent 56%),
-    linear-gradient(118deg, transparent 36%, rgb(232 234 238 / 18%) 50%, transparent 64%);
-  background-size: 100% 100%, 240% 100%;
-  mix-blend-mode: screen;
+.hero-loop {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
-
+.hero-shine {
+  overflow: hidden;
+  isolation: isolate;
+  mix-blend-mode: screen;
+  background: radial-gradient(ellipse 85% 58% at 14% 6%, rgb(244 245 247 / 24%), transparent 56%);
+}
+.hero-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 46%;
+  pointer-events: none;
+  background: linear-gradient(118deg, transparent 8%, rgb(232 234 238 / 18%) 50%, transparent 92%);
+  transform: translate3d(-90%, 0, 0);
+}
 .hero-grain {
   opacity: 0.1;
   mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-image: url("/media/ui/grain.png");
+  background-size: 128px 128px;
 }
 
 .hero-depth {
@@ -448,7 +463,7 @@
   opacity: 1;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-shine {
+  .hero-shine::after {
     animation: var(--animate-sheen);
   }
   .hero-ken .hero-field {
@@ -468,13 +483,13 @@
     animation: var(--animate-ticker);
   }
   .silver-sheen::after,
-  .device-sheen {
+  .device-sheen::after {
     animation: var(--animate-tile-sheen);
   }
   .hero-ken.is-paused .hero-field,
-  .hero-ken.is-paused .hero-shine,
+  .hero-ken.is-paused .hero-shine::after,
   .work-sec.is-paused .silver-sheen::after,
-  .work-sec.is-paused .device-sheen,
+  .work-sec.is-paused .device-sheen::after,
   .work-sec.is-paused .marquee-track,
   .service-sec.is-paused .service-chrome::after,
   .service-sec.is-paused .service-chrome::before {
@@ -489,6 +504,10 @@
     }
     .project:hover .device-sheen {
       opacity: 0.72;
+    }
+    .project:hover .device-laptop,
+    .project:hover .device-phone {
+      will-change: transform;
     }
     .project:hover .device-glow {
       opacity: 0.95;
@@ -603,14 +622,12 @@
 }
 .cursor-root > span:first-child {
   transition:
-    width 280ms var(--ease-caviar),
-    height 280ms var(--ease-caviar),
+    transform 280ms var(--ease-caviar),
     background-color 280ms var(--ease-caviar);
 }
 .cursor-root.is-view > span:first-child,
 .cursor-root.is-soon > span:first-child {
-  width: 4.5rem;
-  height: 4.5rem;
+  transform: translate(-50%, -50%) scale(1.8);
   background: rgb(61 138 255 / 14%);
 }
 .cursor-root > span:last-child {
@@ -695,7 +712,6 @@
 .device-phone {
   transform: translateZ(0);
   transition: transform 0.9s var(--ease-out-expo);
-  will-change: transform;
 }
 .device-laptop {
   position: relative;
@@ -761,19 +777,28 @@
 .device-sheen {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    transparent 30%,
-    rgb(61 138 255 / 18%) 46%,
-    rgb(255 255 255 / 28%) 50%,
-    rgb(255 228 77 / 16%) 54%,
-    transparent 70%
-  );
-  background-size: 220% 100%;
   mix-blend-mode: screen;
   opacity: 0.34;
   transition: opacity 0.7s var(--ease-out-expo);
+}
+.device-sheen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 46%;
+  background: linear-gradient(
+    115deg,
+    transparent 8%,
+    rgb(61 138 255 / 18%) 46%,
+    rgb(255 255 255 / 28%) 50%,
+    rgb(255 228 77 / 16%) 54%,
+    transparent 92%
+  );
+  transform: translate3d(-90%, 0, 0);
 }
 .device-hinge {
   display: block;
@@ -849,14 +874,20 @@
   }
 }
 
+.silver-sheen {
+  overflow: hidden;
+}
 .silver-sheen::after {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 46%;
   pointer-events: none;
-  background: linear-gradient(115deg, transparent 32%, rgb(61 138 255 / 16%) 46%, rgb(255 228 77 / 22%) 50%, rgb(61 138 255 / 16%) 54%, transparent 68%);
-  background-size: 220% 100%;
+  background: linear-gradient(115deg, transparent 8%, rgb(61 138 255 / 16%) 46%, rgb(255 228 77 / 22%) 50%, rgb(61 138 255 / 16%) 54%, transparent 92%);
   mix-blend-mode: screen;
+  transform: translate3d(-90%, 0, 0);
 }
 
 .silver-a {
@@ -957,7 +988,6 @@
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  clip-path: inset(0 round 1.5rem);
   background:
     radial-gradient(ellipse 70% 80% at 8% 20%, rgb(61 138 255 / 28%), transparent 58%),
     radial-gradient(ellipse 60% 70% at 92% 86%, rgb(255 228 77 / 18%), transparent 54%),
@@ -968,21 +998,23 @@
 .service-chrome::after {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
   pointer-events: none;
   border-radius: inherit;
-  clip-path: inset(0 round 1.5rem);
   background: linear-gradient(
     115deg,
-    transparent 30%,
+    transparent 8%,
     rgb(61 138 255 / 22%) 46%,
     rgb(255 255 255 / 34%) 50%,
     rgb(255 228 77 / 24%) 54%,
-    transparent 70%
+    transparent 92%
   );
-  background-size: 220% 100%;
   mix-blend-mode: screen;
   opacity: 0.4;
+  transform: translate3d(-90%, 0, 0);
 }
 .service-chrome:focus-visible {
   outline: 3px solid rgb(255 228 77 / 55%);
@@ -1142,11 +1174,9 @@ button[data-magnetic]:not(.metal-fill) {
 }
 
 .hero-parallax {
-  will-change: transform;
   transform: translate3d(0, var(--hero-py, 0px), 0);
 }
 .hero-logo-par {
-  will-change: transform;
   transform: translate3d(0, var(--logo-py, 0px), 0);
 }
 
@@ -1161,6 +1191,41 @@ button[data-magnetic]:not(.metal-fill) {
   border-color: rgb(61 138 255 / 35%);
   background: rgb(7 7 8 / 62%);
   color: #f4f5f7;
+}
+
+@media (max-width: 767px) {
+  .glass {
+    background-color: rgb(14 14 18 / 64%);
+    -webkit-backdrop-filter: blur(8px) saturate(1.15);
+    backdrop-filter: blur(8px) saturate(1.15);
+  }
+  .glass-panel {
+    background-color: rgb(14 14 18 / 88%);
+    -webkit-backdrop-filter: blur(10px) saturate(1.15);
+    backdrop-filter: blur(10px) saturate(1.15);
+  }
+  .icon-disc,
+  .glass-mark,
+  .service-mark {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .hero-ghost {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgb(7 7 8 / 72%);
+  }
+  .hero-shine::after,
+  .device-sheen::after,
+  .silver-sheen::after,
+  .service-chrome::after {
+    animation: none !important;
+    transform: translate3d(40%, 0, 0);
+    opacity: 0.55;
+  }
+  .hero-ken .hero-field {
+    animation: none !important;
+  }
 }
 
 :root {
