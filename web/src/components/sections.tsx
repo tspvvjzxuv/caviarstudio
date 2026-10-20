@@ -467,8 +467,8 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
   return (
-    <Reveal className="h-full" delay={3}>
-      <Card className="h-full min-h-[20rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
+    <Reveal className="self-start" delay={3}>
+      <Card className="min-h-[20rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
         <CardHeader className={PANEL_HEAD}>
           <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
           <PriceAmounts launch={price.launch} standard={optionalAmount(price, "standard")} vat={vat} />
