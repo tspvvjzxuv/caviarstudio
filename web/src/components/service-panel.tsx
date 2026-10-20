@@ -1,8 +1,11 @@
-import { useLayoutEffect, useRef, type RefObject } from "react";
+import { useLayoutEffect, useRef, type ComponentType, type RefObject, type SVGProps } from "react";
 import { WorkGallery } from "@/components/work-gallery";
+import { IconDisc } from "@/components/icon-disc";
 import { useLanguage } from "@/lib/language";
 import type { WorkItem } from "@/lib/work";
 import { cn } from "@/lib/utils";
+
+type ServiceIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
 function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -61,7 +64,7 @@ function tweenRows(
 function ServiceExamples({ items }: { items: readonly string[] }) {
   const { t } = useLanguage();
   return (
-    <div className="rounded-3xl border border-white/12 bg-linear-to-b from-azure/12 to-lemon/6 p-5 md:p-6">
+    <div>
       <p className="text-[0.62rem] font-medium tracking-[0.2em] text-azure uppercase">{t.pExLabel}</p>
       <ul className="mt-3 grid gap-2">
         {items.map((item) => (
@@ -75,19 +78,47 @@ function ServiceExamples({ items }: { items: readonly string[] }) {
   );
 }
 
+function alignPointer(panel: HTMLElement, trigger: HTMLElement | null) {
+  if (!trigger) {
+    panel.style.setProperty("--pointer-x", "50%");
+    return;
+  }
+  const box = panel.getBoundingClientRect();
+  const tab = trigger.getBoundingClientRect();
+  if (box.width < 8) {
+    panel.style.setProperty("--pointer-x", "50%");
+    return;
+  }
+  const x = ((tab.left + tab.width / 2 - box.left) / box.width) * 100;
+  panel.style.setProperty("--pointer-x", `${Math.min(92, Math.max(8, x)).toFixed(2)}%`);
+}
+
 export function ServiceDetail({
   title,
   examples,
   media,
   priority,
+  Icon,
 }: {
   title: string;
   examples: readonly string[];
   media: readonly WorkItem[];
   priority?: boolean;
+  Icon?: ServiceIcon;
 }) {
   return (
-    <div className="pt-6 md:pt-8" aria-label={title}>
+    <div className="service-panel-shell" aria-label={title}>
+      <i className="service-panel-notch" aria-hidden="true" />
+      <div className="service-panel-head panel-enter">
+        {Icon ? (
+          <IconDisc size="sm">
+            <Icon />
+          </IconDisc>
+        ) : null}
+        <h3 className="min-w-0 font-serif text-[clamp(1.45rem,2.6vw,1.9rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
+          {title}
+        </h3>
+      </div>
       <div className="panel-enter">
         <ServiceExamples items={examples} />
       </div>
@@ -107,6 +138,7 @@ export function ServicePanel({
   buttonRefs,
   skipEnter = false,
   className,
+  Icon,
 }: {
   id: string;
   open: boolean;
@@ -118,6 +150,7 @@ export function ServicePanel({
   buttonRefs?: RefObject<Record<string, HTMLButtonElement | null>>;
   skipEnter?: boolean;
   className?: string;
+  Icon?: ServiceIcon;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -128,6 +161,9 @@ export function ServicePanel({
     const panel = panelRef.current;
     const inner = innerRef.current;
     if (!panel || !inner) return;
+
+    const trigger = followId ? buttonRefs?.current[followId] ?? null : null;
+    alignPointer(panel, trigger);
 
     if (skipRef.current && open) {
       skipRef.current = false;
@@ -165,9 +201,11 @@ export function ServicePanel({
       return;
     }
 
-    const trigger = open && followId ? buttonRefs?.current[followId] ?? null : null;
     const stopTween = tweenRows(panel, from, to, open ? "1fr" : "0fr", () => {
-      if (open) revealAfterOpen(trigger, panel);
+      if (open) {
+        alignPointer(panel, trigger);
+        revealAfterOpen(trigger, panel);
+      }
     });
     return () => {
       stopTween();
@@ -184,7 +222,7 @@ export function ServicePanel({
     >
       <div className="service-panel-clip">
         <div ref={innerRef} className={cn("service-panel-inner", open && "is-shown")}>
-          <ServiceDetail title={title} examples={examples} media={media} priority={open} />
+          <ServiceDetail title={title} examples={examples} media={media} priority={open} Icon={Icon} />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type RefObject } from "react";
 import { usePrefersMd } from "@/hooks/use-mobile";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
@@ -56,6 +56,9 @@ const SERVICES = [
 ] as const;
 
 const INITIAL_SERVICE = examplesWithMedia(WORK).length > 0 ? "web" : "";
+const SERVICE_ROW_1 = SERVICES.slice(0, 3);
+const SERVICE_ROW_2 = SERVICES.slice(3);
+type ServiceItem = (typeof SERVICES)[number];
 
 const TEAM = [
   { mono: "MK", name: "Miroslav Kotvas" },
@@ -180,6 +183,59 @@ export function Hero() {
   );
 }
 
+function ServiceCard({
+  item,
+  expanded,
+  panelId,
+  delay,
+  onToggle,
+  buttonRefs,
+}: {
+  item: ServiceItem;
+  expanded: boolean;
+  panelId: string;
+  delay: number;
+  onToggle: (id: string) => void;
+  buttonRefs: RefObject<Record<string, HTMLButtonElement | null>>;
+}) {
+  const { t } = useLanguage();
+  const Icon = item.Icon;
+  return (
+    <div className="service-card" data-service={item.id}>
+      <span className="service-glow" aria-hidden="true" />
+      <Reveal className="relative z-1 h-full overflow-visible" delay={delay}>
+        <button
+          ref={(el) => {
+            buttonRefs.current[item.id] = el;
+          }}
+          type="button"
+          aria-expanded={expanded}
+          aria-controls={panelId}
+          onClick={() => onToggle(item.id)}
+          className={cn(
+            "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+            expanded && "is-open",
+          )}
+        >
+          <IconDisc>
+            <Icon />
+          </IconDisc>
+          <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
+            {dictText(t, item.name)}
+          </span>
+          <span className="service-mark" aria-hidden="true">
+            <i className="service-mark-plus" />
+          </span>
+        </button>
+      </Reveal>
+    </div>
+  );
+}
+
+function rowShown(row: readonly ServiceItem[], shown: string, open: string) {
+  return row.find((item) => item.id === (open || shown)) ?? row.find((item) => item.id === shown) ?? row[0];
+}
+
 export function Services() {
   const { t } = useLanguage();
   const panelId = useId();
@@ -188,7 +244,6 @@ export function Services() {
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [open, setOpen] = useState(INITIAL_SERVICE);
   const [shown, setShown] = useState(INITIAL_SERVICE);
-  const active = SERVICES.find((item) => item.id === shown);
   usePauseOffscreen(frameRef);
 
   useEffect(() => {
@@ -204,7 +259,12 @@ export function Services() {
     setOpen(id);
   };
 
-  const desktopId = `${panelId}-desktop`;
+  const row1Id = `${panelId}-row1`;
+  const row2Id = `${panelId}-row2`;
+  const row1 = rowShown(SERVICE_ROW_1, shown, open);
+  const row2 = rowShown(SERVICE_ROW_2, shown, open);
+  const row1Open = SERVICE_ROW_1.some((item) => item.id === open);
+  const row2Open = SERVICE_ROW_2.some((item) => item.id === open);
 
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
@@ -214,44 +274,75 @@ export function Services() {
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
         </p>
-        <div className="service-grid items-stretch gap-6 overflow-visible md:gap-8 xl:gap-10">
-          {SERVICES.map((item, idx) => {
-            const Icon = item.Icon;
-            const expanded = open === item.id;
-            const itemPanelId = isMd ? desktopId : `${panelId}-${item.id}`;
-            return (
-              <div key={item.id} className="contents">
-                <div className="service-card" data-service={item.id}>
-                  <span className="service-glow" aria-hidden="true" />
-                  <Reveal className="relative z-1 h-full overflow-visible" delay={idx}>
-                    <button
-                      ref={(el) => {
-                        btnRefs.current[item.id] = el;
-                      }}
-                      type="button"
-                      aria-expanded={expanded}
-                      aria-controls={itemPanelId}
-                      onClick={() => toggleService(item.id)}
-                      className={cn(
-                        "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
-                        expanded && "is-open",
-                      )}
-                    >
-                      <IconDisc>
-                        <Icon />
-                      </IconDisc>
-                      <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
-                        {dictText(t, item.name)}
-                      </span>
-                      <span className="service-mark" aria-hidden="true">
-                        <i className="service-mark-plus" />
-                      </span>
-                    </button>
-                  </Reveal>
-                </div>
-                {isMd ? null : (
+        {isMd ? (
+          <div className="service-stack">
+            <div className={cn("service-row service-row-3", row1Open && "is-expanded")}>
+              {SERVICE_ROW_1.map((item, idx) => (
+                <ServiceCard
+                  key={item.id}
+                  item={item}
+                  expanded={open === item.id}
+                  panelId={row1Id}
+                  delay={idx}
+                  onToggle={toggleService}
+                  buttonRefs={btnRefs}
+                />
+              ))}
+            </div>
+            <ServicePanel
+              id={row1Id}
+              open={row1Open}
+              title={dictText(t, row1.name)}
+              examples={dictList(t, row1.examples)}
+              media={row1.media as readonly WorkItem[]}
+              contentKey={row1.id}
+              followId={row1Open ? open : row1.id}
+              buttonRefs={btnRefs}
+              skipEnter={SERVICE_ROW_1.some((item) => item.id === INITIAL_SERVICE)}
+              Icon={row1.Icon}
+            />
+            <div className={cn("service-row service-row-2", row2Open && "is-expanded")}>
+              {SERVICE_ROW_2.map((item, idx) => (
+                <ServiceCard
+                  key={item.id}
+                  item={item}
+                  expanded={open === item.id}
+                  panelId={row2Id}
+                  delay={idx + SERVICE_ROW_1.length}
+                  onToggle={toggleService}
+                  buttonRefs={btnRefs}
+                />
+              ))}
+            </div>
+            <ServicePanel
+              id={row2Id}
+              open={row2Open}
+              title={dictText(t, row2.name)}
+              examples={dictList(t, row2.examples)}
+              media={row2.media as readonly WorkItem[]}
+              contentKey={row2.id}
+              followId={row2Open ? open : row2.id}
+              buttonRefs={btnRefs}
+              Icon={row2.Icon}
+            />
+          </div>
+        ) : (
+          <div className="service-grid">
+            {SERVICES.map((item, idx) => {
+              const expanded = open === item.id;
+              const itemPanelId = `${panelId}-${item.id}`;
+              return (
+                <div key={item.id} className="service-unit">
+                  <ServiceCard
+                    item={item}
+                    expanded={expanded}
+                    panelId={itemPanelId}
+                    delay={idx}
+                    onToggle={toggleService}
+                    buttonRefs={btnRefs}
+                  />
                   <ServicePanel
-                    id={`${panelId}-${item.id}`}
+                    id={itemPanelId}
                     open={expanded}
                     title={dictText(t, item.name)}
                     examples={dictList(t, item.examples)}
@@ -260,25 +351,13 @@ export function Services() {
                     followId={item.id}
                     buttonRefs={btnRefs}
                     skipEnter={item.id === INITIAL_SERVICE}
+                    Icon={item.Icon}
                   />
-                )}
-              </div>
-            );
-          })}
-          {isMd && active ? (
-            <ServicePanel
-              id={desktopId}
-              open={Boolean(open)}
-              title={dictText(t, active.name)}
-              examples={dictList(t, active.examples)}
-              media={active.media as readonly WorkItem[]}
-              contentKey={shown}
-              followId={open || shown}
-              buttonRefs={btnRefs}
-              skipEnter={Boolean(INITIAL_SERVICE)}
-            />
-          ) : null}
-        </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </Section.Body>
     </Section.Frame>
   );
@@ -388,16 +467,14 @@ function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: str
   const { t } = useLanguage();
   const price = CAVIAR.prices[pack.key];
   return (
-      <Reveal className="h-full md:col-span-2 xl:col-span-2" delay={3}>
-      <Card className="h-full min-h-[16rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
-        <CardHeader className="flex flex-col gap-4 p-6 md:p-8 lg:grid lg:grid-cols-[1.15fr_auto] lg:items-end lg:gap-12">
+    <Reveal className="self-start" delay={3}>
+      <Card className="min-h-[20rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
+        <CardHeader className={PANEL_HEAD}>
           <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
-          <div className="grid gap-4 justify-items-start">
-            <PriceAmounts launch={price.launch} standard={optionalAmount(price, "standard")} vat={vat} />
-            <Button asChild data-magnetic="" className="metal-fill h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
-              <a href="#kontakt">{t.ctaQuote}</a>
-            </Button>
-          </div>
+          <PriceAmounts launch={price.launch} standard={optionalAmount(price, "standard")} vat={vat} />
+          <Button asChild data-magnetic="" className="metal-fill mt-1 h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
+            <a href="#kontakt">{t.ctaQuote}</a>
+          </Button>
         </CardHeader>
       </Card>
     </Reveal>
