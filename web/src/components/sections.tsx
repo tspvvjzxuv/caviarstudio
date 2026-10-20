@@ -417,9 +417,11 @@ function PriceAmounts({
   return (
     <div>
       <p className="font-serif text-[clamp(2rem,3.2vw,2.7rem)] leading-[1.12]">
-        {t.priceFrom} <span className="text-lemon">{launch} EUR</span>
-        {period ? <span className="font-serif text-[0.55em] tracking-normal text-lemon"> {period}</span> : null}{" "}
-        <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">{vat}</span>
+        {t.priceFrom} <span className="text-lemon">{launch} EUR</span>{" "}
+        <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">
+          {vat}
+          {period ? ` ${period}` : ""}
+        </span>
       </p>
       {monthly != null && monthlyLabel ? (
         <p className="mt-3 text-[0.95rem] leading-[1.5] text-muted-foreground">
