@@ -240,7 +240,7 @@ export function Services() {
                       <IconDisc>
                         <Icon />
                       </IconDisc>
-                      <span className="min-w-0 flex-1 font-serif text-[clamp(2rem,4vw,3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
+                      <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
                         {dictText(t, item.name)}
                       </span>
                       <span className="service-mark" aria-hidden="true">
