@@ -319,7 +319,7 @@ export function Services() {
         <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
           {t.doLead}
         </p>
-        <div className="grid items-stretch gap-6 overflow-visible md:grid-cols-2 md:gap-8 xl:grid-cols-4 xl:gap-10">
+        <div className="grid items-stretch gap-6 overflow-visible md:grid-cols-2 md:gap-8 xl:gap-10">
           {SERVICES.map((item, idx) => {
             const Icon = item.Icon;
             const expanded = open === item.id;
@@ -357,7 +357,7 @@ export function Services() {
           data-after={shown || "web"}
           role="region"
           aria-hidden={!open}
-          className={cn("service-panel md:col-span-2 xl:col-span-4", open && "is-open")}
+          className={cn("service-panel md:col-span-2", open && "is-open")}
         >
           <div className="service-panel-clip">
             <div ref={innerRef} className={cn("service-panel-inner", open && "is-shown")}>
