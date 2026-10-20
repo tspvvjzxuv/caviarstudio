@@ -36,7 +36,7 @@ import {
 import { CAVIAR, formatPhone, waHref } from "@/lib/config";
 import { FAQ_KEYS, type Dict } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
-import { BRAND_EXAMPLES, DRONE_EXAMPLES, examplesWithMedia, PHOTO_EXAMPLES, preloadWorkShots, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
+import { BRAND_EXAMPLES, DRONE_EXAMPLES, PHOTO_EXAMPLES, preloadWorkShots, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
@@ -55,7 +55,6 @@ const SERVICES = [
   { id: "brand", name: "brandName", examples: "pBrandEx", Icon: Palette, media: BRAND_EXAMPLES },
 ] as const;
 
-const INITIAL_SERVICE = examplesWithMedia(WORK).length > 0 ? "web" : "";
 const SERVICE_ROW_1 = SERVICES.slice(0, 3);
 const SERVICE_ROW_2 = SERVICES.slice(3);
 type ServiceItem = (typeof SERVICES)[number];
@@ -242,8 +241,8 @@ export function Services() {
   const isMd = usePrefersMd();
   const frameRef = useRef<HTMLElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const [open, setOpen] = useState(INITIAL_SERVICE);
-  const [shown, setShown] = useState(INITIAL_SERVICE);
+  const [open, setOpen] = useState("");
+  const [shown, setShown] = useState("");
   usePauseOffscreen(frameRef);
 
   useEffect(() => {
@@ -298,7 +297,6 @@ export function Services() {
               contentKey={row1.id}
               followId={row1Open ? open : row1.id}
               buttonRefs={btnRefs}
-              skipEnter={SERVICE_ROW_1.some((item) => item.id === INITIAL_SERVICE)}
               Icon={row1.Icon}
             />
             <div className={cn("service-row service-row-2", row2Open && "is-expanded")}>
@@ -350,7 +348,6 @@ export function Services() {
                     contentKey={item.id}
                     followId={item.id}
                     buttonRefs={btnRefs}
-                    skipEnter={item.id === INITIAL_SERVICE}
                     Icon={item.Icon}
                   />
                 </div>

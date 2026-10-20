@@ -749,6 +749,8 @@
 }
 .device-screen {
   position: relative;
+  z-index: 1;
+  isolation: isolate;
   overflow: hidden;
   border-radius: 0.28rem;
   background: #070708;
@@ -761,12 +763,18 @@
   aspect-ratio: 390 / 844;
   border-radius: 0.7rem;
 }
-.device-screen img {
+.device-screen img,
+.device-screen video {
   display: block;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top center;
+  mix-blend-mode: normal;
+  filter: none;
 }
 .device-lid .device-screen img {
   aspect-ratio: 1440 / 900;
@@ -782,6 +790,14 @@
   mix-blend-mode: screen;
   opacity: 0.34;
   transition: opacity 0.7s var(--ease-out-expo);
+}
+.service-panel .device-sheen,
+.service-panel .device-sheen::after {
+  display: none;
+  mix-blend-mode: normal;
+  background: none;
+  filter: none;
+  opacity: 0;
 }
 .device-sheen::after {
   content: "";
@@ -1191,8 +1207,17 @@
   overflow: visible;
   padding: 10px 0 0;
 }
+.service-stack .service-panel-inner {
+  padding-bottom: 1.5rem;
+}
+@media (min-width: 1280px) {
+  .service-stack .service-panel-inner {
+    padding-bottom: 2.5rem;
+  }
+}
 .service-panel-shell {
   position: relative;
+  isolation: isolate;
   border-radius: 1.5rem;
   border: 1px solid rgb(61 138 255 / 48%);
   background:
@@ -1202,6 +1227,12 @@
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 16%),
     0 0 0 1px rgb(61 138 255 / 16%);
+}
+.service-panel .work-sec,
+.service-panel .device-stage {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
 }
 .service-panel-notch {
   position: absolute;
