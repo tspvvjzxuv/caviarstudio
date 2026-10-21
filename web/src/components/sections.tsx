@@ -41,6 +41,7 @@ import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
 import { ServicePanel } from "@/components/service-panel";
+import { MeltSurface } from "@/components/melt-surface";
 import { cn } from "@/lib/utils";
 
 const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
@@ -212,17 +213,20 @@ function ServiceCard({
           aria-controls={panelId}
           onClick={() => onToggle(item.id)}
           className={cn(
-            "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+            "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
             expanded && "is-open",
           )}
         >
-          <IconDisc>
+          <MeltSurface seed={SERVICES.findIndex((row) => row.id === item.id)} />
+          <IconDisc className="relative z-[3]">
             <Icon />
           </IconDisc>
-          <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
-            {dictText(t, item.name)}
+          <span className="service-label">
+            <span className="service-label-text font-serif text-[clamp(1.55rem,3.1vw,2.3rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
+              {dictText(t, item.name)}
+            </span>
           </span>
-          <span className="service-mark" aria-hidden="true">
+          <span className="service-mark relative z-[3]" aria-hidden="true">
             <i className="service-mark-plus" />
           </span>
         </button>
