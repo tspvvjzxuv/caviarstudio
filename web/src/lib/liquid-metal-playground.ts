@@ -12,7 +12,7 @@ export const PLAYGROUND_PARAMS = {
   liquid: 0.12,
   speed: 0.09,
   patternScale: 0.78,
-  angleDeg: 50,
+  angleDeg: 35,
 } as const;
 
 const POISSON_C = 0.01;
@@ -234,39 +234,32 @@ void main() {
   );
 
   float ratio = uField.z / max(uField.w, 1.0);
-  vec2 uv = fieldUv;
-  uv.x *= ratio;
-
   vec2 aspect = vec2(ratio, 1.0);
+  vec2 iso = (fieldUv - 0.5) * aspect;
   vec2 toMouse = (fieldUv - mouse_uv) * aspect;
   float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
 
   float t = u_time * u_speed;
-  uv += vec2(
-    snoise(uv * 1.15 + vec2(t * 0.55, t * 0.4)),
-    snoise(uv * 1.15 - vec2(t * 0.35, -t * 0.5))
+  iso += vec2(
+    snoise(iso * 1.15 + vec2(t * 0.55, t * 0.4)),
+    snoise(iso * 1.15 - vec2(t * 0.35, -t * 0.5))
   ) * 0.028 * mouseFalloff;
-  uv -= toMouse * 0.045 * mouseFalloff;
+  iso -= toMouse * 0.045 * mouseFalloff;
+  iso = rotate(iso, u_angle);
 
-  vec2 center = vec2(0.5 * ratio, 0.5);
-  uv = rotate(uv - center, u_angle) + center;
-
-  float diagonal = uv.x - uv.y;
+  float flow = iso.x;
 
   float edge = smoothstep(-18.0, -1.0, sdf);
 
   vec3 color2 = vec3(0.90, 0.91, 0.94);
   vec3 color1 = vec3(0.055, 0.056, 0.062);
+  vec3 azure = vec3(0.239, 0.541, 1.0);
+  vec3 lemon = vec3(1.0, 0.894, 0.302);
 
-  vec2 grad_uv = uv - center;
-  grad_uv.x /= max(ratio, 1.0);
-
-  float dist = length(grad_uv + vec2(0., .12 * diagonal));
-  grad_uv = rotate(grad_uv, (.18 - .12 * diagonal) * PI);
-
+  float dist = length(iso);
   float bulge = pow(1.8 * dist, 1.2);
   bulge = 1. - bulge;
-  bulge *= pow(max(fieldUv.y, 0.0), .3);
+  bulge *= pow(max(0.5 + iso.y, 0.0), .3);
 
   float cycle_width = u_patternScale;
   float thin_strip_1_ratio = .12 / cycle_width * (1. - .4 * bulge);
@@ -278,53 +271,31 @@ void main() {
 
   float opacity = 1. - smoothstep(.9 - .5 * u_edge, 1. - .5 * u_edge, edge);
 
-  float noise = snoise(uv * 0.42 - t) * 0.72 + snoise(uv * 0.16 - t * 0.38) * 0.28;
+  float noise = snoise(vec2(flow, iso.y) * 0.42 - t) * 0.72 + snoise(vec2(flow, iso.y) * 0.16 - t * 0.38) * 0.28;
   edge += (1. - edge) * u_liquid * noise;
 
-  float refr = 0.;
-  refr += (1. - bulge);
-  refr = clamp(refr, 0., 1.);
-
-  float dir = grad_uv.x;
-  dir += diagonal;
-  dir -= 2. * noise * diagonal * (smoothstep(0., 1., edge) * smoothstep(1., 0., edge));
-
-  bulge *= clamp(pow(max(fieldUv.y, 0.0), .1), .3, 1.);
-  dir *= (.1 + (1.1 - edge) * bulge);
+  float dir = flow;
+  dir -= 0.55 * noise * (smoothstep(0., 1., edge) * smoothstep(1., 0., edge));
+  bulge *= clamp(pow(max(0.5 + iso.y, 0.0), .1), .3, 1.);
+  dir *= (.18 + (1.05 - edge) * bulge);
   dir *= smoothstep(1., .7, edge);
-  dir += .18 * (smoothstep(.1, .2, fieldUv.y) * smoothstep(.4, .2, fieldUv.y));
-  dir += .03 * (smoothstep(.1, .2, 1. - fieldUv.y) * smoothstep(.4, .2, 1. - fieldUv.y));
-  dir *= (.5 + .5 * pow(max(fieldUv.y, 0.0), 2.));
   dir *= cycle_width;
   dir -= t;
   dir += (mouse_uv.x - 0.5) * 0.07 * mouseFalloff;
 
-  float refr_r = refr;
-  refr_r += .03 * bulge * noise;
-  float refr_b = 1.3 * refr;
-
-  refr_r += 5. * (smoothstep(-.1, .2, fieldUv.y) * smoothstep(.5, .1, fieldUv.y)) * (smoothstep(.4, .6, bulge) * smoothstep(1., .4, bulge));
-  refr_r -= diagonal;
-
-  refr_b += (smoothstep(0., .4, fieldUv.y) * smoothstep(.8, .1, fieldUv.y)) * (smoothstep(.4, .6, bulge) * smoothstep(.8, .4, bulge));
-  refr_b -= .2 * edge;
-
-  refr_r *= u_refraction;
-  refr_b *= u_refraction;
-
   vec3 w = vec3(thin_strip_1_width, thin_strip_2_width, wide_strip_ratio);
   w[1] -= .02 * smoothstep(.0, 1., edge + bulge);
 
-  float stripe_r = mod(dir + refr_r, 1.);
-  float r = get_color_channel(color1.r, color2.r, stripe_r, w, 0.02 + .03 * u_refraction * bulge, bulge);
+  float stripe = mod(dir, 1.);
+  float ch = get_color_channel(color1.r, color2.r, stripe, w, 0.02 + .03 * u_refraction * bulge, bulge);
+  vec3 color = vec3(ch);
 
-  float stripe_g = mod(dir, 1.);
-  float g = get_color_channel(color1.g, color2.g, stripe_g, w, 0.01 / (1. - diagonal), bulge);
-
-  float stripe_b = mod(dir - refr_b, 1.);
-  float b = get_color_channel(color1.b, color2.b, stripe_b, w, .01, bulge);
-
-  vec3 color = vec3(r, g, b);
+  float hi = smoothstep(0.38, 0.82, ch);
+  float hueWave = 0.5 + 0.5 * sin(flow * 6.28318 * 0.55 + t * 0.32);
+  float azureAmt = (1.0 - smoothstep(0.30, 0.46, hueWave)) * hi;
+  float lemonAmt = smoothstep(0.54, 0.70, hueWave) * hi;
+  color = mix(color, mix(color, azure, 0.55), azureAmt * 0.62);
+  color = mix(color, mix(color, lemon, 0.50), lemonAmt * 0.58);
 
   if (sdf >= 0.0) discard;
   float clip = 1.0 - smoothstep(-1.0, -0.35, sdf);
