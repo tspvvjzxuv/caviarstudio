@@ -1,5 +1,4 @@
 import {
-  CanvasTexture,
   ClampToEdgeWrapping,
   DataTexture,
   LinearFilter,
@@ -36,9 +35,17 @@ function fallback(sec: HTMLElement | null) {
 
 function blankGlyphTexture() {
   const canvas = document.createElement("canvas");
-  canvas.width = 1;
-  canvas.height = 1;
-  const texture = new CanvasTexture(canvas);
+  canvas.width = 4;
+  canvas.height = 4;
+  return { canvas, texture: textureFromCanvas(canvas) };
+}
+
+function textureFromCanvas(canvas: HTMLCanvasElement) {
+  const ctx = canvas.getContext("2d");
+  const width = Math.max(1, canvas.width);
+  const height = Math.max(1, canvas.height);
+  const pixels = ctx ? ctx.getImageData(0, 0, width, height).data : new Uint8ClampedArray(width * height * 4);
+  const texture = new DataTexture(pixels, width, height, RGBAFormat, UnsignedByteType);
   texture.flipY = true;
   texture.generateMipmaps = false;
   texture.wrapS = ClampToEdgeWrapping;
@@ -46,7 +53,7 @@ function blankGlyphTexture() {
   texture.minFilter = LinearFilter;
   texture.magFilter = LinearFilter;
   texture.needsUpdate = true;
-  return { canvas, texture };
+  return texture;
 }
 
 function svgDataUrl(svg: SVGSVGElement) {
@@ -329,22 +336,28 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       /* keep going with fallback serif */
     }
     if (gen !== glyphGen) return;
+    let painted = 0;
     await Promise.all(
       Array.from({ length: MAX_CARDS }, async (_, i) => {
         const btn = buttons[i];
         if (!btn) {
           const blank = glyphs[i].canvas;
-          blank.width = 1;
-          blank.height = 1;
-          glyphs[i].texture.needsUpdate = true;
+          blank.width = 4;
+          blank.height = 4;
+          glyphs[i].texture.dispose();
+          glyphs[i].texture = textureFromCanvas(blank);
+          material.uniforms[`uGlyph${i}`].value = glyphs[i].texture;
           return;
         }
         await paintCardGlyph(glyphs[i].canvas, btn, dpr, () => gen === glyphGen);
         if (gen !== glyphGen) return;
-        glyphs[i].texture.needsUpdate = true;
+        glyphs[i].texture.dispose();
+        glyphs[i].texture = textureFromCanvas(glyphs[i].canvas);
+        material.uniforms[`uGlyph${i}`].value = glyphs[i].texture;
+        painted += 1;
       }),
     );
-    if (gen === glyphGen) sec.classList.add("has-metal-ink");
+    if (gen === glyphGen && painted > 0) sec.classList.add("has-metal-ink");
   };
 
   const scheduleGlyphs = () => {

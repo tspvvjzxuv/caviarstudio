@@ -324,7 +324,7 @@ void main() {
   );
   float cover = glyphCover(cardId, gUv);
   float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-  vec3 ink = mix(vec3(0.97, 0.972, 0.98), vec3(0.045, 0.046, 0.05), smoothstep(0.26, 0.5, luma));
+  vec3 ink = mix(vec3(0.99, 0.99, 1.0), vec3(0.02, 0.02, 0.025), smoothstep(0.30, 0.40, luma));
   color = mix(color, ink, cover);
 
   if (sdf >= 0.0) discard;
