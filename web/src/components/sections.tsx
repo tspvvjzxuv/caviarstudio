@@ -41,6 +41,7 @@ import { BRAND_EXAMPLES, DRONE_EXAMPLES, PHOTO_EXAMPLES, preloadWorkShots, VIDEO
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
 import { Section } from "@/components/section";
+import { ServiceMetal } from "@/components/service-metal";
 import { ServicePanel } from "@/components/service-panel";
 import { cn } from "@/lib/utils";
 
@@ -271,6 +272,7 @@ export function Services() {
   return (
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <div className="service-glow-field" aria-hidden="true" />
+      <ServiceMetal />
       <Section.Body className="relative z-10 overflow-visible">
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.navServices} title={t.doKicker}>
           <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.doLead}</p>
