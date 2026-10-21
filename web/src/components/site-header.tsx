@@ -129,6 +129,7 @@ export function SiteHeader() {
             <Button
               variant="ghost"
               size="icon"
+              data-nav-toggle=""
               className="icon-disc inline-flex size-11 items-center justify-center lg:hidden"
               aria-expanded={open}
               aria-label={open ? t.close : t.menu}
@@ -138,7 +139,7 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent
             side="top"
-            className="glass-panel h-dvh gap-0 border-0 bg-transparent p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))] md:items-end"
+            className="inset-0 z-[60] h-dvh min-h-dvh gap-0 border-0 bg-[rgb(7_7_8/0.96)] p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))] opacity-100 data-[side=top]:h-dvh md:items-end"
             showCloseButton={false}
           >
             <SheetHeader className="p-0 md:items-end md:text-right">

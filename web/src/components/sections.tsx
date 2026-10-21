@@ -195,8 +195,11 @@ function ServiceCard({
             <IconDisc>
               <Icon />
             </IconDisc>
-            <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
-              {dictText(t, item.name)}
+            <span className="service-title min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
+              <span className="service-title-solid" aria-hidden="true">
+                {dictText(t, item.name)}
+              </span>
+              <span className="service-title-live">{dictText(t, item.name)}</span>
             </span>
             <IconDisc
               className="ml-auto size-12 transition-colors duration-200 ease-out group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15 md:size-[3.25rem]"

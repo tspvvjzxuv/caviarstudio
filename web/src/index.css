@@ -390,6 +390,47 @@ footer {
 }
 
 @media (max-width: 767px) {
+  header.glass {
+    z-index: 70;
+    background-color: rgb(7 7 8 / 94%);
+    background-image: none;
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    backdrop-filter: blur(18px) saturate(1.25);
+  }
+  [data-slot="sheet-overlay"] {
+    z-index: 60;
+    background-color: rgb(7 7 8 / 72%);
+  }
+  [data-slot="sheet-content"],
+  [data-slot="sheet-content"].glass-panel {
+    inset: 0;
+    z-index: 60;
+    height: 100dvh;
+    min-height: 100dvh;
+    background-color: #070708;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
+    mix-blend-mode: normal;
+    -webkit-mix-blend-mode: normal;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-solid {
+    display: block;
+    color: #0b0b0e;
+    -webkit-text-fill-color: #0b0b0e;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: difference;
+    -webkit-mix-blend-mode: difference;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+    mix-blend-mode: difference;
+    -webkit-mix-blend-mode: difference;
+  }
   #top {
     min-height: 100lvh;
   }
@@ -1007,7 +1048,18 @@ footer {
   mix-blend-mode: difference;
   -webkit-mix-blend-mode: difference;
 }
-.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
+.service-title {
+  position: relative;
+  display: block;
+}
+.service-title-solid {
+  display: none;
+}
+.service-title-live {
+  display: block;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
   color: #fff;
   -webkit-text-fill-color: #fff;
   text-shadow: none;
