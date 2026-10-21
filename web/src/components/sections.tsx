@@ -135,8 +135,8 @@ export function Hero() {
       const p = Math.min(y, cap);
       const hero = reduce ? p * 0.05 : p * 0.22;
       const logo = reduce ? p * 0.03 : p * 0.12;
-      root.style.setProperty("--logo-py", `${logo.toFixed(1)}px`);
-      ken?.style.setProperty("--hero-py", `${hero.toFixed(1)}px`);
+      root.style.setProperty("--logo-py", `${Math.round(logo)}px`);
+      ken?.style.setProperty("--hero-py", `${Math.round(hero)}px`);
       ticking = false;
     };
     const onScroll = () => {
@@ -204,7 +204,7 @@ function ServiceCard({
   return (
     <div className="service-card" data-service={item.id}>
       <span className="service-glow" aria-hidden="true" />
-      <Reveal className="relative z-1 h-full overflow-visible" delay={delay}>
+      <Reveal className="h-full overflow-visible" delay={delay}>
         <button
           ref={(el) => {
             buttonRefs.current[item.id] = el;

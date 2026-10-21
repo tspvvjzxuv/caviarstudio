@@ -230,15 +230,9 @@ uniform float uMouseAmt;
 uniform vec4 uRect[5];
 uniform float uOpen[5];
 uniform float uRadius;
-uniform float uPad;
 uniform vec4 uField;
 uniform vec2 uFocus;
 uniform float u_flow;
-uniform sampler2D uGlyph0;
-uniform sampler2D uGlyph1;
-uniform sampler2D uGlyph2;
-uniform sampler2D uGlyph3;
-uniform sampler2D uGlyph4;
 
 #define TWO_PI 6.28318530718
 #define PI 3.14159265358979323846
@@ -306,35 +300,20 @@ float get_color_channel(float c1, float c2, float stripe_p, vec3 w, float extra_
   return ch;
 }
 
-float glyphCover(float id, vec2 uv) {
-  vec2 u = clamp(uv, 0.0, 1.0);
-  if (id < 0.5) return texture2D(uGlyph0, u).a;
-  if (id < 1.5) return texture2D(uGlyph1, u).a;
-  if (id < 2.5) return texture2D(uGlyph2, u).a;
-  if (id < 3.5) return texture2D(uGlyph3, u).a;
-  return texture2D(uGlyph4, u).a;
-}
-
 void main() {
   vec2 frag = gl_FragCoord.xy;
-  vec4 rc = vec4(0.0);
   float sdf = 1.0e6;
   float found = 0.0;
-  float cardId = 0.0;
 
   for (int i = 0; i < 5; i++) {
     vec4 box = uRect[i];
     float on = (1.0 - uOpen[i]) * step(2.0, box.z);
-    vec2 halfSize = box.zw * 0.5;
-    float pad = max(uPad, 0.75);
-    vec2 innerHalf = max(halfSize - vec2(pad), vec2(0.0));
-    float innerR = max(uRadius - pad, 0.0);
-    float d = sdRoundBox(frag - (box.xy + halfSize), innerHalf, innerR);
-    float take = on * step(d, 0.0) * step(d, sdf);
-    rc = mix(rc, box, take);
+    vec2 halfSize = box.zw * 0.5 + vec2(2.0);
+    float r = uRadius + 2.0;
+    float d = sdRoundBox(frag - (box.xy + box.zw * 0.5), halfSize, r);
+    float take = on * step(d, sdf);
     sdf = mix(sdf, d, take);
-    cardId = mix(cardId, float(i), take);
-    found = max(found, take);
+    found = max(found, on * step(d, 2.0));
   }
 
   if (found < 0.5) discard;
@@ -416,18 +395,7 @@ void main() {
   color = mix(color, mix(color, azure, 0.62), azureAmt * 0.7);
   color = mix(color, mix(color, lemon, 0.58), lemonAmt * 0.68);
 
-  vec2 gUv = vec2(
-    (frag.x - rc.x) / max(rc.z, 1.0),
-    (frag.y - rc.y) / max(rc.w, 1.0)
-  );
-  float cover = glyphCover(cardId, gUv);
-  float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
-  vec3 ink = mix(vec3(0.99, 0.99, 1.0), vec3(0.02, 0.02, 0.025), smoothstep(0.30, 0.40, luma));
-  color = mix(color, ink, cover);
-
-  if (sdf >= 0.0) discard;
-  float clip = 1.0 - smoothstep(-1.0, -0.35, sdf);
-  opacity *= clip;
+  if (sdf > 2.0) discard;
   color *= opacity;
 
   gl_FragColor = vec4(color, opacity);
