@@ -16,6 +16,7 @@ import {
 import {
   PLAYGROUND_PARAMS,
   generateRoundedRectPoissonMask,
+  metalCycleAt,
   playgroundFragment,
   playgroundVertex,
 } from "@/lib/liquid-metal-playground";
@@ -271,6 +272,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   texture.needsUpdate = true;
 
   const glyphs = Array.from({ length: MAX_CARDS }, () => blankGlyphTexture());
+  const initialCycle = metalCycleAt(0);
 
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -291,7 +293,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       u_speed: { value: PLAYGROUND_PARAMS.speed },
       u_patternScale: { value: PLAYGROUND_PARAMS.patternScale },
       u_resolution: { value: new Vector2(1, 1) },
-      u_angle: { value: (PLAYGROUND_PARAMS.angleDeg * Math.PI) / 180 },
+      u_angle: { value: initialCycle.angle },
       u_mouse: { value: new Vector2(-4000, -4000) },
       uMouseAmt: { value: 0 },
       uRect: { value: rects },
@@ -299,6 +301,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       uRadius: { value: 24 },
       uPad: { value: CLIP_INSET_PX },
       uField: { value: field },
+      uFocus: { value: new Vector2(initialCycle.focusX, initialCycle.focusY) },
+      u_flow: { value: initialCycle.flow },
       uGlyph0: { value: glyphs[0].texture },
       uGlyph1: { value: glyphs[1].texture },
       uGlyph2: { value: glyphs[2].texture },
@@ -457,7 +461,12 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
         return;
       }
     }
-    material.uniforms.u_time.value = (performance.now() - startedAt) / 1000;
+    const elapsed = (performance.now() - startedAt) / 1000;
+    const cycle = metalCycleAt(elapsed);
+    material.uniforms.u_time.value = elapsed;
+    material.uniforms.u_flow.value = cycle.flow;
+    material.uniforms.u_angle.value = cycle.angle;
+    material.uniforms.uFocus.value.set(cycle.focusX, cycle.focusY);
     const dpr = renderer.getPixelRatio();
     const h = Math.max(1, canvas.getBoundingClientRect().height);
     mouseSmooth.lerp(mouseTarget, mouseFollow);

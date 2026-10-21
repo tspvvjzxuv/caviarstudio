@@ -9,11 +9,108 @@ export const PLAYGROUND_PARAMS = {
   refraction: 0.022,
   edge: 0.22,
   patternBlur: 0.016,
-  liquid: 0.1,
-  speed: 0.08,
+  liquid: 0.08,
+  speed: 0.025,
   patternScale: 1.05,
   angleDeg: 35,
 } as const;
+
+/** Forward, hold, back, then a long angle ease. Seconds. ~56s round. */
+export const METAL_CYCLE = {
+  legSec: 20,
+  pauseSec: 3.5,
+  angleSec: 12,
+  travel: 0.7,
+} as const;
+
+export function metalCycleRoundSec() {
+  return METAL_CYCLE.legSec * 2 + METAL_CYCLE.pauseSec + METAL_CYCLE.angleSec;
+}
+
+function fract(n: number) {
+  return n - Math.floor(n);
+}
+
+function hash11(n: number) {
+  return fract(Math.sin(n * 127.1 + 311.7) * 43758.5453123);
+}
+
+function smootherstep(t: number) {
+  const x = Math.min(1, Math.max(0, t));
+  return x * x * x * (x * (x * 6 - 15) + 10);
+}
+
+export function angleForCycle(i: number) {
+  const mag = ((20 + hash11(i + 0.17) * 40) * Math.PI) / 180;
+  return hash11(i + 0.91) > 0.5 ? -mag : mag;
+}
+
+export function focusForCycle(i: number): [number, number] {
+  const hx = hash11(i + 3.17);
+  const hy = hash11(i + 8.41);
+  const x = hx < 0.5 ? 0.14 + hx * 0.44 : 0.62 + (hx - 0.5) * 0.48;
+  const y = hy < 0.5 ? 0.16 + hy * 0.48 : 0.58 + (hy - 0.5) * 0.52;
+  return [x, y];
+}
+
+function awayFromCenter(x: number, y: number, minR = 0.2): [number, number] {
+  const dx = x - 0.5;
+  const dy = y - 0.5;
+  const d = Math.hypot(dx, dy);
+  if (d >= minR) return [x, y];
+  const s = minR / Math.max(d, 1e-4);
+  return [0.5 + dx * s, 0.5 + dy * s];
+}
+
+function focusAlong(f0: [number, number], f1: [number, number], t: number): [number, number] {
+  const mx = (f0[0] + f1[0]) * 0.5;
+  const my = (f0[1] + f1[1]) * 0.5;
+  const dx = f1[0] - f0[0];
+  const dy = f1[1] - f0[1];
+  let px = -dy;
+  let py = dx;
+  const plen = Math.hypot(px, py) || 1;
+  px /= plen;
+  py /= plen;
+  const c1 = awayFromCenter(mx + px * 0.24, my + py * 0.24, 0.22);
+  const c2 = awayFromCenter(mx - px * 0.24, my - py * 0.24, 0.22);
+  const ctrl =
+    Math.hypot(c1[0] - 0.5, c1[1] - 0.5) >= Math.hypot(c2[0] - 0.5, c2[1] - 0.5) ? c1 : c2;
+  const u = 1 - t;
+  return awayFromCenter(
+    u * u * f0[0] + 2 * u * t * ctrl[0] + t * t * f1[0],
+    u * u * f0[1] + 2 * u * t * ctrl[1] + t * t * f1[1],
+    0.18,
+  );
+}
+
+export function metalCycleAt(timeSec: number) {
+  const { legSec, pauseSec, angleSec, travel } = METAL_CYCLE;
+  const round = metalCycleRoundSec();
+  const t = Math.max(0, timeSec);
+  const i = Math.floor(t / round);
+  const local = t - i * round;
+  const a0 = angleForCycle(i);
+  const a1 = angleForCycle(i + 1);
+  const focusSpan = round * 2;
+  const fs = t / focusSpan;
+  const fi = Math.floor(fs);
+  const [focusX, focusY] = focusAlong(focusForCycle(fi), focusForCycle(fi + 1), smootherstep(fs - fi));
+
+  let flow = 0;
+  let angle = a0;
+  if (local < legSec) {
+    flow = smootherstep(local / legSec) * travel;
+  } else if (local < legSec + pauseSec) {
+    flow = travel;
+  } else if (local < legSec * 2 + pauseSec) {
+    flow = (1 - smootherstep((local - legSec - pauseSec) / legSec)) * travel;
+  } else {
+    angle = a0 + (a1 - a0) * smootherstep((local - legSec * 2 - pauseSec) / Math.max(angleSec, 0.001));
+  }
+
+  return { flow, angle, focusX, focusY, cycle: i, local, round };
+}
 
 const POISSON_C = 0.01;
 const POISSON_ITERATIONS = 300;
@@ -135,6 +232,8 @@ uniform float uOpen[5];
 uniform float uRadius;
 uniform float uPad;
 uniform vec4 uField;
+uniform vec2 uFocus;
+uniform float u_flow;
 uniform sampler2D uGlyph0;
 uniform sampler2D uGlyph1;
 uniform sampler2D uGlyph2;
@@ -250,14 +349,14 @@ void main() {
   );
 
   vec2 aspect = vec2(uField.z / max(uField.w, 1.0), 1.0);
-  vec2 iso = (fieldUv - 0.5) * aspect;
+  vec2 iso = (fieldUv - uFocus) * aspect;
   vec2 toMouse = (fieldUv - mouse_uv) * aspect;
   float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
 
   float t = u_time * u_speed;
   iso += vec2(
-    snoise(iso * 0.9 + vec2(t * 0.42, t * 0.31)),
-    snoise(iso * 0.9 - vec2(t * 0.27, -t * 0.38))
+    snoise(iso * 0.9 + vec2(t * 0.18, t * 0.14)),
+    snoise(iso * 0.9 - vec2(t * 0.12, -t * 0.16))
   ) * 0.02 * mouseFalloff;
   iso -= toMouse * 0.04 * mouseFalloff;
   iso = rotate(iso, u_angle);
@@ -267,8 +366,8 @@ void main() {
 
   vec3 color2 = vec3(0.97, 0.975, 0.99);
   vec3 color1 = vec3(0.026, 0.027, 0.03);
-  vec3 azure = vec3(0.239, 0.541, 1.0);
-  vec3 lemon = vec3(1.0, 0.894, 0.302);
+  vec3 azure = vec3(0.16, 0.46, 1.0);
+  vec3 lemon = vec3(1.0, 0.84, 0.14);
 
   float dist = length(iso);
   float bulge = pow(1.55 * dist, 1.12);
@@ -285,8 +384,8 @@ void main() {
 
   float opacity = 1. - smoothstep(.9 - .5 * u_edge, 1. - .5 * u_edge, edge);
 
-  float noise = snoise(vec2(flow, iso.y) * 0.34 - t * 0.82) * 0.62
-    + snoise(vec2(flow, iso.y) * 0.13 - t * 0.3) * 0.38;
+  float noise = snoise(vec2(flow, iso.y) * 0.34 - t * 0.28) * 0.62
+    + snoise(vec2(flow, iso.y) * 0.13 - t * 0.11) * 0.38;
   edge += (1. - edge) * u_liquid * noise;
 
   float dir = flow;
@@ -295,7 +394,7 @@ void main() {
   dir *= (.15 + (1.1 - edge) * bulge);
   dir *= smoothstep(1., .72, edge);
   dir *= cycle_width;
-  dir -= t;
+  dir -= u_flow;
   dir += (mouse_uv.x - 0.5) * 0.06 * mouseFalloff;
 
   vec3 w = vec3(thin_strip_1_width, thin_strip_2_width, wide_strip_ratio);
@@ -312,11 +411,11 @@ void main() {
   float spec = pow(clamp((ch - 0.58) / 0.42, 0.0, 1.0), 7.0);
   color += vec3(spec * 0.2);
 
-  float hueWave = 0.5 + 0.5 * sin(flow * TWO_PI * 0.46 + t * 0.26);
-  float azureAmt = (1.0 - smoothstep(0.28, 0.48, hueWave)) * hi;
-  float lemonAmt = smoothstep(0.52, 0.72, hueWave) * hi;
-  color = mix(color, mix(color, azure, 0.46), azureAmt * 0.52);
-  color = mix(color, mix(color, lemon, 0.42), lemonAmt * 0.48);
+  float hueWave = 0.5 + 0.5 * sin(flow * TWO_PI * 0.46 + u_flow * 2.4);
+  float azureAmt = (1.0 - smoothstep(0.18, 0.44, hueWave)) * hi;
+  float lemonAmt = smoothstep(0.56, 0.82, hueWave) * hi;
+  color = mix(color, mix(color, azure, 0.62), azureAmt * 0.7);
+  color = mix(color, mix(color, lemon, 0.58), lemonAmt * 0.68);
 
   vec2 gUv = vec2(
     (frag.x - rc.x) / max(rc.z, 1.0),
