@@ -135,8 +135,8 @@ export function Hero() {
       const p = Math.min(y, cap);
       const hero = reduce ? p * 0.05 : p * 0.22;
       const logo = reduce ? p * 0.03 : p * 0.12;
-      root.style.setProperty("--logo-py", `${logo.toFixed(1)}px`);
-      ken?.style.setProperty("--hero-py", `${hero.toFixed(1)}px`);
+      root.style.setProperty("--logo-py", `${Math.round(logo)}px`);
+      ken?.style.setProperty("--hero-py", `${Math.round(hero)}px`);
       ticking = false;
     };
     const onScroll = () => {

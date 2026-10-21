@@ -985,20 +985,20 @@ footer {
   overflow: hidden;
   border-radius: 1.5rem;
 }
-.service-sec.has-metal.has-metal-ink .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
-  color: transparent;
-  mix-blend-mode: normal;
-  pointer-events: none;
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
+  color: #fff;
+  mix-blend-mode: difference;
 }
-.service-sec.has-metal.has-metal-ink .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
-  color: transparent;
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
   text-shadow: none;
 }
-.service-sec.has-metal.has-metal-ink .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
-  color: transparent;
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+  color: #fff;
   background-color: transparent;
   background-image: none;
-  border-color: transparent;
+  border-color: #fff;
   box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
