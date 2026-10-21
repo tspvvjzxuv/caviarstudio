@@ -15,7 +15,6 @@ import {
 } from "three";
 import {
   PLAYGROUND_PARAMS,
-  generateRoundedRectPoissonMask,
   metalCycleAt,
   playgroundFragment,
   playgroundVertex,
@@ -177,60 +176,6 @@ async function paintCardGlyph(
   await Promise.all(jobs);
 }
 
-function roundedRectPath(x: number, y: number, w: number, h: number, r: number) {
-  const rr = Math.max(0, Math.min(r, w / 2, h / 2));
-  const x2 = x + w;
-  const y2 = y + h;
-  return [
-    `M${x + rr} ${y}`,
-    `H${x2 - rr}`,
-    `A${rr} ${rr} 0 0 1 ${x2} ${y + rr}`,
-    `V${y2 - rr}`,
-    `A${rr} ${rr} 0 0 1 ${x2 - rr} ${y2}`,
-    `H${x + rr}`,
-    `A${rr} ${rr} 0 0 1 ${x} ${y2 - rr}`,
-    `V${y + rr}`,
-    `A${rr} ${rr} 0 0 1 ${x + rr} ${y}`,
-    "Z",
-  ].join(" ");
-}
-
-function applyCardClip(
-  canvas: HTMLCanvasElement,
-  cards: { x: number; y: number; w: number; h: number; open: boolean }[],
-  radius: number,
-  sectionW: number,
-  sectionH: number,
-  inset: number,
-) {
-  const closed = cards.filter((c) => !c.open && c.w > 2 && c.h > 2);
-  const r = Math.max(0, radius - inset);
-  const paths = closed.map((c) => {
-    const x = c.x + inset;
-    const y = c.y + inset;
-    const w = Math.max(0, c.w - inset * 2);
-    const h = Math.max(0, c.h - inset * 2);
-    return roundedRectPath(x, y, w, h, r);
-  });
-  const d = paths.join(" ") || "M0 0";
-  canvas.style.clipPath = `path('${d}')`;
-  canvas.style.setProperty("-webkit-clip-path", `path('${d}')`);
-
-  const rects = closed
-    .map((c) => {
-      const x = (c.x + inset).toFixed(2);
-      const y = (c.y + inset).toFixed(2);
-      const w = Math.max(0, c.w - inset * 2).toFixed(2);
-      const h = Math.max(0, c.h - inset * 2).toFixed(2);
-      const rr = Math.max(0, Math.min(r, (c.w - inset * 2) / 2, (c.h - inset * 2) / 2)).toFixed(2);
-      return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rr}" ry="${rr}" fill="#fff"/>`;
-    })
-    .join("");
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${sectionW}" height="${sectionH}" viewBox="0 0 ${sectionW} ${sectionH}">${rects}</svg>`;
-  const url = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-  canvas.style.webkitMaskImage = url;
-  canvas.style.maskImage = url;
-}
 
 export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const sec = canvas.closest(".service-sec") as HTMLElement | null;
@@ -246,7 +191,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       alpha: true,
       antialias: false,
       premultipliedAlpha: true,
-      powerPreference: "low-power",
+      powerPreference: "high-performance",
       failIfMajorPerformanceCaveat: false,
     });
   } catch {
@@ -256,20 +201,14 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   renderer.setClearColor(0x000000, 0);
   const mobile = window.matchMedia("(max-width: 767px)").matches;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.5));
+  const dprCap = mobile ? 0.55 : 0.75;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, dprCap));
 
   const rects = Array.from({ length: MAX_CARDS }, () => new Vector4(-4000, -4000, 0, 0));
   const open = [0, 0, 0, 0, 0];
   const field = new Vector4(0, 0, 1, 1);
 
-  const mask = generateRoundedRectPoissonMask(64, 32, 8);
-  const texture = new DataTexture(mask.data, mask.width, mask.height, RGBAFormat, UnsignedByteType);
-  texture.wrapS = ClampToEdgeWrapping;
-  texture.wrapT = ClampToEdgeWrapping;
-  texture.minFilter = LinearFilter;
-  texture.magFilter = LinearFilter;
-  texture.flipY = false;
-  texture.needsUpdate = true;
+  const texture = blankGlyphTexture().texture;
 
   const glyphs = Array.from({ length: MAX_CARDS }, () => blankGlyphTexture());
   const initialCycle = metalCycleAt(0);
@@ -317,14 +256,13 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const startedAt = performance.now();
   let raf = 0;
   let running = false;
-  let skip = 0;
+  let cssHeight = 1;
   const mouseTarget = new Vector2(-4000, -4000);
   const mouseSmooth = new Vector2(-4000, -4000);
   let mouseAmt = 0;
   let mouseAmtTarget = 0;
   const mouseFollow = mobile ? 0.03 : 0.045;
   const mouseFade = 0.028;
-  let lastClipKey = "";
   let lastGlyphKey = "";
   let glyphTimer = 0;
   let glyphGen = 0;
@@ -385,6 +323,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
     const cssW = Math.max(1, root.width);
     const cssH = Math.max(1, root.height);
+    cssHeight = cssH;
     const sample = buttons[0];
     const styles = sample ? getComputedStyle(sample) : null;
     const cssRadius = styles ? Number.parseFloat(styles.borderRadius) || 24 : 24;
@@ -393,7 +332,6 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     material.uniforms.uRadius.value = cssRadius * dpr;
     material.uniforms.uPad.value = inset * dpr;
 
-    const cssCards: { x: number; y: number; w: number; h: number; open: boolean }[] = [];
     let minX = Number.POSITIVE_INFINITY;
     let minY = Number.POSITIVE_INFINITY;
     let maxX = Number.NEGATIVE_INFINITY;
@@ -411,7 +349,6 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       const isOpen = btn.getAttribute("aria-expanded") === "true" || btn.classList.contains("is-open");
       rects[i].set(x * dpr, (cssH - yCss - box.height) * dpr, box.width * dpr, box.height * dpr);
       open[i] = isOpen ? 1 : 0;
-      cssCards.push({ x, y: yCss, w: box.width, h: box.height, open: isOpen });
       if (!isOpen && box.width > 2 && box.height > 2) {
         minX = Math.min(minX, x);
         minY = Math.min(minY, yCss);
@@ -421,14 +358,6 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     }
     if (Number.isFinite(minX) && maxX > minX && maxY > minY) {
       field.set(minX * dpr, (cssH - maxY) * dpr, (maxX - minX) * dpr, (maxY - minY) * dpr);
-    }
-
-    const clipKey = `${cssW.toFixed(2)}x${cssH.toFixed(2)}:${cssRadius}:${inset}:${cssCards
-      .map((c) => `${c.x.toFixed(1)},${c.y.toFixed(1)},${c.w.toFixed(1)},${c.h.toFixed(1)},${c.open ? 1 : 0}`)
-      .join("|")}`;
-    if (clipKey !== lastClipKey) {
-      lastClipKey = clipKey;
-      applyCardClip(canvas, cssCards, cssRadius, cssW, cssH, inset);
     }
 
     const glyphKey = `${dpr}:${cssW.toFixed(1)}x${cssH.toFixed(1)}:${Array.from(buttons)
@@ -454,13 +383,6 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   const tick = () => {
     if (!running) return;
-    if (mobile) {
-      skip = 1 - skip;
-      if (skip === 0) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-    }
     const elapsed = (performance.now() - startedAt) / 1000;
     const cycle = metalCycleAt(elapsed);
     material.uniforms.u_time.value = elapsed;
@@ -468,12 +390,10 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     material.uniforms.u_angle.value = cycle.angle;
     material.uniforms.uFocus.value.set(cycle.focusX, cycle.focusY);
     const dpr = renderer.getPixelRatio();
-    const h = Math.max(1, canvas.getBoundingClientRect().height);
     mouseSmooth.lerp(mouseTarget, mouseFollow);
     mouseAmt += (mouseAmtTarget - mouseAmt) * (mouseAmtTarget > mouseAmt ? mouseFollow : mouseFade);
-    material.uniforms.u_mouse.value.set(mouseSmooth.x * dpr, (h - mouseSmooth.y) * dpr);
+    material.uniforms.u_mouse.value.set(mouseSmooth.x * dpr, (cssHeight - mouseSmooth.y) * dpr);
     material.uniforms.uMouseAmt.value = mouseAmt;
-    syncCards();
     renderer.render(scene, camera);
     raf = requestAnimationFrame(tick);
   };

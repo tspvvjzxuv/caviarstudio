@@ -392,11 +392,9 @@
 
 .hero-depth {
   background:
-    radial-gradient(ellipse 78% 64% at 8% 16%, rgb(61 138 255 / 26%), transparent 78%),
-    radial-gradient(ellipse 64% 54% at 94% 82%, rgb(255 228 77 / 13%), transparent 76%),
-    radial-gradient(ellipse 90% 70% at 50% 38%, transparent 18%, rgb(7 7 8 / 52%) 100%),
-    linear-gradient(180deg, rgb(7 7 8 / 16%) 0%, rgb(7 7 8 / 10%) 18%, rgb(7 7 8 / 20%) 48%, #070708 100%),
-    linear-gradient(90deg, rgb(7 7 8 / 52%) 0%, rgb(7 7 8 / 22%) 36%, transparent 58%);
+    radial-gradient(ellipse 90% 70% at 50% 38%, transparent 28%, rgb(7 7 8 / 28%) 100%),
+    linear-gradient(180deg, rgb(7 7 8 / 8%) 0%, transparent 22%, rgb(7 7 8 / 10%) 62%, #070708 100%),
+    linear-gradient(90deg, rgb(7 7 8 / 22%) 0%, transparent 42%);
 }
 
 .icon-disc {
@@ -941,12 +939,6 @@
   filter: none;
   box-shadow: none;
   mix-blend-mode: normal;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-position: 0 0;
-  mask-position: 0 0;
 }
 .service-sec.is-metal-fallback .service-metal {
   display: none;
@@ -959,10 +951,10 @@
   width: 100%;
 }
 .service-sec.has-metal .service-glow-field {
-  z-index: -2;
+  z-index: 0;
 }
 .service-sec.has-metal .service-metal {
-  z-index: -1;
+  z-index: 0;
 }
 .service-sec.has-metal .service-sec-body {
   z-index: auto;

@@ -50,6 +50,7 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
     const mo = new MutationObserver(sync);
     mo.observe(root, { attributes: true, attributeFilter: ["class"] });
     video.addEventListener("canplay", sync);
+    video.addEventListener("loadeddata", sync);
     document.addEventListener("visibilitychange", sync);
     sync();
 
@@ -57,6 +58,7 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       io.disconnect();
       mo.disconnect();
       video.removeEventListener("canplay", sync);
+      video.removeEventListener("loadeddata", sync);
       document.removeEventListener("visibilitychange", sync);
       video.pause();
     };
@@ -78,7 +80,11 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       disablePictureInPicture
       disableRemotePlayback
     >
-      <source src={HERO_LOOP.webm} type="video/webm" />
+      <source src={HERO_LOOP.av1Mobile} type="video/webm" media="(max-width: 767px)" />
+      <source src={HERO_LOOP.av1} type="video/webm" media="(min-width: 768px)" />
+      <source src={HERO_LOOP.hevcMobile} type='video/mp4; codecs="hvc1"' media="(max-width: 767px)" />
+      <source src={HERO_LOOP.hevc} type='video/mp4; codecs="hvc1"' media="(min-width: 768px)" />
+      <source src={HERO_LOOP.mp4Mobile} type="video/mp4" media="(max-width: 767px)" />
       <source src={HERO_LOOP.mp4} type="video/mp4" />
     </video>
   );

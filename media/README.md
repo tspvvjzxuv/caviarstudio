@@ -4,9 +4,22 @@
 
 Liquid-chrome backdrop in `media/hero/`:
 
-- `liquid-chrome.webm` (VP9)
-- `liquid-chrome.mp4` (H.264 fallback)
-- `liquid-chrome.jpg` (poster / reduced-motion still)
+- `liquid-chrome.webm` / `liquid-chrome-720.webm` (AV1, 1080p / 720p)
+- `liquid-chrome.mp4` / `liquid-chrome-720.mp4` (H.264 High, yuv420p, faststart)
+- `liquid-chrome.hevc.mp4` / `liquid-chrome-720.hevc.mp4` (HEVC `hvc1` for Safari)
+- `liquid-chrome.jpg` (poster)
+
+Re-encode with `scripts/encode-hero.sh` (CRF, 30 fps CFR, 1 s GOP). Browsers pick 720p under 768px via `<source media>`.
+
+| File | Codec | Size | Was |
+|------|-------|------|-----|
+| `liquid-chrome.webm` | AV1 Main 1080p30 | 2.41 MiB | VP9 4.28 MiB |
+| `liquid-chrome.mp4` | H.264 High yuv420p faststart 1080p30 | 2.54 MiB | H.264 3.95 MiB |
+| `liquid-chrome.hevc.mp4` | HEVC Main `hvc1` 1080p30 | 1.72 MiB | — |
+| `liquid-chrome-720.webm` | AV1 Main 720p30 | 1.46 MiB | — |
+| `liquid-chrome-720.mp4` | H.264 High yuv420p faststart 720p30 | 1.43 MiB | — |
+| `liquid-chrome-720.hevc.mp4` | HEVC Main `hvc1` 720p30 | 1.05 MiB | — |
+| `liquid-chrome.jpg` | JPEG poster | 104 KB | 158 KB |
 
 Source: [Pexels 29848606](https://www.pexels.com/video/29848606/). Pexels license: free commercial use, no attribution required.
 

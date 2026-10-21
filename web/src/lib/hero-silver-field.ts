@@ -55,10 +55,10 @@ export function mountSilverField(canvas: HTMLCanvasElement): () => void {
     canvas,
     alpha: true,
     antialias: false,
-    powerPreference: "low-power",
+    powerPreference: "high-performance",
   });
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 0.75));
 
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);

@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 
 function preferFallback() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
   const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
   return Boolean(nav.connection?.saveData);
 }
