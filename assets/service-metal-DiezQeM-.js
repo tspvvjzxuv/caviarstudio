@@ -204,10 +204,10 @@ void main() {
   color += vec3(spec * 0.2);
 
   float hueWave = 0.5 + 0.5 * sin(flow * TWO_PI * 0.46 + u_flow * 2.4);
-  float azureAmt = (1.0 - smoothstep(0.16, 0.42, hueWave)) * hi;
-  float lemonAmt = smoothstep(0.58, 0.84, hueWave) * hi;
-  color = mix(color, mix(color, azure, 0.78), azureAmt * 0.82);
-  color = mix(color, mix(color, lemon, 0.76), lemonAmt * 0.8);
+  float azureAmt = (1.0 - smoothstep(0.18, 0.44, hueWave)) * hi;
+  float lemonAmt = smoothstep(0.56, 0.82, hueWave) * hi;
+  color = mix(color, mix(color, azure, 0.62), azureAmt * 0.7);
+  color = mix(color, mix(color, lemon, 0.58), lemonAmt * 0.68);
 
   vec2 gUv = vec2(
     (frag.x - rc.x) / max(rc.z, 1.0),
