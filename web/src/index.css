@@ -114,8 +114,24 @@
     50% { transform: translate3d(160%, 0, 0); opacity: 1; }
   }
   @keyframes logo-in {
-    from { opacity: 0; transform: translateY(18px) scale(0.94); }
+    from { opacity: 0; transform: translateY(18px); }
     to { opacity: 1; transform: none; }
+  }
+  @keyframes caviar-word-drift {
+    from { transform: translate3d(0, 0, 0); opacity: 1; }
+    to { transform: translate3d(0, 18%, 0); opacity: 0.2; }
+  }
+  @keyframes caviar-word-drift-soft {
+    from { transform: translate3d(0, 0, 0); opacity: 1; }
+    to { transform: translate3d(0, 6%, 0); opacity: 0.72; }
+  }
+  @keyframes caviar-ch-spread {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(calc(var(--i) * 0.11em), 0, 0); }
+  }
+  @keyframes caviar-ch-spread-soft {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(calc(var(--i) * 0.03em), 0, 0); }
   }
   @keyframes glow-breathe {
     0%, 100% { opacity: 0.42; }
@@ -1334,10 +1350,56 @@ button[data-magnetic]:not(.metal-fill) {
 }
 
 .hero-parallax {
-  transform: translate3d(0, var(--hero-py, 0px), 0);
+  transform: none;
 }
 .hero-logo-par {
-  transform: translate3d(0, var(--logo-py, 0px), 0);
+  transform: translate3d(0, var(--cy, 0px), 0);
+  opacity: var(--fade, 1);
+}
+.hero-logo-par.is-live {
+  will-change: transform, opacity;
+}
+.hero-caviar-word {
+  display: flex;
+  justify-content: center;
+  gap: 0.12em;
+  padding-left: 0;
+  letter-spacing: 0;
+}
+.hero-caviar-ch {
+  display: block;
+  color: transparent;
+  background-image: linear-gradient(180deg, #ffffff 0%, #d9dee6 48%, #8f98a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: translate3d(calc(var(--i) * var(--spread, 0px)), 0, 0);
+}
+.hero-logo-par.is-live .hero-caviar-ch {
+  will-change: transform;
+}
+
+#top {
+  view-timeline-name: --hero-view;
+  view-timeline-axis: block;
+}
+@supports (animation-timeline: view()) {
+  html.js-scroll-timeline .hero-logo-par {
+    animation: caviar-word-drift linear both;
+    animation-timeline: --hero-view;
+    animation-range: exit 0% exit 85%;
+  }
+  html.js-scroll-timeline .hero-caviar-ch {
+    animation: caviar-ch-spread linear both;
+    animation-timeline: --hero-view;
+    animation-range: exit 0% exit 85%;
+  }
+  html.js-scroll-timeline .hero-logo-par.is-soft {
+    animation-name: caviar-word-drift-soft;
+  }
+  html.js-scroll-timeline .hero-logo-par.is-soft .hero-caviar-ch {
+    animation-name: caviar-ch-spread-soft;
+  }
 }
 
 .hero-ghost {

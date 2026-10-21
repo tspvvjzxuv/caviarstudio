@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type RefObject } from "react";
 import { usePrefersMd } from "@/hooks/use-mobile";
+import { useHeroWordmark } from "@/hooks/use-hero-wordmark";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import {
   AtSign,
@@ -122,39 +123,16 @@ export function Hero() {
   const { t } = useLanguage();
   const kenRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
+  const markRef = useRef<HTMLDivElement>(null);
   usePauseOffscreen(kenRef);
-  useEffect(() => {
-    const root = heroRef.current;
-    const ken = kenRef.current;
-    if (!root) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let ticking = false;
-    const paint = () => {
-      const y = Math.max(0, window.scrollY);
-      const cap = window.innerHeight;
-      const p = Math.min(y, cap);
-      const hero = reduce ? p * 0.05 : p * 0.22;
-      const logo = reduce ? p * 0.03 : p * 0.12;
-      root.style.setProperty("--logo-py", `${Math.round(logo)}px`);
-      ken?.style.setProperty("--hero-py", `${Math.round(hero)}px`);
-      ticking = false;
-    };
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(paint);
-    };
-    paint();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  useHeroWordmark(heroRef, markRef);
   return (
     <section ref={heroRef} className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
       <HeroBackdrop kenRef={kenRef} />
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
-        <div className="hero-logo-par">
+        <div ref={markRef} className="hero-logo-par">
           <h1 className="hero-logo w-fit max-w-[80%] text-[clamp(3.9rem,16vw,10.5rem)]">
-            <CaviarLogo />
+            <CaviarLogo split />
           </h1>
         </div>
         <p className="mt-8 max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl">
