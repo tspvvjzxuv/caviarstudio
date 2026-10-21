@@ -204,7 +204,7 @@ function ServiceCard({
   return (
     <div className="service-card" data-service={item.id}>
       <span className="service-glow" aria-hidden="true" />
-      <Reveal className="relative z-1 h-full overflow-visible" delay={delay}>
+      <Reveal className="h-full overflow-visible" delay={delay}>
         <button
           ref={(el) => {
             buttonRefs.current[item.id] = el;

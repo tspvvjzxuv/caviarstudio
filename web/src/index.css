@@ -972,21 +972,53 @@ footer {
 }
 .service-sec.has-metal .service-metal {
   z-index: 0;
+  isolation: auto;
+  contain: none;
+  overflow: visible;
 }
 .service-sec.has-metal .service-sec-body {
   z-index: auto;
   isolation: auto;
+  transform: none;
+  contain: none;
+}
+.service-sec.has-metal .service-card:not(:has(.service-chrome.is-open)):not(:has(.service-chrome[aria-expanded="true"])) {
+  isolation: auto;
+  overflow: visible;
+  transform: none;
+  z-index: auto;
+  contain: none;
+}
+.service-sec.has-metal .service-card:not(:has(.service-chrome.is-open)):not(:has(.service-chrome[aria-expanded="true"])) .service-glow {
+  inset: 0;
+  border-radius: inherit;
+}
+.service-sec.has-metal .service-card .reveal {
+  z-index: auto;
+  isolation: auto;
+  opacity: 1;
+  transform: none;
+  contain: none;
+  will-change: auto;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) {
   isolation: auto;
+  z-index: auto;
   background-color: transparent;
   box-shadow: none;
   filter: none;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 1.5rem;
+  transform: none;
+  contain: none;
+  will-change: auto;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]):active {
+  transform: none;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
   color: #fff;
+  isolation: auto;
   mix-blend-mode: difference;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
