@@ -946,8 +946,8 @@ footer {
   overflow: visible;
   opacity: 1;
   visibility: visible;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  transform: none;
+  -webkit-transform: none;
   filter: none;
   will-change: auto;
 }
@@ -1026,8 +1026,8 @@ footer {
   filter: none;
   opacity: 1;
   will-change: auto;
-  mix-blend-mode: difference;
-  -webkit-mix-blend-mode: difference;
+  mix-blend-mode: normal;
+  -webkit-mix-blend-mode: normal;
 }
 .service-title {
   position: relative;
@@ -1039,13 +1039,29 @@ footer {
 .service-title-live {
   display: block;
 }
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title {
+  position: static;
+  isolation: auto;
+  transform: none;
+  filter: none;
+  opacity: 1;
+  contain: none;
+  mix-blend-mode: normal;
+  -webkit-mix-blend-mode: normal;
+}
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
   color: #fff;
   -webkit-text-fill-color: #fff;
   text-shadow: none;
+  -webkit-text-stroke: 0;
   isolation: auto;
   transform: none;
+  filter: none;
+  opacity: 1;
+  will-change: auto;
+  mix-blend-mode: difference;
+  -webkit-mix-blend-mode: difference;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
   color: #fff;
@@ -1057,48 +1073,11 @@ footer {
   backdrop-filter: none;
   isolation: auto;
   transform: none;
-}
-@media (max-width: 767px) {
-  /* Parent difference blend made titles grey-on-grey whenever metal sat in midtones.
-     Children cannot escape a parent's mix-blend, so kill it on the ink row. */
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink,
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title,
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live,
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
-    mix-blend-mode: normal !important;
-    -webkit-mix-blend-mode: normal !important;
-  }
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-solid {
-    display: none;
-  }
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title,
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live,
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
-  }
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
-    position: static;
-    -webkit-text-stroke: 1px #000;
-    paint-order: stroke fill;
-    text-shadow:
-      -1.15px 0 0 #000,
-      1.15px 0 0 #000,
-      0 -1.15px 0 #000,
-      0 1.15px 0 #000,
-      -1px -1px 0 #000,
-      1px 1px 0 #000,
-      0 0 8px #000,
-      0 2px 12px rgb(0 0 0 / 92%);
-  }
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
-    color: #fff !important;
-    border-color: #fff;
-    background-color: rgb(7 7 8 / 72%);
-    background-image: none;
-    box-shadow: 0 1px 8px rgb(0 0 0 / 70%), inset 0 0 0 1px rgb(0 0 0 / 35%);
-  }
+  filter: none;
+  opacity: 1;
+  will-change: auto;
+  mix-blend-mode: difference;
+  -webkit-mix-blend-mode: difference;
 }
 .service-sec.is-metal-fallback .service-chrome:not(.is-open):not([aria-expanded="true"])::after {
   content: "";
