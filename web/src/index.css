@@ -371,23 +371,22 @@ footer {
 }
 
 .hero-field {
-  background:
-    radial-gradient(ellipse 58% 48% at 86% 16%, rgb(232 234 238 / 20%), transparent 52%),
-    radial-gradient(ellipse 70% 42% at 46% 108%, rgb(197 202 211 / 16%), transparent 58%),
-    radial-gradient(circle at 62% 40%, rgb(154 163 174 / 11%), transparent 36%),
-    linear-gradient(168deg, #1d1f26 0%, #121318 34%, #0a0a0c 62%, #070708 100%);
+  background: linear-gradient(168deg, #0c0d11 0%, #08080a 42%, #050506 100%);
 }
 
-.hero-loop {
+.hero-loop,
+.hero-poster {
   transform: translateZ(0);
   backface-visibility: hidden;
+  filter: brightness(0.72) contrast(1.22);
 }
 
 .hero-depth {
+  transform: translateZ(0);
   background:
-    radial-gradient(ellipse 90% 70% at 50% 38%, transparent 28%, rgb(7 7 8 / 28%) 100%),
-    linear-gradient(180deg, rgb(7 7 8 / 8%) 0%, transparent 22%, rgb(7 7 8 / 10%) 62%, #070708 100%),
-    linear-gradient(90deg, rgb(7 7 8 / 22%) 0%, transparent 42%);
+    radial-gradient(ellipse 78% 58% at 50% 34%, rgb(0 0 0 / 48%) 0%, rgb(0 0 0 / 22%) 44%, rgb(7 7 8 / 16%) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 8%) 26%, rgb(7 7 8 / 18%) 68%, #070708 100%),
+    linear-gradient(90deg, rgb(7 7 8 / 26%) 0%, transparent 40%);
 }
 
 .icon-disc {
