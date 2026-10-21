@@ -116,8 +116,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   const rects = Array.from({ length: MAX_CARDS }, () => new Vector4(-4000, -4000, 0, 0));
   const open = [0, 0, 0, 0, 0];
+  const field = new Vector4(0, 0, 1, 1);
 
-  const mask = generateRoundedRectPoissonMask(320, 160, 22);
+  const mask = generateRoundedRectPoissonMask(64, 32, 8);
   const texture = new DataTexture(mask.data, mask.width, mask.height, RGBAFormat, UnsignedByteType);
   texture.wrapS = ClampToEdgeWrapping;
   texture.wrapT = ClampToEdgeWrapping;
@@ -147,10 +148,12 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       u_resolution: { value: new Vector2(1, 1) },
       u_angle: { value: (PLAYGROUND_PARAMS.angleDeg * Math.PI) / 180 },
       u_mouse: { value: new Vector2(-4000, -4000) },
+      uMouseAmt: { value: 0 },
       uRect: { value: rects },
       uOpen: { value: open },
       uRadius: { value: 24 },
       uPad: { value: CLIP_INSET_PX },
+      uField: { value: field },
     },
     vertexShader: playgroundVertex,
     fragmentShader: playgroundFragment,
@@ -161,7 +164,12 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   let raf = 0;
   let running = false;
   let skip = 0;
-  const mouseCss = new Vector2(-4000, -4000);
+  const mouseTarget = new Vector2(-4000, -4000);
+  const mouseSmooth = new Vector2(-4000, -4000);
+  let mouseAmt = 0;
+  let mouseAmtTarget = 0;
+  const mouseFollow = mobile ? 0.03 : 0.045;
+  const mouseFade = 0.028;
   let lastClipKey = "";
 
   const resize = () => {
@@ -187,6 +195,10 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     material.uniforms.uPad.value = inset * dpr;
 
     const cssCards: { x: number; y: number; w: number; h: number; open: boolean }[] = [];
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+    let maxX = Number.NEGATIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
     for (let i = 0; i < MAX_CARDS; i++) {
       const btn = buttons[i];
       if (!btn) {
@@ -201,6 +213,15 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       rects[i].set(x * dpr, (cssH - yCss - box.height) * dpr, box.width * dpr, box.height * dpr);
       open[i] = isOpen ? 1 : 0;
       cssCards.push({ x, y: yCss, w: box.width, h: box.height, open: isOpen });
+      if (!isOpen && box.width > 2 && box.height > 2) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, yCss);
+        maxX = Math.max(maxX, x + box.width);
+        maxY = Math.max(maxY, yCss + box.height);
+      }
+    }
+    if (Number.isFinite(minX) && maxX > minX && maxY > minY) {
+      field.set(minX * dpr, (cssH - maxY) * dpr, (maxX - minX) * dpr, (maxY - minY) * dpr);
     }
 
     const clipKey = `${cssW.toFixed(2)}x${cssH.toFixed(2)}:${cssRadius}:${inset}:${cssCards
@@ -232,7 +253,10 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     material.uniforms.u_time.value = (performance.now() - startedAt) / 1000;
     const dpr = renderer.getPixelRatio();
     const h = Math.max(1, canvas.getBoundingClientRect().height);
-    material.uniforms.u_mouse.value.set(mouseCss.x * dpr, (h - mouseCss.y) * dpr);
+    mouseSmooth.lerp(mouseTarget, mouseFollow);
+    mouseAmt += (mouseAmtTarget - mouseAmt) * (mouseAmtTarget > mouseAmt ? mouseFollow : mouseFade);
+    material.uniforms.u_mouse.value.set(mouseSmooth.x * dpr, (h - mouseSmooth.y) * dpr);
+    material.uniforms.uMouseAmt.value = mouseAmt;
     syncCards();
     renderer.render(scene, camera);
     raf = requestAnimationFrame(tick);
@@ -251,10 +275,16 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   const onPointer = (event: PointerEvent) => {
     const root = canvas.getBoundingClientRect();
-    mouseCss.set(event.clientX - root.left, event.clientY - root.top);
+    const x = event.clientX - root.left;
+    const y = event.clientY - root.top;
+    if (mouseAmt < 0.02) mouseSmooth.set(x, y);
+    mouseTarget.set(x, y);
+    mouseAmtTarget = 1;
   };
 
-  const onPointerLeave = () => mouseCss.set(-4000, -4000);
+  const onPointerLeave = () => {
+    mouseAmtTarget = 0;
+  };
 
   const io = new IntersectionObserver(([entry]) => {
     if (entry.isIntersecting && !document.hidden && !sec.classList.contains("is-paused")) start();

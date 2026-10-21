@@ -951,15 +951,47 @@
 .service-sec.is-metal-fallback .service-metal {
   display: none;
 }
+.service-ink {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+  min-width: 0;
+  width: 100%;
+}
+.service-sec.has-metal .service-glow-field {
+  z-index: -2;
+}
+.service-sec.has-metal .service-metal {
+  z-index: -1;
+}
+.service-sec.has-metal .service-sec-body {
+  z-index: auto;
+  isolation: auto;
+}
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) {
+  isolation: auto;
   background-color: transparent;
   box-shadow: none;
   filter: none;
   overflow: hidden;
   border-radius: 1.5rem;
 }
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
+  color: #fff;
+  mix-blend-mode: difference;
+}
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
-  text-shadow: 0 1px 10px rgb(7 7 8 / 70%);
+  color: #fff;
+  text-shadow: none;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+  color: #fff;
+  background-color: transparent;
+  background-image: none;
+  border-color: #fff;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 .service-sec.is-metal-fallback .service-chrome:not(.is-open):not([aria-expanded="true"])::after {
   content: "";

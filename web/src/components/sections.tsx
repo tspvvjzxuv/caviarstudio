@@ -218,17 +218,19 @@ function ServiceCard({
             expanded && "is-open",
           )}
         >
-          <IconDisc>
-            <Icon />
-          </IconDisc>
-          <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
-            {dictText(t, item.name)}
+          <span className="service-ink">
+            <IconDisc>
+              <Icon />
+            </IconDisc>
+            <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
+              {dictText(t, item.name)}
+            </span>
+            <IconDisc
+              className="ml-auto size-12 transition-colors duration-300 group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15 md:size-[3.25rem]"
+            >
+              <Plus className="size-5 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/service:rotate-45" strokeWidth={1.75} />
+            </IconDisc>
           </span>
-          <IconDisc
-            className="ml-auto size-12 transition-colors duration-300 group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15 md:size-[3.25rem]"
-          >
-            <Plus className="size-5 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/service:rotate-45" strokeWidth={1.75} />
-          </IconDisc>
         </button>
       </Reveal>
     </div>
@@ -273,7 +275,7 @@ export function Services() {
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <div className="service-glow-field" aria-hidden="true" />
       <ServiceMetal />
-      <Section.Body className="relative z-10 overflow-visible">
+      <Section.Body className="service-sec-body relative z-10 overflow-visible">
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.navServices} title={t.doKicker}>
           <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.doLead}</p>
         </Section.Heading>

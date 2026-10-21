@@ -6,12 +6,12 @@
  */
 
 export const PLAYGROUND_PARAMS = {
-  refraction: 0.02,
+  refraction: 0.018,
   edge: 0.3,
-  patternBlur: 0.015,
-  liquid: 0.15,
-  speed: 0.4,
-  patternScale: 1.5,
+  patternBlur: 0.028,
+  liquid: 0.12,
+  speed: 0.09,
+  patternScale: 0.78,
   angleDeg: 50,
 } as const;
 
@@ -129,10 +129,12 @@ uniform float u_patternScale;
 uniform vec2 u_resolution;
 uniform float u_angle;
 uniform vec2 u_mouse;
+uniform float uMouseAmt;
 uniform vec4 uRect[5];
 uniform float uOpen[5];
 uniform float uRadius;
 uniform float uPad;
+uniform vec4 uField;
 
 #define TWO_PI 6.28318530718
 #define PI 3.14159265358979323846
@@ -222,47 +224,49 @@ void main() {
 
   if (found < 0.5) discard;
 
-  vec2 v_uv = vec2((frag.x - rc.x) / rc.z, 1.0 - (frag.y - rc.y) / rc.w);
-  vec2 mouse_uv = vec2((u_mouse.x - rc.x) / rc.z, 1.0 - (u_mouse.y - rc.y) / rc.w);
+  vec2 fieldUv = vec2(
+    (frag.x - uField.x) / max(uField.z, 1.0),
+    1.0 - (frag.y - uField.y) / max(uField.w, 1.0)
+  );
+  vec2 mouse_uv = vec2(
+    (u_mouse.x - uField.x) / max(uField.z, 1.0),
+    1.0 - (u_mouse.y - uField.y) / max(uField.w, 1.0)
+  );
 
-  vec2 uv = v_uv;
-  float ratio = 1.0;
+  float ratio = uField.z / max(uField.w, 1.0);
+  vec2 uv = fieldUv;
   uv.x *= ratio;
+
+  vec2 aspect = vec2(ratio, 1.0);
+  vec2 toMouse = (fieldUv - mouse_uv) * aspect;
+  float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
+
+  float t = u_time * u_speed;
+  uv += vec2(
+    snoise(uv * 1.15 + vec2(t * 0.55, t * 0.4)),
+    snoise(uv * 1.15 - vec2(t * 0.35, -t * 0.5))
+  ) * 0.028 * mouseFalloff;
+  uv -= toMouse * 0.045 * mouseFalloff;
 
   vec2 center = vec2(0.5 * ratio, 0.5);
   uv = rotate(uv - center, u_angle) + center;
 
   float diagonal = uv.x - uv.y;
-  float t = u_time * u_speed;
 
-  vec2 img_uv = v_uv;
+  float edge = 1.0 - smoothstep(-26.0, -1.25, sdf);
 
-  vec2 toMouse = img_uv - mouse_uv;
-  float mouseGate = step(0.0, mouse_uv.x) * step(0.0, mouse_uv.y) * step(mouse_uv.x, 1.0) * step(mouse_uv.y, 1.0);
-  float mouseFalloff = mouseGate * exp(-dot(toMouse, toMouse) * 9.0);
-  img_uv += vec2(
-    snoise(img_uv * 5.0 + vec2(t, t)),
-    snoise(img_uv * 5.0 - vec2(t, -t))
-  ) * 0.045 * mouseFalloff;
-  img_uv -= toMouse * 0.12 * mouseFalloff;
-  img_uv = clamp(img_uv, 0.0, 1.0);
+  vec3 color2 = vec3(0.90, 0.91, 0.94);
+  vec3 color1 = vec3(0.055, 0.056, 0.062);
 
-  float edgeMaskPrev = texture2D(u_mask, img_uv).r;
-  float edgeMaskNext = texture2D(u_mask_next, img_uv).r;
-  float edge = mix(edgeMaskPrev, edgeMaskNext, u_transition);
+  vec2 grad_uv = uv - center;
+  grad_uv.x /= max(ratio, 1.0);
 
-  vec3 color2 = vec3(.99, 0.99, 1.);
-  vec3 color1 = vec3(.08, .08, .08 + .08 * smoothstep(.7, 1.3, uv.x + uv.y));
-
-  vec2 grad_uv = uv;
-  grad_uv -= .5;
-
-  float dist = length(grad_uv + vec2(0., .2 * diagonal));
-  grad_uv = rotate(grad_uv, (.25 - .2 * diagonal) * PI);
+  float dist = length(grad_uv + vec2(0., .12 * diagonal));
+  grad_uv = rotate(grad_uv, (.18 - .12 * diagonal) * PI);
 
   float bulge = pow(1.8 * dist, 1.2);
   bulge = 1. - bulge;
-  bulge *= pow(max(uv.y, 0.0), .3);
+  bulge *= pow(max(fieldUv.y, 0.0), .3);
 
   float cycle_width = u_patternScale;
   float thin_strip_1_ratio = .12 / cycle_width * (1. - .4 * bulge);
@@ -274,7 +278,7 @@ void main() {
 
   float opacity = 1. - smoothstep(.9 - .5 * u_edge, 1. - .5 * u_edge, edge);
 
-  float noise = snoise(uv - t);
+  float noise = snoise(uv * 0.42 - t) * 0.72 + snoise(uv * 0.16 - t * 0.38) * 0.28;
   edge += (1. - edge) * u_liquid * noise;
 
   float refr = 0.;
@@ -285,24 +289,24 @@ void main() {
   dir += diagonal;
   dir -= 2. * noise * diagonal * (smoothstep(0., 1., edge) * smoothstep(1., 0., edge));
 
-  bulge *= clamp(pow(max(uv.y, 0.0), .1), .3, 1.);
+  bulge *= clamp(pow(max(fieldUv.y, 0.0), .1), .3, 1.);
   dir *= (.1 + (1.1 - edge) * bulge);
   dir *= smoothstep(1., .7, edge);
-  dir += .18 * (smoothstep(.1, .2, uv.y) * smoothstep(.4, .2, uv.y));
-  dir += .03 * (smoothstep(.1, .2, 1. - uv.y) * smoothstep(.4, .2, 1. - uv.y));
-  dir *= (.5 + .5 * pow(max(uv.y, 0.0), 2.));
+  dir += .18 * (smoothstep(.1, .2, fieldUv.y) * smoothstep(.4, .2, fieldUv.y));
+  dir += .03 * (smoothstep(.1, .2, 1. - fieldUv.y) * smoothstep(.4, .2, 1. - fieldUv.y));
+  dir *= (.5 + .5 * pow(max(fieldUv.y, 0.0), 2.));
   dir *= cycle_width;
   dir -= t;
-  dir += (mouse_uv.x - 0.5) * 0.22 * mouseFalloff;
+  dir += (mouse_uv.x - 0.5) * 0.07 * mouseFalloff;
 
   float refr_r = refr;
   refr_r += .03 * bulge * noise;
   float refr_b = 1.3 * refr;
 
-  refr_r += 5. * (smoothstep(-.1, .2, uv.y) * smoothstep(.5, .1, uv.y)) * (smoothstep(.4, .6, bulge) * smoothstep(1., .4, bulge));
+  refr_r += 5. * (smoothstep(-.1, .2, fieldUv.y) * smoothstep(.5, .1, fieldUv.y)) * (smoothstep(.4, .6, bulge) * smoothstep(1., .4, bulge));
   refr_r -= diagonal;
 
-  refr_b += (smoothstep(0., .4, uv.y) * smoothstep(.8, .1, uv.y)) * (smoothstep(.4, .6, bulge) * smoothstep(.8, .4, bulge));
+  refr_b += (smoothstep(0., .4, fieldUv.y) * smoothstep(.8, .1, fieldUv.y)) * (smoothstep(.4, .6, bulge) * smoothstep(.8, .4, bulge));
   refr_b -= .2 * edge;
 
   refr_r *= u_refraction;
