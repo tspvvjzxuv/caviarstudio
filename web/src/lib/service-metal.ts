@@ -45,22 +45,12 @@ function blankTexture() {
   return texture;
 }
 
-function setMask(canvas: HTMLCanvasElement, url: string | null) {
-  if (!url) {
-    canvas.style.removeProperty("mask-image");
-    canvas.style.removeProperty("-webkit-mask-image");
-    canvas.style.removeProperty("mask-size");
-    canvas.style.removeProperty("-webkit-mask-size");
-    canvas.style.removeProperty("mask-repeat");
-    canvas.style.removeProperty("-webkit-mask-repeat");
-    return;
+function panelTweening(sec: HTMLElement) {
+  for (const panel of sec.querySelectorAll<HTMLElement>(".service-panel")) {
+    const rows = panel.style.gridTemplateRows;
+    if (rows && rows.endsWith("px")) return true;
   }
-  canvas.style.setProperty("mask-image", url);
-  canvas.style.setProperty("-webkit-mask-image", url);
-  canvas.style.setProperty("mask-size", "100% 100%");
-  canvas.style.setProperty("-webkit-mask-size", "100% 100%");
-  canvas.style.setProperty("mask-repeat", "no-repeat");
-  canvas.style.setProperty("-webkit-mask-repeat", "no-repeat");
+  return false;
 }
 
 export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
@@ -142,9 +132,11 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   let mouseAmtTarget = 0;
   const mouseFollow = mobile ? 0.03 : 0.045;
   const mouseFade = 0.028;
-  let lastMask = "";
   let gpuEma = 2.2;
   let adaptN = 0;
+  let viewW = 0;
+  let viewH = 0;
+  let sizeRaf = 0;
   const fieldBox = { left: 0, top: 0 };
   let boxRaf = 0;
 
@@ -155,39 +147,71 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const applyPixelRatio = (next: number) => {
+    if (panelTweening(sec)) return;
     const clamped = Math.max(dprMin, Math.min(dprCap, next));
     if (Math.abs(clamped - pixelRatio) < 0.03) return;
     pixelRatio = clamped;
     renderer.setPixelRatio(pixelRatio);
-    resize();
+    viewW = 0;
+    viewH = 0;
+    applySize();
+  };
+
+  const applySize = () => {
+    const w = Math.max(1, Math.round(canvas.clientWidth || sec.clientWidth));
+    const h = Math.max(1, Math.round(canvas.clientHeight || sec.clientHeight));
+    const sizeChanged = w !== viewW || h !== viewH;
+    if (sizeChanged) {
+      viewW = w;
+      viewH = h;
+      renderer.setSize(w, h, false);
+      material.uniforms.u_resolution.value.set(w, h);
+    }
+    cacheFieldBox();
+    syncCards();
+    if (sizeChanged && running) renderer.render(scene, camera);
   };
 
   const resize = () => {
-    const w = Math.max(1, canvas.clientWidth || sec.clientWidth);
-    const h = Math.max(1, canvas.clientHeight || sec.clientHeight);
-    renderer.setSize(w, h, false);
-    material.uniforms.u_resolution.value.set(w, h);
-    cacheFieldBox();
-    syncCards();
+    if (panelTweening(sec)) {
+      cacheFieldBox();
+      syncCards();
+      return;
+    }
+    applySize();
+  };
+
+  const requestResize = () => {
+    if (sizeRaf) return;
+    sizeRaf = requestAnimationFrame(() => {
+      sizeRaf = 0;
+      resize();
+    });
+  };
+
+  const onPanelTween = (event: TransitionEvent) => {
+    if (event.propertyName !== "grid-template-rows") return;
+    if (panelTweening(sec)) return;
+    applySize();
   };
 
   const syncCards = () => {
     const root = canvas.getBoundingClientRect();
-    const dpr = renderer.getPixelRatio();
     const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
     const cssW = Math.max(1, root.width);
     const cssH = Math.max(1, root.height);
     cssHeight = cssH;
+    const sx = Math.max(1, canvas.width) / cssW;
+    const sy = Math.max(1, canvas.height) / cssH;
     const sample = buttons[0];
     const styles = sample ? getComputedStyle(sample) : null;
     const cssRadius = styles ? Number.parseFloat(styles.borderRadius) || 24 : 24;
-    material.uniforms.uRadius.value = cssRadius * dpr;
+    material.uniforms.uRadius.value = cssRadius * Math.min(sx, sy);
 
     let minX = Number.POSITIVE_INFINITY;
     let minY = Number.POSITIVE_INFINITY;
     let maxX = Number.NEGATIVE_INFINITY;
     let maxY = Number.NEGATIVE_INFINITY;
-    const maskCards: { x: number; y: number; w: number; h: number; r: number }[] = [];
 
     for (let i = 0; i < MAX_CARDS; i++) {
       const btn = buttons[i];
@@ -200,36 +224,17 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       const x = box.left - root.left;
       const yCss = box.top - root.top;
       const isOpen = btn.getAttribute("aria-expanded") === "true" || btn.classList.contains("is-open");
-      rects[i].set(x * dpr, (cssH - yCss - box.height) * dpr, box.width * dpr, box.height * dpr);
+      rects[i].set(x * sx, (cssH - yCss - box.height) * sy, box.width * sx, box.height * sy);
       open[i] = isOpen ? 1 : 0;
       if (!isOpen && box.width > 2 && box.height > 2) {
         minX = Math.min(minX, x);
         minY = Math.min(minY, yCss);
         maxX = Math.max(maxX, x + box.width);
         maxY = Math.max(maxY, yCss + box.height);
-        maskCards.push({ x, y: yCss, w: box.width, h: box.height, r: cssRadius });
       }
     }
     if (Number.isFinite(minX) && maxX > minX && maxY > minY) {
-      field.set(minX * dpr, (cssH - maxY) * dpr, (maxX - minX) * dpr, (maxY - minY) * dpr);
-    }
-
-    const maskKey = `${cssW.toFixed(2)}x${cssH.toFixed(2)}:${maskCards
-      .map((c) => `${c.x.toFixed(2)},${c.y.toFixed(2)},${c.w.toFixed(2)},${c.h.toFixed(2)},${c.r}`)
-      .join("|")}`;
-    if (maskKey !== lastMask) {
-      lastMask = maskKey;
-      if (!maskCards.length) {
-        setMask(canvas, null);
-      } else {
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${cssW} ${cssH}" preserveAspectRatio="none">${maskCards
-          .map(
-            (c) =>
-              `<rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="${c.r}" ry="${c.r}" fill="#fff"/>`,
-          )
-          .join("")}</svg>`;
-        setMask(canvas, `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}")`);
-      }
+      field.set(minX * sx, (cssH - maxY) * sy, (maxX - minX) * sx, (maxY - minY) * sy);
     }
   };
 
@@ -250,10 +255,11 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     material.uniforms.u_flow.value = cycle.flow;
     material.uniforms.u_angle.value = cycle.angle;
     material.uniforms.uFocus.value.set(cycle.focusX, cycle.focusY);
-    const dpr = renderer.getPixelRatio();
+    const sx = Math.max(1, canvas.width) / Math.max(1, canvas.clientWidth || viewW || 1);
+    const sy = Math.max(1, canvas.height) / Math.max(1, cssHeight);
     mouseSmooth.lerp(mouseTarget, mouseFollow);
     mouseAmt += (mouseAmtTarget - mouseAmt) * (mouseAmtTarget > mouseAmt ? mouseFollow : mouseFade);
-    material.uniforms.u_mouse.value.set(mouseSmooth.x * dpr, (cssHeight - mouseSmooth.y) * dpr);
+    material.uniforms.u_mouse.value.set(mouseSmooth.x * sx, (cssHeight - mouseSmooth.y) * sy);
     material.uniforms.uMouseAmt.value = mouseAmt;
     renderer.render(scene, camera);
     gpuEma = gpuEma * 0.88 + (performance.now() - t0) * 0.12;
@@ -303,7 +309,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     else stop();
   });
 
-  const ro = new ResizeObserver(() => resize());
+  const ro = new ResizeObserver(() => requestResize());
   const mo = new MutationObserver(() => {
     syncCards();
     onVis();
@@ -333,7 +339,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     subtree: true,
     childList: true,
   });
-  window.addEventListener("resize", resize, { passive: true });
+  sec.addEventListener("transitionend", onPanelTween);
+  sec.addEventListener("transitioncancel", onPanelTween);
+  window.addEventListener("resize", requestResize, { passive: true });
   window.addEventListener("scroll", onScroll, { passive: true });
   document.addEventListener("visibilitychange", onVis);
   sec.addEventListener("pointermove", onPointer, { passive: true });
@@ -343,13 +351,15 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   return () => {
     stop();
     sec.classList.remove("has-metal");
-    setMask(canvas, null);
     io.disconnect();
     ro.disconnect();
     mo.disconnect();
-    window.removeEventListener("resize", resize);
+    sec.removeEventListener("transitionend", onPanelTween);
+    sec.removeEventListener("transitioncancel", onPanelTween);
+    window.removeEventListener("resize", requestResize);
     window.removeEventListener("scroll", onScroll);
     if (boxRaf) cancelAnimationFrame(boxRaf);
+    if (sizeRaf) cancelAnimationFrame(sizeRaf);
     document.removeEventListener("visibilitychange", onVis);
     sec.removeEventListener("pointermove", onPointer);
     sec.removeEventListener("pointerdown", onPointer);

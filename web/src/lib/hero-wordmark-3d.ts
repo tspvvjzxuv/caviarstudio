@@ -136,13 +136,15 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   if (!slot) return () => {};
   const hero = (canvas.closest("#top") as HTMLElement | null) ?? slot;
 
+  const mobile = window.matchMedia("(max-width: 767px)").matches;
+
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: true,
-      preserveDrawingBuffer: true,
+      antialias: !mobile,
+      preserveDrawingBuffer: !mobile,
       premultipliedAlpha: true,
       powerPreference: "high-performance",
       failIfMajorPerformanceCaveat: false,
@@ -152,7 +154,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   }
 
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 2));
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
@@ -240,13 +242,28 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   group.scale.setScalar(6 / wordW);
   scene.add(group);
 
-  const spreadAmp = wordW * 0.08;
-  const letterZAmp = wordW * 0.055;
-  const recedeAmp = 7.2;
+  const spreadAmp = wordW * (mobile ? 0.1 : 0.08);
+  const letterZAmp = wordW * (mobile ? 0.08 : 0.055);
+  const recedeAmp = mobile ? 12.6 : 7.2;
+  let viewW = 0;
+  let viewH = 0;
+  let viewportW = window.innerWidth;
+  let viewportH = window.innerHeight;
+  let lastOp = "";
+  let dataN = 0;
 
-  const fitCamera = () => {
+  const measureCanvas = () => {
     const w = Math.max(1, canvas.clientWidth || Math.round(slot.clientWidth * 1.18));
     const h = Math.max(1, canvas.clientHeight || Math.round(slot.clientHeight * 1.5));
+    return { w, h };
+  };
+
+  const fitCamera = () => {
+    const { w, h } = measureCanvas();
+    if (w === viewW && h === viewH) return;
+    if (mobile && w === viewW) return;
+    viewW = w;
+    viewH = h;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     const halfH = Math.tan((FOV * Math.PI) / 360);
@@ -259,7 +276,6 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     camera.near = Math.max(0.05, camDist * 0.05);
     camera.far = Math.max(40, camDist * 10 + recedeAmp * 2);
     camera.updateProjectionMatrix();
-    cacheHero();
   };
 
   let rx = 0;
@@ -293,7 +309,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   };
 
   const readScroll = () => {
-    const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, window.innerHeight * SCROLL_VH)));
+    const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, viewportH * SCROLL_VH)));
     tGz = -recedeAmp * p;
     tSpread = spreadAmp * p;
     tLetterZ = letterZAmp * p;
@@ -328,14 +344,22 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
       mesh.position.z = mesh.userData.oz - Math.abs(i) * letterZ;
     }
     if (envSpin) scene.environmentRotation.y = tStart * ENV_SPIN;
-    canvas.style.opacity = fade < 0.02 ? "0" : fade.toFixed(3);
+    const op = fade < 0.02 ? "0" : fade > 0.97 ? "1" : fade.toFixed(2);
+    if (op !== lastOp) {
+      lastOp = op;
+      if (op === "1") canvas.style.removeProperty("opacity");
+      else canvas.style.opacity = op;
+    }
     if (fade > 0.015) renderer.render(scene, camera);
     gpuEma = gpuEma * 0.88 + (performance.now() - tStart) * 0.12;
-    canvas.dataset.ft = gpuEma.toFixed(2);
-    canvas.dataset.rx = rx.toFixed(3);
-    canvas.dataset.ry = ry.toFixed(3);
-    canvas.dataset.gz = gz.toFixed(3);
-    canvas.dataset.spread = spread.toFixed(1);
+    dataN += 1;
+    if (!mobile || dataN % 8 === 0) {
+      canvas.dataset.ft = gpuEma.toFixed(2);
+      canvas.dataset.rx = rx.toFixed(3);
+      canvas.dataset.ry = ry.toFixed(3);
+      canvas.dataset.gz = gz.toFixed(3);
+      canvas.dataset.spread = spread.toFixed(1);
+    }
     raf = requestAnimationFrame(tick);
   };
 
@@ -358,6 +382,14 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   };
   const onScroll = () => {
     readScroll();
+  };
+
+  const onWinResize = () => {
+    const w = window.innerWidth;
+    if (w === viewportW) return;
+    viewportW = w;
+    viewportH = window.innerHeight;
+    fitCamera();
     cacheHero();
   };
 
@@ -425,19 +457,24 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
       clearTilt();
     }
   });
-  const ro = new ResizeObserver(() => fitCamera());
+  const ro = new ResizeObserver(() => {
+    const { w } = measureCanvas();
+    if (mobile && w === viewW) return;
+    fitCamera();
+  });
 
   fitCamera();
+  cacheHero();
   readScroll();
   renderer.compile(scene, camera);
   const word = slot.querySelector(".caviar-word");
   if (word instanceof HTMLElement) word.style.opacity = "0";
   io.observe(hero);
   ro.observe(slot);
-  ro.observe(canvas);
   requestAnimationFrame(() => requestAnimationFrame(fitCamera));
   window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", fitCamera, { passive: true });
+  window.addEventListener("resize", onWinResize, { passive: true });
+  window.visualViewport?.addEventListener("resize", onWinResize, { passive: true });
   document.addEventListener("visibilitychange", onVis);
   start();
 
@@ -454,7 +491,8 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     ro.disconnect();
     unbindGyro();
     window.removeEventListener("scroll", onScroll);
-    window.removeEventListener("resize", fitCamera);
+    window.removeEventListener("resize", onWinResize);
+    window.visualViewport?.removeEventListener("resize", onWinResize);
     window.removeEventListener("touchend", onFirstTap, true);
     document.removeEventListener("visibilitychange", onVis);
     hero.removeEventListener("pointerenter", cacheHero);

@@ -10,16 +10,16 @@ export const PLAYGROUND_PARAMS = {
   edge: 0.22,
   patternBlur: 0.016,
   liquid: 0.08,
-  speed: 0.025,
+  speed: 0.035,
   patternScale: 1.05,
   angleDeg: 35,
 } as const;
 
-/** Forward, hold, back, then a long angle ease. Seconds. ~56s round. */
+/** Forward, hold, back, then a long angle ease. Seconds. ~39s round. */
 export const METAL_CYCLE = {
-  legSec: 20,
-  pauseSec: 3.5,
-  angleSec: 12,
+  legSec: 14,
+  pauseSec: 2.5,
+  angleSec: 8.5,
   travel: 0.7,
 } as const;
 

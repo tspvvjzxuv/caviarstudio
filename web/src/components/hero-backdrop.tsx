@@ -100,7 +100,7 @@ export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | nu
   const [skip] = useState(saveDataOn);
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div className="hero-back pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       <div ref={kenRef} className="hero-parallax hero-ken absolute inset-0">
         <div className="hero-field absolute inset-0" />
         <img
