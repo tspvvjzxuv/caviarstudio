@@ -1,191 +1,27 @@
 import {
+  ClampToEdgeWrapping,
+  DataTexture,
+  LinearFilter,
   Mesh,
   OrthographicCamera,
   PlaneGeometry,
+  RGBAFormat,
   Scene,
   ShaderMaterial,
+  UnsignedByteType,
   Vector2,
   Vector4,
   WebGLRenderer,
 } from "three";
+import {
+  PLAYGROUND_PARAMS,
+  generateRoundedRectPoissonMask,
+  playgroundFragment,
+  playgroundVertex,
+} from "@/lib/liquid-metal-playground";
 
 const MAX_CARDS = 5;
-
-const VERT = `
-void main() {
-  gl_Position = vec4(position, 1.0);
-}
-`;
-
-// Liquid-metal stripe / refraction model adapted from
-// eamonliu/liquid-metal-playground (MIT). No SDF morph, melt, or drip —
-// the field is masked to the existing rounded card rects.
-const FRAG = `
-precision highp float;
-
-uniform float uTime;
-uniform vec2 uRes;
-uniform vec2 uMouse;
-uniform float uSweep;
-uniform float uRadius;
-uniform vec4 uRect[5];
-uniform vec2 uCenter[5];
-uniform float uOpen[5];
-
-#define PI 3.141592653589793
-
-vec3 mod289(vec3 x) { return x - floor(x * (1. / 289.)) * 289.; }
-vec2 mod289(vec2 x) { return x - floor(x * (1. / 289.)) * 289.; }
-vec3 permute(vec3 x) { return mod289(((x * 34.) + 1.) * x); }
-
-float snoise(vec2 v) {
-  const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-  vec2 i = floor(v + dot(v, C.yy));
-  vec2 x0 = v - i + dot(i, C.xx);
-  vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-  vec4 x12 = x0.xyxy + C.xxzz;
-  x12.xy -= i1;
-  i = mod289(i);
-  vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
-  vec3 m = max(0.5 - vec3(dot(x0, x0), dot(x12.xy, x12.xy), dot(x12.zw, x12.zw)), 0.0);
-  m = m * m;
-  m = m * m;
-  vec3 x = 2.0 * fract(p * C.www) - 1.0;
-  vec3 h = abs(x) - 0.5;
-  vec3 ox = floor(x + 0.5);
-  vec3 a0 = x - ox;
-  m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
-  vec3 g;
-  g.x = a0.x * x0.x + h.x * x0.y;
-  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-  return 130.0 * dot(m, g);
-}
-
-vec2 rotate(vec2 uv, float th) {
-  return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
-}
-
-float sdRoundBox(vec2 p, vec2 b, float r) {
-  vec2 q = abs(p) - b + r;
-  return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
-}
-
-float getChannel(float c1, float c2, float stripe, vec3 w, float blur, float bulge) {
-  float ch = mix(c2, c1, smoothstep(0.0, blur, stripe));
-  float border = w[0];
-  ch = mix(ch, c2, smoothstep(border - blur, border + blur, stripe));
-  float b = smoothstep(0.2, 0.8, bulge);
-  border = w[0] + 0.4 * (1.0 - b) * w[1];
-  ch = mix(ch, c1, smoothstep(border - blur, border + blur, stripe));
-  border = w[0] + 0.5 * (1.0 - b) * w[1];
-  ch = mix(ch, c2, smoothstep(border - blur, border + blur, stripe));
-  border = w[0] + w[1];
-  ch = mix(ch, c1, smoothstep(border - blur, border + blur, stripe));
-  float gradientT = (stripe - w[0] - w[1]) / max(w[2], 0.001);
-  float gradient = mix(c1, c2, smoothstep(0.0, 1.0, gradientT));
-  ch = mix(ch, gradient, smoothstep(border - blur, border + blur, stripe));
-  return ch;
-}
-
-void main() {
-  vec2 frag = gl_FragCoord.xy;
-  float sdf = 1.0e6;
-  float live = 0.0;
-  float hover = 0.0;
-
-  for (int i = 0; i < 5; i++) {
-    vec4 rc = uRect[i];
-    float on = (1.0 - uOpen[i]) * step(2.0, rc.z);
-    vec2 halfSize = rc.zw * 0.5;
-    vec2 center = rc.xy + halfSize;
-    float d = mix(1.0e6, sdRoundBox(frag - center, halfSize, uRadius), on);
-    sdf = min(sdf, d);
-    live = max(live, on);
-    vec2 m = uMouse - rc.xy;
-    float insidePointer = step(0.0, m.x) * step(0.0, m.y) * step(m.x, rc.z) * step(m.y, rc.w);
-    hover = max(hover, insidePointer * on);
-  }
-
-  if (live < 0.5 || sdf > 3.0) discard;
-
-  float inside = 1.0 - smoothstep(0.0, 1.4, sdf);
-  float rim = 1.0 - smoothstep(0.0, 2.6, abs(sdf));
-  float cover = max(inside * 0.82, rim);
-  if (cover < 0.012) discard;
-
-  float sigma = max(72.0, length(uRect[0].zw) * 0.48);
-  float path = fract(uSweep) * 5.0;
-  float slot = floor(path);
-  float ft = smoothstep(0.0, 1.0, fract(path));
-  vec2 a = uCenter[0];
-  vec2 b = uCenter[1];
-  if (slot < 0.5) { a = uCenter[0]; b = uCenter[1]; }
-  else if (slot < 1.5) { a = uCenter[1]; b = uCenter[2]; }
-  else if (slot < 2.5) { a = uCenter[2]; b = uCenter[3]; }
-  else if (slot < 3.5) { a = uCenter[3]; b = uCenter[4]; }
-  else { a = uCenter[4]; b = uCenter[0]; }
-  vec2 sweepPt = mix(a, b, ft);
-  float band = exp(-dot(frag - sweepPt, frag - sweepPt) / (2.0 * sigma * sigma));
-  float mouseBand = exp(-dot(frag - uMouse, frag - uMouse) / (2.0 * 90.0 * 90.0));
-  band = max(band, mouseBand * hover * 0.9);
-  band = clamp(band * (0.82 + 0.18 * hover), 0.0, 1.0);
-
-  vec2 uv = frag / max(uRes, vec2(1.0));
-  float ratio = uRes.x / max(uRes.y, 1.0);
-  uv.x *= ratio;
-  vec2 center = vec2(0.5 * ratio, 0.5);
-  uv = rotate(uv - center, 0.42) + center;
-
-  float diagonal = uv.x - uv.y;
-  float t = uTime * 0.14;
-  vec3 color1 = vec3(0.08, 0.09, 0.11);
-  vec3 color2 = vec3(0.97, 0.98, 1.0);
-
-  vec2 gradUv = uv - 0.5;
-  float dist = length(gradUv + vec2(0.0, 0.2 * diagonal));
-  gradUv = rotate(gradUv, (0.25 - 0.2 * diagonal) * PI);
-  float bulge = pow(1.8 * dist, 1.2);
-  bulge = 1.0 - bulge;
-  bulge *= pow(clamp(uv.y, 0.0, 1.0), 0.3);
-
-  float cycle = 2.05;
-  float thin1 = 0.12 / cycle * (1.0 - 0.4 * bulge);
-  float thin2 = 0.07 / cycle * (1.0 + 0.4 * bulge);
-  float wide = 1.0 - thin1 - thin2;
-  vec3 w = vec3(cycle * thin1, cycle * thin2, wide);
-
-  float edge = smoothstep(-28.0, 6.0, sdf);
-  float noise = snoise(uv - t);
-  edge += (1.0 - edge) * 0.22 * noise;
-
-  float dir = gradUv.x + diagonal;
-  dir -= 2.0 * noise * diagonal * (smoothstep(0.0, 1.0, edge) * smoothstep(1.0, 0.0, edge));
-  bulge *= clamp(pow(clamp(uv.y, 0.0, 1.0), 0.1), 0.3, 1.0);
-  dir *= (0.1 + (1.1 - edge) * bulge);
-  dir *= smoothstep(1.0, 0.7, edge);
-  dir *= cycle;
-  dir -= t;
-  dir += 0.018 * (uMouse.x / max(uRes.x, 1.0) - 0.5) * hover;
-
-  float refr = clamp(1.0 - bulge, 0.0, 1.0) * 0.32;
-  float stripeR = mod(dir + refr, 1.0);
-  float stripeG = mod(dir, 1.0);
-  float stripeB = mod(dir - 1.25 * refr, 1.0);
-  float blur = 0.24;
-  vec3 metal = vec3(
-    getChannel(color1.r, color2.r, stripeR, w, blur + 0.02, bulge),
-    getChannel(color1.g, color2.g, stripeG, w, blur, bulge),
-    getChannel(color1.b, color2.b, stripeB, w, blur, bulge)
-  );
-
-  float centerFade = mix(0.52, 1.0, rim);
-  float rest = 0.07;
-  float alpha = cover * centerFade * (rest + (1.0 - rest) * band);
-  vec3 pearl = vec3(0.956, 0.961, 0.969);
-  vec3 col = mix(metal, pearl, 0.22 + rim * 0.4);
-  gl_FragColor = vec4(col, alpha);
-}
-`;
+const CLIP_INSET_PX = 1.25;
 
 function saveDataOn() {
   const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
@@ -193,7 +29,63 @@ function saveDataOn() {
 }
 
 function fallback(sec: HTMLElement | null) {
+  sec?.classList.remove("has-metal");
   sec?.classList.add("is-metal-fallback");
+}
+
+function roundedRectPath(x: number, y: number, w: number, h: number, r: number) {
+  const rr = Math.max(0, Math.min(r, w / 2, h / 2));
+  const x2 = x + w;
+  const y2 = y + h;
+  return [
+    `M${x + rr} ${y}`,
+    `H${x2 - rr}`,
+    `A${rr} ${rr} 0 0 1 ${x2} ${y + rr}`,
+    `V${y2 - rr}`,
+    `A${rr} ${rr} 0 0 1 ${x2 - rr} ${y2}`,
+    `H${x + rr}`,
+    `A${rr} ${rr} 0 0 1 ${x} ${y2 - rr}`,
+    `V${y + rr}`,
+    `A${rr} ${rr} 0 0 1 ${x + rr} ${y}`,
+    "Z",
+  ].join(" ");
+}
+
+function applyCardClip(
+  canvas: HTMLCanvasElement,
+  cards: { x: number; y: number; w: number; h: number; open: boolean }[],
+  radius: number,
+  sectionW: number,
+  sectionH: number,
+  inset: number,
+) {
+  const closed = cards.filter((c) => !c.open && c.w > 2 && c.h > 2);
+  const r = Math.max(0, radius - inset);
+  const paths = closed.map((c) => {
+    const x = c.x + inset;
+    const y = c.y + inset;
+    const w = Math.max(0, c.w - inset * 2);
+    const h = Math.max(0, c.h - inset * 2);
+    return roundedRectPath(x, y, w, h, r);
+  });
+  const d = paths.join(" ") || "M0 0";
+  canvas.style.clipPath = `path('${d}')`;
+  canvas.style.setProperty("-webkit-clip-path", `path('${d}')`);
+
+  const rects = closed
+    .map((c) => {
+      const x = (c.x + inset).toFixed(2);
+      const y = (c.y + inset).toFixed(2);
+      const w = Math.max(0, c.w - inset * 2).toFixed(2);
+      const h = Math.max(0, c.h - inset * 2).toFixed(2);
+      const rr = Math.max(0, Math.min(r, (c.w - inset * 2) / 2, (c.h - inset * 2) / 2)).toFixed(2);
+      return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rr}" ry="${rr}" fill="#fff"/>`;
+    })
+    .join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${sectionW}" height="${sectionH}" viewBox="0 0 ${sectionW} ${sectionH}">${rects}</svg>`;
+  const url = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  canvas.style.webkitMaskImage = url;
+  canvas.style.maskImage = url;
 }
 
 export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
@@ -209,6 +101,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       canvas,
       alpha: true,
       antialias: false,
+      premultipliedAlpha: true,
       powerPreference: "low-power",
       failIfMajorPerformanceCaveat: false,
     });
@@ -219,11 +112,19 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   renderer.setClearColor(0x000000, 0);
   const mobile = window.matchMedia("(max-width: 767px)").matches;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.4));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.5));
 
   const rects = Array.from({ length: MAX_CARDS }, () => new Vector4(-4000, -4000, 0, 0));
-  const centers = Array.from({ length: MAX_CARDS }, () => new Vector2(-4000, -4000));
   const open = [0, 0, 0, 0, 0];
+
+  const mask = generateRoundedRectPoissonMask(320, 160, 22);
+  const texture = new DataTexture(mask.data, mask.width, mask.height, RGBAFormat, UnsignedByteType);
+  texture.wrapS = ClampToEdgeWrapping;
+  texture.wrapT = ClampToEdgeWrapping;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.flipY = false;
+  texture.needsUpdate = true;
 
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -231,59 +132,83 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const material = new ShaderMaterial({
     transparent: true,
     depthTest: false,
+    premultipliedAlpha: true,
     uniforms: {
-      uTime: { value: 0 },
-      uRes: { value: new Vector2(1, 1) },
-      uMouse: { value: new Vector2(-4000, -4000) },
-      uSweep: { value: 0 },
-      uRadius: { value: 24 },
+      u_mask: { value: texture },
+      u_mask_next: { value: texture },
+      u_transition: { value: 1 },
+      u_time: { value: 0 },
+      u_refraction: { value: PLAYGROUND_PARAMS.refraction },
+      u_edge: { value: PLAYGROUND_PARAMS.edge },
+      u_patternBlur: { value: PLAYGROUND_PARAMS.patternBlur },
+      u_liquid: { value: PLAYGROUND_PARAMS.liquid },
+      u_speed: { value: PLAYGROUND_PARAMS.speed },
+      u_patternScale: { value: PLAYGROUND_PARAMS.patternScale },
+      u_resolution: { value: new Vector2(1, 1) },
+      u_angle: { value: (PLAYGROUND_PARAMS.angleDeg * Math.PI) / 180 },
+      u_mouse: { value: new Vector2(-4000, -4000) },
       uRect: { value: rects },
-      uCenter: { value: centers },
       uOpen: { value: open },
+      uRadius: { value: 24 },
+      uPad: { value: CLIP_INSET_PX },
     },
-    vertexShader: VERT,
-    fragmentShader: FRAG,
+    vertexShader: playgroundVertex,
+    fragmentShader: playgroundFragment,
   });
   scene.add(new Mesh(geometry, material));
 
   const startedAt = performance.now();
-  const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
   let raf = 0;
   let running = false;
   let skip = 0;
   const mouseCss = new Vector2(-4000, -4000);
+  let lastClipKey = "";
 
   const resize = () => {
-    const w = Math.max(1, sec.clientWidth);
-    const h = Math.max(1, sec.clientHeight);
+    const w = Math.max(1, canvas.clientWidth || sec.clientWidth);
+    const h = Math.max(1, canvas.clientHeight || sec.clientHeight);
     renderer.setSize(w, h, false);
-    material.uniforms.uRes.value.set(w, h);
-    const sample = sec.querySelector("button.service-chrome");
-    const cssRadius = sample ? Number.parseFloat(getComputedStyle(sample).borderRadius) || 24 : 24;
-    material.uniforms.uRadius.value = cssRadius * renderer.getPixelRatio();
+    material.uniforms.u_resolution.value.set(w, h);
     syncCards();
   };
 
   const syncCards = () => {
-    const root = sec.getBoundingClientRect();
+    const root = canvas.getBoundingClientRect();
     const dpr = renderer.getPixelRatio();
     const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
-    const cssH = Math.max(1, sec.clientHeight);
+    const cssW = Math.max(1, root.width);
+    const cssH = Math.max(1, root.height);
+    const sample = buttons[0];
+    const styles = sample ? getComputedStyle(sample) : null;
+    const cssRadius = styles ? Number.parseFloat(styles.borderRadius) || 24 : 24;
+    const borderW = styles ? Number.parseFloat(styles.borderTopWidth) || 1 : 1;
+    const inset = Math.max(CLIP_INSET_PX, borderW);
+    material.uniforms.uRadius.value = cssRadius * dpr;
+    material.uniforms.uPad.value = inset * dpr;
+
+    const cssCards: { x: number; y: number; w: number; h: number; open: boolean }[] = [];
     for (let i = 0; i < MAX_CARDS; i++) {
       const btn = buttons[i];
       if (!btn) {
         rects[i].set(-4000, -4000, 0, 0);
-        centers[i].set(-4000, -4000);
         open[i] = 1;
         continue;
       }
       const box = btn.getBoundingClientRect();
       const x = box.left - root.left;
       const yCss = box.top - root.top;
-      const y = cssH - yCss - box.height;
-      rects[i].set(x * dpr, y * dpr, box.width * dpr, box.height * dpr);
-      centers[i].set((x + box.width * 0.5) * dpr, (y + box.height * 0.5) * dpr);
-      open[i] = btn.getAttribute("aria-expanded") === "true" || btn.classList.contains("is-open") ? 1 : 0;
+      const isOpen = btn.getAttribute("aria-expanded") === "true" || btn.classList.contains("is-open");
+      rects[i].set(x * dpr, (cssH - yCss - box.height) * dpr, box.width * dpr, box.height * dpr);
+      open[i] = isOpen ? 1 : 0;
+      cssCards.push({ x, y: yCss, w: box.width, h: box.height, open: isOpen });
+    }
+
+    const clipKey = `${cssW.toFixed(2)}x${cssH.toFixed(2)}:${cssRadius}:${inset}:${cssCards
+      .map((c) => `${c.x.toFixed(1)},${c.y.toFixed(1)},${c.w.toFixed(1)},${c.h.toFixed(1)},${c.open ? 1 : 0}`)
+      .join("|")}`;
+    if (clipKey !== lastClipKey) {
+      lastClipKey = clipKey;
+      applyCardClip(canvas, cssCards, cssRadius, cssW, cssH, inset);
     }
   };
 
@@ -304,12 +229,11 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
         return;
       }
     }
-    const t = (performance.now() - startedAt) / 1000;
-    material.uniforms.uTime.value = t;
-    material.uniforms.uSweep.value = t * 0.085;
+    material.uniforms.u_time.value = (performance.now() - startedAt) / 1000;
     const dpr = renderer.getPixelRatio();
-    const h = Math.max(1, sec.clientHeight);
-    material.uniforms.uMouse.value.set(mouseCss.x * dpr, (h - mouseCss.y) * dpr);
+    const h = Math.max(1, canvas.getBoundingClientRect().height);
+    material.uniforms.u_mouse.value.set(mouseCss.x * dpr, (h - mouseCss.y) * dpr);
+    syncCards();
     renderer.render(scene, camera);
     raf = requestAnimationFrame(tick);
   };
@@ -326,11 +250,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const onPointer = (event: PointerEvent) => {
-    if (!fine.matches) {
-      mouseCss.set(-4000, -4000);
-      return;
-    }
-    const root = sec.getBoundingClientRect();
+    const root = canvas.getBoundingClientRect();
     mouseCss.set(event.clientX - root.left, event.clientY - root.top);
   };
 
@@ -357,28 +277,35 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     fallback(sec);
     geometry.dispose();
     material.dispose();
+    texture.dispose();
     renderer.dispose();
     return () => {};
   }
+
+  sec.classList.add("has-metal");
   io.observe(sec);
   ro.observe(sec);
   mo.observe(sec, { attributes: true, attributeFilter: ["class", "aria-expanded"], subtree: true });
   window.addEventListener("resize", resize, { passive: true });
   document.addEventListener("visibilitychange", onVis);
   sec.addEventListener("pointermove", onPointer, { passive: true });
+  sec.addEventListener("pointerdown", onPointer, { passive: true });
   sec.addEventListener("pointerleave", onPointerLeave, { passive: true });
 
   return () => {
     stop();
+    sec.classList.remove("has-metal");
     io.disconnect();
     ro.disconnect();
     mo.disconnect();
     window.removeEventListener("resize", resize);
     document.removeEventListener("visibilitychange", onVis);
     sec.removeEventListener("pointermove", onPointer);
+    sec.removeEventListener("pointerdown", onPointer);
     sec.removeEventListener("pointerleave", onPointerLeave);
     geometry.dispose();
     material.dispose();
+    texture.dispose();
     renderer.dispose();
   };
 }

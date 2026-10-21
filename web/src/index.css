@@ -930,15 +930,36 @@
 .service-metal {
   position: absolute;
   inset: 0;
-  z-index: 20;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  mix-blend-mode: screen;
+  overflow: clip;
+  contain: paint;
+  isolation: isolate;
+  filter: none;
+  box-shadow: none;
+  mix-blend-mode: normal;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
 }
 .service-sec.is-metal-fallback .service-metal {
   display: none;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) {
+  background-color: transparent;
+  box-shadow: none;
+  filter: none;
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
+  text-shadow: 0 1px 10px rgb(7 7 8 / 70%);
 }
 .service-sec.is-metal-fallback .service-chrome:not(.is-open):not([aria-expanded="true"])::after {
   content: "";
@@ -1039,7 +1060,7 @@
 .service-card {
   position: relative;
   height: 100%;
-  overflow: clip;
+  overflow: hidden;
   border-radius: 1.5rem;
   scroll-margin-top: calc(var(--header-h) + 0.75rem);
 }
