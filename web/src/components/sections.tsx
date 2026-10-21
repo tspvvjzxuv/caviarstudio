@@ -130,7 +130,7 @@ export function Hero() {
         <h1 className="hero-logo mx-auto w-fit max-w-full text-center text-[clamp(3.9rem,16vw,10.5rem)] lg:text-[clamp(4.55rem,18.8vw,12.4rem)]">
           <HeroCaviarMark />
         </h1>
-        <p className="mt-[7.25rem] max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl md:mt-36">
+        <p className="hero-tagline max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl">
           {t.heroTagline}
         </p>
         <p className="mt-4 max-w-[36ch] text-[0.98rem] leading-[1.5] text-pretty text-muted-foreground">{t.heroExplain}</p>
@@ -146,7 +146,7 @@ export function Hero() {
       <a
         href="#sluzby"
         aria-label={t.scrollCue}
-        className="hero-cue relative z-[2] mt-4 mr-[clamp(1.25rem,5vw,5rem)] mb-8 flex shrink-0 flex-col items-center gap-2.5 self-end text-silver [@media(max-height:38rem)]:hidden"
+        className="hero-cue relative z-[2] mt-4 mr-[clamp(1.25rem,5vw,5rem)] mb-8 flex shrink-0 flex-col items-center gap-2.5 self-end text-silver [@media(max-height:48rem)]:hidden"
       >
         <span className="rotate-180 text-[0.62rem] tracking-[0.22em] uppercase [writing-mode:vertical-rl]">{t.scrollCue}</span>
         <i className="relative block h-12 w-px overflow-hidden bg-linear-to-b from-platinum to-transparent">
@@ -195,8 +195,11 @@ function ServiceCard({
             <IconDisc>
               <Icon />
             </IconDisc>
-            <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
-              {dictText(t, item.name)}
+            <span className="service-title min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
+              <span className="service-title-solid" aria-hidden="true">
+                {dictText(t, item.name)}
+              </span>
+              <span className="service-title-live">{dictText(t, item.name)}</span>
             </span>
             <IconDisc
               className="ml-auto size-12 transition-colors duration-200 ease-out group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15 md:size-[3.25rem]"

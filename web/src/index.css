@@ -390,6 +390,31 @@ footer {
 }
 
 @media (max-width: 767px) {
+  header.glass {
+    z-index: 70;
+    background-color: rgb(7 7 8 / 94%);
+    background-image: none;
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    backdrop-filter: blur(18px) saturate(1.25);
+  }
+  [data-slot="sheet-overlay"] {
+    z-index: 60;
+    background-color: rgb(7 7 8 / 72%);
+  }
+  [data-slot="sheet-content"],
+  [data-slot="sheet-content"].glass-panel {
+    inset: 0;
+    z-index: 60;
+    height: 100dvh;
+    min-height: 100dvh;
+    background-color: #070708;
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  #top {
+    min-height: 100lvh;
+  }
   .hero-back {
     top: 0;
     right: 0;
@@ -1004,7 +1029,18 @@ footer {
   mix-blend-mode: difference;
   -webkit-mix-blend-mode: difference;
 }
-.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
+.service-title {
+  position: relative;
+  display: block;
+}
+.service-title-solid {
+  display: none;
+}
+.service-title-live {
+  display: block;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
   color: #fff;
   -webkit-text-fill-color: #fff;
   text-shadow: none;
@@ -1021,6 +1057,48 @@ footer {
   backdrop-filter: none;
   isolation: auto;
   transform: none;
+}
+@media (max-width: 767px) {
+  /* Parent difference blend made titles grey-on-grey whenever metal sat in midtones.
+     Children cannot escape a parent's mix-blend, so kill it on the ink row. */
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+    mix-blend-mode: normal !important;
+    -webkit-mix-blend-mode: normal !important;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-solid {
+    display: none;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
+    position: static;
+    -webkit-text-stroke: 1px #000;
+    paint-order: stroke fill;
+    text-shadow:
+      -1.15px 0 0 #000,
+      1.15px 0 0 #000,
+      0 -1.15px 0 #000,
+      0 1.15px 0 #000,
+      -1px -1px 0 #000,
+      1px 1px 0 #000,
+      0 0 8px #000,
+      0 2px 12px rgb(0 0 0 / 92%);
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+    color: #fff !important;
+    border-color: #fff;
+    background-color: rgb(7 7 8 / 72%);
+    background-image: none;
+    box-shadow: 0 1px 8px rgb(0 0 0 / 70%), inset 0 0 0 1px rgb(0 0 0 / 35%);
+  }
 }
 .service-sec.is-metal-fallback .service-chrome:not(.is-open):not([aria-expanded="true"])::after {
   content: "";
@@ -1351,6 +1429,30 @@ button[data-magnetic]:not(.metal-fill) {
 .caviar-word-slot {
   position: relative;
   display: inline-block;
+  overflow: visible;
+}
+.hero-logo,
+.hero-stage,
+#top {
+  overflow: visible;
+}
+.hero-tagline {
+  margin-top: clamp(5.5rem, 18vh, 9.75rem);
+}
+@media (min-width: 768px) {
+  .hero-tagline {
+    margin-top: clamp(3.25rem, calc(100dvh - 36.5rem), 12.75rem);
+  }
+}
+@media (min-width: 1024px) and (min-height: 50rem) {
+  .hero-tagline {
+    margin-top: clamp(3.25rem, calc(100dvh - 46.25rem), 12.75rem);
+  }
+}
+@media (max-height: 48rem) {
+  .hero-logo {
+    font-size: clamp(3.2rem, 12vw, 7.5rem);
+  }
 }
 .hero-wordmark-3d {
   position: absolute;
@@ -1360,6 +1462,15 @@ button[data-magnetic]:not(.metal-fill) {
   height: 150%;
   pointer-events: none;
   transform: translate(-50%, -50%);
+}
+@media (max-width: 767px) {
+  .hero-logo {
+    max-width: 100%;
+  }
+  .hero-wordmark-3d {
+    width: 122%;
+    height: 168%;
+  }
 }
 
 .hero-ghost {
