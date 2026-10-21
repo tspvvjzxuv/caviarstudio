@@ -15,6 +15,77 @@ export const PLAYGROUND_PARAMS = {
   angleDeg: 35,
 } as const;
 
+/** One-way flow, return, then a smooth angle change. Seconds. */
+export const METAL_CYCLE = {
+  legSec: 6.4,
+  angleSec: 2.6,
+  travel: 0.72,
+} as const;
+
+export function metalCycleRoundSec() {
+  return METAL_CYCLE.legSec * 2 + METAL_CYCLE.angleSec;
+}
+
+function fract(n: number) {
+  return n - Math.floor(n);
+}
+
+function hash11(n: number) {
+  return fract(Math.sin(n * 127.1 + 311.7) * 43758.5453123);
+}
+
+function easeInOut(t: number) {
+  const x = Math.min(1, Math.max(0, t));
+  return x * x * (3 - 2 * x);
+}
+
+export function angleForCycle(i: number) {
+  const mag = ((20 + hash11(i + 0.17) * 40) * Math.PI) / 180;
+  return hash11(i + 0.91) > 0.5 ? -mag : mag;
+}
+
+export function focusForCycle(i: number): [number, number] {
+  const hx = hash11(i + 3.17);
+  const hy = hash11(i + 8.41);
+  const x = hx < 0.5 ? 0.14 + hx * 0.44 : 0.62 + (hx - 0.5) * 0.48;
+  const y = hy < 0.5 ? 0.16 + hy * 0.48 : 0.58 + (hy - 0.5) * 0.52;
+  return [x, y];
+}
+
+function awayFromCenter(x: number, y: number, minR = 0.2): [number, number] {
+  const dx = x - 0.5;
+  const dy = y - 0.5;
+  const d = Math.hypot(dx, dy);
+  if (d >= minR) return [x, y];
+  const s = minR / Math.max(d, 1e-4);
+  return [0.5 + dx * s, 0.5 + dy * s];
+}
+
+export function metalCycleAt(timeSec: number) {
+  const { legSec, angleSec, travel } = METAL_CYCLE;
+  const round = metalCycleRoundSec();
+  const i = Math.floor(Math.max(0, timeSec) / round);
+  const local = Math.max(0, timeSec) - i * round;
+  const a0 = angleForCycle(i);
+  const a1 = angleForCycle(i + 1);
+  const f0 = focusForCycle(i);
+  const f1 = focusForCycle(i + 1);
+  const fk = easeInOut(local / round);
+  const [focusX, focusY] = awayFromCenter(f0[0] + (f1[0] - f0[0]) * fk, f0[1] + (f1[1] - f0[1]) * fk);
+
+  let flow = 0;
+  let angle = a0;
+  if (local < legSec) {
+    flow = easeInOut(local / legSec) * travel;
+  } else if (local < legSec * 2) {
+    flow = (1 - easeInOut((local - legSec) / legSec)) * travel;
+  } else {
+    angle = a0 + (a1 - a0) * easeInOut((local - legSec * 2) / Math.max(angleSec, 0.001));
+  }
+
+  return { flow, angle, focusX, focusY, cycle: i, local, round };
+}
+
 const POISSON_C = 0.01;
 const POISSON_ITERATIONS = 300;
 const ALPHA = 2.0;
@@ -135,6 +206,8 @@ uniform float uOpen[5];
 uniform float uRadius;
 uniform float uPad;
 uniform vec4 uField;
+uniform vec2 uFocus;
+uniform float u_flow;
 uniform sampler2D uGlyph0;
 uniform sampler2D uGlyph1;
 uniform sampler2D uGlyph2;
@@ -250,7 +323,7 @@ void main() {
   );
 
   vec2 aspect = vec2(uField.z / max(uField.w, 1.0), 1.0);
-  vec2 iso = (fieldUv - 0.5) * aspect;
+  vec2 iso = (fieldUv - uFocus) * aspect;
   vec2 toMouse = (fieldUv - mouse_uv) * aspect;
   float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
 
@@ -267,8 +340,8 @@ void main() {
 
   vec3 color2 = vec3(0.97, 0.975, 0.99);
   vec3 color1 = vec3(0.026, 0.027, 0.03);
-  vec3 azure = vec3(0.239, 0.541, 1.0);
-  vec3 lemon = vec3(1.0, 0.894, 0.302);
+  vec3 azure = vec3(0.16, 0.46, 1.0);
+  vec3 lemon = vec3(1.0, 0.84, 0.14);
 
   float dist = length(iso);
   float bulge = pow(1.55 * dist, 1.12);
@@ -295,7 +368,7 @@ void main() {
   dir *= (.15 + (1.1 - edge) * bulge);
   dir *= smoothstep(1., .72, edge);
   dir *= cycle_width;
-  dir -= t;
+  dir -= u_flow;
   dir += (mouse_uv.x - 0.5) * 0.06 * mouseFalloff;
 
   vec3 w = vec3(thin_strip_1_width, thin_strip_2_width, wide_strip_ratio);
@@ -312,11 +385,11 @@ void main() {
   float spec = pow(clamp((ch - 0.58) / 0.42, 0.0, 1.0), 7.0);
   color += vec3(spec * 0.2);
 
-  float hueWave = 0.5 + 0.5 * sin(flow * TWO_PI * 0.46 + t * 0.26);
-  float azureAmt = (1.0 - smoothstep(0.28, 0.48, hueWave)) * hi;
-  float lemonAmt = smoothstep(0.52, 0.72, hueWave) * hi;
-  color = mix(color, mix(color, azure, 0.46), azureAmt * 0.52);
-  color = mix(color, mix(color, lemon, 0.42), lemonAmt * 0.48);
+  float hueWave = 0.5 + 0.5 * sin(flow * TWO_PI * 0.46 + u_flow * 2.4);
+  float azureAmt = (1.0 - smoothstep(0.16, 0.42, hueWave)) * hi;
+  float lemonAmt = smoothstep(0.58, 0.84, hueWave) * hi;
+  color = mix(color, mix(color, azure, 0.78), azureAmt * 0.82);
+  color = mix(color, mix(color, lemon, 0.76), lemonAmt * 0.8);
 
   vec2 gUv = vec2(
     (frag.x - rc.x) / max(rc.z, 1.0),
