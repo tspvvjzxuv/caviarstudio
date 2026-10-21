@@ -105,7 +105,7 @@ export function SiteHeader() {
             <NavigationMenuItem key={item.href}>
               <NavigationMenuLink
                 href={item.href}
-                className="rounded-full px-3 py-1.5 text-[0.72rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-azure"
+                className="rounded-full px-3 py-1.5 text-[0.72rem] tracking-[0.16em] text-silver uppercase transition-colors duration-150 ease-out hover:bg-transparent hover:text-azure active:text-azure"
               >
                 {t[item.key]}
               </NavigationMenuLink>

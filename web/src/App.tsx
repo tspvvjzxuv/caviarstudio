@@ -29,16 +29,45 @@ function SkipLink() {
 
 let didHonorHash = false;
 
+function jumpToId(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "auto", block: "start" });
+}
+
 function Page() {
   useEffect(() => {
     if (didHonorHash) return;
     didHonorHash = true;
     const id = location.hash.replace("#", "");
     if (!id) return;
-    const t = window.setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: "auto", block: "start" });
-    }, 50);
-    return () => window.clearTimeout(t);
+    const jump = () => jumpToId(id);
+    jump();
+    const raf = requestAnimationFrame(jump);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return;
+      }
+      const hit = event.target instanceof Element ? event.target.closest("a[href^='#']") : null;
+      if (!(hit instanceof HTMLAnchorElement)) return;
+      if (hit.target && hit.target !== "_self") return;
+      const href = hit.getAttribute("href");
+      if (!href || href === "#") return;
+      let id = "";
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        id = href.slice(1);
+      }
+      if (!document.getElementById(id)) return;
+      event.preventDefault();
+      jumpToId(id);
+      history.replaceState(null, "", href);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
   }, []);
 
   return (

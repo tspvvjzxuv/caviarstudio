@@ -202,7 +202,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   renderer.setClearColor(0x000000, 0);
   const mobile = window.matchMedia("(max-width: 767px)").matches;
   const dprCap = mobile ? 0.55 : 0.75;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, dprCap));
+  const dprMin = mobile ? 0.32 : 0.42;
+  let pixelRatio = Math.min(window.devicePixelRatio || 1, dprCap);
+  renderer.setPixelRatio(pixelRatio);
 
   const rects = Array.from({ length: MAX_CARDS }, () => new Vector4(-4000, -4000, 0, 0));
   const open = [0, 0, 0, 0, 0];
@@ -266,14 +268,17 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   let lastGlyphKey = "";
   let glyphTimer = 0;
   let glyphGen = 0;
+  let gpuEma = 2.2;
+  let adaptN = 0;
+  const fieldBox = { left: 0, top: 0 };
+  let boxRaf = 0;
 
   const rasterizeGlyphs = async () => {
     const gen = ++glyphGen;
     const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
     const dpr = renderer.getPixelRatio();
     try {
-      await document.fonts.ready;
-      await document.fonts.load('400 2.1rem "Bodoni Moda"');
+      void document.fonts.load('400 2.1rem "Bodoni Moda"');
     } catch {
       /* keep going with fallback serif */
     }
@@ -309,11 +314,26 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     }, 40);
   };
 
+  const cacheFieldBox = () => {
+    const root = canvas.getBoundingClientRect();
+    fieldBox.left = root.left;
+    fieldBox.top = root.top;
+  };
+
+  const applyPixelRatio = (next: number) => {
+    const clamped = Math.max(dprMin, Math.min(dprCap, next));
+    if (Math.abs(clamped - pixelRatio) < 0.03) return;
+    pixelRatio = clamped;
+    renderer.setPixelRatio(pixelRatio);
+    resize();
+  };
+
   const resize = () => {
     const w = Math.max(1, canvas.clientWidth || sec.clientWidth);
     const h = Math.max(1, canvas.clientHeight || sec.clientHeight);
     renderer.setSize(w, h, false);
     material.uniforms.u_resolution.value.set(w, h);
+    cacheFieldBox();
     syncCards();
   };
 
@@ -383,7 +403,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   const tick = () => {
     if (!running) return;
-    const elapsed = (performance.now() - startedAt) / 1000;
+    const t0 = performance.now();
+    const elapsed = (t0 - startedAt) / 1000;
     const cycle = metalCycleAt(elapsed);
     material.uniforms.u_time.value = elapsed;
     material.uniforms.u_flow.value = cycle.flow;
@@ -395,6 +416,13 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     material.uniforms.u_mouse.value.set(mouseSmooth.x * dpr, (cssHeight - mouseSmooth.y) * dpr);
     material.uniforms.uMouseAmt.value = mouseAmt;
     renderer.render(scene, camera);
+    gpuEma = gpuEma * 0.88 + (performance.now() - t0) * 0.12;
+    adaptN += 1;
+    if (adaptN >= 24) {
+      adaptN = 0;
+      if (gpuEma > 3) applyPixelRatio(pixelRatio * 0.82);
+      else if (gpuEma < 1.55) applyPixelRatio(pixelRatio * 1.1);
+    }
     raf = requestAnimationFrame(tick);
   };
 
@@ -410,12 +438,20 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const onPointer = (event: PointerEvent) => {
-    const root = canvas.getBoundingClientRect();
-    const x = event.clientX - root.left;
-    const y = event.clientY - root.top;
+    if (event.type === "pointerdown") cacheFieldBox();
+    const x = event.clientX - fieldBox.left;
+    const y = event.clientY - fieldBox.top;
     if (mouseAmt < 0.02) mouseSmooth.set(x, y);
     mouseTarget.set(x, y);
     mouseAmtTarget = 1;
+  };
+
+  const onScroll = () => {
+    if (boxRaf || mouseAmtTarget <= 0) return;
+    boxRaf = requestAnimationFrame(() => {
+      boxRaf = 0;
+      cacheFieldBox();
+    });
   };
 
   const onPointerLeave = () => {
@@ -462,6 +498,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const onFonts = () => scheduleGlyphs();
   document.fonts.addEventListener("loadingdone", onFonts);
   window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("scroll", onScroll, { passive: true });
   document.addEventListener("visibilitychange", onVis);
   sec.addEventListener("pointermove", onPointer, { passive: true });
   sec.addEventListener("pointerdown", onPointer, { passive: true });
@@ -475,6 +512,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     mo.disconnect();
     document.fonts.removeEventListener("loadingdone", onFonts);
     window.removeEventListener("resize", resize);
+    window.removeEventListener("scroll", onScroll);
+    if (boxRaf) cancelAnimationFrame(boxRaf);
     document.removeEventListener("visibilitychange", onVis);
     sec.removeEventListener("pointermove", onPointer);
     sec.removeEventListener("pointerdown", onPointer);

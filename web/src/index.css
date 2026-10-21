@@ -75,8 +75,8 @@
   --animate-logo-in: logo-in 1.15s var(--ease-out-expo) both;
   --animate-glow-breathe: glow-breathe 5.6s ease-in-out infinite;
   --animate-dot-pulse: dot-pulse 3.8s ease-in-out infinite;
-  --animate-panel-down: panel-down 0.92s var(--ease-out-expo) both;
-  --animate-panel-up: panel-up 0.72s var(--ease-out-expo) both;
+  --animate-panel-down: panel-down 0.22s var(--ease-out-expo) both;
+  --animate-panel-up: panel-up 0.18s var(--ease-out-expo) both;
 
   @keyframes fade-in {
     from { opacity: 0; }
@@ -192,7 +192,10 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply font-sans scroll-smooth;
+    @apply font-sans;
+    scroll-behavior: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     color-scheme: dark;
     overflow-x: clip;
   }
@@ -202,6 +205,11 @@
     font-size: 16px;
     line-height: 1.6;
     letter-spacing: 0.01em;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  a, button, summary, label, select, [role="button"] {
+    touch-action: manipulation;
   }
   ::selection {
     background: rgb(61 138 255 / 42%);
@@ -262,6 +270,15 @@
   border-radius: 9999px;
   background: var(--color-azure);
   box-shadow: 0 0 10px rgb(61 138 255 / 55%);
+}
+
+#cennik,
+#onas,
+#faq,
+#kontakt,
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1100px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -584,10 +601,10 @@
     animation: none !important;
   }
   .service-panel {
-    transition-duration: 0.28s;
+    transition-duration: 0.16s;
   }
   .service-panel-inner.is-shown .panel-enter {
-    transition-duration: 0.32s;
+    transition-duration: 0.16s;
   }
   .project-media img,
   .project-media video {
@@ -673,7 +690,7 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   ::view-transition-group(*) {
-    animation-duration: 0.48s;
+    animation-duration: 0.2s;
     animation-timing-function: var(--ease-out-expo);
   }
 }
@@ -1033,7 +1050,7 @@
   display: grid;
   align-items: stretch;
   padding-bottom: 1.5rem;
-  transition: padding-bottom 0.92s var(--ease-out-expo);
+  transition: padding-bottom 0.22s var(--ease-out-expo);
 }
 .service-row.is-expanded {
   padding-bottom: 0;
@@ -1067,7 +1084,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .service-row {
-    transition-duration: 0.28s;
+    transition-duration: 0.16s;
   }
 }
 .service-glow-field {
@@ -1098,7 +1115,7 @@
     radial-gradient(ellipse 34% 36% at 28% 30%, rgb(61 138 255 / 16%), transparent 64%),
     radial-gradient(ellipse 30% 32% at 74% 72%, rgb(255 228 77 / 8%), transparent 62%);
   opacity: 0.7;
-  transition: opacity 0.9s var(--ease-out-expo);
+  transition: opacity 0.2s ease-out;
 }
 @media (max-width: 767px) {
   .service-glow-field {
@@ -1125,6 +1142,16 @@
   border: 1px solid rgb(244 245 247 / 12%);
   background: #0e0e12;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 180ms ease-out,
+    background-color 180ms ease-out,
+    box-shadow 180ms ease-out,
+    transform 160ms ease-out;
+}
+.service-chrome:active {
+  transform: scale(0.985);
 }
 .service-chrome::before,
 .service-chrome::after {
@@ -1193,7 +1220,7 @@
   grid-template-rows: 0fr;
   overflow-anchor: none;
   scroll-margin-top: calc(var(--header-h) + 0.75rem);
-  transition: grid-template-rows 0.92s var(--ease-out-expo);
+  transition: grid-template-rows 0.22s var(--ease-out-expo);
 }
 .service-panel:not(.is-open) {
   pointer-events: none;
@@ -1242,7 +1269,7 @@
   clip-path: polygon(50% 0, 100% 100%, 0 100%);
   transform: translate(-50%, -100%);
   filter: drop-shadow(0 -1px 0 rgb(61 138 255 / 22%));
-  transition: left 0.7s var(--ease-out-expo);
+  transition: left 0.2s ease-out;
 }
 .service-panel-notch::after {
   content: "";
@@ -1265,29 +1292,29 @@
 }
 .service-panel .panel-enter {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(10px);
   transition:
-    opacity 0.4s var(--ease-out-expo),
-    transform 0.4s var(--ease-out-expo);
+    opacity 0.18s ease-out,
+    transform 0.22s var(--ease-out-expo);
 }
 .service-panel-inner.is-shown .panel-enter {
   opacity: 1;
   transform: none;
-  transition-duration: 0.8s;
+  transition-duration: 0.22s;
 }
-.service-panel-inner.is-shown .work-sec .panel-enter:nth-child(1) { transition-delay: 0.06s; }
-.service-panel-inner.is-shown .work-sec .panel-enter:nth-child(2) { transition-delay: 0.14s; }
-.service-panel-inner.is-shown .work-sec .panel-enter:nth-child(3) { transition-delay: 0.22s; }
+.service-panel-inner.is-shown .work-sec .panel-enter:nth-child(1) { transition-delay: 0.04s; }
+.service-panel-inner.is-shown .work-sec .panel-enter:nth-child(2) { transition-delay: 0.08s; }
+.service-panel-inner.is-shown .work-sec .panel-enter:nth-child(3) { transition-delay: 0.12s; }
 .service-panel:not(.is-open) .panel-enter {
-  transition-delay: 0.12s;
+  transition-delay: 0s;
 }
-.service-panel:not(.is-open) .work-sec .panel-enter:nth-child(1) { transition-delay: 0.08s; }
-.service-panel:not(.is-open) .work-sec .panel-enter:nth-child(2) { transition-delay: 0.04s; }
+.service-panel:not(.is-open) .work-sec .panel-enter:nth-child(1) { transition-delay: 0s; }
+.service-panel:not(.is-open) .work-sec .panel-enter:nth-child(2) { transition-delay: 0s; }
 .service-panel:not(.is-open) .work-sec .panel-enter:nth-child(3) { transition-delay: 0s; }
 
 @media (prefers-reduced-motion: reduce) {
   .service-panel .panel-enter {
-    transition-duration: 0.28s;
+    transition-duration: 0.12s;
     transform: none;
   }
   .service-panel-inner.is-shown .panel-enter {
@@ -1320,6 +1347,21 @@ button[data-magnetic]:not(.metal-fill) {
   border-color: rgb(61 138 255 / 35%);
   background: rgb(7 7 8 / 62%);
   color: #f4f5f7;
+}
+.hero-ghost:active {
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0) scale(0.97);
+}
+
+[data-slot="accordion-content"] {
+  animation-duration: 200ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-slot="accordion-trigger"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+[data-slot="accordion-trigger"]:active {
+  opacity: 0.88;
 }
 
 @media (max-width: 767px) {

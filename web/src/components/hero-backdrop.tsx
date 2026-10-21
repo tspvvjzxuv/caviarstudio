@@ -52,6 +52,9 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
     video.addEventListener("canplay", sync);
     video.addEventListener("loadeddata", sync);
     document.addEventListener("visibilitychange", sync);
+    window.addEventListener("pointerdown", sync, { passive: true, once: true });
+    window.addEventListener("keydown", sync, { once: true });
+    window.addEventListener("scroll", sync, { passive: true, once: true });
     sync();
 
     return () => {
@@ -60,6 +63,9 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       video.removeEventListener("canplay", sync);
       video.removeEventListener("loadeddata", sync);
       document.removeEventListener("visibilitychange", sync);
+      window.removeEventListener("pointerdown", sync);
+      window.removeEventListener("keydown", sync);
+      window.removeEventListener("scroll", sync);
       video.pause();
     };
   }, [pausedRoot]);
@@ -100,6 +106,8 @@ export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | nu
         <img
           src={HERO_LOOP.poster}
           alt=""
+          fetchPriority="high"
+          decoding="async"
           className="hero-poster absolute inset-0 z-0 size-full object-cover"
         />
         {skip ? <HeroSilverField /> : <HeroLoop pausedRoot={kenRef} />}
