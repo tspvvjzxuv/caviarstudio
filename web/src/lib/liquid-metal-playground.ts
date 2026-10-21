@@ -9,21 +9,22 @@ export const PLAYGROUND_PARAMS = {
   refraction: 0.022,
   edge: 0.22,
   patternBlur: 0.016,
-  liquid: 0.1,
-  speed: 0.08,
+  liquid: 0.08,
+  speed: 0.025,
   patternScale: 1.05,
   angleDeg: 35,
 } as const;
 
-/** One-way flow, return, then a smooth angle change. Seconds. */
+/** Forward, hold, back, then a long angle ease. Seconds. ~56s round. */
 export const METAL_CYCLE = {
-  legSec: 6.4,
-  angleSec: 2.6,
-  travel: 0.72,
+  legSec: 20,
+  pauseSec: 3.5,
+  angleSec: 12,
+  travel: 0.7,
 } as const;
 
 export function metalCycleRoundSec() {
-  return METAL_CYCLE.legSec * 2 + METAL_CYCLE.angleSec;
+  return METAL_CYCLE.legSec * 2 + METAL_CYCLE.pauseSec + METAL_CYCLE.angleSec;
 }
 
 function fract(n: number) {
@@ -34,9 +35,9 @@ function hash11(n: number) {
   return fract(Math.sin(n * 127.1 + 311.7) * 43758.5453123);
 }
 
-function easeInOut(t: number) {
+function smootherstep(t: number) {
   const x = Math.min(1, Math.max(0, t));
-  return x * x * (3 - 2 * x);
+  return x * x * x * (x * (x * 6 - 15) + 10);
 }
 
 export function angleForCycle(i: number) {
@@ -61,26 +62,51 @@ function awayFromCenter(x: number, y: number, minR = 0.2): [number, number] {
   return [0.5 + dx * s, 0.5 + dy * s];
 }
 
+function focusAlong(f0: [number, number], f1: [number, number], t: number): [number, number] {
+  const mx = (f0[0] + f1[0]) * 0.5;
+  const my = (f0[1] + f1[1]) * 0.5;
+  const dx = f1[0] - f0[0];
+  const dy = f1[1] - f0[1];
+  let px = -dy;
+  let py = dx;
+  const plen = Math.hypot(px, py) || 1;
+  px /= plen;
+  py /= plen;
+  const c1 = awayFromCenter(mx + px * 0.24, my + py * 0.24, 0.22);
+  const c2 = awayFromCenter(mx - px * 0.24, my - py * 0.24, 0.22);
+  const ctrl =
+    Math.hypot(c1[0] - 0.5, c1[1] - 0.5) >= Math.hypot(c2[0] - 0.5, c2[1] - 0.5) ? c1 : c2;
+  const u = 1 - t;
+  return awayFromCenter(
+    u * u * f0[0] + 2 * u * t * ctrl[0] + t * t * f1[0],
+    u * u * f0[1] + 2 * u * t * ctrl[1] + t * t * f1[1],
+    0.18,
+  );
+}
+
 export function metalCycleAt(timeSec: number) {
-  const { legSec, angleSec, travel } = METAL_CYCLE;
+  const { legSec, pauseSec, angleSec, travel } = METAL_CYCLE;
   const round = metalCycleRoundSec();
-  const i = Math.floor(Math.max(0, timeSec) / round);
-  const local = Math.max(0, timeSec) - i * round;
+  const t = Math.max(0, timeSec);
+  const i = Math.floor(t / round);
+  const local = t - i * round;
   const a0 = angleForCycle(i);
   const a1 = angleForCycle(i + 1);
-  const f0 = focusForCycle(i);
-  const f1 = focusForCycle(i + 1);
-  const fk = easeInOut(local / round);
-  const [focusX, focusY] = awayFromCenter(f0[0] + (f1[0] - f0[0]) * fk, f0[1] + (f1[1] - f0[1]) * fk);
+  const focusSpan = round * 2;
+  const fs = t / focusSpan;
+  const fi = Math.floor(fs);
+  const [focusX, focusY] = focusAlong(focusForCycle(fi), focusForCycle(fi + 1), smootherstep(fs - fi));
 
   let flow = 0;
   let angle = a0;
   if (local < legSec) {
-    flow = easeInOut(local / legSec) * travel;
-  } else if (local < legSec * 2) {
-    flow = (1 - easeInOut((local - legSec) / legSec)) * travel;
+    flow = smootherstep(local / legSec) * travel;
+  } else if (local < legSec + pauseSec) {
+    flow = travel;
+  } else if (local < legSec * 2 + pauseSec) {
+    flow = (1 - smootherstep((local - legSec - pauseSec) / legSec)) * travel;
   } else {
-    angle = a0 + (a1 - a0) * easeInOut((local - legSec * 2) / Math.max(angleSec, 0.001));
+    angle = a0 + (a1 - a0) * smootherstep((local - legSec * 2 - pauseSec) / Math.max(angleSec, 0.001));
   }
 
   return { flow, angle, focusX, focusY, cycle: i, local, round };
@@ -329,8 +355,8 @@ void main() {
 
   float t = u_time * u_speed;
   iso += vec2(
-    snoise(iso * 0.9 + vec2(t * 0.42, t * 0.31)),
-    snoise(iso * 0.9 - vec2(t * 0.27, -t * 0.38))
+    snoise(iso * 0.9 + vec2(t * 0.18, t * 0.14)),
+    snoise(iso * 0.9 - vec2(t * 0.12, -t * 0.16))
   ) * 0.02 * mouseFalloff;
   iso -= toMouse * 0.04 * mouseFalloff;
   iso = rotate(iso, u_angle);
@@ -358,8 +384,8 @@ void main() {
 
   float opacity = 1. - smoothstep(.9 - .5 * u_edge, 1. - .5 * u_edge, edge);
 
-  float noise = snoise(vec2(flow, iso.y) * 0.34 - t * 0.82) * 0.62
-    + snoise(vec2(flow, iso.y) * 0.13 - t * 0.3) * 0.38;
+  float noise = snoise(vec2(flow, iso.y) * 0.34 - t * 0.28) * 0.62
+    + snoise(vec2(flow, iso.y) * 0.13 - t * 0.11) * 0.38;
   edge += (1. - edge) * u_liquid * noise;
 
   float dir = flow;
