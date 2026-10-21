@@ -19,7 +19,6 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Menu, X } from "lucide-react";
 import { CaviarLogo } from "@/components/caviar-logo";
-import { SoundToggle } from "@/components/sound-toggle";
 import { isLang, LANGS, type Lang } from "@/lib/i18n";
 import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
@@ -116,7 +115,6 @@ export function SiteHeader() {
 
       <div className="flex items-center gap-3">
         <LangSwitch className="hidden sm:inline-flex" />
-        <SoundToggle />
         <Tooltip>
           <TooltipTrigger asChild>
             <Button asChild data-magnetic="" className="metal-fill hidden h-10 shrink-0 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
@@ -140,15 +138,15 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent
             side="top"
-            className="glass-panel h-dvh gap-0 border-0 bg-transparent p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))]"
+            className="glass-panel h-dvh gap-0 border-0 bg-transparent p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))] md:items-end"
             showCloseButton={false}
           >
-            <SheetHeader className="p-0">
-              <SheetTitle className="font-serif text-sm">
+            <SheetHeader className="p-0 md:items-end md:text-right">
+              <SheetTitle className="font-serif text-sm md:text-right">
                 <CaviarLogo className="text-[1.2rem]" />
               </SheetTitle>
             </SheetHeader>
-            <nav className="mt-8 flex flex-col gap-1" aria-label={t.navLabel}>
+            <nav className="mt-8 flex flex-col gap-1 md:items-end md:text-right" aria-label={t.navLabel}>
               {NAV.map((item) => (
                 <SheetClose asChild key={item.href}>
                   <a
@@ -160,10 +158,10 @@ export function SiteHeader() {
                 </SheetClose>
               ))}
             </nav>
-            <Separator className="my-8" />
-            <LangSwitch />
+            <Separator className="my-8 w-full" />
+            <LangSwitch className="md:self-end" />
             <SheetClose asChild>
-              <Button asChild data-magnetic="" className="metal-fill mt-6 h-[52px] w-full rounded-full text-[0.72rem] tracking-[0.16em] uppercase">
+              <Button asChild data-magnetic="" className="metal-fill mt-6 h-[52px] w-full rounded-full px-8 text-[0.72rem] tracking-[0.16em] uppercase md:w-auto md:self-end">
                 <a href="#kontakt">{t.ctaQuote}</a>
               </Button>
             </SheetClose>

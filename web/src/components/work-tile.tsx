@@ -140,7 +140,6 @@ export function WorkTile({ item, priority }: { item: WorkItem; priority?: boolea
     <article
       className="project panel-enter"
       data-id={item.id}
-      data-cursor={href ? "view" : undefined}
       aria-label={title}
       style={{ viewTransitionName: `work-${item.id}` }}
     >

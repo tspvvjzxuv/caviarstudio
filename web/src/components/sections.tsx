@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type RefObject } from "react";
 import { usePrefersMd } from "@/hooks/use-mobile";
-import { useHeroWordmark } from "@/hooks/use-hero-wordmark";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
+import { HeroWordmark3D } from "@/components/hero-wordmark-3d";
 import {
   AtSign,
   Camera,
@@ -123,18 +123,14 @@ export function Hero() {
   const { t } = useLanguage();
   const kenRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
-  const markRef = useRef<HTMLDivElement>(null);
   usePauseOffscreen(kenRef);
-  useHeroWordmark(heroRef, markRef);
   return (
     <section ref={heroRef} className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
       <HeroBackdrop kenRef={kenRef} />
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
-        <div ref={markRef} className="hero-logo-par">
-          <h1 className="hero-logo w-fit max-w-[80%] text-[clamp(3.9rem,16vw,10.5rem)]">
-            <CaviarLogo split />
-          </h1>
-        </div>
+        <h1 className="hero-logo w-fit max-w-[80%] text-[clamp(3.9rem,16vw,10.5rem)]">
+          <CaviarLogo wordOverlay={<HeroWordmark3D />} />
+        </h1>
         <p className="mt-8 max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl">
           {t.heroTagline}
         </p>
