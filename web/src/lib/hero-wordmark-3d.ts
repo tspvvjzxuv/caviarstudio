@@ -36,8 +36,8 @@ const EXTRUDE = {
   bevelThickness: 30,
   bevelSize: 17,
   bevelOffset: 0,
-  bevelSegments: 3,
-  curveSegments: 5,
+  bevelSegments: 5,
+  curveSegments: 12,
   steps: 1,
 } as const;
 
@@ -154,7 +154,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   }
 
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 3 : 2));
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;

@@ -314,8 +314,10 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     adaptN += 1;
     if (adaptN >= 24) {
       adaptN = 0;
-      if (gpuEma > 3) applyPixelRatio(pixelRatio * 0.82);
-      else if (gpuEma < 1.55) applyPixelRatio(pixelRatio * 1.1);
+      if (!mobile) {
+        if (gpuEma > 3) applyPixelRatio(pixelRatio * 0.82);
+        else if (gpuEma < 1.55) applyPixelRatio(pixelRatio * 1.1);
+      }
     }
     raf = requestAnimationFrame(tick);
   };

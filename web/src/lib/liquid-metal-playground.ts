@@ -305,6 +305,7 @@ void main() {
   vec2 frag = gl_FragCoord.xy;
   float sdf = 1.0e6;
   float found = 0.0;
+  float tileH = uTileH;
 
   for (int i = 0; i < 5; i++) {
     vec4 box = uRect[i];
@@ -314,6 +315,7 @@ void main() {
     float d = sdRoundBox(frag - (box.xy + box.zw * 0.5), halfSize, r);
     float take = on * step(d, sdf);
     sdf = mix(sdf, d, take);
+    tileH = mix(tileH, box.w, take);
     found = max(found, on * step(d, 2.0));
   }
 
@@ -330,7 +332,7 @@ void main() {
 
   vec2 aspect = vec2(uField.z / max(uField.w, 1.0), 1.0);
   vec2 iso = (fieldUv - uFocus) * aspect;
-  iso *= max(uField.w, 1.0) / max(uTileH, 1.0) * 0.42;
+  iso *= max(uField.w, 1.0) / max(tileH, 1.0) * 0.42;
   vec2 toMouse = (fieldUv - mouse_uv) * aspect;
   float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
 
@@ -385,6 +387,7 @@ void main() {
   float stripe = mod(dir, 1.);
   float extraBlur = .022 * u_refraction * bulge;
   float ch = get_color_channel(color1.r, color2.r, stripe, w, extraBlur, bulge);
+  ch = clamp((ch - 0.5) * 1.55 + 0.5, 0.0, 1.0);
   vec3 color = vec3(ch);
 
   float hi = smoothstep(0.44, 0.9, ch);

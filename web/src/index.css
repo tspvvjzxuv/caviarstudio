@@ -1059,32 +1059,41 @@ footer {
   transform: none;
 }
 @media (max-width: 767px) {
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
-    mix-blend-mode: normal;
-    -webkit-mix-blend-mode: normal;
-    color: #f4f5f7;
+  /* Parent difference blend made titles grey-on-grey whenever metal sat in midtones.
+     Children cannot escape a parent's mix-blend, so kill it on the ink row. */
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+    mix-blend-mode: normal !important;
+    -webkit-mix-blend-mode: normal !important;
   }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-solid {
     display: none;
   }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+  }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
     position: static;
-    mix-blend-mode: normal;
-    -webkit-mix-blend-mode: normal;
-    color: #f4f5f7;
-    -webkit-text-fill-color: #f4f5f7;
+    -webkit-text-stroke: 0.45px rgb(0 0 0 / 82%);
+    paint-order: stroke fill;
     text-shadow:
-      0 1px 1px rgb(0 0 0 / 92%),
-      0 0 12px rgb(0 0 0 / 78%),
-      0 0 1px #000;
+      0 1px 1px #000,
+      0 0 2px #000,
+      0 1px 8px rgb(0 0 0 / 88%),
+      0 0 16px rgb(0 0 0 / 70%);
   }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
-    mix-blend-mode: normal;
-    -webkit-mix-blend-mode: normal;
-    color: #f4f5f7;
-    border-color: rgb(244 245 247 / 90%);
-    background-color: rgb(7 7 8 / 48%);
-    box-shadow: 0 1px 6px rgb(0 0 0 / 60%);
+    color: #fff !important;
+    border-color: #fff;
+    background-color: rgb(7 7 8 / 72%);
+    background-image: none;
+    box-shadow: 0 1px 8px rgb(0 0 0 / 70%), inset 0 0 0 1px rgb(0 0 0 / 35%);
   }
 }
 .service-sec.is-metal-fallback .service-chrome:not(.is-open):not([aria-expanded="true"])::after {
@@ -1428,12 +1437,12 @@ button[data-magnetic]:not(.metal-fill) {
 }
 @media (min-width: 768px) {
   .hero-tagline {
-    margin-top: clamp(3.25rem, calc(9rem + 100vh - 48rem), 12.75rem);
+    margin-top: clamp(3.25rem, calc(100dvh - 36.5rem), 12.75rem);
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 1024px) and (min-height: 50rem) {
   .hero-tagline {
-    margin-top: clamp(3.25rem, calc(7rem + 100vh - 52.75rem), 12.75rem);
+    margin-top: clamp(3.25rem, calc(100dvh - 46.25rem), 12.75rem);
   }
 }
 @media (max-height: 48rem) {
