@@ -253,7 +253,7 @@ void main() {
 
   float diagonal = uv.x - uv.y;
 
-  float edge = 1.0 - smoothstep(-26.0, -1.25, sdf);
+  float edge = smoothstep(-18.0, -1.0, sdf);
 
   vec3 color2 = vec3(0.90, 0.91, 0.94);
   vec3 color1 = vec3(0.055, 0.056, 0.062);
