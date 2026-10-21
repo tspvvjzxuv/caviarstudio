@@ -6,12 +6,12 @@
  */
 
 export const PLAYGROUND_PARAMS = {
-  refraction: 0.018,
-  edge: 0.3,
-  patternBlur: 0.028,
-  liquid: 0.12,
-  speed: 0.09,
-  patternScale: 0.78,
+  refraction: 0.022,
+  edge: 0.22,
+  patternBlur: 0.016,
+  liquid: 0.1,
+  speed: 0.08,
+  patternScale: 1.05,
   angleDeg: 35,
 } as const;
 
@@ -135,6 +135,11 @@ uniform float uOpen[5];
 uniform float uRadius;
 uniform float uPad;
 uniform vec4 uField;
+uniform sampler2D uGlyph0;
+uniform sampler2D uGlyph1;
+uniform sampler2D uGlyph2;
+uniform sampler2D uGlyph3;
+uniform sampler2D uGlyph4;
 
 #define TWO_PI 6.28318530718
 #define PI 3.14159265358979323846
@@ -202,11 +207,21 @@ float get_color_channel(float c1, float c2, float stripe_p, vec3 w, float extra_
   return ch;
 }
 
+float glyphCover(float id, vec2 uv) {
+  vec2 u = clamp(uv, 0.0, 1.0);
+  if (id < 0.5) return texture2D(uGlyph0, u).a;
+  if (id < 1.5) return texture2D(uGlyph1, u).a;
+  if (id < 2.5) return texture2D(uGlyph2, u).a;
+  if (id < 3.5) return texture2D(uGlyph3, u).a;
+  return texture2D(uGlyph4, u).a;
+}
+
 void main() {
   vec2 frag = gl_FragCoord.xy;
   vec4 rc = vec4(0.0);
   float sdf = 1.0e6;
   float found = 0.0;
+  float cardId = 0.0;
 
   for (int i = 0; i < 5; i++) {
     vec4 box = uRect[i];
@@ -219,6 +234,7 @@ void main() {
     float take = on * step(d, 0.0) * step(d, sdf);
     rc = mix(rc, box, take);
     sdf = mix(sdf, d, take);
+    cardId = mix(cardId, float(i), take);
     found = max(found, take);
   }
 
@@ -233,37 +249,35 @@ void main() {
     1.0 - (u_mouse.y - uField.y) / max(uField.w, 1.0)
   );
 
-  float ratio = uField.z / max(uField.w, 1.0);
-  vec2 aspect = vec2(ratio, 1.0);
+  vec2 aspect = vec2(uField.z / max(uField.w, 1.0), 1.0);
   vec2 iso = (fieldUv - 0.5) * aspect;
   vec2 toMouse = (fieldUv - mouse_uv) * aspect;
   float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
 
   float t = u_time * u_speed;
   iso += vec2(
-    snoise(iso * 1.15 + vec2(t * 0.55, t * 0.4)),
-    snoise(iso * 1.15 - vec2(t * 0.35, -t * 0.5))
-  ) * 0.028 * mouseFalloff;
-  iso -= toMouse * 0.045 * mouseFalloff;
+    snoise(iso * 0.9 + vec2(t * 0.42, t * 0.31)),
+    snoise(iso * 0.9 - vec2(t * 0.27, -t * 0.38))
+  ) * 0.02 * mouseFalloff;
+  iso -= toMouse * 0.04 * mouseFalloff;
   iso = rotate(iso, u_angle);
 
   float flow = iso.x;
-
   float edge = smoothstep(-18.0, -1.0, sdf);
 
-  vec3 color2 = vec3(0.90, 0.91, 0.94);
-  vec3 color1 = vec3(0.055, 0.056, 0.062);
+  vec3 color2 = vec3(0.97, 0.975, 0.99);
+  vec3 color1 = vec3(0.026, 0.027, 0.03);
   vec3 azure = vec3(0.239, 0.541, 1.0);
   vec3 lemon = vec3(1.0, 0.894, 0.302);
 
   float dist = length(iso);
-  float bulge = pow(1.8 * dist, 1.2);
+  float bulge = pow(1.55 * dist, 1.12);
   bulge = 1. - bulge;
-  bulge *= pow(max(0.5 + iso.y, 0.0), .3);
+  bulge *= pow(max(0.5 + iso.y, 0.0), .34);
 
   float cycle_width = u_patternScale;
-  float thin_strip_1_ratio = .12 / cycle_width * (1. - .4 * bulge);
-  float thin_strip_2_ratio = .07 / cycle_width * (1. + .4 * bulge);
+  float thin_strip_1_ratio = .11 / cycle_width * (1. - .38 * bulge);
+  float thin_strip_2_ratio = .065 / cycle_width * (1. + .38 * bulge);
   float wide_strip_ratio = (1. - thin_strip_1_ratio - thin_strip_2_ratio);
 
   float thin_strip_1_width = cycle_width * thin_strip_1_ratio;
@@ -271,31 +285,47 @@ void main() {
 
   float opacity = 1. - smoothstep(.9 - .5 * u_edge, 1. - .5 * u_edge, edge);
 
-  float noise = snoise(vec2(flow, iso.y) * 0.42 - t) * 0.72 + snoise(vec2(flow, iso.y) * 0.16 - t * 0.38) * 0.28;
+  float noise = snoise(vec2(flow, iso.y) * 0.34 - t * 0.82) * 0.62
+    + snoise(vec2(flow, iso.y) * 0.13 - t * 0.3) * 0.38;
   edge += (1. - edge) * u_liquid * noise;
 
   float dir = flow;
-  dir -= 0.55 * noise * (smoothstep(0., 1., edge) * smoothstep(1., 0., edge));
-  bulge *= clamp(pow(max(0.5 + iso.y, 0.0), .1), .3, 1.);
-  dir *= (.18 + (1.05 - edge) * bulge);
-  dir *= smoothstep(1., .7, edge);
+  dir -= 0.48 * noise * (smoothstep(0., 1., edge) * smoothstep(1., 0., edge));
+  bulge *= clamp(pow(max(0.5 + iso.y, 0.0), .12), .35, 1.);
+  dir *= (.15 + (1.1 - edge) * bulge);
+  dir *= smoothstep(1., .72, edge);
   dir *= cycle_width;
   dir -= t;
-  dir += (mouse_uv.x - 0.5) * 0.07 * mouseFalloff;
+  dir += (mouse_uv.x - 0.5) * 0.06 * mouseFalloff;
 
   vec3 w = vec3(thin_strip_1_width, thin_strip_2_width, wide_strip_ratio);
-  w[1] -= .02 * smoothstep(.0, 1., edge + bulge);
+  w[1] -= .018 * smoothstep(.0, 1., edge + bulge);
 
   float stripe = mod(dir, 1.);
-  float ch = get_color_channel(color1.r, color2.r, stripe, w, 0.02 + .03 * u_refraction * bulge, bulge);
+  float extraBlur = .022 * u_refraction * bulge;
+  float chA = get_color_channel(color1.r, color2.r, stripe, w, extraBlur, bulge);
+  float chB = get_color_channel(color1.r, color2.r, mod(stripe + 0.009, 1.), w, extraBlur * 1.2, bulge);
+  float ch = mix(chA, max(chA, chB), 0.3);
   vec3 color = vec3(ch);
 
-  float hi = smoothstep(0.38, 0.82, ch);
-  float hueWave = 0.5 + 0.5 * sin(flow * 6.28318 * 0.55 + t * 0.32);
-  float azureAmt = (1.0 - smoothstep(0.30, 0.46, hueWave)) * hi;
-  float lemonAmt = smoothstep(0.54, 0.70, hueWave) * hi;
-  color = mix(color, mix(color, azure, 0.55), azureAmt * 0.62);
-  color = mix(color, mix(color, lemon, 0.50), lemonAmt * 0.58);
+  float hi = smoothstep(0.44, 0.9, ch);
+  float spec = pow(clamp((ch - 0.58) / 0.42, 0.0, 1.0), 7.0);
+  color += vec3(spec * 0.2);
+
+  float hueWave = 0.5 + 0.5 * sin(flow * TWO_PI * 0.46 + t * 0.26);
+  float azureAmt = (1.0 - smoothstep(0.28, 0.48, hueWave)) * hi;
+  float lemonAmt = smoothstep(0.52, 0.72, hueWave) * hi;
+  color = mix(color, mix(color, azure, 0.46), azureAmt * 0.52);
+  color = mix(color, mix(color, lemon, 0.42), lemonAmt * 0.48);
+
+  vec2 gUv = vec2(
+    (frag.x - rc.x) / max(rc.z, 1.0),
+    (frag.y - rc.y) / max(rc.w, 1.0)
+  );
+  float cover = glyphCover(cardId, gUv);
+  float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+  vec3 ink = mix(vec3(0.97, 0.972, 0.98), vec3(0.045, 0.046, 0.05), smoothstep(0.26, 0.5, luma));
+  color = mix(color, ink, cover);
 
   if (sdf >= 0.0) discard;
   float clip = 1.0 - smoothstep(-1.0, -0.35, sdf);

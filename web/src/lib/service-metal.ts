@@ -1,4 +1,5 @@
 import {
+  CanvasTexture,
   ClampToEdgeWrapping,
   DataTexture,
   LinearFilter,
@@ -29,8 +30,143 @@ function saveDataOn() {
 }
 
 function fallback(sec: HTMLElement | null) {
-  sec?.classList.remove("has-metal");
+  sec?.classList.remove("has-metal", "has-metal-ink");
   sec?.classList.add("is-metal-fallback");
+}
+
+function blankGlyphTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1;
+  canvas.height = 1;
+  const texture = new CanvasTexture(canvas);
+  texture.flipY = true;
+  texture.generateMipmaps = false;
+  texture.wrapS = ClampToEdgeWrapping;
+  texture.wrapT = ClampToEdgeWrapping;
+  texture.minFilter = LinearFilter;
+  texture.magFilter = LinearFilter;
+  texture.needsUpdate = true;
+  return { canvas, texture };
+}
+
+function svgDataUrl(svg: SVGSVGElement) {
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  clone.setAttribute("stroke", "#ffffff");
+  clone.setAttribute("fill", "none");
+  clone.querySelectorAll("[stroke]").forEach((node) => {
+    const stroke = node.getAttribute("stroke");
+    if (stroke && stroke !== "none") node.setAttribute("stroke", "#ffffff");
+  });
+  clone.querySelectorAll("[fill]").forEach((node) => {
+    const fill = node.getAttribute("fill");
+    if (fill && fill !== "none" && fill !== "transparent") node.setAttribute("fill", "#ffffff");
+  });
+  const box = svg.getBoundingClientRect();
+  clone.setAttribute("width", String(Math.max(1, box.width)));
+  clone.setAttribute("height", String(Math.max(1, box.height)));
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(clone))}`;
+}
+
+const glyphImageCache = new Map<string, HTMLImageElement>();
+
+async function imageFromUrl(url: string) {
+  const hit = glyphImageCache.get(url);
+  if (hit) return hit;
+  const img = new Image();
+  img.decoding = "async";
+  img.src = url;
+  await img.decode();
+  glyphImageCache.set(url, img);
+  return img;
+}
+
+function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let line = "";
+  for (const word of words) {
+    const next = line ? `${line} ${word}` : word;
+    if (line && ctx.measureText(next).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.length ? lines : [text];
+}
+
+async function paintCardGlyph(
+  canvas: HTMLCanvasElement,
+  btn: HTMLButtonElement,
+  dpr: number,
+  stillCurrent: () => boolean,
+) {
+  const box = btn.getBoundingClientRect();
+  const cssW = Math.max(1, box.width);
+  const cssH = Math.max(1, box.height);
+  const pxW = Math.max(1, Math.round(cssW * dpr));
+  const pxH = Math.max(1, Math.round(cssH * dpr));
+  if (canvas.width !== pxW || canvas.height !== pxH) {
+    canvas.width = pxW;
+    canvas.height = pxH;
+  }
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, pxW, pxH);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+
+  const discs = btn.querySelectorAll<HTMLElement>(".icon-disc");
+  const title = btn.querySelector<HTMLElement>(".font-serif");
+  const jobs: Promise<void>[] = [];
+
+  discs.forEach((disc) => {
+    const rect = disc.getBoundingClientRect();
+    const x = rect.left - box.left;
+    const y = rect.top - box.top;
+    const radius = Math.min(rect.width, rect.height) / 2;
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = Math.max(1.1, rect.width * 0.028);
+    ctx.beginPath();
+    ctx.arc(x + rect.width / 2, y + rect.height / 2, Math.max(1, radius - ctx.lineWidth), 0, Math.PI * 2);
+    ctx.stroke();
+    const svg = disc.querySelector("svg");
+    if (!(svg instanceof SVGSVGElement)) return;
+    const icon = svg.getBoundingClientRect();
+    jobs.push(
+      imageFromUrl(svgDataUrl(svg)).then((img) => {
+        if (!stillCurrent()) return;
+        ctx.drawImage(img, icon.left - box.left, icon.top - box.top, icon.width, icon.height);
+      }),
+    );
+  });
+
+  if (title) {
+    const rect = title.getBoundingClientRect();
+    const style = getComputedStyle(title);
+    const text = (title.textContent ?? "").replace(/\s+/g, " ").trim();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    if ("letterSpacing" in ctx) {
+      (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = style.letterSpacing;
+    }
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    const maxW = Math.max(8, rect.width);
+    const lines = wrapLines(ctx, text, maxW);
+    const lineHeight = Number.parseFloat(style.lineHeight) || rect.height / Math.max(1, lines.length);
+    const startY = rect.top - box.top + (rect.height - lineHeight * (lines.length - 1)) / 2;
+    lines.forEach((line, i) => {
+      ctx.fillText(line, rect.left - box.left, startY + i * lineHeight, maxW);
+    });
+  }
+
+  await Promise.all(jobs);
 }
 
 function roundedRectPath(x: number, y: number, w: number, h: number, r: number) {
@@ -127,6 +263,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   texture.flipY = false;
   texture.needsUpdate = true;
 
+  const glyphs = Array.from({ length: MAX_CARDS }, () => blankGlyphTexture());
+
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
   const geometry = new PlaneGeometry(2, 2);
@@ -154,6 +292,11 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       uRadius: { value: 24 },
       uPad: { value: CLIP_INSET_PX },
       uField: { value: field },
+      uGlyph0: { value: glyphs[0].texture },
+      uGlyph1: { value: glyphs[1].texture },
+      uGlyph2: { value: glyphs[2].texture },
+      uGlyph3: { value: glyphs[3].texture },
+      uGlyph4: { value: glyphs[4].texture },
     },
     vertexShader: playgroundVertex,
     fragmentShader: playgroundFragment,
@@ -171,6 +314,45 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const mouseFollow = mobile ? 0.03 : 0.045;
   const mouseFade = 0.028;
   let lastClipKey = "";
+  let lastGlyphKey = "";
+  let glyphTimer = 0;
+  let glyphGen = 0;
+
+  const rasterizeGlyphs = async () => {
+    const gen = ++glyphGen;
+    const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
+    const dpr = renderer.getPixelRatio();
+    try {
+      await document.fonts.ready;
+      await document.fonts.load('400 2.1rem "Bodoni Moda"');
+    } catch {
+      /* keep going with fallback serif */
+    }
+    if (gen !== glyphGen) return;
+    await Promise.all(
+      Array.from({ length: MAX_CARDS }, async (_, i) => {
+        const btn = buttons[i];
+        if (!btn) {
+          const blank = glyphs[i].canvas;
+          blank.width = 1;
+          blank.height = 1;
+          glyphs[i].texture.needsUpdate = true;
+          return;
+        }
+        await paintCardGlyph(glyphs[i].canvas, btn, dpr, () => gen === glyphGen);
+        if (gen !== glyphGen) return;
+        glyphs[i].texture.needsUpdate = true;
+      }),
+    );
+    if (gen === glyphGen) sec.classList.add("has-metal-ink");
+  };
+
+  const scheduleGlyphs = () => {
+    window.clearTimeout(glyphTimer);
+    glyphTimer = window.setTimeout(() => {
+      void rasterizeGlyphs();
+    }, 40);
+  };
 
   const resize = () => {
     const w = Math.max(1, canvas.clientWidth || sec.clientWidth);
@@ -230,6 +412,18 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     if (clipKey !== lastClipKey) {
       lastClipKey = clipKey;
       applyCardClip(canvas, cssCards, cssRadius, cssW, cssH, inset);
+    }
+
+    const glyphKey = `${dpr}:${cssW.toFixed(1)}x${cssH.toFixed(1)}:${Array.from(buttons)
+      .map((btn) => {
+        const title = btn.querySelector(".font-serif")?.textContent?.trim() ?? "";
+        const box = btn.getBoundingClientRect();
+        return `${title}:${box.width.toFixed(1)}x${box.height.toFixed(1)}`;
+      })
+      .join("|")}`;
+    if (glyphKey !== lastGlyphKey) {
+      lastGlyphKey = glyphKey;
+      scheduleGlyphs();
     }
   };
 
@@ -308,6 +502,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     geometry.dispose();
     material.dispose();
     texture.dispose();
+    glyphs.forEach(({ texture: glyph }) => glyph.dispose());
     renderer.dispose();
     return () => {};
   }
@@ -315,7 +510,15 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   sec.classList.add("has-metal");
   io.observe(sec);
   ro.observe(sec);
-  mo.observe(sec, { attributes: true, attributeFilter: ["class", "aria-expanded"], subtree: true });
+  mo.observe(sec, {
+    attributes: true,
+    attributeFilter: ["class", "aria-expanded", "lang"],
+    subtree: true,
+    childList: true,
+    characterData: true,
+  });
+  const onFonts = () => scheduleGlyphs();
+  document.fonts.addEventListener("loadingdone", onFonts);
   window.addEventListener("resize", resize, { passive: true });
   document.addEventListener("visibilitychange", onVis);
   sec.addEventListener("pointermove", onPointer, { passive: true });
@@ -324,18 +527,21 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   return () => {
     stop();
-    sec.classList.remove("has-metal");
+    sec.classList.remove("has-metal", "has-metal-ink");
     io.disconnect();
     ro.disconnect();
     mo.disconnect();
+    document.fonts.removeEventListener("loadingdone", onFonts);
     window.removeEventListener("resize", resize);
     document.removeEventListener("visibilitychange", onVis);
     sec.removeEventListener("pointermove", onPointer);
     sec.removeEventListener("pointerdown", onPointer);
     sec.removeEventListener("pointerleave", onPointerLeave);
+    window.clearTimeout(glyphTimer);
     geometry.dispose();
     material.dispose();
     texture.dispose();
+    glyphs.forEach(({ texture: glyph }) => glyph.dispose());
     renderer.dispose();
   };
 }
