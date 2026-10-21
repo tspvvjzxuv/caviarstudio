@@ -307,7 +307,7 @@ void main() {
 
   for (int i = 0; i < 5; i++) {
     vec4 box = uRect[i];
-    float on = (1.0 - uOpen[i]) * step(2.0, box.z);
+    float on = (1.0 - uOpen[i]) * step(1.0, box.z) * step(1.0, box.w);
     vec2 halfSize = box.zw * 0.5 + vec2(2.0);
     float r = uRadius + 2.0;
     float d = sdRoundBox(frag - (box.xy + box.zw * 0.5), halfSize, r);

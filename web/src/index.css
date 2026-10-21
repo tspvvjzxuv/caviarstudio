@@ -894,8 +894,8 @@ footer {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  overflow: clip;
-  contain: paint;
+  overflow: visible;
+  contain: none;
   isolation: isolate;
   filter: none;
   box-shadow: none;
@@ -911,9 +911,6 @@ footer {
   min-width: 0;
   width: 100%;
 }
-.service-sec.has-metal {
-  overflow-x: visible;
-}
 .service-sec.has-metal .service-glow-field {
   z-index: 0;
 }
@@ -922,10 +919,12 @@ footer {
   isolation: auto;
   contain: none;
   overflow: visible;
-  transform: none;
+  opacity: 1;
+  visibility: visible;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
   filter: none;
   will-change: auto;
-  -webkit-transform: none;
 }
 .service-sec.has-metal .service-sec-body,
 .service-sec.has-metal .service-grid,
@@ -973,7 +972,11 @@ footer {
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) {
   isolation: auto;
   z-index: auto;
+  background: none;
   background-color: transparent;
+  background-image: none;
+  -webkit-appearance: none;
+  appearance: none;
   box-shadow: none;
   filter: none;
   overflow: visible;
@@ -1018,17 +1021,6 @@ footer {
   backdrop-filter: none;
   isolation: auto;
   transform: none;
-}
-@media (max-width: 767px) {
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
-    mix-blend-mode: normal;
-    -webkit-mix-blend-mode: normal;
-  }
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
-  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
-    mix-blend-mode: difference;
-    -webkit-mix-blend-mode: difference;
-  }
 }
 .service-sec.is-metal-fallback .service-chrome:not(.is-open):not([aria-expanded="true"])::after {
   content: "";
