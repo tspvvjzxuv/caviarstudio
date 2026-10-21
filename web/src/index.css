@@ -1080,13 +1080,17 @@ footer {
   }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
     position: static;
-    -webkit-text-stroke: 0.45px rgb(0 0 0 / 82%);
+    -webkit-text-stroke: 1px #000;
     paint-order: stroke fill;
     text-shadow:
-      0 1px 1px #000,
-      0 0 2px #000,
-      0 1px 8px rgb(0 0 0 / 88%),
-      0 0 16px rgb(0 0 0 / 70%);
+      -1.15px 0 0 #000,
+      1.15px 0 0 #000,
+      0 -1.15px 0 #000,
+      0 1.15px 0 #000,
+      -1px -1px 0 #000,
+      1px 1px 0 #000,
+      0 0 8px #000,
+      0 2px 12px rgb(0 0 0 / 92%);
   }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
     color: #fff !important;
