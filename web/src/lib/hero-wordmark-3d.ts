@@ -1,14 +1,18 @@
 import {
   ACESFilmicToneMapping,
+  BackSide,
   Box3,
+  BoxGeometry,
   Color,
   DirectionalLight,
   ExtrudeGeometry,
   Group,
   HemisphereLight,
   Mesh,
+  MeshBasicMaterial,
   MeshPhysicalMaterial,
   PerspectiveCamera,
+  PlaneGeometry,
   PMREMGenerator,
   SRGBColorSpace,
   Scene,
@@ -17,28 +21,79 @@ import {
   WebGLRenderer,
   type Shape,
 } from "three";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { CAVIAR_LETTERS, CAVIAR_TRACK, type GlyphCmd } from "@/lib/caviar-glyphs";
 
 const LERP = 0.12;
 const FOV = 28;
-const REST_RX = -0.1;
-const REST_RY = 0.14;
 const SCROLL_VH = 0.8;
+const TILT_X = 0.11;
+const TILT_Y = 0.16;
+const GYRO_RANGE = 28;
+const ENV_SPIN = 0.00016;
 const EXTRUDE = {
   depth: 220,
   bevelEnabled: true,
-  bevelThickness: 28,
-  bevelSize: 16,
+  bevelThickness: 30,
+  bevelSize: 17,
   bevelOffset: 0,
-  bevelSegments: 2,
+  bevelSegments: 3,
   curveSegments: 5,
   steps: 1,
 } as const;
 
+function makeStudioEnv() {
+  const studio = new Scene();
+  const geos: Array<BoxGeometry | PlaneGeometry> = [];
+  const mats: MeshBasicMaterial[] = [];
+
+  const paint = (color: number, extra?: ConstructorParameters<typeof MeshBasicMaterial>[0]) => {
+    const mat = new MeshBasicMaterial({ color, ...extra });
+    mats.push(mat);
+    return mat;
+  };
+  const panel = (
+    w: number,
+    h: number,
+    color: number,
+    pos: readonly [number, number, number],
+    rot: readonly [number, number, number],
+  ) => {
+    const geo = new PlaneGeometry(w, h);
+    geos.push(geo);
+    const mesh = new Mesh(geo, paint(color));
+    mesh.position.set(pos[0], pos[1], pos[2]);
+    mesh.rotation.set(rot[0], rot[1], rot[2]);
+    studio.add(mesh);
+  };
+
+  const room = new BoxGeometry(30, 20, 30);
+  geos.push(room);
+  studio.add(new Mesh(room, paint(0x2a303a, { side: BackSide })));
+  panel(16, 2.3, 0xffffff, [0, 8.6, -0.4], [Math.PI / 2, 0, 0]);
+  panel(16, 1.15, 0xf4f6fa, [0, 8.6, 4.4], [Math.PI / 2, 0, 0]);
+  panel(0.95, 13, 0xffffff, [11.2, 1.2, 2.6], [0, -0.52, 0]);
+  panel(8, 11, 0xffffff, [14, 1.6, 0], [0, -Math.PI / 2, 0]);
+  panel(8, 8, 0xc5d8ff, [-14, 2.1, 0.8], [0, Math.PI / 2, 0]);
+  panel(1.15, 9, 0xffe4c2, [-5.4, 0.8, 13], [0, Math.PI, 0.08]);
+  panel(16, 7, 0xe9edf4, [0, 3.2, -14], [0, 0, 0]);
+  panel(20, 14, 0x7a8494, [0, -9.2, 0], [-Math.PI / 2, 0, 0]);
+
+  return {
+    studio,
+    dispose() {
+      for (const geo of geos) geo.dispose();
+      for (const mat of mats) mat.dispose();
+    },
+  };
+}
+
 type LetterData = { ox: number; oy: number; oz: number; i: number };
 
 type LetterMesh = Mesh<ExtrudeGeometry, MeshPhysicalMaterial>;
+
+type DOE = typeof DeviceOrientationEvent & {
+  requestPermission?: () => Promise<string>;
+};
 
 function cmdsToShapes(cmds: readonly GlyphCmd[]): Shape[] {
   const path = new ShapePath();
@@ -72,9 +127,14 @@ function letterGeometry(cmds: readonly GlyphCmd[]) {
   return geo;
 }
 
+function clamp(n: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, n));
+}
+
 export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   const slot = canvas.parentElement;
   if (!slot) return () => {};
+  const hero = (canvas.closest("#top") as HTMLElement | null) ?? slot;
 
   let renderer: WebGLRenderer;
   try {
@@ -95,39 +155,44 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 1.1;
   renderer.shadowMap.enabled = false;
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(FOV, 1, 0.1, 80);
-  camera.position.set(0, 0.08, 8);
+  camera.position.set(0, 0, 8);
 
   const pmrem = new PMREMGenerator(renderer);
-  const room = new RoomEnvironment();
-  const envTex = pmrem.fromScene(room, 0.04).texture;
+  const { studio, dispose: disposeStudio } = makeStudioEnv();
+  const envTex = pmrem.fromScene(studio, 0, 0.1, 100, { size: 256 }).texture;
   scene.environment = envTex;
-  scene.environmentIntensity = 1.05;
-  room.dispose();
+  scene.environmentIntensity = 1.22;
+  disposeStudio();
   pmrem.dispose();
 
-  scene.add(new HemisphereLight(0xf4f5f7, 0x12141a, 0.28));
-  const key = new DirectionalLight(0xffffff, 1.15);
-  key.position.set(2.4, 3.2, 4.2);
+  scene.add(new HemisphereLight(0xf2f4f8, 0x12151c, 0.16));
+  const key = new DirectionalLight(0xffffff, 0.78);
+  key.position.set(2.6, 3.8, 4.4);
   key.castShadow = false;
   scene.add(key);
-  const rim = new DirectionalLight(0x9ec1ff, 0.35);
-  rim.position.set(-3.2, 1.4, 1.6);
+  const bevelSpec = new DirectionalLight(0xffffff, 1.05);
+  bevelSpec.position.set(-1.1, 5.2, 2.4);
+  bevelSpec.castShadow = false;
+  scene.add(bevelSpec);
+  const rim = new DirectionalLight(0x9ec1ff, 0.28);
+  rim.position.set(-3.4, 1.2, 1.4);
   rim.castShadow = false;
   scene.add(rim);
 
   const material = new MeshPhysicalMaterial({
-    color: new Color("#c5cad3"),
+    color: new Color("#d5dae2"),
     metalness: 1,
-    roughness: 0.12,
-    envMapIntensity: 1.4,
-    clearcoat: 0.82,
-    clearcoatRoughness: 0.16,
+    roughness: 0.035,
+    envMapIntensity: 1.95,
+    clearcoat: 1,
+    clearcoatRoughness: 0.035,
     ior: 1.5,
+    specularIntensity: 1,
   });
 
   const group = new Group();
@@ -175,11 +240,10 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   group.scale.setScalar(6 / wordW);
   scene.add(group);
 
-  const spreadAmp = wordW * 0.055;
-  const letterZAmp = wordW * 0.028;
-  const recedeAmp = 2.8;
+  const spreadAmp = wordW * 0.08;
+  const letterZAmp = wordW * 0.055;
+  const recedeAmp = 7.2;
 
-  let camDist = 8;
   const fitCamera = () => {
     const w = Math.max(1, canvas.clientWidth || Math.round(slot.clientWidth * 1.18));
     const h = Math.max(1, canvas.clientHeight || Math.round(slot.clientHeight * 1.5));
@@ -187,24 +251,25 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     camera.aspect = w / h;
     const halfH = Math.tan((FOV * Math.PI) / 360);
     const sx = group.scale.x;
-    camDist = Math.max(
-      ((size.x * sx) / 2) / (halfH * camera.aspect * 0.86),
-      ((size.y * sx) / 2) / (halfH * 0.62),
+    const camDist = Math.max(
+      (size.x * sx) / 2 / (halfH * camera.aspect * 0.9),
+      (size.y * sx) / 2 / (halfH * 0.72),
     );
-    camera.position.set(0, 0.08, camDist);
+    camera.position.set(0, 0, camDist);
     camera.near = Math.max(0.05, camDist * 0.05);
-    camera.far = camDist * 8;
+    camera.far = Math.max(40, camDist * 10 + recedeAmp * 2);
     camera.updateProjectionMatrix();
+    cacheHero();
   };
 
-  let rx = REST_RX;
-  let ry = REST_RY;
+  let rx = 0;
+  let ry = 0;
   let gz = 0;
   let spread = 0;
   let letterZ = 0;
   let fade = 1;
-  let tRx = REST_RX;
-  let tRy = REST_RY;
+  let tRx = 0;
+  let tRy = 0;
   let tGz = 0;
   let tSpread = 0;
   let tLetterZ = 0;
@@ -212,40 +277,62 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   let raf = 0;
   let running = false;
   let gpuEma = 2;
-  const t0 = performance.now();
+  let gyroOn = false;
+  let gyroCalibrated = false;
+  let baseBeta = 0;
+  let baseGamma = 0;
+  const envSpin = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const heroBox = { left: 0, top: 0, w: 1, h: 1 };
+
+  const cacheHero = () => {
+    const r = hero.getBoundingClientRect();
+    heroBox.left = r.left;
+    heroBox.top = r.top;
+    heroBox.w = Math.max(1, r.width);
+    heroBox.h = Math.max(1, r.height);
+  };
 
   const readScroll = () => {
     const p = Math.min(1, Math.max(0, window.scrollY / Math.max(1, window.innerHeight * SCROLL_VH)));
     tGz = -recedeAmp * p;
-    tRx = REST_RX + 0.22 * p;
-    tRy = REST_RY - 0.38 * p;
     tSpread = spreadAmp * p;
     tLetterZ = letterZAmp * p;
     tFade = 1 - p;
   };
 
+  const setTilt = (nx: number, ny: number) => {
+    tRy = clamp(nx, -1, 1) * TILT_Y;
+    tRx = clamp(-ny, -1, 1) * TILT_X;
+  };
+
+  const clearTilt = () => {
+    tRx = 0;
+    tRy = 0;
+  };
+
   const tick = () => {
     if (!running) return;
     const tStart = performance.now();
-    const t = (tStart - t0) / 1000;
-    rx += (tRx + Math.cos(t * 0.37) * 0.028 - rx) * LERP;
-    ry += (tRy + Math.sin(t * 0.55) * 0.05 - ry) * LERP;
-    gz += (tGz + Math.sin(t * 0.7) * 0.06 - gz) * LERP;
+    rx += (tRx - rx) * LERP;
+    ry += (tRy - ry) * LERP;
+    gz += (tGz - gz) * LERP;
     spread += (tSpread - spread) * LERP;
     letterZ += (tLetterZ - letterZ) * LERP;
     fade += (tFade - fade) * LERP;
     group.rotation.x = rx;
     group.rotation.y = ry;
-    group.position.z = gz;
+    group.position.set(0, 0, gz);
     for (const mesh of letters) {
-      const i = mesh.userData.i;
+      const i = mesh.userData.i as number;
       mesh.position.x = mesh.userData.ox + i * spread;
-      mesh.position.z = mesh.userData.oz + i * letterZ * 0.85 + i * i * letterZ * 0.12;
+      mesh.position.z = mesh.userData.oz - Math.abs(i) * letterZ;
     }
+    if (envSpin) scene.environmentRotation.y = tStart * ENV_SPIN;
     canvas.style.opacity = fade < 0.02 ? "0" : fade.toFixed(3);
     if (fade > 0.015) renderer.render(scene, camera);
     gpuEma = gpuEma * 0.88 + (performance.now() - tStart) * 0.12;
     canvas.dataset.ft = gpuEma.toFixed(2);
+    canvas.dataset.rx = rx.toFixed(3);
     canvas.dataset.ry = ry.toFixed(3);
     canvas.dataset.gz = gz.toFixed(3);
     canvas.dataset.spread = spread.toFixed(1);
@@ -271,11 +358,72 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   };
   const onScroll = () => {
     readScroll();
+    cacheHero();
   };
+
+  const onPointer = (event: PointerEvent) => {
+    const nx = ((event.clientX - heroBox.left) / heroBox.w) * 2 - 1;
+    const ny = ((event.clientY - heroBox.top) / heroBox.h) * 2 - 1;
+    setTilt(nx, ny);
+  };
+
+  const onOrient = (event: DeviceOrientationEvent) => {
+    if (event.beta == null || event.gamma == null) return;
+    if (!gyroCalibrated) {
+      baseBeta = event.beta;
+      baseGamma = event.gamma;
+      gyroCalibrated = true;
+    }
+    const ny = clamp((event.beta - baseBeta) / GYRO_RANGE, -1, 1);
+    const nx = clamp((event.gamma - baseGamma) / GYRO_RANGE, -1, 1);
+    setTilt(nx, ny);
+  };
+
+  const unbindGyro = () => {
+    if (!gyroOn) return;
+    gyroOn = false;
+    window.removeEventListener("deviceorientation", onOrient);
+  };
+
+  const bindGyro = () => {
+    if (gyroOn) return;
+    gyroOn = true;
+    gyroCalibrated = false;
+    window.addEventListener("deviceorientation", onOrient, { passive: true });
+  };
+
+  const onFirstTap = () => {
+    const Ctor = window.DeviceOrientationEvent as DOE | undefined;
+    const request = Ctor?.requestPermission;
+    if (typeof request !== "function") return;
+    void request
+      .call(Ctor)
+      .then((state) => {
+        if (state === "granted") bindGyro();
+      })
+      .catch(() => {});
+  };
+
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (finePointer) {
+    hero.addEventListener("pointerenter", cacheHero, { passive: true });
+    hero.addEventListener("pointermove", onPointer, { passive: true });
+    hero.addEventListener("pointerleave", clearTilt, { passive: true });
+  } else if (typeof window.DeviceOrientationEvent !== "undefined") {
+    const Ctor = window.DeviceOrientationEvent as DOE;
+    if (typeof Ctor.requestPermission === "function") {
+      window.addEventListener("touchend", onFirstTap, { capture: true, passive: true, once: true });
+    } else {
+      bindGyro();
+    }
+  }
 
   const io = new IntersectionObserver(([entry]) => {
     if (entry.isIntersecting && !document.hidden) start();
-    else stop();
+    else {
+      stop();
+      clearTilt();
+    }
   });
   const ro = new ResizeObserver(() => fitCamera());
 
@@ -284,7 +432,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   renderer.compile(scene, camera);
   const word = slot.querySelector(".caviar-word");
   if (word instanceof HTMLElement) word.style.opacity = "0";
-  io.observe(slot);
+  io.observe(hero);
   ro.observe(slot);
   ro.observe(canvas);
   requestAnimationFrame(() => requestAnimationFrame(fitCamera));
@@ -298,11 +446,20 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     canvas.style.removeProperty("opacity");
     if (word instanceof HTMLElement) word.style.removeProperty("opacity");
     delete canvas.dataset.ft;
+    delete canvas.dataset.rx;
+    delete canvas.dataset.ry;
+    delete canvas.dataset.gz;
+    delete canvas.dataset.spread;
     io.disconnect();
     ro.disconnect();
+    unbindGyro();
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", fitCamera);
+    window.removeEventListener("touchend", onFirstTap, true);
     document.removeEventListener("visibilitychange", onVis);
+    hero.removeEventListener("pointerenter", cacheHero);
+    hero.removeEventListener("pointermove", onPointer);
+    hero.removeEventListener("pointerleave", clearTilt);
     for (const geo of geos) geo.dispose();
     material.dispose();
     envTex.dispose();

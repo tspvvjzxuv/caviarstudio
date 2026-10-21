@@ -127,10 +127,10 @@ export function Hero() {
     <section ref={heroRef} className="relative flex min-h-dvh flex-col justify-end pt-[var(--header-h)]" id="top">
       <HeroBackdrop kenRef={kenRef} />
       <div className="hero-stage relative z-[2] isolate mx-auto w-[min(1120px,calc(100%-2*clamp(1.25rem,5vw,5rem)))] pt-8 pb-6 md:pt-10 md:pb-8">
-        <h1 className="hero-logo w-fit max-w-[80%] text-[clamp(3.9rem,16vw,10.5rem)]">
+        <h1 className="hero-logo mx-auto w-fit max-w-full text-center text-[clamp(3.9rem,16vw,10.5rem)] lg:text-[clamp(4.55rem,18.8vw,12.4rem)]">
           <HeroCaviarMark />
         </h1>
-        <p className="mt-8 max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl">
+        <p className="mt-[4.75rem] max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl md:mt-24">
           {t.heroTagline}
         </p>
         <p className="mt-4 max-w-[36ch] text-[0.98rem] leading-[1.5] text-pretty text-muted-foreground">{t.heroExplain}</p>
