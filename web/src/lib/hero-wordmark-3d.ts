@@ -143,8 +143,8 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     renderer = new WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: !mobile,
-      preserveDrawingBuffer: !mobile,
+      antialias: true,
+      preserveDrawingBuffer: false,
       premultipliedAlpha: true,
       powerPreference: "high-performance",
       failIfMajorPerformanceCaveat: false,
@@ -154,7 +154,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   }
 
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;

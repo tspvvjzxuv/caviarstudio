@@ -415,21 +415,29 @@ footer {
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
     mix-blend-mode: normal;
     -webkit-mix-blend-mode: normal;
+    color: #f4f5f7;
   }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-solid {
-    display: block;
-    color: #0b0b0e;
-    -webkit-text-fill-color: #0b0b0e;
+    display: none;
   }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
-    position: absolute;
-    inset: 0;
-    mix-blend-mode: difference;
-    -webkit-mix-blend-mode: difference;
+    position: static;
+    mix-blend-mode: normal;
+    -webkit-mix-blend-mode: normal;
+    color: #f4f5f7;
+    -webkit-text-fill-color: #f4f5f7;
+    text-shadow:
+      0 1px 1px rgb(0 0 0 / 90%),
+      0 0 10px rgb(0 0 0 / 70%),
+      0 0 1px #000;
   }
   .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
-    mix-blend-mode: difference;
-    -webkit-mix-blend-mode: difference;
+    mix-blend-mode: normal;
+    -webkit-mix-blend-mode: normal;
+    color: #f4f5f7;
+    border-color: rgb(244 245 247 / 88%);
+    background-color: rgb(7 7 8 / 42%);
+    box-shadow: 0 1px 6px rgb(0 0 0 / 55%);
   }
   #top {
     min-height: 100lvh;
@@ -1412,6 +1420,19 @@ button[data-magnetic]:not(.metal-fill) {
 .hero-stage,
 #top {
   overflow: visible;
+}
+.hero-tagline {
+  margin-top: clamp(5.5rem, 18vh, 9.75rem);
+}
+@media (min-width: 768px) {
+  .hero-tagline {
+    margin-top: clamp(3.25rem, calc(9rem + 100vh - 48rem), 12.75rem);
+  }
+}
+@media (max-height: 48rem) {
+  .hero-logo {
+    font-size: clamp(3.2rem, 12vw, 7.5rem);
+  }
 }
 .hero-wordmark-3d {
   position: absolute;

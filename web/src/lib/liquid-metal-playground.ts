@@ -233,6 +233,7 @@ uniform float uRadius;
 uniform vec4 uField;
 uniform vec2 uFocus;
 uniform float u_flow;
+uniform float uTileH;
 
 #define TWO_PI 6.28318530718
 #define PI 3.14159265358979323846
@@ -329,6 +330,7 @@ void main() {
 
   vec2 aspect = vec2(uField.z / max(uField.w, 1.0), 1.0);
   vec2 iso = (fieldUv - uFocus) * aspect;
+  iso *= max(uField.w, 1.0) / max(uTileH, 1.0) * 0.42;
   vec2 toMouse = (fieldUv - mouse_uv) * aspect;
   float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
 

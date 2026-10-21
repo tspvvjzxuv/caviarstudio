@@ -61,9 +61,6 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   }
 
   const mobile = window.matchMedia("(max-width: 767px)").matches;
-  const ios =
-    /iP(hone|ad|od)/.test(navigator.userAgent) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
   let renderer: WebGLRenderer;
   try {
@@ -72,7 +69,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       alpha: true,
       antialias: false,
       premultipliedAlpha: true,
-      powerPreference: ios ? "default" : "high-performance",
+      powerPreference: "high-performance",
       failIfMajorPerformanceCaveat: false,
       stencil: false,
       depth: false,
@@ -84,8 +81,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   renderer.setClearColor(0x000000, 0);
   // iOS blanks the FBO when backing store is 0 (floor(css * 0.55)) or DPR < 1.
-  const dprCap = mobile ? (ios ? 1.25 : 1) : 0.75;
-  const dprMin = mobile ? 1 : 0.42;
+  const dprCap = mobile ? 2 : 0.75;
+  const dprMin = mobile ? 1.25 : 0.42;
   let pixelRatio = Math.min(Math.max(dprMin, window.devicePixelRatio || 1), dprCap);
   renderer.setPixelRatio(pixelRatio);
 
@@ -123,6 +120,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       uField: { value: field },
       uFocus: { value: new Vector2(initialCycle.focusX, initialCycle.focusY) },
       u_flow: { value: initialCycle.flow },
+      uTileH: { value: 160 },
     },
     vertexShader: playgroundVertex,
     fragmentShader: playgroundFragment,
@@ -252,6 +250,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     let minY = Number.POSITIVE_INFINITY;
     let maxX = Number.NEGATIVE_INFINITY;
     let maxY = Number.NEGATIVE_INFINITY;
+    let tileH = 0;
+    let tileN = 0;
 
     for (let i = 0; i < MAX_CARDS; i++) {
       const btn = buttons[i];
@@ -271,11 +271,14 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
         minY = Math.min(minY, yCss);
         maxX = Math.max(maxX, x + box.width);
         maxY = Math.max(maxY, yCss + box.height);
+        tileH += box.height * sy;
+        tileN += 1;
       }
     }
     if (Number.isFinite(minX) && maxX > minX && maxY > minY) {
       field.set(minX * sx, (cssH - maxY) * sy, (maxX - minX) * sx, (maxY - minY) * sy);
     }
+    material.uniforms.uTileH.value = tileN ? tileH / tileN : Math.max(field.w * 0.4, 1);
   };
 
   const stop = () => {
