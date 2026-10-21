@@ -354,11 +354,13 @@ void main() {
   float mouseFalloff = uMouseAmt * exp(-dot(toMouse, toMouse) * 2.2);
 
   float t = u_time * u_speed;
-  iso += vec2(
-    snoise(iso * 0.9 + vec2(t * 0.18, t * 0.14)),
-    snoise(iso * 0.9 - vec2(t * 0.12, -t * 0.16))
-  ) * 0.02 * mouseFalloff;
-  iso -= toMouse * 0.04 * mouseFalloff;
+  if (mouseFalloff > 0.002) {
+    iso += vec2(
+      snoise(iso * 0.9 + vec2(t * 0.18, t * 0.14)),
+      snoise(iso * 0.9 - vec2(t * 0.12, -t * 0.16))
+    ) * 0.02 * mouseFalloff;
+    iso -= toMouse * 0.04 * mouseFalloff;
+  }
   iso = rotate(iso, u_angle);
 
   float flow = iso.x;
@@ -384,8 +386,7 @@ void main() {
 
   float opacity = 1. - smoothstep(.9 - .5 * u_edge, 1. - .5 * u_edge, edge);
 
-  float noise = snoise(vec2(flow, iso.y) * 0.34 - t * 0.28) * 0.62
-    + snoise(vec2(flow, iso.y) * 0.13 - t * 0.11) * 0.38;
+  float noise = snoise(vec2(flow, iso.y) * 0.28 - t * 0.22);
   edge += (1. - edge) * u_liquid * noise;
 
   float dir = flow;
@@ -402,9 +403,7 @@ void main() {
 
   float stripe = mod(dir, 1.);
   float extraBlur = .022 * u_refraction * bulge;
-  float chA = get_color_channel(color1.r, color2.r, stripe, w, extraBlur, bulge);
-  float chB = get_color_channel(color1.r, color2.r, mod(stripe + 0.009, 1.), w, extraBlur * 1.2, bulge);
-  float ch = mix(chA, max(chA, chB), 0.3);
+  float ch = get_color_channel(color1.r, color2.r, stripe, w, extraBlur, bulge);
   vec3 color = vec3(ch);
 
   float hi = smoothstep(0.44, 0.9, ch);

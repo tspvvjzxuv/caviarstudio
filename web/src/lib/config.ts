@@ -1,7 +1,13 @@
+const HERO_V = "opt3";
+
 export const HERO_LOOP = {
-  poster: "/media/hero/liquid-chrome.jpg?v=1080",
-  webm: "/media/hero/liquid-chrome.webm?v=1080",
-  mp4: "/media/hero/liquid-chrome.mp4?v=1080",
+  poster: `/media/hero/liquid-chrome.jpg?v=${HERO_V}`,
+  av1: `/media/hero/liquid-chrome.webm?v=${HERO_V}`,
+  av1Mobile: `/media/hero/liquid-chrome-720.webm?v=${HERO_V}`,
+  hevc: `/media/hero/liquid-chrome.hevc.mp4?v=${HERO_V}`,
+  hevcMobile: `/media/hero/liquid-chrome-720.hevc.mp4?v=${HERO_V}`,
+  mp4: `/media/hero/liquid-chrome.mp4?v=${HERO_V}`,
+  mp4Mobile: `/media/hero/liquid-chrome-720.mp4?v=${HERO_V}`,
 } as const;
 
 export const CAVIAR = {

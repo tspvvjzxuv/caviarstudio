@@ -226,9 +226,9 @@ function ServiceCard({
               {dictText(t, item.name)}
             </span>
             <IconDisc
-              className="ml-auto size-12 transition-colors duration-300 group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15 md:size-[3.25rem]"
+              className="ml-auto size-12 transition-colors duration-200 ease-out group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15 md:size-[3.25rem]"
             >
-              <Plus className="size-5 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/service:rotate-45" strokeWidth={1.75} />
+              <Plus className="size-5 transition-transform duration-200 ease-out group-aria-expanded/service:rotate-45" strokeWidth={1.75} />
             </IconDisc>
           </span>
         </button>
@@ -252,7 +252,13 @@ export function Services() {
   usePauseOffscreen(frameRef);
 
   useEffect(() => {
-    preloadWorkShots();
+    const run = () => preloadWorkShots();
+    const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(cb, 1200) as unknown as number);
+    const id = idle(run, { timeout: 8000 });
+    return () => {
+      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(id);
+      else window.clearTimeout(id);
+    };
   }, []);
 
   const toggleService = (id: string) => {

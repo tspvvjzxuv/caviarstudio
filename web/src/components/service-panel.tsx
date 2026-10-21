@@ -13,18 +13,17 @@ function reducedMotion() {
 
 function revealAfterOpen(trigger: HTMLElement | null, panel: HTMLElement) {
   const mobile = window.matchMedia("(max-width: 767px)").matches;
-  const reduce = reducedMotion();
   const box = panel.getBoundingClientRect();
   if (mobile) {
     const card = (trigger?.closest(".service-card") as HTMLElement | null) || trigger;
     const cardBox = card?.getBoundingClientRect();
     const hidden = (cardBox && cardBox.top < 64) || box.bottom > window.innerHeight - 12;
     if (!hidden) return;
-    card?.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" });
+    card?.scrollIntoView({ block: "start", behavior: "auto" });
     return;
   }
   if (box.top < window.innerHeight - 48) return;
-  panel.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+  panel.scrollIntoView({ block: "nearest", behavior: "auto" });
 }
 
 function measureOpenHeight(panel: HTMLElement, inner: HTMLElement) {

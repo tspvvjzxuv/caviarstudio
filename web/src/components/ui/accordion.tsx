@@ -39,18 +39,18 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group/accordion-trigger relative flex flex-1 items-center justify-between gap-4 rounded-full border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50",
+          "group/accordion-trigger relative flex flex-1 items-center justify-between gap-4 rounded-full border border-transparent py-2.5 text-left text-sm font-medium transition-[color,background-color,opacity] duration-200 ease-out outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50",
           className
         )}
         {...props}
       >
         {children}
         <span
-          className="icon-disc ml-auto inline-flex size-9 shrink-0 items-center justify-center text-pearl transition-colors duration-300 group-aria-expanded/accordion-trigger:border-azure/30 group-aria-expanded/accordion-trigger:bg-azure/15"
+          className="icon-disc ml-auto inline-flex size-9 shrink-0 items-center justify-center text-pearl transition-colors duration-200 ease-out group-aria-expanded/accordion-trigger:border-azure/30 group-aria-expanded/accordion-trigger:bg-azure/15"
           aria-hidden="true"
         >
           <ChevronDownIcon
-            className="size-4 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/accordion-trigger:rotate-180"
+            className="size-4 transition-transform duration-200 ease-out group-aria-expanded/accordion-trigger:rotate-180"
             strokeWidth={1.75}
           />
         </span>
@@ -67,7 +67,7 @@ function AccordionContent({
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="overflow-hidden text-sm data-open:animate-accordion-down data-closed:animate-accordion-up"
+      className="overflow-hidden text-sm duration-200 ease-out data-open:animate-accordion-down data-closed:animate-accordion-up"
       {...props}
     >
       <div
