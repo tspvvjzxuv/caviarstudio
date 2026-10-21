@@ -253,15 +253,24 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   let dataN = 0;
 
   const measureCanvas = () => {
-    const w = Math.max(1, canvas.clientWidth || Math.round(slot.clientWidth * 1.18));
-    const h = Math.max(1, canvas.clientHeight || Math.round(slot.clientHeight * 1.5));
+    const box = canvas.getBoundingClientRect();
+    const slotBox = slot.getBoundingClientRect();
+    const w = Math.max(
+      2,
+      Math.round(canvas.clientWidth || box.width || slot.clientWidth * 1.18 || slotBox.width),
+    );
+    const h = Math.max(
+      2,
+      Math.round(canvas.clientHeight || box.height || slot.clientHeight * 1.5 || slotBox.height * 1.5),
+    );
     return { w, h };
   };
 
-  const fitCamera = () => {
+  const fitCamera = (force = false) => {
     const { w, h } = measureCanvas();
-    if (w === viewW && h === viewH) return;
-    if (mobile && w === viewW) return;
+    if (!force && w === viewW && h === viewH) return;
+    // Skip tiny iOS URL-bar jitter after the first real size, not the initial layout.
+    if (!force && mobile && w === viewW && viewH > 8 && Math.abs(h - viewH) < 48) return;
     viewW = w;
     viewH = h;
     renderer.setSize(w, h, false);
@@ -295,6 +304,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   let gpuEma = 2;
   let gyroOn = false;
   let gyroCalibrated = false;
+  let gyroAsking = false;
   let baseBeta = 0;
   let baseGamma = 0;
   const envSpin = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -384,11 +394,22 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     readScroll();
   };
 
+  const heroOnscreen = () => {
+    const r = hero.getBoundingClientRect();
+    return r.width > 2 && r.height > 2 && r.bottom > 40 && r.top < (window.innerHeight || 1) - 8;
+  };
+
   const onWinResize = () => {
     const w = window.innerWidth;
-    if (w === viewportW) return;
+    const h = window.innerHeight;
+    const widthChanged = w !== viewportW;
+    viewportH = h;
+    if (!widthChanged && !mobile) return;
+    if (!widthChanged) {
+      cacheHero();
+      return;
+    }
     viewportW = w;
-    viewportH = window.innerHeight;
     fitCamera();
     cacheHero();
   };
@@ -415,6 +436,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     if (!gyroOn) return;
     gyroOn = false;
     window.removeEventListener("deviceorientation", onOrient);
+    window.removeEventListener("deviceorientationabsolute" as "deviceorientation", onOrient);
   };
 
   const bindGyro = () => {
@@ -422,48 +444,70 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     gyroOn = true;
     gyroCalibrated = false;
     window.addEventListener("deviceorientation", onOrient, { passive: true });
+    window.addEventListener("deviceorientationabsolute" as "deviceorientation", onOrient, { passive: true });
+  };
+
+  const dropGyroArm = () => {
+    window.removeEventListener("pointerdown", onFirstTap, true);
+    window.removeEventListener("touchend", onFirstTap, true);
   };
 
   const onFirstTap = () => {
     const Ctor = window.DeviceOrientationEvent as DOE | undefined;
     const request = Ctor?.requestPermission;
-    if (typeof request !== "function") return;
+    if (typeof request !== "function") {
+      bindGyro();
+      dropGyroArm();
+      return;
+    }
+    if (gyroOn || gyroAsking) return;
+    gyroAsking = true;
     void request
       .call(Ctor)
       .then((state) => {
-        if (state === "granted") bindGyro();
+        gyroAsking = false;
+        if (state === "granted") {
+          bindGyro();
+          dropGyroArm();
+        }
       })
-      .catch(() => {});
+      .catch(() => {
+        gyroAsking = false;
+      });
   };
 
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const touchy = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
   if (finePointer) {
     hero.addEventListener("pointerenter", cacheHero, { passive: true });
     hero.addEventListener("pointermove", onPointer, { passive: true });
     hero.addEventListener("pointerleave", clearTilt, { passive: true });
-  } else if (typeof window.DeviceOrientationEvent !== "undefined") {
-    const Ctor = window.DeviceOrientationEvent as DOE;
-    if (typeof Ctor.requestPermission === "function") {
-      window.addEventListener("touchend", onFirstTap, { capture: true, passive: true, once: true });
-    } else {
-      bindGyro();
+  }
+  if (touchy || !finePointer) {
+    if (typeof window.DeviceOrientationEvent !== "undefined") {
+      const Ctor = window.DeviceOrientationEvent as DOE;
+      if (typeof Ctor.requestPermission === "function") {
+        window.addEventListener("pointerdown", onFirstTap, { capture: true, passive: true });
+        window.addEventListener("touchend", onFirstTap, { capture: true, passive: true });
+      } else {
+        bindGyro();
+      }
     }
   }
 
   const io = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting && !document.hidden) start();
-    else {
+    if (document.hidden) {
       stop();
-      clearTilt();
+      return;
     }
+    if (entry.isIntersecting || heroOnscreen()) start();
+    else stop();
   });
   const ro = new ResizeObserver(() => {
-    const { w } = measureCanvas();
-    if (mobile && w === viewW) return;
     fitCamera();
   });
 
-  fitCamera();
+  fitCamera(true);
   cacheHero();
   readScroll();
   renderer.compile(scene, camera);
@@ -471,7 +515,13 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   if (word instanceof HTMLElement) word.style.opacity = "0";
   io.observe(hero);
   ro.observe(slot);
-  requestAnimationFrame(() => requestAnimationFrame(fitCamera));
+  requestAnimationFrame(() => {
+    fitCamera(true);
+    requestAnimationFrame(() => {
+      fitCamera(true);
+      if (!document.hidden && heroOnscreen()) start();
+    });
+  });
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onWinResize, { passive: true });
   window.visualViewport?.addEventListener("resize", onWinResize, { passive: true });
@@ -490,10 +540,10 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     io.disconnect();
     ro.disconnect();
     unbindGyro();
+    dropGyroArm();
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", onWinResize);
     window.visualViewport?.removeEventListener("resize", onWinResize);
-    window.removeEventListener("touchend", onFirstTap, true);
     document.removeEventListener("visibilitychange", onVis);
     hero.removeEventListener("pointerenter", cacheHero);
     hero.removeEventListener("pointermove", onPointer);

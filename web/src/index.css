@@ -390,6 +390,9 @@ footer {
 }
 
 @media (max-width: 767px) {
+  #top {
+    min-height: 100lvh;
+  }
   .hero-back {
     top: 0;
     right: 0;
@@ -1351,6 +1354,12 @@ button[data-magnetic]:not(.metal-fill) {
 .caviar-word-slot {
   position: relative;
   display: inline-block;
+  overflow: visible;
+}
+.hero-logo,
+.hero-stage,
+#top {
+  overflow: visible;
 }
 .hero-wordmark-3d {
   position: absolute;
@@ -1360,6 +1369,15 @@ button[data-magnetic]:not(.metal-fill) {
   height: 150%;
   pointer-events: none;
   transform: translate(-50%, -50%);
+}
+@media (max-width: 767px) {
+  .hero-logo {
+    max-width: 100%;
+  }
+  .hero-wordmark-3d {
+    width: 122%;
+    height: 168%;
+  }
 }
 
 .hero-ghost {

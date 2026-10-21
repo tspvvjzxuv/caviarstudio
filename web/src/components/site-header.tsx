@@ -114,7 +114,7 @@ export function SiteHeader() {
       </NavigationMenu>
 
       <div className="flex items-center gap-3">
-        <LangSwitch className="hidden sm:inline-flex" />
+        <LangSwitch />
         <Tooltip>
           <TooltipTrigger asChild>
             <Button asChild data-magnetic="" className="metal-fill hidden h-10 shrink-0 rounded-full px-5 text-[0.72rem] tracking-[0.16em] uppercase lg:inline-flex">
