@@ -382,23 +382,6 @@ footer {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
-.hero-shine {
-  overflow: hidden;
-  isolation: isolate;
-  mix-blend-mode: screen;
-  background: none;
-}
-.hero-shine::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 46%;
-  pointer-events: none;
-  background: linear-gradient(118deg, transparent 8%, rgb(232 234 238 / 18%) 50%, transparent 92%);
-  transform: translate3d(-90%, 0, 0);
-}
 
 .hero-depth {
   background:
@@ -471,9 +454,6 @@ footer {
   opacity: 1;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-shine::after {
-    animation: var(--animate-sheen);
-  }
   .hero-ken .hero-field {
     animation: var(--animate-ken);
   }
@@ -495,7 +475,6 @@ footer {
     animation: var(--animate-tile-sheen);
   }
   .hero-ken.is-paused .hero-field,
-  .hero-ken.is-paused .hero-shine::after,
   .work-sec.is-paused .silver-sheen::after,
   .work-sec.is-paused .device-sheen::after,
   .work-sec.is-paused .marquee-track,
@@ -1411,7 +1390,6 @@ button[data-magnetic]:not(.metal-fill) {
     backdrop-filter: none;
     background: rgb(7 7 8 / 72%);
   }
-  .hero-shine::after,
   .device-sheen::after,
   .silver-sheen::after,
   .service-chrome::after {
