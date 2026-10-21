@@ -1,7 +1,7 @@
 import { useEffect, ViewTransition } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { MagneticLayer } from "@/components/magnetic";
-import { CustomCursor, Grain, IntroVeil } from "@/components/motion";
+import { Grain, IntroVeil } from "@/components/motion";
 import { SoundRoot } from "@/components/sound-root";
 import {
   Contact,
@@ -74,7 +74,6 @@ function Page() {
     <>
       <Grain />
       <IntroVeil />
-      <CustomCursor />
       <MagneticLayer />
       <SkipLink />
       <SiteHeader />
