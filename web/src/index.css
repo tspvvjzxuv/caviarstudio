@@ -74,8 +74,6 @@
   --animate-tile-sheen: tile-sheen 14s ease-in-out infinite;
   --animate-logo-in: logo-in 1.15s var(--ease-out-expo) both;
   --animate-glow-breathe: glow-breathe 5.6s ease-in-out infinite;
-  --animate-drop-float: drop-float 6.2s ease-in-out infinite;
-  --animate-drop-caustic: drop-caustic 9.4s ease-in-out infinite;
   --animate-dot-pulse: dot-pulse 3.8s ease-in-out infinite;
   --animate-panel-down: panel-down 0.92s var(--ease-out-expo) both;
   --animate-panel-up: panel-up 0.72s var(--ease-out-expo) both;
@@ -122,35 +120,6 @@
   @keyframes glow-breathe {
     0%, 100% { opacity: 0.42; }
     50% { opacity: 0.88; }
-  }
-  @keyframes drop-float {
-    0%, 100% { translate: 0 0; }
-    50% { translate: 0 -5px; }
-  }
-  @keyframes drop-caustic {
-    0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.42; }
-    38% { transform: translate3d(78%, 22%, 0) scale(1.18); opacity: 0.72; }
-    68% { transform: translate3d(18%, 54%, 0) scale(0.86); opacity: 0.34; }
-  }
-  @keyframes drop-breathe-foto {
-    0%, 100% { border-radius: 68% 32% 58% 42% / 46% 54% 40% 60%; }
-    50% { border-radius: 42% 58% 36% 64% / 58% 40% 62% 38%; }
-  }
-  @keyframes drop-breathe-video {
-    0%, 100% { border-radius: 38% 62% 34% 66% / 56% 44% 60% 40%; }
-    50% { border-radius: 62% 38% 58% 42% / 40% 58% 38% 62%; }
-  }
-  @keyframes drop-breathe-web {
-    0%, 100% { border-radius: 52% 48% 55% 45% / 40% 60% 42% 58%; }
-    50% { border-radius: 44% 56% 40% 60% / 58% 42% 56% 44%; }
-  }
-  @keyframes drop-breathe-dron {
-    0%, 100% { border-radius: 64% 36% 48% 52% / 54% 46% 50% 50%; }
-    50% { border-radius: 40% 60% 62% 38% / 42% 58% 36% 64%; }
-  }
-  @keyframes drop-breathe-brand {
-    0%, 100% { border-radius: 44% 56% 62% 38% / 48% 52% 36% 64%; }
-    50% { border-radius: 58% 42% 36% 64% / 60% 40% 58% 42%; }
   }
   @keyframes dot-pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
@@ -612,17 +581,9 @@
     transition-delay: calc(var(--d, 0) * 40ms);
   }
   .kicker-dot,
-  .service-chrome,
   .service-chrome::before,
   .service-chrome::after {
     animation: none !important;
-  }
-  .service-chrome {
-    transform: none;
-  }
-  .service-spill {
-    filter: none;
-    transition-duration: 0.28s;
   }
   .service-panel {
     transition-duration: 0.28s;
@@ -1032,30 +993,26 @@
   left: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 30% 50% at 16% 44%, rgb(61 138 255 / 14%), transparent 70%),
-    radial-gradient(ellipse 28% 48% at 84% 56%, rgb(255 228 77 / 8%), transparent 72%);
-}
-.drop-goo-def {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
+    radial-gradient(ellipse 34% 58% at 18% 46%, rgb(61 138 255 / 32%), rgb(61 138 255 / 10%) 38%, transparent 72%),
+    radial-gradient(ellipse 28% 52% at 50% 54%, rgb(61 138 255 / 16%), transparent 70%),
+    radial-gradient(ellipse 34% 58% at 82% 52%, rgb(255 228 77 / 18%), rgb(255 228 77 / 6%) 40%, transparent 74%);
 }
 .service-card {
   position: relative;
   height: 100%;
-  overflow: visible;
+  overflow: clip;
+  border-radius: 1.5rem;
   scroll-margin-top: calc(var(--header-h) + 0.75rem);
 }
 .service-glow {
   position: absolute;
   z-index: 0;
-  inset: -120% -90%;
+  inset: -160% -130%;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 34% 36% at 28% 30%, rgb(61 138 255 / 16%), transparent 64%),
-    radial-gradient(ellipse 30% 32% at 74% 72%, rgb(255 228 77 / 8%), transparent 62%);
-  opacity: 0.7;
+    radial-gradient(ellipse 36% 40% at 28% 30%, rgb(61 138 255 / 40%) 0%, rgb(61 138 255 / 18%) 26%, rgb(61 138 255 / 6%) 48%, transparent 68%),
+    radial-gradient(ellipse 32% 36% at 74% 72%, rgb(255 228 77 / 20%) 0%, rgb(255 228 77 / 7%) 30%, transparent 64%);
+  opacity: 0.92;
   transition: opacity 0.9s var(--ease-out-expo);
 }
 @media (max-width: 767px) {
@@ -1063,65 +1020,67 @@
     top: -10%;
     bottom: -14%;
     background:
-      radial-gradient(ellipse 88% 22% at 50% 18%, rgb(61 138 255 / 12%), transparent 72%),
-      radial-gradient(ellipse 90% 24% at 50% 82%, rgb(255 228 77 / 6%), transparent 74%);
+      radial-gradient(ellipse 88% 22% at 50% 18%, rgb(61 138 255 / 30%), transparent 72%),
+      radial-gradient(ellipse 88% 24% at 50% 50%, rgb(61 138 255 / 16%), transparent 74%),
+      radial-gradient(ellipse 90% 24% at 50% 82%, rgb(255 228 77 / 14%), transparent 74%);
   }
   .service-glow {
-    inset: -90% -70%;
+    inset: -110% -86%;
   }
 }
 .service-card:has(.service-chrome.is-open) .service-glow,
 .service-card:has(.service-chrome[aria-expanded="true"]) .service-glow {
   opacity: 1;
 }
-.service-card:has(.service-chrome.is-open),
-.service-card:has(.service-chrome[aria-expanded="true"]) {
-  z-index: 4;
-}
 .service-chrome {
   position: relative;
   z-index: 1;
   isolation: isolate;
-  overflow: visible;
-  color: #f2f3f6;
-  border: 0;
-  border-radius: 1.35rem;
+  overflow: hidden;
+  color: #f4f5f7;
+  border: 1px solid rgb(244 245 247 / 18%);
   background:
-    linear-gradient(155deg, #8b929c 0%, #3d424b 32%, #1a1d22 64%, #0b0c0e 100%);
+    linear-gradient(155deg, rgb(244 245 247 / 18%) 0%, rgb(196 204 214 / 8%) 16%, rgb(14 14 18 / 88%) 42%, rgb(10 10 12 / 96%) 100%),
+    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(61 138 255 / 28%), transparent 58%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgb(255 228 77 / 16%), transparent 52%),
+    #0e0e12;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 34%),
-    inset 0 -12px 20px rgb(0 0 0 / 38%),
-    0 16px 28px rgb(0 0 0 / 32%);
+    inset 0 1px 0 rgb(255 255 255 / 32%),
+    inset 0 0 0 1px rgb(61 138 255 / 20%);
 }
-.melt-host {
+.service-chrome::before {
+  content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
-  overflow: visible;
   pointer-events: none;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 70% 80% at 8% 20%, rgb(61 138 255 / 28%), transparent 58%),
+    radial-gradient(ellipse 60% 70% at 92% 86%, rgb(255 228 77 / 18%), transparent 54%),
+    linear-gradient(180deg, rgb(255 255 255 / 18%) 0%, transparent 36%);
+  mix-blend-mode: overlay;
+  opacity: 0.55;
 }
-.melt-host canvas,
-.melt-host [data-meltgl] {
-  pointer-events: none;
-}
-.service-label {
-  position: relative;
-  z-index: 3;
-  display: inline-flex;
-  min-width: 0;
-  max-width: 100%;
-  flex: 1;
-  padding: 0.32rem 0.72rem;
-  border-radius: 999px;
-  background: rgb(6 6 8 / 88%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%), 0 0 0 1px rgb(0 0 0 / 35%);
-}
-.service-label-text {
-  min-width: 0;
-}
-.service-chrome::before,
 .service-chrome::after {
-  content: none;
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 8%,
+    rgb(61 138 255 / 22%) 46%,
+    rgb(255 255 255 / 34%) 50%,
+    rgb(255 228 77 / 24%) 54%,
+    transparent 92%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  transform: translate3d(-90%, 0, 0);
 }
 .service-chrome:focus-visible {
   outline: 3px solid rgb(255 228 77 / 55%);
@@ -1130,6 +1089,16 @@
 .service-chrome.is-open,
 .service-chrome[aria-expanded="true"] {
   z-index: 2;
+  border-color: rgb(61 138 255 / 55%);
+  background:
+    linear-gradient(155deg, rgb(244 245 247 / 20%) 0%, rgb(196 204 214 / 10%) 16%, rgb(14 14 18 / 82%) 42%, rgb(10 10 12 / 94%) 100%),
+    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(61 138 255 / 36%), transparent 58%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgb(255 228 77 / 20%), transparent 52%),
+    #0e0e12;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 38%),
+    inset 0 0 0 1px rgb(61 138 255 / 34%),
+    0 0 0 1px rgb(61 138 255 / 22%);
 }
 .glass-mark,
 .service-mark {
@@ -1205,16 +1174,14 @@
     background: rgb(22 26 36 / 94%);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .melt-host {
-    display: none;
+@media (prefers-reduced-motion: no-preference) {
+  .service-chrome::after {
+    animation: var(--animate-tile-sheen);
   }
-  .service-chrome {
-    overflow: hidden;
-    transform: none;
+  .service-chrome::before {
+    animation: var(--animate-glow-breathe);
   }
 }
-.service-sec.is-paused .service-chrome,
 .service-sec.is-paused .service-chrome::after,
 .service-sec.is-paused .service-chrome::before {
   animation-play-state: paused;
@@ -1238,7 +1205,7 @@
 .service-panel-inner {
   min-height: min-content;
   overflow: visible;
-  padding: 18px 0 0;
+  padding: 10px 0 0;
 }
 .service-stack .service-panel-inner {
   padding-bottom: 1.5rem;
@@ -1252,13 +1219,14 @@
   position: relative;
   isolation: isolate;
   border-radius: 1.5rem;
-  border: 1px solid rgb(232 234 238 / 16%);
+  border: 1px solid rgb(61 138 255 / 48%);
   background:
-    linear-gradient(165deg, rgb(42 45 52 / 70%) 0%, rgb(14 14 18 / 96%) 42%, #070708 100%);
+    linear-gradient(180deg, rgb(61 138 255 / 16%) 0%, rgb(255 228 77 / 7%) 100%),
+    #0e0e12;
   padding: 1.15rem 1.2rem 1.35rem;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 14%),
-    0 16px 28px rgb(0 0 0 / 28%);
+    inset 0 1px 0 rgb(255 255 255 / 16%),
+    0 0 0 1px rgb(61 138 255 / 16%);
 }
 .service-panel .work-sec,
 .service-panel .device-stage {
@@ -1266,10 +1234,27 @@
   z-index: 1;
   isolation: isolate;
 }
-.service-spill,
-.service-spill-head,
-.service-spill-neck {
-  display: none;
+.service-panel-notch {
+  position: absolute;
+  top: 0;
+  left: var(--pointer-x);
+  z-index: 2;
+  width: 18px;
+  height: 10px;
+  pointer-events: none;
+  background: rgb(22 28 42);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  transform: translate(-50%, -100%);
+  filter: drop-shadow(0 -1px 0 rgb(61 138 255 / 48%));
+  transition: left 0.7s var(--ease-out-expo);
+}
+.service-panel-notch::after {
+  content: "";
+  position: absolute;
+  inset: 1px 2px 0;
+  background:
+    linear-gradient(180deg, rgb(61 138 255 / 16%), rgb(22 28 42));
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
 }
 .service-panel-head {
   display: flex;
@@ -1365,13 +1350,11 @@ button[data-magnetic]:not(.metal-fill) {
   }
   .hero-shine::after,
   .device-sheen::after,
-  .silver-sheen::after {
+  .silver-sheen::after,
+  .service-chrome::after {
     animation: none !important;
     transform: translate3d(40%, 0, 0);
     opacity: 0.55;
-  }
-  .service-spill {
-    filter: none;
   }
   .hero-ken .hero-field {
     animation: none !important;
