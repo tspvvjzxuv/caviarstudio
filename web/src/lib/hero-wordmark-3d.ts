@@ -1,6 +1,8 @@
 import {
   ACESFilmicToneMapping,
+  BackSide,
   Box3,
+  BoxGeometry,
   Color,
   DirectionalLight,
   ExtrudeGeometry,
@@ -8,7 +10,9 @@ import {
   HemisphereLight,
   Mesh,
   MeshPhysicalMaterial,
+  MeshStandardMaterial,
   PerspectiveCamera,
+  PlaneGeometry,
   PMREMGenerator,
   SRGBColorSpace,
   Scene,
@@ -17,7 +21,6 @@ import {
   WebGLRenderer,
   type Shape,
 } from "three";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { CAVIAR_LETTERS, CAVIAR_TRACK, type GlyphCmd } from "@/lib/caviar-glyphs";
 
 const LERP = 0.12;
@@ -26,16 +29,79 @@ const SCROLL_VH = 0.8;
 const TILT_X = 0.11;
 const TILT_Y = 0.16;
 const GYRO_RANGE = 28;
+const ENV_SPIN = 0.00016;
 const EXTRUDE = {
   depth: 220,
   bevelEnabled: true,
-  bevelThickness: 28,
-  bevelSize: 16,
+  bevelThickness: 30,
+  bevelSize: 17,
   bevelOffset: 0,
-  bevelSegments: 2,
+  bevelSegments: 4,
   curveSegments: 5,
   steps: 1,
 } as const;
+
+function makeStudioEnv() {
+  const studio = new Scene();
+  const geos: Array<BoxGeometry | PlaneGeometry> = [];
+  const mats: MeshStandardMaterial[] = [];
+
+  const addMat = (params: ConstructorParameters<typeof MeshStandardMaterial>[0]) => {
+    const mat = new MeshStandardMaterial(params);
+    mats.push(mat);
+    return mat;
+  };
+  const addBox = (w: number, h: number, d: number) => {
+    const geo = new BoxGeometry(w, h, d);
+    geos.push(geo);
+    return geo;
+  };
+  const strip = (
+    w: number,
+    h: number,
+    emissive: number,
+    intensity: number,
+    pos: readonly [number, number, number],
+    rot: readonly [number, number, number],
+  ) => {
+    const geo = new PlaneGeometry(w, h);
+    geos.push(geo);
+    const mesh = new Mesh(
+      geo,
+      addMat({
+        color: 0x000000,
+        emissive: new Color(emissive),
+        emissiveIntensity: intensity,
+        roughness: 1,
+        metalness: 0,
+      }),
+    );
+    mesh.position.set(pos[0], pos[1], pos[2]);
+    mesh.rotation.set(rot[0], rot[1], rot[2]);
+    studio.add(mesh);
+  };
+
+  studio.add(
+    new Mesh(
+      addBox(24, 24, 24),
+      addMat({ color: 0x050608, side: BackSide, roughness: 1, metalness: 0 }),
+    ),
+  );
+  strip(14, 0.16, 0xf7f8fb, 42, [0, 8.4, 1.4], [Math.PI / 2, 0, 0]);
+  strip(0.14, 11, 0xffffff, 58, [7.2, 1.1, 2.4], [0, -0.42, 0]);
+  strip(0.1, 9, 0xfff3dc, 36, [-2.8, 0.6, 7.4], [0, 2.95, 0.12]);
+  strip(5.5, 7, 0xb9d4ff, 9, [-8.2, 1.4, 0.6], [0, 1.18, 0]);
+  strip(9, 0.28, 0xffffff, 32, [0.4, 3.6, -8.6], [0, 0, 0]);
+  strip(10, 3.2, 0x6e7786, 2.4, [0, -8.6, 2], [-Math.PI / 2, 0, 0]);
+
+  return {
+    studio,
+    dispose() {
+      for (const geo of geos) geo.dispose();
+      for (const mat of mats) mat.dispose();
+    },
+  };
+}
 
 type LetterData = { ox: number; oy: number; oz: number; i: number };
 
@@ -105,7 +171,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
+  renderer.toneMappingExposure = 1.02;
   renderer.shadowMap.enabled = false;
 
   const scene = new Scene();
@@ -113,31 +179,36 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   camera.position.set(0, 0, 8);
 
   const pmrem = new PMREMGenerator(renderer);
-  const room = new RoomEnvironment();
-  const envTex = pmrem.fromScene(room, 0.04).texture;
+  const { studio, dispose: disposeStudio } = makeStudioEnv();
+  const envTex = pmrem.fromScene(studio, 0).texture;
   scene.environment = envTex;
-  scene.environmentIntensity = 1.05;
-  room.dispose();
+  scene.environmentIntensity = 1.18;
+  disposeStudio();
   pmrem.dispose();
 
-  scene.add(new HemisphereLight(0xf4f5f7, 0x12141a, 0.28));
-  const key = new DirectionalLight(0xffffff, 1.15);
-  key.position.set(2.4, 3.2, 4.2);
+  scene.add(new HemisphereLight(0xeef1f6, 0x0b0d12, 0.08));
+  const key = new DirectionalLight(0xffffff, 0.62);
+  key.position.set(2.6, 3.8, 4.4);
   key.castShadow = false;
   scene.add(key);
-  const rim = new DirectionalLight(0x9ec1ff, 0.35);
-  rim.position.set(-3.2, 1.4, 1.6);
+  const bevelSpec = new DirectionalLight(0xffffff, 0.9);
+  bevelSpec.position.set(-1.1, 5.2, 2.4);
+  bevelSpec.castShadow = false;
+  scene.add(bevelSpec);
+  const rim = new DirectionalLight(0x9ec1ff, 0.22);
+  rim.position.set(-3.4, 1.2, 1.4);
   rim.castShadow = false;
   scene.add(rim);
 
   const material = new MeshPhysicalMaterial({
-    color: new Color("#c5cad3"),
+    color: new Color("#b7bec8"),
     metalness: 1,
-    roughness: 0.12,
-    envMapIntensity: 1.4,
-    clearcoat: 0.82,
-    clearcoatRoughness: 0.16,
+    roughness: 0.03,
+    envMapIntensity: 2.45,
+    clearcoat: 1,
+    clearcoatRoughness: 0.03,
     ior: 1.5,
+    specularIntensity: 1,
   });
 
   const group = new Group();
@@ -226,6 +297,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   let gyroCalibrated = false;
   let baseBeta = 0;
   let baseGamma = 0;
+  const envSpin = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const heroBox = { left: 0, top: 0, w: 1, h: 1 };
 
   const cacheHero = () => {
@@ -271,6 +343,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
       mesh.position.x = mesh.userData.ox + i * spread;
       mesh.position.z = mesh.userData.oz - Math.abs(i) * letterZ;
     }
+    if (envSpin) scene.environmentRotation.y = tStart * ENV_SPIN;
     canvas.style.opacity = fade < 0.02 ? "0" : fade.toFixed(3);
     if (fade > 0.015) renderer.render(scene, camera);
     gpuEma = gpuEma * 0.88 + (performance.now() - tStart) * 0.12;
