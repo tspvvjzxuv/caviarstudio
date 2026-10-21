@@ -130,7 +130,7 @@ export function Hero() {
         <h1 className="hero-logo mx-auto w-fit max-w-full text-center text-[clamp(3.9rem,16vw,10.5rem)] lg:text-[clamp(4.55rem,18.8vw,12.4rem)]">
           <HeroCaviarMark />
         </h1>
-        <p className="mt-[4.75rem] max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl md:mt-24">
+        <p className="mt-[7.25rem] max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl md:mt-36">
           {t.heroTagline}
         </p>
         <p className="mt-4 max-w-[36ch] text-[0.98rem] leading-[1.5] text-pretty text-muted-foreground">{t.heroExplain}</p>
@@ -254,7 +254,7 @@ export function Services() {
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <div className="service-glow-field" aria-hidden="true" />
       <ServiceMetal />
-      <Section.Body className="service-sec-body relative z-10 overflow-visible">
+      <Section.Body className="service-sec-body relative overflow-visible">
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.navServices} title={t.doKicker}>
           <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.doLead}</p>
         </Section.Heading>

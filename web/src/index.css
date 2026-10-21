@@ -389,6 +389,26 @@ footer {
     linear-gradient(90deg, rgb(7 7 8 / 26%) 0%, transparent 40%);
 }
 
+@media (max-width: 767px) {
+  .hero-back {
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100lvh;
+    bottom: auto;
+  }
+  .hero-loop,
+  .hero-poster {
+    filter: none;
+  }
+  .hero-depth {
+    background:
+      radial-gradient(ellipse 78% 58% at 50% 34%, rgb(0 0 0 / 62%) 0%, rgb(0 0 0 / 34%) 44%, rgb(7 7 8 / 24%) 100%),
+      linear-gradient(180deg, rgb(0 0 0 / 40%) 0%, rgb(0 0 0 / 14%) 26%, rgb(7 7 8 / 24%) 68%, #070708 100%),
+      linear-gradient(90deg, rgb(7 7 8 / 34%) 0%, transparent 40%);
+  }
+}
+
 .icon-disc {
   display: inline-flex;
   flex-shrink: 0;
@@ -891,6 +911,9 @@ footer {
   min-width: 0;
   width: 100%;
 }
+.service-sec.has-metal {
+  overflow-x: visible;
+}
 .service-sec.has-metal .service-glow-field {
   z-index: 0;
 }
@@ -899,12 +922,24 @@ footer {
   isolation: auto;
   contain: none;
   overflow: visible;
+  transform: none;
+  filter: none;
+  will-change: auto;
+  -webkit-transform: none;
 }
-.service-sec.has-metal .service-sec-body {
+.service-sec.has-metal .service-sec-body,
+.service-sec.has-metal .service-grid,
+.service-sec.has-metal .service-stack,
+.service-sec.has-metal .service-row,
+.service-sec.has-metal .service-unit {
   z-index: auto;
   isolation: auto;
   transform: none;
   contain: none;
+  filter: none;
+  opacity: 1;
+  will-change: auto;
+  overflow: visible;
 }
 .service-sec.has-metal .service-card:not(:has(.service-chrome.is-open)):not(:has(.service-chrome[aria-expanded="true"])) {
   isolation: auto;
@@ -912,18 +947,28 @@ footer {
   transform: none;
   z-index: auto;
   contain: none;
+  filter: none;
+  opacity: 1;
+  will-change: auto;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 .service-sec.has-metal .service-card:not(:has(.service-chrome.is-open)):not(:has(.service-chrome[aria-expanded="true"])) .service-glow {
   inset: 0;
   border-radius: inherit;
 }
-.service-sec.has-metal .service-card .reveal {
+.service-sec.has-metal .service-card .reveal,
+.service-sec.has-metal .service-card .reveal.in {
   z-index: auto;
   isolation: auto;
   opacity: 1;
   transform: none;
   contain: none;
   will-change: auto;
+  filter: none;
+  transition: none;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) {
   isolation: auto;
@@ -936,6 +981,12 @@ footer {
   transform: none;
   contain: none;
   will-change: auto;
+  opacity: 1;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+  transition: border-color 180ms ease-out, background-color 180ms ease-out, box-shadow 180ms ease-out;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]):active {
   transform: none;
@@ -943,12 +994,19 @@ footer {
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
   color: #fff;
   isolation: auto;
+  transform: none;
+  filter: none;
+  opacity: 1;
+  will-change: auto;
   mix-blend-mode: difference;
+  -webkit-mix-blend-mode: difference;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif {
   color: #fff;
   -webkit-text-fill-color: #fff;
   text-shadow: none;
+  isolation: auto;
+  transform: none;
 }
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
   color: #fff;
@@ -958,6 +1016,19 @@ footer {
   box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+  isolation: auto;
+  transform: none;
+}
+@media (max-width: 767px) {
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
+    mix-blend-mode: normal;
+    -webkit-mix-blend-mode: normal;
+  }
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .font-serif,
+  .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+    mix-blend-mode: difference;
+    -webkit-mix-blend-mode: difference;
+  }
 }
 .service-sec.is-metal-fallback .service-chrome:not(.is-open):not([aria-expanded="true"])::after {
   content: "";
