@@ -8,6 +8,7 @@ import {
   Drone,
   Globe,
   Palette,
+  Plus,
   Mail,
   MessageCircle,
   Phone,
@@ -219,12 +220,14 @@ function ServiceCard({
           <IconDisc>
             <Icon />
           </IconDisc>
-          <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3.1vw,2.45rem)] leading-[1.1] font-normal tracking-[-0.02em] text-pretty text-pearl">
+          <span className="min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
             {dictText(t, item.name)}
           </span>
-          <span className="service-mark" aria-hidden="true">
-            <i className="service-mark-plus" />
-          </span>
+          <IconDisc
+            className="ml-auto size-12 transition-colors duration-300 group-aria-expanded/service:border-azure/30 group-aria-expanded/service:bg-azure/15 md:size-[3.25rem]"
+          >
+            <Plus className="size-5 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-aria-expanded/service:rotate-45" strokeWidth={1.75} />
+          </IconDisc>
         </button>
       </Reveal>
     </div>
@@ -269,10 +272,9 @@ export function Services() {
     <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
       <div className="service-glow-field" aria-hidden="true" />
       <Section.Body className="relative z-10 overflow-visible">
-        <h2 className="section-title max-w-[12ch]">{t.doKicker}</h2>
-        <p className="mt-4 mb-10 max-w-[36ch] text-[1.05rem] leading-[1.5] text-muted-foreground md:mb-14">
-          {t.doLead}
-        </p>
+        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.navServices} title={t.doKicker}>
+          <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.doLead}</p>
+        </Section.Heading>
         {isMd ? (
           <div className="service-stack">
             <div className={cn("service-row service-row-3", row1Open && "is-expanded")}>

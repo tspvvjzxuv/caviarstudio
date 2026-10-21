@@ -987,15 +987,14 @@
 .service-glow-field {
   position: absolute;
   z-index: 0;
-  top: -22%;
+  top: -18%;
   right: 0;
-  bottom: -28%;
+  bottom: -22%;
   left: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 34% 58% at 18% 46%, rgb(61 138 255 / 32%), rgb(61 138 255 / 10%) 38%, transparent 72%),
-    radial-gradient(ellipse 28% 52% at 50% 54%, rgb(61 138 255 / 16%), transparent 70%),
-    radial-gradient(ellipse 34% 58% at 82% 52%, rgb(255 228 77 / 18%), rgb(255 228 77 / 6%) 40%, transparent 74%);
+    radial-gradient(ellipse 30% 48% at 16% 44%, rgb(61 138 255 / 14%), transparent 72%),
+    radial-gradient(ellipse 28% 44% at 84% 56%, rgb(255 228 77 / 7%), transparent 74%);
 }
 .service-card {
   position: relative;
@@ -1007,12 +1006,12 @@
 .service-glow {
   position: absolute;
   z-index: 0;
-  inset: -160% -130%;
+  inset: -90% -70%;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 36% 40% at 28% 30%, rgb(61 138 255 / 40%) 0%, rgb(61 138 255 / 18%) 26%, rgb(61 138 255 / 6%) 48%, transparent 68%),
-    radial-gradient(ellipse 32% 36% at 74% 72%, rgb(255 228 77 / 20%) 0%, rgb(255 228 77 / 7%) 30%, transparent 64%);
-  opacity: 0.92;
+    radial-gradient(ellipse 34% 36% at 28% 30%, rgb(61 138 255 / 16%), transparent 64%),
+    radial-gradient(ellipse 30% 32% at 74% 72%, rgb(255 228 77 / 8%), transparent 62%);
+  opacity: 0.7;
   transition: opacity 0.9s var(--ease-out-expo);
 }
 @media (max-width: 767px) {
@@ -1020,12 +1019,11 @@
     top: -10%;
     bottom: -14%;
     background:
-      radial-gradient(ellipse 88% 22% at 50% 18%, rgb(61 138 255 / 30%), transparent 72%),
-      radial-gradient(ellipse 88% 24% at 50% 50%, rgb(61 138 255 / 16%), transparent 74%),
-      radial-gradient(ellipse 90% 24% at 50% 82%, rgb(255 228 77 / 14%), transparent 74%);
+      radial-gradient(ellipse 88% 22% at 50% 18%, rgb(61 138 255 / 12%), transparent 72%),
+      radial-gradient(ellipse 90% 24% at 50% 82%, rgb(255 228 77 / 6%), transparent 74%);
   }
   .service-glow {
-    inset: -110% -86%;
+    inset: -70% -50%;
   }
 }
 .service-card:has(.service-chrome.is-open) .service-glow,
@@ -1038,49 +1036,13 @@
   isolation: isolate;
   overflow: hidden;
   color: #f4f5f7;
-  border: 1px solid rgb(244 245 247 / 18%);
-  background:
-    linear-gradient(155deg, rgb(244 245 247 / 18%) 0%, rgb(196 204 214 / 8%) 16%, rgb(14 14 18 / 88%) 42%, rgb(10 10 12 / 96%) 100%),
-    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(61 138 255 / 28%), transparent 58%),
-    radial-gradient(ellipse 80% 60% at 100% 100%, rgb(255 228 77 / 16%), transparent 52%),
-    #0e0e12;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 32%),
-    inset 0 0 0 1px rgb(61 138 255 / 20%);
+  border: 1px solid rgb(244 245 247 / 12%);
+  background: #0e0e12;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
 }
-.service-chrome::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background:
-    radial-gradient(ellipse 70% 80% at 8% 20%, rgb(61 138 255 / 28%), transparent 58%),
-    radial-gradient(ellipse 60% 70% at 92% 86%, rgb(255 228 77 / 18%), transparent 54%),
-    linear-gradient(180deg, rgb(255 255 255 / 18%) 0%, transparent 36%);
-  mix-blend-mode: overlay;
-  opacity: 0.55;
-}
+.service-chrome::before,
 .service-chrome::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 42%;
-  pointer-events: none;
-  border-radius: inherit;
-  background: linear-gradient(
-    115deg,
-    transparent 8%,
-    rgb(61 138 255 / 22%) 46%,
-    rgb(255 255 255 / 34%) 50%,
-    rgb(255 228 77 / 24%) 54%,
-    transparent 92%
-  );
-  mix-blend-mode: screen;
-  opacity: 0.4;
-  transform: translate3d(-90%, 0, 0);
+  content: none;
 }
 .service-chrome:focus-visible {
   outline: 3px solid rgb(255 228 77 / 55%);
@@ -1089,16 +1051,9 @@
 .service-chrome.is-open,
 .service-chrome[aria-expanded="true"] {
   z-index: 2;
-  border-color: rgb(61 138 255 / 55%);
-  background:
-    linear-gradient(155deg, rgb(244 245 247 / 20%) 0%, rgb(196 204 214 / 10%) 16%, rgb(14 14 18 / 82%) 42%, rgb(10 10 12 / 94%) 100%),
-    radial-gradient(ellipse 90% 70% at 0% 0%, rgb(61 138 255 / 36%), transparent 58%),
-    radial-gradient(ellipse 80% 60% at 100% 100%, rgb(255 228 77 / 20%), transparent 52%),
-    #0e0e12;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 38%),
-    inset 0 0 0 1px rgb(61 138 255 / 34%),
-    0 0 0 1px rgb(61 138 255 / 22%);
+  border-color: rgb(61 138 255 / 15%);
+  background: linear-gradient(180deg, rgb(61 138 255 / 14%) 0%, rgb(255 228 77 / 6%) 100%), #0e0e12;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 16%);
 }
 .glass-mark,
 .service-mark {
@@ -1139,52 +1094,11 @@
   margin: 0;
   overflow: visible;
 }
-.service-mark-plus {
-  position: relative;
-  width: 12px;
-  height: 12px;
-  transition: transform 0.92s var(--ease-out-expo);
-}
-.service-chrome.is-open .service-mark-plus,
-.service-chrome[aria-expanded="true"] .service-mark-plus {
-  transform: rotate(45deg);
-}
-.service-mark-plus::before,
-.service-mark-plus::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border-radius: 1px;
-  background: currentColor;
-}
-.service-mark-plus::before {
-  width: 100%;
-  height: 1.25px;
-  transform: translate(-50%, -50%);
-}
-.service-mark-plus::after {
-  width: 1.25px;
-  height: 100%;
-  transform: translate(-50%, -50%);
-}
 @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
   .glass-mark,
   .service-mark {
     background: rgb(22 26 36 / 94%);
   }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .service-chrome::after {
-    animation: var(--animate-tile-sheen);
-  }
-  .service-chrome::before {
-    animation: var(--animate-glow-breathe);
-  }
-}
-.service-sec.is-paused .service-chrome::after,
-.service-sec.is-paused .service-chrome::before {
-  animation-play-state: paused;
 }
 
 .service-panel {
@@ -1219,14 +1133,10 @@
   position: relative;
   isolation: isolate;
   border-radius: 1.5rem;
-  border: 1px solid rgb(61 138 255 / 48%);
-  background:
-    linear-gradient(180deg, rgb(61 138 255 / 16%) 0%, rgb(255 228 77 / 7%) 100%),
-    #0e0e12;
+  border: 1px solid rgb(61 138 255 / 15%);
+  background: linear-gradient(180deg, rgb(61 138 255 / 14%) 0%, rgb(255 228 77 / 6%) 100%), #0e0e12;
   padding: 1.15rem 1.2rem 1.35rem;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 16%),
-    0 0 0 1px rgb(61 138 255 / 16%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 16%);
 }
 .service-panel .work-sec,
 .service-panel .device-stage {
@@ -1245,7 +1155,7 @@
   background: rgb(22 28 42);
   clip-path: polygon(50% 0, 100% 100%, 0 100%);
   transform: translate(-50%, -100%);
-  filter: drop-shadow(0 -1px 0 rgb(61 138 255 / 48%));
+  filter: drop-shadow(0 -1px 0 rgb(61 138 255 / 22%));
   transition: left 0.7s var(--ease-out-expo);
 }
 .service-panel-notch::after {
