@@ -38,14 +38,16 @@ export function ServiceMetal() {
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) start();
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        const ric =
+          window.requestIdleCallback ??
+          ((cb: IdleRequestCallback) => window.setTimeout(cb, 1) as unknown as number);
+        idleId = ric(start, { timeout: 400 });
       },
-      { rootMargin: "280px 0px" },
+      { rootMargin: "320px 0px" },
     );
     io.observe(sec);
-
-    const ric = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(cb, 1) as unknown as number);
-    idleId = ric(start, { timeout: 1800 });
 
     return () => {
       cancelled = true;

@@ -253,8 +253,8 @@ export function Services() {
 
   useEffect(() => {
     const run = () => preloadWorkShots();
-    const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(cb, 400) as unknown as number);
-    const id = idle(run, { timeout: 2200 });
+    const idle = window.requestIdleCallback ?? ((cb: IdleRequestCallback) => window.setTimeout(cb, 1200) as unknown as number);
+    const id = idle(run, { timeout: 8000 });
     return () => {
       if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(id);
       else window.clearTimeout(id);
