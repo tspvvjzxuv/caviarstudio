@@ -105,8 +105,8 @@ export function useServiceMelt(hostRef: RefObject<HTMLDivElement | null>, seed: 
               fresnel: 0.92,
               meltRate: 1.85,
               cooling: 0.22,
-              blend: 0.48,
-              tint: [0.42, 0.45, 0.5, 1],
+              blend: 0.38,
+              tint: [0.62, 0.65, 0.7, 1],
             },
             simulation: {
               ground: "floor",
@@ -171,7 +171,7 @@ export function useServiceMelt(hostRef: RefObject<HTMLDivElement | null>, seed: 
     button.addEventListener("pointerenter", onEnter);
     button.addEventListener("pointerleave", onLeave);
     reduce.addEventListener("change", apply);
-    if (!reduce.matches && !paused(host) && !coarse.matches) build();
+    if (isOpen(button) && !reduce.matches && !paused(host)) build();
 
     return () => {
       dead = true;

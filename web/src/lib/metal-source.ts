@@ -19,10 +19,11 @@ export function makeMetalSource(width: number, height: number, seed: number): Pr
   ctx.roundRect(padX, padY, rw, rh, rad);
 
   const fill = ctx.createLinearGradient(padX, padY, padX + rw, padY + rh);
-  fill.addColorStop(0, "#4a4e56");
-  fill.addColorStop(0.22, "#24272d");
-  fill.addColorStop(0.55, "#121418");
-  fill.addColorStop(1, "#08090b");
+  fill.addColorStop(0, "#9aa1ab");
+  fill.addColorStop(0.18, "#5c616a");
+  fill.addColorStop(0.42, "#2a2e34");
+  fill.addColorStop(0.72, "#15181c");
+  fill.addColorStop(1, "#0b0c0e");
   ctx.fillStyle = fill;
   ctx.fill();
 
@@ -31,24 +32,24 @@ export function makeMetalSource(width: number, height: number, seed: number): Pr
 
   const spec = ctx.createRadialGradient(
     padX + rw * (0.22 + seed * 0.1),
-    padY + rh * 0.18,
+    padY + rh * 0.16,
     2,
-    padX + rw * 0.4,
-    padY + rh * 0.48,
-    Math.max(rw, rh) * 0.78,
+    padX + rw * 0.42,
+    padY + rh * 0.5,
+    Math.max(rw, rh) * 0.82,
   );
-  spec.addColorStop(0, "rgba(236,239,244,0.38)");
-  spec.addColorStop(0.16, "rgba(160,168,180,0.16)");
-  spec.addColorStop(0.42, "rgba(61,138,255,0.05)");
+  spec.addColorStop(0, "rgba(244,246,250,0.72)");
+  spec.addColorStop(0.14, "rgba(186,193,204,0.28)");
+  spec.addColorStop(0.4, "rgba(61,138,255,0.06)");
   spec.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = spec;
   ctx.fillRect(padX, padY, rw, rh);
 
   const rim = ctx.createLinearGradient(padX, padY, padX, padY + rh);
-  rim.addColorStop(0, "rgba(230,234,240,0.28)");
-  rim.addColorStop(0.18, "rgba(230,234,240,0)");
-  rim.addColorStop(0.82, "rgba(0,0,0,0)");
-  rim.addColorStop(1, "rgba(0,0,0,0.45)");
+  rim.addColorStop(0, "rgba(240,243,247,0.42)");
+  rim.addColorStop(0.16, "rgba(240,243,247,0)");
+  rim.addColorStop(0.8, "rgba(0,0,0,0)");
+  rim.addColorStop(1, "rgba(0,0,0,0.55)");
   ctx.fillStyle = rim;
   ctx.fillRect(padX, padY, rw, rh);
 
