@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
+import { CaviarLogo } from "@/components/caviar-logo";
 
-export function HeroWordmark3D() {
+export function HeroCaviarMark() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -23,5 +24,5 @@ export function HeroWordmark3D() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="hero-wordmark-3d" aria-hidden="true" />;
+  return <CaviarLogo wordOverlay={<canvas ref={canvasRef} className="hero-wordmark-3d" aria-hidden="true" />} />;
 }

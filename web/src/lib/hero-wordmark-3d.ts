@@ -82,6 +82,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
       canvas,
       alpha: true,
       antialias: true,
+      preserveDrawingBuffer: true,
       premultipliedAlpha: true,
       powerPreference: "high-performance",
       failIfMajorPerformanceCaveat: false,
@@ -180,8 +181,8 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
 
   let camDist = 8;
   const fitCamera = () => {
-    const w = Math.max(1, canvas.clientWidth);
-    const h = Math.max(1, canvas.clientHeight);
+    const w = Math.max(1, canvas.clientWidth || Math.round(slot.clientWidth * 1.18));
+    const h = Math.max(1, canvas.clientHeight || Math.round(slot.clientHeight * 1.5));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     const halfH = Math.tan((FOV * Math.PI) / 360);
@@ -245,6 +246,9 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     if (fade > 0.015) renderer.render(scene, camera);
     gpuEma = gpuEma * 0.88 + (performance.now() - tStart) * 0.12;
     canvas.dataset.ft = gpuEma.toFixed(2);
+    canvas.dataset.ry = ry.toFixed(3);
+    canvas.dataset.gz = gz.toFixed(3);
+    canvas.dataset.spread = spread.toFixed(1);
     raf = requestAnimationFrame(tick);
   };
 
@@ -278,9 +282,12 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   fitCamera();
   readScroll();
   renderer.compile(scene, camera);
-  slot.classList.add("is-3d");
+  const word = slot.querySelector(".caviar-word");
+  if (word instanceof HTMLElement) word.style.opacity = "0";
   io.observe(slot);
   ro.observe(slot);
+  ro.observe(canvas);
+  requestAnimationFrame(() => requestAnimationFrame(fitCamera));
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", fitCamera, { passive: true });
   document.addEventListener("visibilitychange", onVis);
@@ -288,8 +295,8 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
 
   return () => {
     stop();
-    slot.classList.remove("is-3d");
     canvas.style.removeProperty("opacity");
+    if (word instanceof HTMLElement) word.style.removeProperty("opacity");
     delete canvas.dataset.ft;
     io.disconnect();
     ro.disconnect();
