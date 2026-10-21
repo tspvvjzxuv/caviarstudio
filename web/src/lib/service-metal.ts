@@ -60,6 +60,11 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     return () => {};
   }
 
+  const mobile = window.matchMedia("(max-width: 767px)").matches;
+  const ios =
+    /iP(hone|ad|od)/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({
@@ -67,8 +72,10 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       alpha: true,
       antialias: false,
       premultipliedAlpha: true,
-      powerPreference: "high-performance",
+      powerPreference: ios ? "default" : "high-performance",
       failIfMajorPerformanceCaveat: false,
+      stencil: false,
+      depth: false,
     });
   } catch {
     fallback(sec);
@@ -76,10 +83,10 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   }
 
   renderer.setClearColor(0x000000, 0);
-  const mobile = window.matchMedia("(max-width: 767px)").matches;
-  const dprCap = mobile ? 0.55 : 0.75;
-  const dprMin = mobile ? 0.32 : 0.42;
-  let pixelRatio = Math.min(window.devicePixelRatio || 1, dprCap);
+  // iOS blanks the FBO when backing store is 0 (floor(css * 0.55)) or DPR < 1.
+  const dprCap = mobile ? (ios ? 1.25 : 1) : 0.75;
+  const dprMin = mobile ? 1 : 0.42;
+  let pixelRatio = Math.min(Math.max(dprMin, window.devicePixelRatio || 1), dprCap);
   renderer.setPixelRatio(pixelRatio);
 
   const rects = Array.from({ length: MAX_CARDS }, () => new Vector4(-4000, -4000, 0, 0));
@@ -152,21 +159,50 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     if (Math.abs(clamped - pixelRatio) < 0.03) return;
     pixelRatio = clamped;
     renderer.setPixelRatio(pixelRatio);
-    viewW = 0;
-    viewH = 0;
-    applySize();
+    applySize(true);
   };
 
-  const applySize = () => {
-    const w = Math.max(1, Math.round(canvas.clientWidth || sec.clientWidth));
-    const h = Math.max(1, Math.round(canvas.clientHeight || sec.clientHeight));
-    const sizeChanged = w !== viewW || h !== viewH;
+  const bufferScale = (cssW: number, cssH: number) => {
+    const gl = renderer.getContext();
+    const bufW = Math.max(1, gl.drawingBufferWidth || canvas.width);
+    const bufH = Math.max(1, gl.drawingBufferHeight || canvas.height);
+    return { sx: bufW / Math.max(1, cssW), sy: bufH / Math.max(1, cssH), bufW, bufH };
+  };
+
+  const readCssSize = () => {
+    const canvasBox = canvas.getBoundingClientRect();
+    const secBox = sec.getBoundingClientRect();
+    const w = Math.max(
+      2,
+      Math.round(canvas.clientWidth || canvasBox.width || sec.clientWidth || secBox.width || viewW),
+    );
+    const h = Math.max(
+      2,
+      Math.round(canvas.clientHeight || canvasBox.height || sec.clientHeight || secBox.height || viewH),
+    );
+    return { w, h };
+  };
+
+  const applySize = (force = false) => {
+    const { w, h } = readCssSize();
+    const gl = renderer.getContext();
+    const backingBad =
+      canvas.width < 2 || canvas.height < 2 || gl.drawingBufferWidth < 2 || gl.drawingBufferHeight < 2;
+    const sizeChanged = force || backingBad || w !== viewW || h !== viewH;
     if (sizeChanged) {
       viewW = w;
       viewH = h;
+      renderer.setPixelRatio(pixelRatio);
       renderer.setSize(w, h, false);
-      material.uniforms.u_resolution.value.set(w, h);
+      if (canvas.width < 2 || canvas.height < 2) {
+        const ratio = Math.max(1, pixelRatio);
+        canvas.width = Math.max(2, Math.floor(w * ratio));
+        canvas.height = Math.max(2, Math.floor(h * ratio));
+        renderer.setViewport(0, 0, canvas.width, canvas.height);
+      }
     }
+    const { bufW, bufH } = bufferScale(w, h);
+    material.uniforms.u_resolution.value.set(bufW, bufH);
     cacheFieldBox();
     syncCards();
     if (sizeChanged && running) renderer.render(scene, camera);
@@ -179,6 +215,11 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       return;
     }
     applySize();
+  };
+
+  const sectionOnscreen = () => {
+    const r = sec.getBoundingClientRect();
+    return r.width > 2 && r.height > 2 && r.bottom > -80 && r.top < (window.innerHeight || 0) + 360;
   };
 
   const requestResize = () => {
@@ -201,8 +242,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     const cssW = Math.max(1, root.width);
     const cssH = Math.max(1, root.height);
     cssHeight = cssH;
-    const sx = Math.max(1, canvas.width) / cssW;
-    const sy = Math.max(1, canvas.height) / cssH;
+    const { sx, sy } = bufferScale(cssW, cssH);
     const sample = buttons[0];
     const styles = sample ? getComputedStyle(sample) : null;
     const cssRadius = styles ? Number.parseFloat(styles.borderRadius) || 24 : 24;
@@ -246,17 +286,22 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     }
   };
 
+  let cardsReady = false;
+
   const tick = () => {
     if (!running) return;
     const t0 = performance.now();
+    if (!cardsReady || canvas.width < 2 || canvas.height < 2) {
+      applySize(true);
+      cardsReady = rects.some((box) => box.z > 2);
+    }
     const elapsed = (t0 - startedAt) / 1000;
     const cycle = metalCycleAt(elapsed);
     material.uniforms.u_time.value = elapsed;
     material.uniforms.u_flow.value = cycle.flow;
     material.uniforms.u_angle.value = cycle.angle;
     material.uniforms.uFocus.value.set(cycle.focusX, cycle.focusY);
-    const sx = Math.max(1, canvas.width) / Math.max(1, canvas.clientWidth || viewW || 1);
-    const sy = Math.max(1, canvas.height) / Math.max(1, cssHeight);
+    const { sx, sy } = bufferScale(Math.max(1, canvas.clientWidth || viewW || 1), Math.max(1, cssHeight));
     mouseSmooth.lerp(mouseTarget, mouseFollow);
     mouseAmt += (mouseAmtTarget - mouseAmt) * (mouseAmtTarget > mouseAmt ? mouseFollow : mouseFade);
     material.uniforms.u_mouse.value.set(mouseSmooth.x * sx, (cssHeight - mouseSmooth.y) * sy);
@@ -275,12 +320,17 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const start = () => {
     if (running) return;
     running = true;
+    applySize(true);
     raf = requestAnimationFrame(tick);
   };
 
   const onVis = () => {
-    if (document.hidden || sec.classList.contains("is-paused")) stop();
-    else start();
+    if (document.hidden) {
+      stop();
+      return;
+    }
+    if (sectionOnscreen()) start();
+    else stop();
   };
 
   const onPointer = (event: PointerEvent) => {
@@ -305,14 +355,14 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const io = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting && !document.hidden && !sec.classList.contains("is-paused")) start();
-    else stop();
+    if (entry.isIntersecting && !document.hidden) start();
+    else if (!entry.isIntersecting) stop();
   });
 
   const ro = new ResizeObserver(() => requestResize());
   const mo = new MutationObserver(() => {
+    cardsReady = false;
     syncCards();
-    onVis();
   });
 
   let shaderOk = true;
@@ -330,9 +380,28 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     return () => {};
   }
 
+  const onContextLost = (event: Event) => {
+    event.preventDefault();
+    stop();
+  };
+  const onContextRestored = () => {
+    cardsReady = false;
+    applySize(true);
+    onVis();
+  };
+  canvas.addEventListener("webglcontextlost", onContextLost, false);
+  canvas.addEventListener("webglcontextrestored", onContextRestored, false);
+
   sec.classList.add("has-metal");
   io.observe(sec);
   ro.observe(sec);
+  requestAnimationFrame(() => {
+    applySize(true);
+    requestAnimationFrame(() => {
+      applySize(true);
+      if (!document.hidden && sectionOnscreen()) start();
+    });
+  });
   mo.observe(sec, {
     attributes: true,
     attributeFilter: ["class", "aria-expanded", "lang"],
@@ -354,6 +423,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     io.disconnect();
     ro.disconnect();
     mo.disconnect();
+    canvas.removeEventListener("webglcontextlost", onContextLost, false);
+    canvas.removeEventListener("webglcontextrestored", onContextRestored, false);
     sec.removeEventListener("transitionend", onPanelTween);
     sec.removeEventListener("transitioncancel", onPanelTween);
     window.removeEventListener("resize", requestResize);

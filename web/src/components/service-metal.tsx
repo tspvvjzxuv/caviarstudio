@@ -21,11 +21,12 @@ export function ServiceMetal() {
     let cancelled = false;
     let started = false;
     let unmount = () => {};
-    let idleId = 0;
+    let fallbackId = 0;
 
     const start = () => {
       if (started || cancelled) return;
       started = true;
+      window.clearTimeout(fallbackId);
       import("@/lib/service-metal")
         .then(({ mountServiceMetal }) => {
           if (cancelled || !canvas.isConnected) return;
@@ -40,20 +41,19 @@ export function ServiceMetal() {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         io.disconnect();
-        const ric =
-          window.requestIdleCallback ??
-          ((cb: IdleRequestCallback) => window.setTimeout(cb, 1) as unknown as number);
-        idleId = ric(start, { timeout: 400 });
+        start();
       },
-      { rootMargin: "320px 0px" },
+      { rootMargin: "480px 0px" },
     );
     io.observe(sec);
+    const rect = sec.getBoundingClientRect();
+    if (rect.bottom > -80 && rect.top < window.innerHeight + 480) start();
+    fallbackId = window.setTimeout(start, 800);
 
     return () => {
       cancelled = true;
       io.disconnect();
-      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idleId);
-      else window.clearTimeout(idleId);
+      window.clearTimeout(fallbackId);
       unmount();
     };
   }, []);
