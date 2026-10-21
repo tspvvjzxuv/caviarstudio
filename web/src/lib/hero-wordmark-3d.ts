@@ -9,8 +9,8 @@ import {
   Group,
   HemisphereLight,
   Mesh,
+  MeshBasicMaterial,
   MeshPhysicalMaterial,
-  MeshStandardMaterial,
   PerspectiveCamera,
   PlaneGeometry,
   PMREMGenerator,
@@ -36,7 +36,7 @@ const EXTRUDE = {
   bevelThickness: 30,
   bevelSize: 17,
   bevelOffset: 0,
-  bevelSegments: 4,
+  bevelSegments: 3,
   curveSegments: 5,
   steps: 1,
 } as const;
@@ -44,55 +44,39 @@ const EXTRUDE = {
 function makeStudioEnv() {
   const studio = new Scene();
   const geos: Array<BoxGeometry | PlaneGeometry> = [];
-  const mats: MeshStandardMaterial[] = [];
+  const mats: MeshBasicMaterial[] = [];
 
-  const addMat = (params: ConstructorParameters<typeof MeshStandardMaterial>[0]) => {
-    const mat = new MeshStandardMaterial(params);
+  const paint = (color: number, extra?: ConstructorParameters<typeof MeshBasicMaterial>[0]) => {
+    const mat = new MeshBasicMaterial({ color, ...extra });
     mats.push(mat);
     return mat;
   };
-  const addBox = (w: number, h: number, d: number) => {
-    const geo = new BoxGeometry(w, h, d);
-    geos.push(geo);
-    return geo;
-  };
-  const strip = (
+  const panel = (
     w: number,
     h: number,
-    emissive: number,
-    intensity: number,
+    color: number,
     pos: readonly [number, number, number],
     rot: readonly [number, number, number],
   ) => {
     const geo = new PlaneGeometry(w, h);
     geos.push(geo);
-    const mesh = new Mesh(
-      geo,
-      addMat({
-        color: 0x000000,
-        emissive: new Color(emissive),
-        emissiveIntensity: intensity,
-        roughness: 1,
-        metalness: 0,
-      }),
-    );
+    const mesh = new Mesh(geo, paint(color));
     mesh.position.set(pos[0], pos[1], pos[2]);
     mesh.rotation.set(rot[0], rot[1], rot[2]);
     studio.add(mesh);
   };
 
-  studio.add(
-    new Mesh(
-      addBox(24, 24, 24),
-      addMat({ color: 0x050608, side: BackSide, roughness: 1, metalness: 0 }),
-    ),
-  );
-  strip(14, 0.16, 0xf7f8fb, 42, [0, 8.4, 1.4], [Math.PI / 2, 0, 0]);
-  strip(0.14, 11, 0xffffff, 58, [7.2, 1.1, 2.4], [0, -0.42, 0]);
-  strip(0.1, 9, 0xfff3dc, 36, [-2.8, 0.6, 7.4], [0, 2.95, 0.12]);
-  strip(5.5, 7, 0xb9d4ff, 9, [-8.2, 1.4, 0.6], [0, 1.18, 0]);
-  strip(9, 0.28, 0xffffff, 32, [0.4, 3.6, -8.6], [0, 0, 0]);
-  strip(10, 3.2, 0x6e7786, 2.4, [0, -8.6, 2], [-Math.PI / 2, 0, 0]);
+  const room = new BoxGeometry(30, 20, 30);
+  geos.push(room);
+  studio.add(new Mesh(room, paint(0x2a303a, { side: BackSide })));
+  panel(16, 2.3, 0xffffff, [0, 8.6, -0.4], [Math.PI / 2, 0, 0]);
+  panel(16, 1.15, 0xf4f6fa, [0, 8.6, 4.4], [Math.PI / 2, 0, 0]);
+  panel(0.95, 13, 0xffffff, [11.2, 1.2, 2.6], [0, -0.52, 0]);
+  panel(8, 11, 0xffffff, [14, 1.6, 0], [0, -Math.PI / 2, 0]);
+  panel(8, 8, 0xc5d8ff, [-14, 2.1, 0.8], [0, Math.PI / 2, 0]);
+  panel(1.15, 9, 0xffe4c2, [-5.4, 0.8, 13], [0, Math.PI, 0.08]);
+  panel(16, 7, 0xe9edf4, [0, 3.2, -14], [0, 0, 0]);
+  panel(20, 14, 0x7a8494, [0, -9.2, 0], [-Math.PI / 2, 0, 0]);
 
   return {
     studio,
@@ -171,7 +155,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.02;
+  renderer.toneMappingExposure = 1.1;
   renderer.shadowMap.enabled = false;
 
   const scene = new Scene();
@@ -180,33 +164,33 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
 
   const pmrem = new PMREMGenerator(renderer);
   const { studio, dispose: disposeStudio } = makeStudioEnv();
-  const envTex = pmrem.fromScene(studio, 0).texture;
+  const envTex = pmrem.fromScene(studio, 0, 0.1, 100, { size: 256 }).texture;
   scene.environment = envTex;
-  scene.environmentIntensity = 1.18;
+  scene.environmentIntensity = 1.22;
   disposeStudio();
   pmrem.dispose();
 
-  scene.add(new HemisphereLight(0xeef1f6, 0x0b0d12, 0.08));
-  const key = new DirectionalLight(0xffffff, 0.62);
+  scene.add(new HemisphereLight(0xf2f4f8, 0x12151c, 0.16));
+  const key = new DirectionalLight(0xffffff, 0.78);
   key.position.set(2.6, 3.8, 4.4);
   key.castShadow = false;
   scene.add(key);
-  const bevelSpec = new DirectionalLight(0xffffff, 0.9);
+  const bevelSpec = new DirectionalLight(0xffffff, 1.05);
   bevelSpec.position.set(-1.1, 5.2, 2.4);
   bevelSpec.castShadow = false;
   scene.add(bevelSpec);
-  const rim = new DirectionalLight(0x9ec1ff, 0.22);
+  const rim = new DirectionalLight(0x9ec1ff, 0.28);
   rim.position.set(-3.4, 1.2, 1.4);
   rim.castShadow = false;
   scene.add(rim);
 
   const material = new MeshPhysicalMaterial({
-    color: new Color("#b7bec8"),
+    color: new Color("#d5dae2"),
     metalness: 1,
-    roughness: 0.03,
-    envMapIntensity: 2.45,
+    roughness: 0.035,
+    envMapIntensity: 1.95,
     clearcoat: 1,
-    clearcoatRoughness: 0.03,
+    clearcoatRoughness: 0.035,
     ior: 1.5,
     specularIntensity: 1,
   });
