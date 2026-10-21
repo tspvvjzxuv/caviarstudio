@@ -112,7 +112,6 @@ export function HeroBackdrop({ kenRef }: { kenRef: RefObject<HTMLDivElement | nu
         />
         {skip ? <HeroSilverField /> : <HeroLoop pausedRoot={kenRef} />}
         <div className="hero-shine absolute inset-0 z-[2]" />
-        <div className="hero-grain absolute inset-0 z-[2]" />
         <div className="hero-depth absolute inset-0 z-[2]" />
       </div>
     </div>

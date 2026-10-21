@@ -372,7 +372,6 @@ footer {
 
 .hero-field {
   background:
-    radial-gradient(ellipse 100% 72% at 10% -8%, rgb(244 245 247 / 34%), transparent 46%),
     radial-gradient(ellipse 58% 48% at 86% 16%, rgb(232 234 238 / 20%), transparent 52%),
     radial-gradient(ellipse 70% 42% at 46% 108%, rgb(197 202 211 / 16%), transparent 58%),
     radial-gradient(circle at 62% 40%, rgb(154 163 174 / 11%), transparent 36%),
@@ -387,7 +386,7 @@ footer {
   overflow: hidden;
   isolation: isolate;
   mix-blend-mode: screen;
-  background: radial-gradient(ellipse 85% 58% at 14% 6%, rgb(244 245 247 / 24%), transparent 56%);
+  background: none;
 }
 .hero-shine::after {
   content: "";
@@ -399,12 +398,6 @@ footer {
   pointer-events: none;
   background: linear-gradient(118deg, transparent 8%, rgb(232 234 238 / 18%) 50%, transparent 92%);
   transform: translate3d(-90%, 0, 0);
-}
-.hero-grain {
-  opacity: 0.1;
-  mix-blend-mode: overlay;
-  background-image: url("/media/ui/grain.png");
-  background-size: 128px 128px;
 }
 
 .hero-depth {
