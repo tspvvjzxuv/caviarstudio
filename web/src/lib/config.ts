@@ -1,4 +1,4 @@
-const HERO_V = "opt1";
+const HERO_V = "opt2";
 
 export const HERO_LOOP = {
   poster: `/media/hero/liquid-chrome.jpg?v=${HERO_V}`,
