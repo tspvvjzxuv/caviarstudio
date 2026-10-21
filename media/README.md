@@ -9,21 +9,21 @@ Liquid-chrome backdrop in `media/hero/`:
 - `liquid-chrome.hevc.mp4` / `liquid-chrome-720.hevc.mp4` (HEVC `hvc1` for Safari)
 - `liquid-chrome.jpg` (poster)
 
-Re-encode with `scripts/encode-hero.sh` from the original mp4 in git (`a83667b`). Native timestamps are passed through — no `-r`, no `setpts`, no `fps=` resample — so playback speed and duration stay with the source (~9.97 s, 30 tbr). CRF, 1 s GOP. Browsers pick 720p under 768px via `<source media>`.
+Motion-interpolate to 60 fps with RIFE v4.6 (`scripts/interpolate-hero-60.sh`, CPU `-g -1`; cleaner than ffmpeg `minterpolate` on chrome highlights), then encode with `scripts/encode-hero.sh`. Source is the original mp4 in git (`a83667b`): 9.966667 s, 300 frames, `r=30/1`. Output is **10.000 s, 600 frames, `r=60/1`**, GOP 60. No `-r` on a video input, no `setpts`. Loop-pad copies frame 1 after frame 300 so the last in-between is last→first. Browsers pick 720p under 768px via `<source media>`. Cache-buster `?v=opt3`.
 
-| File | Codec | Size | Was |
-|------|-------|------|-----|
-| `liquid-chrome.webm` | AV1 Main 1080p30 | 2.41 MiB | VP9 4.28 MiB |
-| `liquid-chrome.mp4` | H.264 High yuv420p faststart 1080p30 | 2.54 MiB | H.264 3.95 MiB |
-| `liquid-chrome.hevc.mp4` | HEVC Main `hvc1` 1080p30 | 1.72 MiB | — |
-| `liquid-chrome-720.webm` | AV1 Main 720p30 | 1.46 MiB | — |
-| `liquid-chrome-720.mp4` | H.264 High yuv420p faststart 720p30 | 1.43 MiB | — |
-| `liquid-chrome-720.hevc.mp4` | HEVC Main `hvc1` 720p30 | 1.05 MiB | — |
-| `liquid-chrome.jpg` | JPEG poster | 108 KB | 158 KB |
+| File | Codec | Size | 30 fps was | Original |
+|------|-------|------|------------|----------|
+| `liquid-chrome.webm` | AV1 Main 1080p60 | 3.19 MiB | 2.41 MiB | VP9 4.28 MiB |
+| `liquid-chrome.mp4` | H.264 High yuv420p faststart 1080p60 | 2.85 MiB | 2.54 MiB | H.264 3.95 MiB |
+| `liquid-chrome.hevc.mp4` | HEVC Main `hvc1` 1080p60 | 1.70 MiB | 1.72 MiB | — |
+| `liquid-chrome-720.webm` | AV1 Main 720p60 | 1.89 MiB | 1.46 MiB | — |
+| `liquid-chrome-720.mp4` | H.264 High yuv420p faststart 720p60 | 1.58 MiB | 1.43 MiB | — |
+| `liquid-chrome-720.hevc.mp4` | HEVC Main `hvc1` 720p60 | 1.04 MiB | 1.05 MiB | — |
+| `liquid-chrome.jpg` | JPEG poster | 121 KB | 108 KB | 158 KB |
 
 Source: [Pexels 29848606](https://www.pexels.com/video/29848606/). Pexels license: free commercial use, no attribution required.
 
-The hero plays it muted, looping, full-bleed. It stays on the poster if `prefers-reduced-motion` is on, or if Save-Data / 2G is set.
+The hero plays it muted, looping, full-bleed at the original speed. Skip the file only on Save-Data; `prefers-reduced-motion` still plays. Pause when off-screen or the tab is hidden. `preload="metadata"`.
 
 ## Work stills
 
