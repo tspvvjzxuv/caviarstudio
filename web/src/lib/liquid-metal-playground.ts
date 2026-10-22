@@ -306,6 +306,7 @@ void main() {
   float sdf = 1.0e6;
   float found = 0.0;
   float tileH = uTileH;
+  vec4 tileBox = uRect[0];
 
   for (int i = 0; i < 5; i++) {
     vec4 box = uRect[i];
@@ -316,6 +317,7 @@ void main() {
     float take = on * step(d, sdf);
     sdf = mix(sdf, d, take);
     tileH = mix(tileH, box.w, take);
+    tileBox = mix(tileBox, box, take);
     found = max(found, on * step(d, 2.0));
   }
 
@@ -351,12 +353,14 @@ void main() {
 
   vec3 color2 = vec3(0.97, 0.975, 0.99);
   vec3 color1 = vec3(0.026, 0.027, 0.03);
-  vec3 azure = vec3(0.16, 0.46, 1.0);
-  vec3 lemon = vec3(1.0, 0.84, 0.14);
+  vec3 azure = vec3(0.24, 0.54, 1.0);
+  vec3 gunmetal = vec3(0.035, 0.045, 0.07);
+  vec3 silver = vec3(0.76, 0.79, 0.84);
 
   float dist = length(iso);
   float bulge = pow(1.55 * dist, 1.12);
-  bulge = 1. - bulge;
+  // Clamp: past dist ~0.65 bulge went negative and folded the stripes into hard corner wedges / rings.
+  bulge = max(1. - bulge, 0.);
   bulge *= pow(max(0.5 + iso.y, 0.0), .34);
 
   float cycle_width = u_patternScale;
@@ -387,18 +391,27 @@ void main() {
   float stripe = mod(dir, 1.);
   float extraBlur = .022 * u_refraction * bulge;
   float ch = get_color_channel(color1.r, color2.r, stripe, w, extraBlur, bulge);
-  ch = clamp((ch - 0.5) * 1.55 + 0.5, 0.0, 1.0);
-  vec3 color = vec3(ch);
+  // Dark cool chrome: only the edge of the light ramp flares to silver, the flat light plateau falls back to dark steel,
+  // so tiles stay dark and difference-blended titles stay readable.
+  float flare = smoothstep(0.7, 0.76, ch) * (1.0 - smoothstep(0.82, 0.9, ch));
+  // Dense stripes (rings, chevrons) read as glitches: fade them into the sheen by stripe frequency per tile height.
+  flare *= 1.0 - 0.9 * max(smoothstep(1.5, 5.0, fwidth(dir) * tileH), smoothstep(2.0, 10.0, fwidth(ch) * tileH));
+  // Fade reflections out before the flat rim instead of cutting them on a straight line.
+  flare *= 1.0 - smoothstep(-0.08 * tileH, -0.015 * tileH, sdf);
+  // Brushed-steel sheen: a soft diagonal band per tile so no tile is ever flat black, and highlights stay a band.
+  vec2 lp = (frag - tileBox.xy) / max(tileBox.zw, vec2(1.0));
+  float band = 0.5 + 0.5 * cos((lp.x * 1.3 - lp.y * 0.4 - u_flow * 1.2 - t * 0.5) * PI);
+  float tone = 0.1 + 0.12 * band + 0.06 * smoothstep(0.3, 0.7, ch) + 0.6 * flare * (0.1 + 0.9 * smoothstep(0.3, 0.95, band));
+  vec3 color = mix(gunmetal, silver, tone);
 
-  float hi = smoothstep(0.44, 0.9, ch);
-  float spec = pow(clamp((ch - 0.58) / 0.42, 0.0, 1.0), 7.0);
-  color += vec3(spec * 0.2);
+  // Blue glints ride the dark-to-silver transition only, never the flat plateau under titles.
+  float hi = smoothstep(0.6, 0.68, ch) * (1.0 - smoothstep(0.7, 0.75, ch));
+  float spec = pow(tone, 6.0);
+  color += vec3(spec * 0.12);
 
   float hueWave = 0.5 + 0.5 * sin(flow * TWO_PI * 0.46 + u_flow * 2.4);
   float azureAmt = (1.0 - smoothstep(0.18, 0.44, hueWave)) * hi;
-  float lemonAmt = smoothstep(0.56, 0.82, hueWave) * hi;
-  color = mix(color, mix(color, azure, 0.62), azureAmt * 0.7);
-  color = mix(color, mix(color, lemon, 0.58), lemonAmt * 0.68);
+  color = mix(color, azure * 0.42, azureAmt * 0.6);
 
   if (sdf > 2.0) discard;
   color *= opacity;

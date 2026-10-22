@@ -22,7 +22,7 @@ export const CAVIAR = {
   SITE: "https://caviarstudio.sk/",
   prices: {
     fotoMini: { launch: 79 },
-    videoReel: { launch: 59 },
+    videoReel: { launch: 99 },
     droneFoto: { launch: 89 },
     droneVideo: { launch: 129 },
     droneCombo: { launch: 179 },
