@@ -234,6 +234,7 @@ uniform vec4 uField;
 uniform vec2 uFocus;
 uniform float u_flow;
 uniform float uTileH;
+uniform sampler2D u_ink;
 
 #define TWO_PI 6.28318530718
 #define PI 3.14159265358979323846
@@ -414,6 +415,9 @@ void main() {
   color = mix(color, azure * 0.42, azureAmt * 0.6);
 
   if (sdf > 2.0) discard;
+  // White ink difference-blended with the metal, done here because iOS cannot blend DOM text against a WebGL layer.
+  float ink = texture2D(u_ink, frag / u_resolution).a;
+  color = mix(color, vec3(1.0) - clamp(color, 0.0, 1.0), ink);
   color *= opacity;
 
   gl_FragColor = vec4(color, opacity);
