@@ -141,6 +141,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   }
 
   const mobile = window.matchMedia("(max-width: 767px)").matches;
+  // Tablets share phone retina DPR but sit above the mobile breakpoint — keep HQ there too.
+  const tablet = !mobile && window.matchMedia("(max-width: 1280px)").matches;
+  const hiRes = mobile || tablet;
 
   let renderer: WebGLRenderer;
   try {
@@ -161,8 +164,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   renderer.setClearColor(0x000000, 0);
   // iOS blanks the FBO when backing store is 0 (floor(css * 0.55)) or DPR < 1.
-  const dprCap = mobile ? 2 : 0.75;
-  const dprMin = mobile ? 1.25 : 0.42;
+  const dprCap = hiRes ? 2 : 1.25;
+  const dprMin = hiRes ? 1.25 : 0.75;
   let pixelRatio = Math.min(Math.max(dprMin, window.devicePixelRatio || 1), dprCap);
   renderer.setPixelRatio(pixelRatio);
 
@@ -222,7 +225,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const mouseSmooth = new Vector2(-4000, -4000);
   let mouseAmt = 0;
   let mouseAmtTarget = 0;
-  const mouseFollow = mobile ? 0.03 : 0.045;
+  const mouseFollow = hiRes ? 0.03 : 0.045;
   const mouseFade = 0.028;
   let gpuEma = 2.2;
   let adaptN = 0;
@@ -371,8 +374,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       if (inkCanvas.width !== bufW || inkCanvas.height !== bufH) {
         inkCanvas.width = bufW;
         inkCanvas.height = bufH;
-        inkTexture.dispose();
       }
+      inkCtx.imageSmoothingEnabled = true;
+      inkCtx.imageSmoothingQuality = "high";
       drawInk(inkCtx, sec, root, sx, sy);
       inkTexture.needsUpdate = true;
       if (!sec.classList.contains("ink-gl")) sec.classList.add("ink-gl");
@@ -413,7 +417,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     adaptN += 1;
     if (adaptN >= 24) {
       adaptN = 0;
-      if (!mobile) {
+      // Never crush tablet/phone resolution — soft metal + muddy ink invert is what looked weak there.
+      if (!hiRes) {
         if (gpuEma > 3) applyPixelRatio(pixelRatio * 0.82);
         else if (gpuEma < 1.55) applyPixelRatio(pixelRatio * 1.1);
       }

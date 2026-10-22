@@ -415,9 +415,11 @@ void main() {
   color = mix(color, azure * 0.42, azureAmt * 0.6);
 
   if (sdf > 2.0) discard;
-  // White ink difference-blended with the metal, done here because iOS cannot blend DOM text against a WebGL layer.
+  // Title/icon ink: hard contrast against the metal (not a soft 1-c invert — mid tones stay muddy on tablets).
   float ink = texture2D(u_ink, frag / u_resolution).a;
-  color = mix(color, vec3(1.0) - clamp(color, 0.0, 1.0), ink);
+  float luma = dot(clamp(color, 0.0, 1.0), vec3(0.299, 0.587, 0.114));
+  vec3 inkColor = mix(vec3(1.0), vec3(0.02), smoothstep(0.22, 0.48, luma));
+  color = mix(color, inkColor, ink);
   color *= opacity;
 
   gl_FragColor = vec4(color, opacity);
