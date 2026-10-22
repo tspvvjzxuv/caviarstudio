@@ -57,7 +57,7 @@ export function LangSwitch({ className }: { className?: string }) {
           value={code}
           aria-label={t[LANG_NAME[code]]}
           data-magnetic=""
-          className="h-8 rounded-full px-2.5 text-[0.68rem] tracking-[0.16em] uppercase data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
+          className="h-8 rounded-full border-y-0! px-2.5 text-[0.68rem] tracking-[0.16em] uppercase first:border-l-0! last:border-r-0! data-[state=on]:border-transparent data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
         >
           {code}
         </ToggleGroupItem>

@@ -39,7 +39,7 @@ npm run build:pages
 
 ## Content rules
 
-- Prices: 59 / 79 / 219 / 379 / 590 EUR including VAT (always s DPH). Video Reel is 59 EUR (three reels 129 EUR). Drone: Dron Foto 89 / Dron Video 129 / Dron Foto + Video 179 EUR (add to Caviar Komplet for 59 EUR). Branding: Branding Štart 249 / Branding Komplet 490 / Rebranding from 349 EUR (add Branding Štart to Caviar Komplet for 149 EUR). E-shop is 590 EUR one-time plus 19 EUR/month for server, backups and maintenance. Monthly marketing: Social Štart 249 / Social Plus 449 / Marketing Komplet 690 EUR per month (ad budget paid to Meta and Google; minimum 3 months).
+- Prices: 79 / 99 / 219 / 379 / 590 EUR including VAT (always s DPH). Video Reel is 99 EUR (three reels 249 EUR). Drone: Dron Foto 89 / Dron Video 129 / Dron Foto + Video 179 EUR (add to Caviar Komplet for 59 EUR). Branding: Branding Štart 249 / Branding Komplet 490 / Rebranding from 349 EUR (add Branding Štart to Caviar Komplet for 149 EUR). E-shop is 590 EUR one-time plus 19 EUR/month for server, backups and maintenance. Monthly marketing: Social Štart 249 / Social Plus 449 / Marketing Komplet 690 EUR per month (ad budget paid to Meta and Google; minimum 3 months).
 - Contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /caviarstudio.sk, Trnava
 - Palette: near-black `#070708`, silver/platinum type, azure `#3D8AFF` main accent, lemon `#FFE44D` secondary — **no metallic gold**. Display type is **Bodoni Moda**; body is DM Sans. Soft glass radii; translucent borders. Logo is upright CAVIAR + STUDIO · TRNAVA.
 - No stock photos and no assistant-chosen portraits. Hero is a muted liquid-chrome loop (`media/hero/`) over a silver field. Team uses monograms.

@@ -178,7 +178,7 @@ Soft glass. `--radius` is 1.5rem. Cards, frames, tiles, dialogs, and dropdowns a
 - Don't invent testimonials, client counts, limited slots, or guaranteed results (no “more bookings”, no “first 10” counters)
 - Don't show the words TODO or Placeholder anywhere in the UI
 - Don't add a Node/Tailwind build that GitHub Pages must run unless Pages source is GitHub Actions; always keep a committed static fallback at the repo root
-- Do keep prices 59 / 79 / 219 / 379 / 590 EUR including VAT. Video Reel is 59 EUR (three reels 129 EUR). Drone: Dron Foto 89 / Dron Video 129 / Dron Foto + Video 179 EUR (Caviar Komplet add-on 59 EUR). Branding: Branding Štart 249 / Branding Komplet 490 / Rebranding from 349 EUR (Caviar Komplet add-on 149 EUR). E-shop is 590 EUR one-time plus 19 EUR/month (server, backups, maintenance). Monthly marketing: Social Štart 249 / Social Plus 449 / Marketing Komplet 690 EUR per month (ad budget paid to Meta and Google; minimum 3 months).
+- Do keep prices 79 / 99 / 219 / 379 / 590 EUR including VAT. Video Reel is 99 EUR (three reels 249 EUR). Drone: Dron Foto 89 / Dron Video 129 / Dron Foto + Video 179 EUR (Caviar Komplet add-on 59 EUR). Branding: Branding Štart 249 / Branding Komplet 490 / Rebranding from 349 EUR (Caviar Komplet add-on 149 EUR). E-shop is 590 EUR one-time plus 19 EUR/month (server, backups, maintenance). Monthly marketing: Social Štart 249 / Social Plus 449 / Marketing Komplet 690 EUR per month (ad budget paid to Meta and Google; minimum 3 months).
 - Do keep contacts: mircoft.sk@gmail.com, +421 905 173 086, Instagram /caviarstudio.sk, address **Trnava** only
 - Do pause ken-burns, sheen, and marquee when off-screen or the tab is hidden
 

@@ -53,7 +53,7 @@ export const dictionary = {
         pWebDesc: "Responzívny web s tlačidlom Kontakt, mapou, základným SEO a napojením domény.",
         pEshopDesc: "E-shop do 30 produktov s platbami a vlastným serverom.",
         pKompletDesc: "Web, 2 reely a 20 fotiek v jednom balíku.",
-        pVideoNote: "Tri reely stoja 129 €.",
+        pVideoNote: "Tri reely stoja 249 €.",
         pEshopMonthly: "/mesiac (server, zálohy, údržba)",
         pEshopEx: [
           "E-shop do 30 produktov, funguje aj na mobile",
@@ -243,7 +243,7 @@ export const dictionary = {
         pWebDesc: "A responsive site with a contact button, map, basic SEO and domain connection.",
         pEshopDesc: "A shop for up to 30 products, with payments and its own server.",
         pKompletDesc: "A website, 2 reels and 20 photos in one package.",
-        pVideoNote: "Three reels cost 129 EUR.",
+        pVideoNote: "Three reels cost 249 EUR.",
         pEshopMonthly: "/month (server, backups, maintenance)",
         pEshopEx: [
           "E-shop for up to 30 products, works on mobile too",
@@ -433,7 +433,7 @@ export const dictionary = {
         pWebDesc: "Responsive Website mit Kontakt-Button, Karte, Basis-SEO und Domain-Anbindung.",
         pEshopDesc: "Shop für bis zu 30 Produkte, mit Zahlungen und eigenem Server.",
         pKompletDesc: "Website, 2 Reels und 20 Fotos in einem Paket.",
-        pVideoNote: "Drei Reels kosten 129 €.",
+        pVideoNote: "Drei Reels kosten 249 €.",
         pEshopMonthly: "/Monat (Server, Backups, Wartung)",
         pEshopEx: [
           "E-Shop für bis zu 30 Produkte, auch mobil nutzbar",

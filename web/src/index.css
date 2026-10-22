@@ -938,6 +938,8 @@ footer {
 }
 .service-sec.has-metal .service-glow-field {
   z-index: 0;
+  /* Cool only beside the metal tiles; the lemon haze read as a brown cast. */
+  background: radial-gradient(ellipse 30% 48% at 16% 44%, rgb(61 138 255 / 14%), transparent 72%);
 }
 .service-sec.has-metal .service-metal {
   z-index: 0;
@@ -980,6 +982,8 @@ footer {
 .service-sec.has-metal .service-card:not(:has(.service-chrome.is-open)):not(:has(.service-chrome[aria-expanded="true"])) .service-glow {
   inset: 0;
   border-radius: inherit;
+  /* Cool only over the metal: the lemon spot read as a brown blob on dark chrome. */
+  background: radial-gradient(ellipse 34% 36% at 28% 30%, rgb(61 138 255 / 12%), transparent 64%);
 }
 .service-sec.has-metal .service-card .reveal,
 .service-sec.has-metal .service-card .reveal.in {
