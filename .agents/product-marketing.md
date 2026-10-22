@@ -8,7 +8,7 @@
 **What it does:** Caviar is a small studio in Trnava that makes a one-page website, short vertical reels, edited photos, registered-drone aerials, and branding (new look or a refresh) so a local business can be found, seen, and called. Work is delivered in days, not months. Files belong to the client after payment.
 **Product category:** Local creative studio / web + photo + video for small businesses
 **Product type:** Service (project packages)
-**Business model:** One-off packages, launch prices including VAT, plus monthly marketing retainers. Foto Mini 79 EUR, Video Reel 59 EUR (three reels 129 EUR), Dron Foto 89 EUR, Dron Video 129 EUR, Dron Foto + Video 179 EUR (add to Caviar Komplet for 59 EUR), Web Jednostránka 219 EUR, Caviar Komplet 379 EUR, Branding Štart 249 EUR, Branding Komplet 490 EUR, Rebranding from 349 EUR (add Branding Štart to Caviar Komplet for 149 EUR), E-shop 590 EUR one-time plus 19 EUR/month (server, backups, maintenance). Monthly: Social Štart 249 EUR, Social Plus 449 EUR, Marketing Komplet 690 EUR (ad budget paid to Meta and Google; minimum 3 months).
+**Business model:** One-off packages, launch prices including VAT, plus monthly marketing retainers. Foto Mini 79 EUR, Video Reel 99 EUR (three reels 249 EUR), Dron Foto 89 EUR, Dron Video 129 EUR, Dron Foto + Video 179 EUR (add to Caviar Komplet for 59 EUR), Web Jednostránka 219 EUR, Caviar Komplet 379 EUR, Branding Štart 249 EUR, Branding Komplet 490 EUR, Rebranding from 349 EUR (add Branding Štart to Caviar Komplet for 149 EUR), E-shop 590 EUR one-time plus 19 EUR/month (server, backups, maintenance). Monthly: Social Štart 249 EUR, Social Plus 449 EUR, Marketing Komplet 690 EUR (ad budget paid to Meta and Google; minimum 3 months).
 
 ## Target Audience
 **Target companies:** Restaurants, lodging, services, online shops, craftspeople, and small firms in Trnava and nearby.
@@ -104,7 +104,7 @@
 | Theme | Proof |
 |-------|-------|
 | Speed | Reply right away; web 5–7 days; photo/video 3–5 days after shoot |
-| Price | 59 / 79 / 89 / 129 / 179 / 219 / 249 / 349 / 379 / 490 / 590 EUR s DPH; three reels 129 EUR; Komplet drone add-on 59 EUR; Branding Štart 249 / Komplet 490 / Rebranding from 349; Komplet branding add-on 149 EUR; E-shop also 19 EUR/month; monthly marketing 249 / 449 / 690 EUR |
+| Price | 79 / 89 / 99 / 129 / 179 / 219 / 249 / 349 / 379 / 490 / 590 EUR s DPH; three reels 249 EUR; Komplet drone add-on 59 EUR; Branding Štart 249 / Komplet 490 / Rebranding from 349; Komplet branding add-on 149 EUR; E-shop also 19 EUR/month; monthly marketing 249 / 449 / 690 EUR |
 | Ownership | Files belong to the client after payment |
 
 ## Goals
