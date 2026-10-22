@@ -1033,6 +1033,9 @@ footer {
   mix-blend-mode: difference;
   -webkit-mix-blend-mode: difference;
 }
+.service-sec.has-metal.ink-gl .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink {
+  opacity: 0;
+}
 .service-title {
   position: relative;
   display: block;
@@ -1428,9 +1431,10 @@ button[data-magnetic]:not(.metal-fill) {
 @media (max-width: 767px) {
   .hero-logo {
     max-width: 100%;
+    font-size: min(18vw, 10.5rem);
   }
   .hero-wordmark-3d {
-    width: 122%;
+    width: min(122%, 100vw);
     height: 168%;
   }
 }
