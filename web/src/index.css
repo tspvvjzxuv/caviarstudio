@@ -392,10 +392,6 @@ footer {
 @media (max-width: 767px) {
   header.glass {
     z-index: 70;
-    background-color: rgb(7 7 8 / 94%);
-    background-image: none;
-    -webkit-backdrop-filter: blur(18px) saturate(1.25);
-    backdrop-filter: blur(18px) saturate(1.25);
   }
   [data-slot="sheet-overlay"] {
     z-index: 60;
@@ -476,6 +472,15 @@ footer {
     inset 0 0 0 1px rgb(244 245 247 / 16%),
     0 12px 40px rgb(0 0 0 / 28%);
 }
+/* Header: frosted, no lemon hairline frame — .glass pills keep the inset. */
+header.glass {
+  background-color: rgb(14 14 18 / 14%);
+  background-image: none;
+  border: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(32px) saturate(1.85);
+  backdrop-filter: blur(32px) saturate(1.85);
+}
 .glass-panel {
   background-color: rgb(14 14 18 / 42%);
   background-image: linear-gradient(180deg, rgb(61 138 255 / 16%) 0%, rgb(7 7 8 / 28%) 100%);
@@ -490,6 +495,9 @@ footer {
   .glass-panel {
     background-image: none;
     background-color: rgb(14 14 18 / 94%);
+  }
+  header.glass {
+    background-color: rgb(7 7 8 / 72%);
   }
 }
 
