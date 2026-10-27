@@ -130,7 +130,7 @@ export function SiteHeader() {
               variant="ghost"
               size="icon"
               data-nav-toggle=""
-              className="icon-disc inline-flex size-11 items-center justify-center lg:hidden"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-pearl/12 bg-[rgb(14_14_18/0.72)] text-pearl shadow-none backdrop-blur-xl hover:bg-elev hover:text-pearl lg:hidden"
               aria-expanded={open}
               aria-label={open ? t.close : t.menu}
             >
