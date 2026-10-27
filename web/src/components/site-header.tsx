@@ -49,7 +49,7 @@ export function LangSwitch({ className }: { className?: string }) {
       size="sm"
       variant="default"
       className={cn(
-        "h-8 overflow-hidden rounded-full border border-pearl/12 bg-[rgb(14_14_18/0.72)] p-0 backdrop-blur-xl backdrop-saturate-150",
+        "h-8 overflow-hidden rounded-full border border-pearl/12 bg-[rgb(14_14_18/0.72)] p-0 backdrop-blur-xl backdrop-saturate-150 data-[size=sm]:rounded-full",
         className,
       )}
       aria-label={t.langLabel}
@@ -59,7 +59,7 @@ export function LangSwitch({ className }: { className?: string }) {
           key={code}
           value={code}
           aria-label={t[LANG_NAME[code]]}
-          className="h-full rounded-none border-0 px-2.5 text-[0.68rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-pearl data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
+          className="h-full rounded-none border-0 px-2.5 text-[0.68rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-pearl data-[state=on]:bg-azure-deep data-[state=on]:text-pearl group-data-horizontal/toggle-group:data-[spacing=0]:first:rounded-l-full group-data-horizontal/toggle-group:data-[spacing=0]:last:rounded-r-full"
         >
           {code}
         </ToggleGroupItem>
