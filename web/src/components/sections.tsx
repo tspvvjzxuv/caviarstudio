@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type RefObject } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode, type RefObject } from "react";
 import { usePrefersMd } from "@/hooks/use-mobile";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import { HeroCaviarMark } from "@/components/hero-wordmark-3d";
@@ -14,10 +14,10 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { IconDisc } from "@/components/icon-disc";
+import { WorkGallery } from "@/components/work-gallery";
 import {
   Accordion,
   AccordionContent,
@@ -45,14 +45,13 @@ import { ServiceMetal } from "@/components/service-metal";
 import { ServicePanel } from "@/components/service-panel";
 import { cn } from "@/lib/utils";
 
-const PANEL_HEAD = "flex flex-col grid-rows-none gap-3 p-6 md:gap-4 md:p-8";
 const HERO_GHOST =
   "hero-ghost h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full";
 
 const SERVICES = [
   { id: "foto", name: "fotoName", examples: "pFotoEx", Icon: Camera, media: PHOTO_EXAMPLES },
   { id: "video", name: "videoName", examples: "pVideoEx", Icon: Clapperboard, media: VIDEO_EXAMPLES },
-  { id: "web", name: "webName", examples: "pWebEx", Icon: Globe, media: WORK },
+  { id: "web", name: "webName", examples: "pWebEx", Icon: Globe, media: [] },
   { id: "dron", name: "dronName", examples: "pDronEx", Icon: Drone, media: DRONE_EXAMPLES },
   { id: "brand", name: "brandName", examples: "pBrandEx", Icon: Palette, media: BRAND_EXAMPLES },
 ] as const;
@@ -61,10 +60,7 @@ const SERVICE_ROW_1 = SERVICES.slice(0, 3);
 const SERVICE_ROW_2 = SERVICES.slice(3);
 type ServiceItem = (typeof SERVICES)[number];
 
-const TEAM = [
-  { mono: "MK", name: "Miroslav Kotvas" },
-  { mono: "SK", name: "Sofia Klebanová" },
-] as const;
+const TEAM = [{ name: "Miroslav Kotvas" }, { name: "Sofia Klebanová" }] as const;
 
 const LAUNCH_PACKS = [
   { key: "fotoMini", name: "pFotoName", desc: "pFotoDesc" },
@@ -130,10 +126,10 @@ export function Hero() {
         <h1 className="hero-logo mx-auto w-fit max-w-full text-center text-[clamp(3.9rem,16vw,10.5rem)] lg:text-[clamp(4.55rem,18.8vw,12.4rem)]">
           <HeroCaviarMark />
         </h1>
-        <p className="hero-tagline max-w-[22ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl">
+        <p className="hero-tagline max-w-[24ch] font-serif text-[clamp(1.35rem,2.8vw,1.9rem)] leading-[1.2] font-normal tracking-[-0.02em] text-pretty text-pearl">
           {t.heroTagline}
         </p>
-        <p className="mt-4 max-w-[36ch] text-[0.98rem] leading-[1.5] text-pretty text-muted-foreground">{t.heroExplain}</p>
+        <p className="mt-4 max-w-[36ch] text-[0.98rem] leading-[1.5] text-pretty text-pearl">{t.heroExplain}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild data-magnetic="" className="metal-fill h-[52px] rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
             <a href="#kontakt">{t.ctaQuote}</a>
@@ -259,8 +255,11 @@ export function Services() {
       <ServiceMetal />
       <Section.Body className="service-sec-body relative overflow-visible">
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.navServices} title={t.doKicker}>
-          <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.doLead}</p>
+          <p className="max-w-[36ch] text-[1.02rem] text-pretty text-pearl">{t.doLead}</p>
         </Section.Heading>
+        <div className="mb-12 md:mb-16">
+          <WorkGallery items={WORK} priority />
+        </div>
         {isMd ? (
           <div className="service-stack">
             <div className={cn("service-row service-row-3", row1Open && "is-expanded")}>
@@ -348,160 +347,184 @@ export function Services() {
   );
 }
 
-function PriceIdentity({ name, desc, badge }: { name: string; desc: string; badge?: string }) {
-  const { t } = useLanguage();
-  return (
-    <div className="grid gap-3">
-      <Badge variant="outline" className="rounded-full border-lemon/35 bg-lemon/10 tracking-[0.2em] text-lemon uppercase">
-        {badge ?? t.launchBadge}
-      </Badge>
-      <CardTitle className="font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal">{name}</CardTitle>
-      <CardDescription className="max-w-[36ch] text-[0.95rem] leading-[1.55]">{desc}</CardDescription>
-    </div>
-  );
-}
-
-function PriceAmounts({
-  launch,
-  standard,
-  monthly,
-  monthlyLabel,
-  period,
-  vat,
-}: {
-  launch: number;
-  standard?: number;
-  monthly?: number;
-  monthlyLabel?: string;
-  period?: string;
-  vat: string;
-}) {
-  const { t } = useLanguage();
-  return (
-    <div>
-      <p className="font-serif text-[clamp(2rem,3.2vw,2.7rem)] leading-[1.12]">
-        {t.priceFrom} <span className="text-lemon">{launch} EUR</span>{" "}
-        <span className="mt-2 block font-sans text-[0.62rem] font-medium tracking-[0.16em] text-silver uppercase">
-          {vat}
-          {period ? ` ${period}` : ""}
-        </span>
-      </p>
-      {monthly != null && monthlyLabel ? (
-        <p className="mt-3 text-[0.95rem] leading-[1.5] text-muted-foreground">
-          + <span className="text-lemon">{monthly} EUR</span>
-          {monthlyLabel}
-        </p>
-      ) : null}
-      {standard != null ? (
-        <p className="mt-3 text-[0.85rem] text-muted-foreground">
-          <s className="text-foreground/40">{standard} EUR</s>
-          <span className="mt-0.5 block text-[0.62rem] tracking-[0.16em] uppercase">{t.stdLabel}</span>
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-function PriceIncludes({ items, note }: { items: readonly string[]; note?: string }) {
-  return (
-    <div className="grid gap-3">
-      <ul className="grid gap-2">
-        {items.map((item) => (
-          <li key={item} className="grid grid-cols-[auto_1fr] items-start gap-2.5 text-[0.95rem] leading-[1.5] text-platinum">
-            <span className="mt-[0.45em] size-1.5 shrink-0 rounded-full bg-azure" aria-hidden="true" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-      {note ? <p className="text-[0.85rem] leading-[1.5] text-muted-foreground">{note}</p> : null}
-    </div>
-  );
-}
-
 function optionalAmount(price: object, key: string): number | undefined {
   const value = (price as Record<string, unknown>)[key];
   return typeof value === "number" ? value : undefined;
 }
 
-function LaunchPriceCard({ pack, vat, delay = 0 }: { pack: PricePack; vat: string; delay?: number }) {
-  const { t } = useLanguage();
-  const price = CAVIAR.prices[pack.key];
-  const standard = optionalAmount(price, "standard");
-  const monthly = optionalAmount(price, "monthly");
-  const includes = "includes" in pack ? dictList(t, pack.includes) : null;
-  const note = "note" in pack ? dictText(t, pack.note) : undefined;
+function PriceIncludes({ items, note }: { items: readonly string[]; note?: string }) {
   return (
-    <Reveal className="h-full" delay={delay}>
-      <Card className="h-full min-h-[20rem] overflow-visible rounded-3xl border border-border bg-card py-0 ring-0">
-        <CardHeader className={PANEL_HEAD}>
-          <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
-          <PriceAmounts launch={price.launch} standard={standard} monthly={monthly} monthlyLabel={monthly != null ? t.pEshopMonthly : undefined} vat={vat} />
-          {includes ? <PriceIncludes items={includes} note={note} /> : note ? (
-            <p className="text-[0.85rem] leading-[1.5] text-muted-foreground">{note}</p>
-          ) : null}
-          <Button asChild variant="outline" className="mt-1 h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase">
-            <a href="#kontakt">{t.ctaQuote}</a>
-          </Button>
-        </CardHeader>
-      </Card>
-    </Reveal>
+    <div className="mt-4 grid gap-2">
+      <ul className="grid gap-1.5">
+        {items.map((item) => (
+          <li key={item} className="max-w-[52ch] text-[0.92rem] leading-[1.5] text-platinum">
+            {item}
+          </li>
+        ))}
+      </ul>
+      {note ? <p className="max-w-[52ch] text-[0.85rem] leading-[1.5] text-silver">{note}</p> : null}
+    </div>
   );
 }
 
-function FeaturedPriceCard({ pack, vat }: { pack: typeof FEATURED_PACK; vat: string }) {
+function PriceSum({
+  amount,
+  vat,
+  period,
+  monthly,
+  monthlyLabel,
+  standard,
+}: {
+  amount: number;
+  vat: string;
+  period?: string;
+  monthly?: number;
+  monthlyLabel?: string;
+  standard?: number;
+}) {
   const { t } = useLanguage();
-  const price = CAVIAR.prices[pack.key];
   return (
-    <Reveal className="self-start" delay={3}>
-      <Card className="min-h-[20rem] overflow-visible rounded-3xl border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6 py-0 ring-0">
-        <CardHeader className={PANEL_HEAD}>
-          <PriceIdentity name={dictText(t, pack.name)} desc={dictText(t, pack.desc)} />
-          <PriceAmounts launch={price.launch} standard={optionalAmount(price, "standard")} vat={vat} />
-          <Button asChild data-magnetic="" className="metal-fill mt-1 h-11 rounded-full px-6 text-[0.68rem] tracking-[0.16em] uppercase">
-            <a href="#kontakt">{t.ctaQuote}</a>
-          </Button>
-        </CardHeader>
-      </Card>
-    </Reveal>
+    <div className="md:text-right">
+      <p className="font-serif text-[clamp(1.85rem,3vw,2.45rem)] leading-none tabular-nums">
+        {t.priceFrom} {amount} EUR
+      </p>
+      <p className="mt-2 text-[0.72rem] font-medium tracking-[0.14em] text-silver uppercase">
+        {vat}
+        {period ? ` ${period}` : ""}
+      </p>
+      {monthly != null && monthlyLabel ? (
+        <p className="mt-2 text-[0.9rem] leading-[1.45] text-platinum">
+          + {monthly} EUR{monthlyLabel}
+        </p>
+      ) : null}
+      {standard != null ? (
+        <p className="mt-2 text-[0.82rem] text-silver">
+          <s>{standard} EUR</s>
+          <span className="mt-0.5 block text-[0.62rem] tracking-[0.14em] uppercase">{t.stdLabel}</span>
+        </p>
+      ) : null}
+    </div>
   );
 }
 
-function MonthlyPriceCard({ pack, vat, delay = 0 }: { pack: MonthlyPack; vat: string; delay?: number }) {
+function PriceRow({
+  name,
+  desc,
+  amount,
+  vat,
+  period,
+  monthly,
+  monthlyLabel,
+  standard,
+  includes,
+  note,
+  featured = false,
+  delay = 0,
+}: {
+  name: string;
+  desc: string;
+  amount: number;
+  vat: string;
+  period?: string;
+  monthly?: number;
+  monthlyLabel?: string;
+  standard?: number;
+  includes?: readonly string[];
+  note?: string;
+  featured?: boolean;
+  delay?: number;
+}) {
   const { t } = useLanguage();
-  const price = CAVIAR.monthly[pack.key];
-  const featured = "featured" in pack && pack.featured;
   return (
-    <Reveal className="h-full" delay={delay}>
-      <Card
+    <Reveal delay={delay}>
+      <article
         className={cn(
-          "h-full min-h-[20rem] overflow-visible rounded-3xl py-0 ring-0",
-          featured
-            ? "border border-azure/15 bg-linear-to-b from-azure/14 to-lemon/6"
-            : "border border-border bg-card",
+          "grid gap-5 py-8 md:grid-cols-[minmax(0,1.35fr)_auto] md:items-end md:gap-12",
+          featured && "rounded-3xl bg-card px-6 py-8 md:px-10 md:py-10",
         )}
       >
-        <CardHeader className={cn(PANEL_HEAD, "h-full")}>
-          <PriceIdentity
-            name={dictText(t, pack.name)}
-            desc={dictText(t, pack.desc)}
-            badge={featured ? t.mktRec : t.mktBadge}
+        <div>
+          <h3 className="font-serif text-[clamp(1.45rem,2.4vw,1.9rem)] leading-[1.15] font-normal text-pretty text-pearl">
+            {name}
+          </h3>
+          <p className="mt-2 max-w-[42ch] text-[0.95rem] leading-[1.55] text-pretty text-platinum">{desc}</p>
+          {includes ? <PriceIncludes items={includes} note={note} /> : note ? (
+            <p className="mt-3 max-w-[52ch] text-[0.85rem] leading-[1.5] text-silver">{note}</p>
+          ) : null}
+        </div>
+        <div className="flex flex-wrap items-end gap-x-6 gap-y-3 md:flex-col md:items-end">
+          <PriceSum
+            amount={amount}
+            vat={vat}
+            period={period}
+            monthly={monthly}
+            monthlyLabel={monthlyLabel}
+            standard={standard}
           />
-          <PriceAmounts launch={price.monthly} period={t.mktPerMonth} vat={vat} />
-          <PriceIncludes items={dictList(t, pack.includes)} />
           <Button
             asChild
             data-magnetic=""
             variant={featured ? undefined : "outline"}
             className={cn(
-              "mt-auto h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase",
+              "h-11 rounded-full text-[0.68rem] tracking-[0.16em] uppercase",
               featured && "metal-fill px-6",
             )}
           >
             <a href="#kontakt">{t.ctaQuote}</a>
           </Button>
-        </CardHeader>
-      </Card>
+        </div>
+      </article>
     </Reveal>
+  );
+}
+
+function LaunchRow({ pack, vat, delay = 0, featured = false }: { pack: PricePack; vat: string; delay?: number; featured?: boolean }) {
+  const { t } = useLanguage();
+  const price = CAVIAR.prices[pack.key];
+  return (
+    <PriceRow
+      name={dictText(t, pack.name)}
+      desc={dictText(t, pack.desc)}
+      amount={price.launch}
+      vat={vat}
+      monthly={optionalAmount(price, "monthly")}
+      monthlyLabel={optionalAmount(price, "monthly") != null ? t.pEshopMonthly : undefined}
+      standard={optionalAmount(price, "standard")}
+      includes={"includes" in pack ? dictList(t, pack.includes) : undefined}
+      note={"note" in pack ? dictText(t, pack.note) : undefined}
+      featured={featured}
+      delay={delay}
+    />
+  );
+}
+
+function MonthlyRow({ pack, vat, delay = 0 }: { pack: MonthlyPack; vat: string; delay?: number }) {
+  const { t } = useLanguage();
+  const price = CAVIAR.monthly[pack.key];
+  const featured = "featured" in pack && pack.featured;
+  return (
+    <PriceRow
+      name={dictText(t, pack.name)}
+      desc={dictText(t, pack.desc)}
+      amount={price.monthly}
+      vat={vat}
+      period={t.mktPerMonth}
+      includes={dictList(t, pack.includes)}
+      featured={featured}
+      delay={delay}
+    />
+  );
+}
+
+function PriceGroup({ kicker, title, children }: { kicker: string; title: string; children: ReactNode }) {
+  return (
+    <div className="mt-16 md:mt-20">
+      <Reveal className="mb-2 grid gap-3">
+        <Kicker>{kicker}</Kicker>
+        <h3 className="section-title">{title}</h3>
+      </Reveal>
+      {children}
+    </div>
   );
 }
 
@@ -511,50 +534,38 @@ export function Pricing() {
   return (
     <Section.Frame id="cennik">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.priceKicker} title={t.priceTitle} />
-        <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
+        <Section.Heading className="mb-6 max-w-[38ch] md:mb-8" kicker={t.priceKicker} title={t.priceTitle} />
+        <div>
           {LAUNCH_PACKS.map((pack, idx) => (
-            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
+            <LaunchRow key={pack.key} pack={pack} vat={vat} delay={idx} />
           ))}
-          <FeaturedPriceCard pack={FEATURED_PACK} vat={vat} />
+          <LaunchRow pack={FEATURED_PACK} vat={vat} delay={4} featured />
         </div>
-        <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
-          <Kicker>{t.dronKicker}</Kicker>
-          <h3 className="section-title">{t.dronTitle}</h3>
-        </Reveal>
-        <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
+        <PriceGroup kicker={t.dronKicker} title={t.dronTitle}>
           {DRONE_PACKS.map((pack, idx) => (
-            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
+            <LaunchRow key={pack.key} pack={pack} vat={vat} delay={idx} />
           ))}
-        </div>
-        <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
-          <p>{t.pDronNote}</p>
-        </Reveal>
-        <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
-          <Kicker>{t.brandKicker}</Kicker>
-          <h3 className="section-title">{t.brandTitle}</h3>
-        </Reveal>
-        <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
+          <Reveal className="max-w-[62ch] pt-2 text-[0.88rem] leading-[1.55] text-silver">
+            <p>{t.pDronNote}</p>
+          </Reveal>
+        </PriceGroup>
+        <PriceGroup kicker={t.brandKicker} title={t.brandTitle}>
           {BRAND_PACKS.map((pack, idx) => (
-            <LaunchPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
+            <LaunchRow key={pack.key} pack={pack} vat={vat} delay={idx} />
           ))}
-        </div>
-        <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
-          <p>{t.pBrandNote}</p>
-        </Reveal>
-        <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
-          <Kicker>{t.mktKicker}</Kicker>
-          <h3 className="section-title">{t.mktTitle}</h3>
-        </Reveal>
-        <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
+          <Reveal className="max-w-[62ch] pt-2 text-[0.88rem] leading-[1.55] text-silver">
+            <p>{t.pBrandNote}</p>
+          </Reveal>
+        </PriceGroup>
+        <PriceGroup kicker={t.mktKicker} title={t.mktTitle}>
           {MONTHLY_PACKS.map((pack, idx) => (
-            <MonthlyPriceCard key={pack.key} pack={pack} vat={vat} delay={idx} />
+            <MonthlyRow key={pack.key} pack={pack} vat={vat} delay={idx} />
           ))}
-        </div>
-        <Reveal className="mt-7 max-w-[62ch] text-[0.88rem] leading-[1.55] text-muted-foreground">
-          <p>{t.mktNote}</p>
-          <p className="mt-3">{t.priceFoot}</p>
-        </Reveal>
+          <Reveal className="max-w-[62ch] pt-2 text-[0.88rem] leading-[1.55] text-silver">
+            <p>{t.mktNote}</p>
+            <p className="mt-3">{t.priceFoot}</p>
+          </Reveal>
+        </PriceGroup>
       </Section.Body>
     </Section.Frame>
   );
@@ -565,22 +576,16 @@ export function Team() {
   return (
     <Section.Frame id="onas">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.teamKicker} title={t.aboutTitle}>
-          <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.aboutLead}</p>
+        <Section.Heading className="mb-10 max-w-[38ch] md:mb-14" kicker={t.teamKicker} title={t.aboutTitle}>
+          <p className="max-w-[36ch] text-[1.02rem] text-pretty text-pearl">{t.aboutLead}</p>
         </Section.Heading>
-        <ul className="grid list-none gap-6 md:grid-cols-2 md:gap-8">
+        <ul className="grid list-none gap-8 md:grid-cols-2 md:gap-16">
           {TEAM.map((p) => (
             <li key={p.name}>
               <Reveal>
-                <div
-                  className="relative grid aspect-4/5 max-h-[420px] max-w-[380px] place-items-center overflow-hidden rounded-3xl border border-border bg-linear-to-br from-[#1a1c22] to-[#0c0c10]"
-                  aria-hidden="true"
-                >
-                  <b className="relative z-[1] font-serif text-[clamp(4.2rem,10vw,6.5rem)] font-normal tracking-[0.06em] text-transparent bg-linear-to-b from-[#ffffff] via-[#d9dee6] to-[#8f98a6] bg-clip-text">
-                    {p.mono}
-                  </b>
-                </div>
-                <h3 className="mt-4 font-serif text-[clamp(1.4rem,2.4vw,1.9rem)] tracking-[0.02em]">{p.name}</h3>
+                <h3 className="font-serif text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.05] font-normal tracking-[-0.02em] text-pearl">
+                  {p.name}
+                </h3>
               </Reveal>
             </li>
           ))}
@@ -597,17 +602,13 @@ export function Faq() {
     <Section.Frame id="faq">
       <Section.Body>
         <Section.Heading className="mb-10 md:mb-16" kicker={t.navFaq} title={t.faqTitle} />
-        <Accordion type="single" collapsible className="grid gap-3">
+        <Accordion type="single" collapsible className="grid">
           {items.map((item, idx) => (
-            <AccordionItem
-              key={item.q}
-              value={`faq-${idx}`}
-              className="rounded-3xl border border-border bg-card px-6 not-last:border-b-0 md:px-8"
-            >
-              <AccordionTrigger className="rounded-full py-5 font-sans text-[clamp(1.15rem,2.2vw,1.4rem)] leading-[1.3] font-semibold tracking-[-0.02em] text-pearl hover:no-underline">
+            <AccordionItem key={item.q} value={`faq-${idx}`} className="border-b-0 px-0 not-last:border-b-0">
+              <AccordionTrigger className="rounded-none py-5 font-sans text-[clamp(1.15rem,2.2vw,1.4rem)] leading-[1.3] font-semibold tracking-[-0.02em] text-pearl hover:no-underline">
                 {item.q}
               </AccordionTrigger>
-              <AccordionContent className="max-w-[62ch] pb-6 leading-[1.55] text-muted-foreground">{item.a}</AccordionContent>
+              <AccordionContent className="max-w-[62ch] pb-6 leading-[1.55] text-platinum">{item.a}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
