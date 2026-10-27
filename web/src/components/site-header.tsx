@@ -47,8 +47,11 @@ export function LangSwitch({ className }: { className?: string }) {
       }}
       spacing={0}
       size="sm"
-      variant="outline"
-      className={cn("glass rounded-full border-0", className)}
+      variant="default"
+      className={cn(
+        "h-8 overflow-hidden rounded-full border border-pearl/12 bg-[rgb(14_14_18/0.72)] p-0 backdrop-blur-xl backdrop-saturate-150",
+        className,
+      )}
       aria-label={t.langLabel}
     >
       {LANGS.map((code) => (
@@ -56,8 +59,7 @@ export function LangSwitch({ className }: { className?: string }) {
           key={code}
           value={code}
           aria-label={t[LANG_NAME[code]]}
-          data-magnetic=""
-          className="h-8 rounded-full border-y-0! px-2.5 text-[0.68rem] tracking-[0.16em] uppercase first:border-l-0! last:border-r-0! data-[state=on]:border-transparent data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
+          className="h-full rounded-none border-0 px-2.5 text-[0.68rem] tracking-[0.16em] text-silver uppercase hover:bg-transparent hover:text-pearl data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
         >
           {code}
         </ToggleGroupItem>
@@ -113,7 +115,7 @@ export function SiteHeader() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         <LangSwitch />
         <Tooltip>
           <TooltipTrigger asChild>
@@ -130,7 +132,7 @@ export function SiteHeader() {
               variant="ghost"
               size="icon"
               data-nav-toggle=""
-              className="icon-disc inline-flex size-11 items-center justify-center lg:hidden"
+              className="inline-flex size-8 items-center justify-center rounded-full border border-pearl/12 bg-[rgb(14_14_18/0.72)] text-pearl shadow-none hover:bg-elev hover:text-pearl lg:hidden"
               aria-expanded={open}
               aria-label={open ? t.close : t.menu}
             >
