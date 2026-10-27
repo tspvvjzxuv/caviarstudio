@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { HeroSilverField } from "@/components/hero-silver-field";
 import { HERO_LOOP } from "@/lib/config";
+import { heroShouldRun } from "@/lib/hero-motion";
 
 type Conn = Navigator & {
   connection?: { saveData?: boolean };
@@ -28,14 +29,19 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
     };
 
     let inView = true;
+    const videoOnscreen = () => {
+      const r = video.getBoundingClientRect();
+      return r.bottom > 0 && r.top < (window.innerHeight || 1);
+    };
     const sync = () => {
       arm();
-      const hide = document.hidden || !inView || root.classList.contains("is-paused");
-      if (hide) {
+      const show =
+        heroShouldRun(document.hidden, inView || videoOnscreen()) && !root.classList.contains("is-paused");
+      if (!show) {
         video.pause();
         return;
       }
-      void video.play().catch(() => {});
+      if (video.paused) void video.play().catch(() => {});
     };
 
     const io = new IntersectionObserver(
@@ -54,7 +60,8 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
     document.addEventListener("visibilitychange", sync);
     window.addEventListener("pointerdown", sync, { passive: true, once: true });
     window.addEventListener("keydown", sync, { once: true });
-    window.addEventListener("scroll", sync, { passive: true, once: true });
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("pageshow", sync);
     sync();
 
     return () => {
@@ -66,6 +73,7 @@ function HeroLoop({ pausedRoot }: { pausedRoot: RefObject<HTMLDivElement | null>
       window.removeEventListener("pointerdown", sync);
       window.removeEventListener("keydown", sync);
       window.removeEventListener("scroll", sync);
+      window.removeEventListener("pageshow", sync);
       video.pause();
     };
   }, [pausedRoot]);

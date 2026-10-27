@@ -22,6 +22,7 @@ import {
   type Shape,
 } from "three";
 import { CAVIAR_LETTERS, CAVIAR_TRACK, type GlyphCmd } from "@/lib/caviar-glyphs";
+import { heroShouldRun, rafNeedsKick } from "@/lib/hero-motion";
 
 const LERP = 0.12;
 const FOV = 28;
@@ -337,6 +338,7 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   };
 
   const tick = () => {
+    raf = 0;
     if (!running) return;
     const tStart = performance.now();
     rx += (tRx - rx) * LERP;
@@ -374,8 +376,10 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   };
 
   const start = () => {
-    if (running) return;
+    if (!heroShouldRun(document.hidden, true)) return;
+    if (!rafNeedsKick(running, raf)) return;
     running = true;
+    fitCamera();
     raf = requestAnimationFrame(tick);
   };
   const stop = () => {
@@ -386,17 +390,22 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     }
   };
 
-  const onVis = () => {
-    if (document.hidden) stop();
-    else start();
-  };
-  const onScroll = () => {
-    readScroll();
-  };
-
   const heroOnscreen = () => {
     const r = hero.getBoundingClientRect();
     return r.width > 2 && r.height > 2 && r.bottom > 40 && r.top < (window.innerHeight || 1) - 8;
+  };
+
+  const syncRun = (intersecting?: boolean) => {
+    if (heroShouldRun(document.hidden, intersecting === true || heroOnscreen())) start();
+    else stop();
+  };
+
+  const onVis = () => {
+    syncRun();
+  };
+  const onScroll = () => {
+    readScroll();
+    syncRun();
   };
 
   const onWinResize = () => {
@@ -495,13 +504,18 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     }
   }
 
+  const onContextLost = (event: Event) => {
+    event.preventDefault();
+    stop();
+  };
+  const onContextRestored = () => {
+    fitCamera(true);
+    cacheHero();
+    syncRun();
+  };
+
   const io = new IntersectionObserver(([entry]) => {
-    if (document.hidden) {
-      stop();
-      return;
-    }
-    if (entry.isIntersecting || heroOnscreen()) start();
-    else stop();
+    syncRun(entry.isIntersecting);
   });
   const ro = new ResizeObserver(() => {
     fitCamera();
@@ -513,6 +527,8 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
   renderer.compile(scene, camera);
   const word = slot.querySelector(".caviar-word");
   if (word instanceof HTMLElement) word.style.opacity = "0";
+  canvas.addEventListener("webglcontextlost", onContextLost, false);
+  canvas.addEventListener("webglcontextrestored", onContextRestored, false);
   io.observe(hero);
   ro.observe(slot);
   requestAnimationFrame(() => {
@@ -537,6 +553,8 @@ export function mountHeroWordmark(canvas: HTMLCanvasElement): () => void {
     delete canvas.dataset.ry;
     delete canvas.dataset.gz;
     delete canvas.dataset.spread;
+    canvas.removeEventListener("webglcontextlost", onContextLost, false);
+    canvas.removeEventListener("webglcontextrestored", onContextRestored, false);
     io.disconnect();
     ro.disconnect();
     unbindGyro();

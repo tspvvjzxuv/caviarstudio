@@ -10,7 +10,8 @@
     "publish-root": "node scripts/publish-root.mjs",
     "build:pages": "npm run build && node scripts/publish-root.mjs",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test --experimental-strip-types src/lib/hero-motion.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

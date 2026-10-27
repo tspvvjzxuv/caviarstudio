@@ -1,28 +1,38 @@
 import { useEffect, type RefObject } from "react";
+import { heroShouldRun } from "@/lib/hero-motion";
+
+function elementOnscreen(el: HTMLElement) {
+  const r = el.getBoundingClientRect();
+  return r.bottom > -80 && r.top < (window.innerHeight || 1) + 80;
+}
 
 export function usePauseOffscreen(ref: RefObject<HTMLElement | null>, pausedClass = "is-paused") {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    const sync = (hidden: boolean) => {
-      el.classList.toggle(pausedClass, hidden);
+    const sync = (onscreen = elementOnscreen(el)) => {
+      el.classList.toggle(pausedClass, !heroShouldRun(document.hidden, onscreen));
     };
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        sync(!entry.isIntersecting || document.hidden);
+        sync(entry.isIntersecting || elementOnscreen(el));
       },
       { threshold: 0, rootMargin: "80px 0px 80px 0px" },
     );
     io.observe(el);
 
-    const onVis = () => sync(document.hidden);
-    document.addEventListener("visibilitychange", onVis);
+    const onReveal = () => sync();
+    document.addEventListener("visibilitychange", onReveal);
+    window.addEventListener("scroll", onReveal, { passive: true });
+    window.addEventListener("pageshow", onReveal);
 
     return () => {
       io.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
+      document.removeEventListener("visibilitychange", onReveal);
+      window.removeEventListener("scroll", onReveal);
+      window.removeEventListener("pageshow", onReveal);
     };
   }, [ref, pausedClass]);
 }
