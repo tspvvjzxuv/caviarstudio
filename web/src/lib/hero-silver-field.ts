@@ -8,6 +8,7 @@ import {
   Vector2,
   WebGLRenderer,
 } from "three";
+import { heroShouldRun, rafNeedsKick } from "@/lib/hero-motion";
 
 const VERT = `
 void main() {
@@ -95,6 +96,7 @@ export function mountSilverField(canvas: HTMLCanvasElement): () => void {
   };
 
   const tick = () => {
+    raf = 0;
     if (!running) return;
     material.uniforms.uTime.value = clock.getElapsedTime();
     renderer.render(scene, camera);
@@ -102,19 +104,24 @@ export function mountSilverField(canvas: HTMLCanvasElement): () => void {
   };
 
   const start = () => {
-    if (running) return;
+    if (!rafNeedsKick(running, raf)) return;
     running = true;
     clock.getDelta();
     raf = requestAnimationFrame(tick);
   };
 
+  const fieldOnscreen = () => {
+    const r = canvas.getBoundingClientRect();
+    return r.bottom > 0 && r.top < (window.innerHeight || 1);
+  };
+
   const onVis = () => {
-    if (document.hidden) stop();
-    else start();
+    if (heroShouldRun(document.hidden, fieldOnscreen())) start();
+    else stop();
   };
 
   const io = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting && !document.hidden) start();
+    if (heroShouldRun(document.hidden, entry.isIntersecting)) start();
     else stop();
   });
 
