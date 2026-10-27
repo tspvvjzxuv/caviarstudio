@@ -10,16 +10,26 @@ export const PLAYGROUND_PARAMS = {
   edge: 0.22,
   patternBlur: 0.016,
   liquid: 0.08,
-  speed: 0.035,
+  speed: 0.048,
   patternScale: 1.05,
   angleDeg: 35,
 } as const;
 
-/** Forward, hold, back, then a long angle ease. Seconds. ~39s round. */
+/** Slow continuous turn of the stripe field. ~70s per revolution. */
+export const METAL_SPIN_RAD_PER_SEC = 0.09;
+
+/** Shader ink: pick the farther plate so a bright sheen never swallows titles. */
+export const INK_LUMA_CUTOFF = 0.42;
+
+export function inkOnMetal(luma: number): "light" | "dark" {
+  return luma < INK_LUMA_CUTOFF ? "light" : "dark";
+}
+
+/** Forward, hold, back, then a long angle ease. Seconds. ~31s round. */
 export const METAL_CYCLE = {
-  legSec: 14,
-  pauseSec: 2.5,
-  angleSec: 8.5,
+  legSec: 11,
+  pauseSec: 2,
+  angleSec: 7,
   travel: 0.7,
 } as const;
 
@@ -109,7 +119,7 @@ export function metalCycleAt(timeSec: number) {
     angle = a0 + (a1 - a0) * smootherstep((local - legSec * 2 - pauseSec) / Math.max(angleSec, 0.001));
   }
 
-  return { flow, angle, focusX, focusY, cycle: i, local, round };
+  return { flow, angle: angle + t * METAL_SPIN_RAD_PER_SEC, focusX, focusY, cycle: i, local, round };
 }
 
 const POISSON_C = 0.01;
@@ -415,11 +425,11 @@ void main() {
   color = mix(color, azure * 0.42, azureAmt * 0.6);
 
   if (sdf > 2.0) discard;
-  // Title/icon ink: hard contrast against the metal (not a soft 1-c invert — mid tones stay muddy on tablets).
+  // Binary invert (INK_LUMA_CUTOFF 0.42): a bright hover sheen must go dark, never mid-gray.
   float ink = texture2D(u_ink, frag / u_resolution).a;
   float luma = dot(clamp(color, 0.0, 1.0), vec3(0.299, 0.587, 0.114));
-  vec3 inkColor = mix(vec3(1.0), vec3(0.02), smoothstep(0.22, 0.48, luma));
-  color = mix(color, inkColor, ink);
+  vec3 inkColor = luma < 0.42 ? vec3(0.98, 0.985, 1.0) : vec3(0.025, 0.028, 0.035);
+  color = mix(color, inkColor, step(0.12, ink));
   color *= opacity;
 
   gl_FragColor = vec4(color, opacity);
