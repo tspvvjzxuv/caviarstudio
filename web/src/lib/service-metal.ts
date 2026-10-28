@@ -20,6 +20,8 @@ import {
   playgroundFragment,
   playgroundVertex,
 } from "@/lib/liquid-metal-playground";
+import { rafNeedsKick } from "@/lib/hero-motion";
+import { anyCardOpen, metalShouldRun, panelTweening } from "@/lib/service-metal-run";
 
 const MAX_CARDS = 5;
 
@@ -44,14 +46,6 @@ function blankTexture() {
   texture.magFilter = LinearFilter;
   texture.needsUpdate = true;
   return texture;
-}
-
-function panelTweening(sec: HTMLElement) {
-  for (const panel of sec.querySelectorAll<HTMLElement>(".service-panel")) {
-    const rows = panel.style.gridTemplateRows;
-    if (rows && rows.endsWith("px")) return true;
-  }
-  return false;
 }
 
 // iOS WebKit composites the WebGL canvas on its own layer, so CSS mix-blend-mode on the titles has no backdrop to
@@ -95,7 +89,7 @@ function drawInk(ctx: CanvasRenderingContext2D, sec: HTMLElement, root: DOMRect,
   ctx.setTransform(sx, 0, 0, sy, -root.left * sx, -root.top * sy);
   ctx.fillStyle = "#fff";
   ctx.strokeStyle = "#fff";
-  const sel = 'button.service-chrome:not(.is-open):not([aria-expanded="true"]) .service-ink';
+  const sel = "button.service-chrome .service-ink";
   for (const ink of sec.querySelectorAll<HTMLElement>(sel)) {
     for (const disc of ink.querySelectorAll<HTMLElement>(".icon-disc")) {
       const b = disc.getBoundingClientRect();
@@ -114,6 +108,9 @@ function drawInk(ctx: CanvasRenderingContext2D, sec: HTMLElement, root: DOMRect,
     const cs = getComputedStyle(title);
     ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
     ctx.textBaseline = "alphabetic";
+    ctx.lineJoin = "round";
+    ctx.miterLimit = 2;
+    ctx.lineWidth = Math.max(1.4, Number.parseFloat(cs.fontSize) * 0.055);
     const ascent = ctx.measureText("Hg").fontBoundingBoxAscent;
     const range = document.createRange();
     const walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
@@ -126,7 +123,9 @@ function drawInk(ctx: CanvasRenderingContext2D, sec: HTMLElement, root: DOMRect,
         range.setStart(node, i);
         range.setEnd(node, end);
         const b = range.getBoundingClientRect();
-        ctx.fillText(text.slice(i, end), b.left, b.top + ascent);
+        const glyph = text.slice(i, end);
+        ctx.strokeText(glyph, b.left, b.top + ascent);
+        ctx.fillText(glyph, b.left, b.top + ascent);
         i = end - 1;
       }
     }
@@ -296,12 +295,19 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     if (sizeChanged && running) renderer.render(scene, camera);
   };
 
+  const phoneOpen = () => mobile && anyCardOpen(sec);
+
+  const shouldRun = () =>
+    metalShouldRun({
+      hidden: document.hidden,
+      onscreen: sectionOnscreen(),
+      paused: sec.classList.contains("is-paused"),
+      tweening: panelTweening(sec),
+      phoneOpen: phoneOpen(),
+    });
+
   const resize = () => {
-    if (panelTweening(sec)) {
-      cacheFieldBox();
-      syncCards();
-      return;
-    }
+    if (panelTweening(sec)) return;
     applySize();
   };
 
@@ -320,11 +326,17 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   const onPanelTween = (event: TransitionEvent) => {
     if (event.propertyName !== "grid-template-rows") return;
-    if (panelTweening(sec)) return;
+    if (panelTweening(sec)) {
+      stop();
+      return;
+    }
     applySize();
+    if (shouldRun()) start();
+    else stop();
   };
 
   const syncCards = () => {
+    if (panelTweening(sec)) return;
     const root = canvas.getBoundingClientRect();
     const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
     const cssW = Math.max(1, root.width);
@@ -353,10 +365,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       const box = btn.getBoundingClientRect();
       const x = box.left - root.left;
       const yCss = box.top - root.top;
-      const isOpen = btn.getAttribute("aria-expanded") === "true" || btn.classList.contains("is-open");
       rects[i].set(x * sx, (cssH - yCss - box.height) * sy, box.width * sx, box.height * sy);
-      open[i] = isOpen ? 1 : 0;
-      if (!isOpen && box.width > 2 && box.height > 2) {
+      open[i] = 0;
+      if (box.width > 2 && box.height > 2) {
         minX = Math.min(minX, x);
         minY = Math.min(minY, yCss);
         maxX = Math.max(maxX, x + box.width);
@@ -427,18 +438,15 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const start = () => {
-    if (running) return;
+    if (!shouldRun()) return;
+    if (!rafNeedsKick(running, raf)) return;
     running = true;
     applySize(true);
     raf = requestAnimationFrame(tick);
   };
 
   const onVis = () => {
-    if (document.hidden) {
-      stop();
-      return;
-    }
-    if (sectionOnscreen()) start();
+    if (shouldRun()) start();
     else stop();
   };
 
@@ -464,14 +472,28 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const io = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting && !document.hidden) start();
-    else if (!entry.isIntersecting) stop();
+    if (entry.isIntersecting && shouldRun()) start();
+    else if (!entry.isIntersecting || !shouldRun()) stop();
   });
 
-  const ro = new ResizeObserver(() => requestResize());
+  const ro = new ResizeObserver(() => {
+    if (panelTweening(sec)) {
+      stop();
+      return;
+    }
+    requestResize();
+    if (shouldRun()) start();
+    else stop();
+  });
   const mo = new MutationObserver(() => {
+    if (panelTweening(sec) || phoneOpen()) {
+      stop();
+      return;
+    }
     cardsReady = false;
     syncCards();
+    if (shouldRun()) start();
+    else stop();
   });
 
   let shaderOk = true;

@@ -187,7 +187,7 @@ function ServiceCard({
           aria-controls={panelId}
           onClick={() => onToggle(item.id)}
           className={cn(
-            "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7",
+            "service-chrome group/service flex h-full min-h-[9.5rem] w-full items-center gap-4 rounded-3xl p-5 text-left md:min-h-[11rem] md:gap-5 md:p-7 xl:min-h-[13rem] xl:p-8",
             expanded && "is-open",
           )}
         >
