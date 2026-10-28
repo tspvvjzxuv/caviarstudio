@@ -1,4 +1,5 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { isRevealVisible, REVEAL_IO } from "@/lib/reveal-gate";
 import { cn } from "@/lib/utils";
 
 export function Reveal({
@@ -16,8 +17,7 @@ export function Reveal({
     const el = ref.current;
     if (!el) return;
     const flush = () => {
-      const r = el.getBoundingClientRect();
-      if (r.bottom > 24 && r.top < window.innerHeight - 24) el.classList.add("in");
+      if (isRevealVisible(el.getBoundingClientRect(), window.innerHeight)) el.classList.add("in");
     };
     if (!("IntersectionObserver" in window)) {
       el.classList.add("in");
@@ -32,7 +32,7 @@ export function Reveal({
           }
         });
       },
-      { threshold: 0.08, rootMargin: "0px 0px -6% 0px" },
+      REVEAL_IO,
     );
     io.observe(el);
     requestAnimationFrame(flush);
