@@ -247,7 +247,8 @@
   font-weight: 800;
   font-style: normal;
   letter-spacing: -0.04em;
-  line-height: 0.92;
+  /* 0.92 clips Saira háček / acute under background-clip:text (Safari line box). */
+  line-height: 1.18;
   text-transform: uppercase;
   font-synthesis: none;
   text-rendering: geometricPrecision;
@@ -261,6 +262,9 @@
 .chrome-title {
   position: relative;
   isolation: auto;
+  /* Bloom + diacritics live inside this padding box. Negative margin keeps the layout origin. */
+  padding: 0.42em 0.48em;
+  margin: -0.42em -0.48em;
 }
 .section-title {
   width: max-content;
@@ -285,14 +289,16 @@
 .chrome-fill {
   position: relative;
   display: block;
+  overflow: visible;
+  /* Extra pad so Safari's background-clip:text mask includes Č / Í marks. */
+  padding-block: 0.18em 0.1em;
+  margin-block: -0.18em -0.1em;
 }
-/* Paint box stays 1em so the soft edge is never cut by the heading frame. Bloom glyphs stay transparent so they cannot rim the fill; only a M6-soft haze paints. */
+/* Bloom stays inside the heading padding box (inset 0) so a compositor clip on the title cannot crop the haze. Glyphs stay transparent so they cannot rim the fill; only a M6-soft haze paints. */
 .chrome-bloom {
   position: absolute;
-  left: -1em;
-  top: -1em;
-  right: -1em;
-  padding: 1em;
+  inset: 0;
+  padding: inherit;
   overflow: visible;
   color: transparent;
   pointer-events: none;
