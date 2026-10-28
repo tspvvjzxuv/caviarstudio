@@ -1,4 +1,6 @@
+import { useEffect, useRef } from "react";
 import { useLanguage } from "@/lib/language";
+import { heroShouldRun } from "@/lib/hero-motion";
 import {
   isTypographic,
   workLabels,
@@ -16,8 +18,81 @@ function TypePill({ label }: { label: string }) {
   );
 }
 
+function PhoneFilm({ src, poster }: { src: string; poster?: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+
+    const arm = () => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.setAttribute("playsinline", "true");
+      video.setAttribute("webkit-playsinline", "true");
+    };
+
+    let inView = false;
+    const videoOnscreen = () => {
+      const r = video.getBoundingClientRect();
+      return r.height > 8 && r.bottom > 0 && r.top < (window.innerHeight || 1);
+    };
+    const sync = () => {
+      arm();
+      if (!heroShouldRun(document.hidden, inView || videoOnscreen())) {
+        video.pause();
+        return;
+      }
+      if (video.paused) void video.play().catch(() => {});
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting && entry.intersectionRect.height > 8;
+        sync();
+      },
+      { threshold: 0, rootMargin: "40px 0px" },
+    );
+    io.observe(video);
+    video.addEventListener("canplay", sync);
+    video.addEventListener("loadeddata", sync);
+    document.addEventListener("visibilitychange", sync);
+    window.addEventListener("pageshow", sync);
+    sync();
+
+    return () => {
+      io.disconnect();
+      video.removeEventListener("canplay", sync);
+      video.removeEventListener("loadeddata", sync);
+      document.removeEventListener("visibilitychange", sync);
+      window.removeEventListener("pageshow", sync);
+      video.pause();
+    };
+  }, [src]);
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      poster={poster || undefined}
+      muted
+      playsInline
+      autoPlay
+      loop
+      preload="metadata"
+      width={390}
+      height={844}
+      aria-hidden="true"
+      disablePictureInPicture
+      disableRemotePlayback
+    />
+  );
+}
+
 function Screen({
   src,
+  videoSrc,
   alt,
   sizes,
   width,
@@ -26,6 +101,7 @@ function Screen({
   priority,
 }: {
   src: string;
+  videoSrc?: string;
   alt: string;
   sizes: string;
   width: number;
@@ -35,17 +111,21 @@ function Screen({
 }) {
   return (
     <div className="device-screen">
-      <img
-        src={src}
-        alt={decorative ? "" : alt}
-        width={width}
-        height={height}
-        loading={priority ? "eager" : "lazy"}
-        fetchPriority={priority ? "high" : "low"}
-        decoding="async"
-        sizes={sizes}
-        draggable={false}
-      />
+      {videoSrc ? (
+        <PhoneFilm src={videoSrc} poster={src} />
+      ) : (
+        <img
+          src={src}
+          alt={decorative ? "" : alt}
+          width={width}
+          height={height}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "low"}
+          decoding="async"
+          sizes={sizes}
+          draggable={false}
+        />
+      )}
       <span className="device-sheen" aria-hidden="true" />
     </div>
   );
@@ -56,7 +136,8 @@ function DevicePair({ item, priority }: { item: WorkItem; priority?: boolean }) 
   const title = workText(item.title, lang);
   const alt = workText(item.alt, lang, title);
   const desktop = workSrc(item.image);
-  const mobile = workSrc(item.imageMobile);
+  const mobile = workSrc(item.imageMobile) || desktop;
+  const film = workSrc(item.video);
   return (
     <div className="device-stage">
       <span className="device-glow" aria-hidden="true" />
@@ -75,11 +156,12 @@ function DevicePair({ item, priority }: { item: WorkItem; priority?: boolean }) 
         <span className="device-hinge" aria-hidden="true" />
         <span className="device-base" aria-hidden="true" />
       </div>
-      {mobile ? (
+      {mobile || film ? (
         <div className="device-phone" aria-hidden="true">
           <span className="device-island" />
           <Screen
             src={mobile}
+            videoSrc={film || undefined}
             alt=""
             sizes="(min-width: 768px) 12vw, 38vw"
             width={390}
