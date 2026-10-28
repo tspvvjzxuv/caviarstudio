@@ -31,7 +31,7 @@ describe("work scroll films", () => {
       assert.ok(existsSync(abs), `missing ${abs}`);
       const buf = readFileSync(abs);
       assert.equal(buf.subarray(4, 8).toString("ascii"), "ftyp", `${file} is not an mp4`);
-      assert.ok(buf.length > 1_000_000, `${file} is too small`);
+      assert.ok(buf.length > 500_000, `${file} is too small`);
     }
   });
 
@@ -39,6 +39,10 @@ describe("work scroll films", () => {
     assert.match(tile, /function WorkFilm/);
     assert.match(tile, /<video[\s\S]*muted[\s\S]*playsInline[\s\S]*autoPlay[\s\S]*loop/);
     assert.match(tile, /className="project-film"/);
+    assert.match(tile, /height=\{560\}/);
     assert.doesNotMatch(tile, /DevicePair|device-laptop|device-phone|device-stage/);
+    const css = readFileSync(join(here, "../index.css"), "utf8");
+    assert.match(css, /aspect-ratio:\s*500\s*\/\s*560/);
+    assert.doesNotMatch(css, /aspect-ratio:\s*500\s*\/\s*830/);
   });
 });
