@@ -107,7 +107,7 @@ export function ServiceDetail({
             <Icon />
           </IconDisc>
         ) : null}
-        <h3 className="min-w-0 font-serif text-[clamp(1.45rem,2.6vw,1.9rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pearl">
+        <h3 className="chrome-title min-w-0 text-[clamp(1.45rem,2.6vw,1.9rem)]">
           {title}
         </h3>
       </div>

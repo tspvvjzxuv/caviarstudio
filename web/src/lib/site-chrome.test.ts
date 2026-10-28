@@ -49,11 +49,25 @@ describe("service tile titles", () => {
     assert.match(title, /text-rendering:\s*geometricPrecision/);
   });
 
+  it("sets condensed chrome type on tile titles without a text-fill bitmap", () => {
+    assert.match(css, /--font-display:\s*"Saira Extra Condensed"/);
+    assert.match(css, /\.service-title-live[\s\S]*?background-clip:\s*text/);
+    assert.doesNotMatch(
+      css,
+      /\.service-title-live[\s\S]{0,400}-webkit-text-fill-color/,
+      "chrome titles must stay vector CSS glyphs",
+    );
+  });
+
   it("keeps closed-tile titles and icons as live CSS, not a hidden atlas", () => {
     const closedInk = css.match(/\.service-sec\.has-metal \.service-chrome \.service-ink\s*\{([^}]+)\}/);
     assert.ok(closedInk, "missing closed-tile ink rule");
     assert.doesNotMatch(closedInk[1], /opacity:\s*0/, "hiding CSS ink leaves only the low-res metal bitmap");
-    assert.match(closedInk[1], /mix-blend-mode:\s*difference/);
+    assert.match(closedInk[1], /mix-blend-mode:\s*normal/, "chrome titles sit on metal; icons still difference");
+    assert.match(
+      css,
+      /\.service-sec\.has-metal \.service-chrome:not\(\.is-open\):not\(\[aria-expanded="true"\]\) \.icon-disc[\s\S]*?mix-blend-mode:\s*difference/,
+    );
     assert.doesNotMatch(
       css,
       /\.service-sec\.has-metal(?:\.ink-gl)? \.service-chrome \.service-ink\s*\{[^}]*opacity:\s*0/,

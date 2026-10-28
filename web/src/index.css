@@ -13,6 +13,7 @@
   --font-heading: "Bodoni Moda", Didot, "Times New Roman", serif;
   --font-serif: "Bodoni Moda", Didot, "Times New Roman", serif;
   --font-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Saira Extra Condensed", "Arial Narrow", Impact, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -251,6 +252,38 @@
   background: none;
   font-synthesis: none;
   text-rendering: geometricPrecision;
+}
+
+/* Impact-like condensed chrome: Čo robíme + service/work names. color:transparent, not -webkit-text-fill-color (iPhone bitmap). */
+.chrome-title,
+#sluzby .section-title,
+.service-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  color: #e8eaee;
+}
+.chrome-title,
+#sluzby .section-title,
+.service-title-live {
+  background-image: linear-gradient(
+    180deg,
+    #1a1b20 0%,
+    #4a4e56 22%,
+    #8b929c 48%,
+    #d5d9e0 74%,
+    #ffffff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0.18em 0.42em rgb(255 255 255 / 0.3);
 }
 
 .kicker {
@@ -1172,8 +1205,8 @@ button.nav-bean[aria-expanded="true"] {
   filter: none;
   opacity: 1;
   will-change: auto;
-  mix-blend-mode: difference;
-  -webkit-mix-blend-mode: difference;
+  mix-blend-mode: normal;
+  -webkit-mix-blend-mode: normal;
 }
 .service-sec.has-metal .service-chrome.is-open .service-ink,
 .service-sec.has-metal .service-chrome[aria-expanded="true"] .service-ink {
@@ -1195,12 +1228,28 @@ button.nav-bean[aria-expanded="true"] {
 }
 .service-sec.has-metal .service-chrome .font-serif,
 .service-sec.has-metal .service-chrome .service-title-live {
-  color: #fff;
   font-synthesis: none;
   text-rendering: geometricPrecision;
-  text-shadow: none;
   isolation: auto;
   transform: none;
+}
+.service-sec.has-metal .service-chrome .font-serif {
+  color: #fff;
+  text-shadow: none;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+  mix-blend-mode: difference;
+  -webkit-mix-blend-mode: difference;
+}
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
+  background-image: linear-gradient(
+    180deg,
+    #9aa3ae 0%,
+    #d0d5dc 40%,
+    #f4f5f7 78%,
+    #ffffff 100%
+  );
+  text-shadow: none;
 }
 .service-sec.has-metal .service-chrome .icon-disc {
   color: #fff;
