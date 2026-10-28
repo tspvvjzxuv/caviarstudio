@@ -15,7 +15,7 @@ const PHONE_FILMS = [
   ["malovanienatvar2", "/media/work/malovanie-scroll.mp4", "malovanie-scroll.mp4"],
 ] as const;
 
-describe("work phone scroll films", () => {
+describe("work scroll films", () => {
   it("sets a video path on each live site", () => {
     for (const [id, path] of PHONE_FILMS) {
       const item = WORK.find((row) => row.id === id);
@@ -34,11 +34,10 @@ describe("work phone scroll films", () => {
     }
   });
 
-  it("plays the film in the phone, not the laptop", () => {
-    assert.match(tile, /function PhoneFilm/);
+  it("plays one muted loop video, with no device chrome", () => {
+    assert.match(tile, /function WorkFilm/);
     assert.match(tile, /<video[\s\S]*muted[\s\S]*playsInline[\s\S]*autoPlay[\s\S]*loop/);
-    assert.match(tile, /videoSrc=\{film/);
-    const laptop = tile.slice(tile.indexOf("device-laptop"), tile.indexOf("device-phone"));
-    assert.doesNotMatch(laptop, /videoSrc/);
+    assert.match(tile, /className="project-film"/);
+    assert.doesNotMatch(tile, /DevicePair|device-laptop|device-phone|device-stage/);
   });
 });

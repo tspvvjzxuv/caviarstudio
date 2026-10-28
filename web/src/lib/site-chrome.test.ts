@@ -36,6 +36,34 @@ describe("Čo robíme heading", () => {
   });
 });
 
+describe("service tile titles", () => {
+  it("does not bitmap tile titles with -webkit-text-fill-color", () => {
+    const live = css.match(/\.service-sec\.has-metal \.service-chrome \.service-title-live\s*\{([^}]+)\}/);
+    assert.ok(live, "missing metal tile title rule");
+    assert.doesNotMatch(
+      live[1],
+      /-webkit-text-fill-color/,
+      "fill-color rasterizes Bodoni on iPhone the same way it bitmapped .section-title",
+    );
+    const title = rule(css, ".service-title");
+    assert.match(title, /text-rendering:\s*geometricPrecision/);
+  });
+
+  it("shows real CSS glyphs on an open tile", () => {
+    assert.match(
+      css,
+      /\.service-sec\.has-metal\.ink-gl \.service-chrome\.is-open \.service-ink/,
+      "open tiles must opt out of the canvas ink hide",
+    );
+    const openInk = css.match(
+      /\.service-sec\.has-metal\.ink-gl \.service-chrome\.is-open \.service-ink[\s\S]*?\{([^}]+)\}/,
+    );
+    assert.ok(openInk, "missing open-tile ink rule");
+    assert.match(openInk[1], /opacity:\s*1/);
+    assert.match(openInk[1], /mix-blend-mode:\s*normal/);
+  });
+});
+
 describe("open mobile menu chrome", () => {
   it("does not ship the old full-bleed black sheet", () => {
     const sheetAt = header.indexOf("<SheetContent");

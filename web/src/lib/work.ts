@@ -13,7 +13,7 @@ export type WorkItem = {
   image?: string;
   /** Mobile still of the same live site. Example: "/media/work/ptra-mobile.webp" */
   imageMobile?: string;
-  /** Muted phone-frame scroll film. Example: "/media/work/ptra-scroll.mp4" */
+  /** Muted autoplay scroll loop. Example: "/media/work/ptra-scroll.mp4" */
   video?: string;
   title: WorkCopy;
   line?: WorkCopy;
