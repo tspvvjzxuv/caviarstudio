@@ -1205,8 +1205,8 @@ button.nav-bean[aria-expanded="true"] {
   filter: none;
   opacity: 1;
   will-change: auto;
-  mix-blend-mode: difference;
-  -webkit-mix-blend-mode: difference;
+  mix-blend-mode: normal;
+  -webkit-mix-blend-mode: normal;
 }
 .service-sec.has-metal .service-chrome.is-open .service-ink,
 .service-sec.has-metal .service-chrome[aria-expanded="true"] .service-ink {
@@ -1237,7 +1237,18 @@ button.nav-bean[aria-expanded="true"] {
   color: #fff;
   text-shadow: none;
 }
+.service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .icon-disc {
+  mix-blend-mode: difference;
+  -webkit-mix-blend-mode: difference;
+}
 .service-sec.has-metal .service-chrome:not(.is-open):not([aria-expanded="true"]) .service-title-live {
+  background-image: linear-gradient(
+    180deg,
+    #9aa3ae 0%,
+    #d0d5dc 40%,
+    #f4f5f7 78%,
+    #ffffff 100%
+  );
   text-shadow: none;
 }
 .service-sec.has-metal .service-chrome .icon-disc {

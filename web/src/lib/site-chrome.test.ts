@@ -63,7 +63,11 @@ describe("service tile titles", () => {
     const closedInk = css.match(/\.service-sec\.has-metal \.service-chrome \.service-ink\s*\{([^}]+)\}/);
     assert.ok(closedInk, "missing closed-tile ink rule");
     assert.doesNotMatch(closedInk[1], /opacity:\s*0/, "hiding CSS ink leaves only the low-res metal bitmap");
-    assert.match(closedInk[1], /mix-blend-mode:\s*difference/);
+    assert.match(closedInk[1], /mix-blend-mode:\s*normal/, "chrome titles sit on metal; icons still difference");
+    assert.match(
+      css,
+      /\.service-sec\.has-metal \.service-chrome:not\(\.is-open\):not\(\[aria-expanded="true"\]\) \.icon-disc[\s\S]*?mix-blend-mode:\s*difference/,
+    );
     assert.doesNotMatch(
       css,
       /\.service-sec\.has-metal(?:\.ink-gl)? \.service-chrome \.service-ink\s*\{[^}]*opacity:\s*0/,
