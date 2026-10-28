@@ -14,7 +14,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ["lucide-react"],
+    include: ["lucide-react", "gsap", "@gsap/react"],
   },
   build: {
     outDir: "dist",

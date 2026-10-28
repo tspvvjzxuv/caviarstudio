@@ -3,6 +3,7 @@ import { ChromeHeading } from "@/components/section";
 import { WorkGallery } from "@/components/work-gallery";
 import { IconDisc } from "@/components/icon-disc";
 import { useLanguage } from "@/lib/language";
+import { revealAfterOpen } from "@/lib/service-flip";
 import type { WorkItem } from "@/lib/work";
 import { cn } from "@/lib/utils";
 
@@ -10,21 +11,6 @@ type ServiceIcon = ComponentType<SVGProps<SVGSVGElement>>;
 
 function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function revealAfterOpen(trigger: HTMLElement | null, panel: HTMLElement) {
-  const mobile = window.matchMedia("(max-width: 767px)").matches;
-  const box = panel.getBoundingClientRect();
-  if (mobile) {
-    const card = (trigger?.closest(".service-card") as HTMLElement | null) || trigger;
-    const cardBox = card?.getBoundingClientRect();
-    const hidden = (cardBox && cardBox.top < 64) || box.bottom > window.innerHeight - 12;
-    if (!hidden) return;
-    card?.scrollIntoView({ block: "start", behavior: "auto" });
-    return;
-  }
-  if (box.top < window.innerHeight - 48) return;
-  panel.scrollIntoView({ block: "nearest", behavior: "auto" });
 }
 
 function measureOpenHeight(inner: HTMLElement) {
@@ -181,6 +167,12 @@ export function ServicePanel({
 
     const to = open ? measureOpenHeight(inner) : 0;
     lastH.current = to;
+
+    const flipping = Boolean(panel.closest(".service-sec")?.classList.contains("is-flipping"));
+    if (flipping) {
+      panel.style.gridTemplateRows = `${Math.max(0, Math.round(to))}px`;
+      return;
+    }
 
     if (reducedMotion()) {
       panel.style.gridTemplateRows = open ? "1fr" : "0fr";

@@ -1,4 +1,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type RefObject } from "react";
+import { useGSAP } from "@/lib/gsap";
+import { captureServiceFlip, playServiceFlip } from "@/lib/service-flip";
+import { prefersReducedMotion } from "@/lib/gsap-motion";
 import { usePrefersMd } from "@/hooks/use-mobile";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import { HeroCaviarMark } from "@/components/hero-wordmark-3d";
@@ -220,9 +223,23 @@ export function Services() {
   const isMd = usePrefersMd();
   const deckRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const flipState = useRef<ReturnType<typeof captureServiceFlip> | null>(null);
   const [open, setOpen] = useState("");
   const [shown, setShown] = useState("");
   usePauseOffscreen(deckRef);
+
+  useGSAP(
+    () => {
+      const deck = deckRef.current;
+      const state = flipState.current;
+      if (!deck || !state) return;
+      playServiceFlip(deck, state);
+      return () => {
+        deck.classList.remove("is-flipping");
+      };
+    },
+    { scope: deckRef, dependencies: [open], revertOnUpdate: true },
+  );
 
   useEffect(() => {
     const run = () => preloadWorkShots();
@@ -235,6 +252,8 @@ export function Services() {
   }, []);
 
   const toggleService = (id: string) => {
+    const deck = deckRef.current;
+    if (deck && !prefersReducedMotion()) flipState.current = captureServiceFlip(deck);
     if (open === id) {
       setOpen("");
       return;

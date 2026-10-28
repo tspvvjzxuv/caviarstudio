@@ -46,6 +46,15 @@ describe("metalShouldRun", () => {
 });
 
 describe("panelTweening / anyCardOpen", () => {
+  it("treats is-flipping as a live tween so metal does not resize mid-Flip", () => {
+    const sec = {
+      classList: { contains: (name: string) => name === "is-flipping" },
+      querySelectorAll: () => [],
+      querySelector: () => null,
+    } as unknown as ParentNode;
+    assert.equal(panelTweening(sec), true);
+  });
+
   it("treats px grid rows as a live tween", () => {
     const sec = {
       querySelectorAll: () => [{ style: { gridTemplateRows: "180px" } }],
@@ -100,6 +109,7 @@ describe("panelTweening / anyCardOpen", () => {
     assert.match(metal, /const applySize = \(force = false\) => \{\s*if \(gpuHold\(\)\) return;/);
     assert.match(metal, /if \(gpuHold\(\)\) \{\s*stop\(\);\s*return;/);
     assert.match(panel, /function measureOpenHeight\(inner: HTMLElement\) \{[^}]*inner\.scrollHeight/);
+    assert.match(panel, /is-flipping/);
   });
 
   it("keeps metal DPR capped and does not bitmap closed titles or icons", () => {

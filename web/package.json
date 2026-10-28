@@ -11,11 +11,12 @@
     "build:pages": "npm run build && node scripts/publish-root.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "node --test --experimental-strip-types src/lib/hero-motion.test.ts src/lib/reveal-gate.test.ts src/lib/service-metal-run.test.ts src/lib/work.test.ts src/lib/site-chrome.test.ts"
+    "test": "node --test --experimental-strip-types src/lib/hero-motion.test.ts src/lib/reveal-gate.test.ts src/lib/service-metal-run.test.ts src/lib/work.test.ts src/lib/site-chrome.test.ts src/lib/gsap-motion.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@fontsource-variable/geist": "^5.3.0",
+    "@gsap/react": "^2.1.2",
     "@shadcn/react": "^0.3.1",
     "@tailwindcss/vite": "^4.3.3",
     "class-variance-authority": "^0.7.1",
@@ -23,6 +24,7 @@
     "cn": "^0.4.0",
     "date-fns": "^4.4.0",
     "embla-carousel-react": "^8.6.0",
+    "gsap": "^3.15.0",
     "input-otp": "^1.5.0",
     "lucide-react": "^1.57.0",
     "next-themes": "^0.4.6",

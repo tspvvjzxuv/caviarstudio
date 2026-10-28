@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { cn } from "@/lib/utils";
 
 export function CaviarLogo({
@@ -6,14 +6,16 @@ export function CaviarLogo({
   wordClassName,
   showTagline = true,
   wordOverlay,
+  ref,
 }: {
   className?: string;
   wordClassName?: string;
   showTagline?: boolean;
   wordOverlay?: ReactNode;
+  ref?: Ref<HTMLSpanElement>;
 }) {
   return (
-    <span className={cn("caviar-lockup inline-flex flex-col items-center", className)}>
+    <span ref={ref} className={cn("caviar-lockup inline-flex flex-col items-center", className)}>
       <span className="caviar-word-slot">
         <span className={cn("caviar-word", wordClassName)}>CAVIAR</span>
         {wordOverlay}
