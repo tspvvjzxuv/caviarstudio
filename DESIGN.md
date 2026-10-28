@@ -115,10 +115,10 @@ Do not use metallic gold, champagne, or mustard. Lemon is a vivid electric / lem
 
 ## Typography
 
-Two families plus one display cut: **Bodoni Moda** for the wordmark, price numbers, and short display names, **DM Sans** for UI, body, labels, and most **section headings**, **Saira Extra Condensed** (800, Latin-ext) for Čo robíme / service / work names.
+Two families plus one display cut: **Bodoni Moda** for the wordmark, price numbers, and short display names, **DM Sans** for UI, body, and labels, **Saira Extra Condensed** (800, Latin-ext) for every section and product heading plus service / work names.
 
-- **Section titles:** DM Sans 600, pearl `#F4F5F7`, no gradient and no hairline serif. Size `clamp(2.5rem, 7vw, 4rem)`. Measure is `min(100%, 20ch)` of the heading font (not a squeezed body-size column), so long titles stay 1–2 lines on desktop and wrap naturally at 390px.
-- **Čo robíme heading, service tile names (Fotky / Videá / Weby / Dron / Branding), open-panel repeats, and work titles:** Saira Extra Condensed 800, uppercase, tight tracking (`-0.04em`). Vertical chrome gradient (charcoal top → bright silver-white) via `background-clip: text` and `color: transparent` — not `-webkit-text-fill-color`, not a WebGL atlas. Soft white `text-shadow` bloom under the bright edge. Closed metal tiles use a brighter chrome ramp so type stays readable on silver; icons still difference-blend.
+- **Section and product titles:** Saira Extra Condensed 800, uppercase, tight tracking (`-0.04em`), size `clamp(2.5rem, 7vw, 4rem)`, measure `min(100%, 20ch)`. Same chrome on Čo robíme, Cenník, Kontakt, Tím, FAQ, and the Cenník product headings (Letecké zábery / Nový vizuál / Mesačné balíky).
+- **Chrome type:** vertical charcoal → bright silver-white via `background-clip: text` and `color: transparent` — not `-webkit-text-fill-color`, not a WebGL atlas. White bloom is `filter: drop-shadow` (text-shadow is cropped by `background-clip: text`) with padding so overflow-hidden ancestors do not clip the halo. Closed metal tiles use a brighter chrome ramp so type stays readable on silver; icons still difference-blend. Service tile names, open-panel repeats, and work titles share this cut.
 - **Display:** Upright Bodoni, slightly tight tracking, only where a short mark can take it (logo, prices, card names). The logo is uppercase, tracked 0.12em, weight 500.
 - **Body:** 16–18px, long line-height, max ~42–58ch.
 - **Labels:** Small caps via uppercase + wide tracking. Never more than two weights on a screen (400 and 500/600).
