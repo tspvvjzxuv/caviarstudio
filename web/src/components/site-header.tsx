@@ -47,8 +47,8 @@ export function LangSwitch({ className }: { className?: string }) {
       }}
       spacing={0}
       size="sm"
-      variant="outline"
-      className={cn("glass rounded-full border-0", className)}
+      variant="default"
+      className={cn("lang-switch", className)}
       aria-label={t.langLabel}
     >
       {LANGS.map((code) => (
@@ -56,8 +56,7 @@ export function LangSwitch({ className }: { className?: string }) {
           key={code}
           value={code}
           aria-label={t[LANG_NAME[code]]}
-          data-magnetic=""
-          className="h-8 rounded-full border-y-0! px-2.5 text-[0.68rem] tracking-[0.16em] uppercase first:border-l-0! last:border-r-0! data-[state=on]:border-transparent data-[state=on]:bg-azure-deep data-[state=on]:text-pearl"
+          className="lang-switch-item rounded-none!"
         >
           {code}
         </ToggleGroupItem>
@@ -71,7 +70,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="glass fixed inset-x-0 top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 border-0 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] shadow-none [view-transition-name:site-header]">
+    <header className="glass fixed z-50 flex items-center justify-between gap-3 border-0 px-5 shadow-none [view-transition-name:site-header]">
       <a href="#top" className="relative z-[52]" aria-label="Caviar">
         <CaviarLogo className="text-[1.05rem] sm:text-[1.15rem]" />
       </a>
@@ -108,11 +107,11 @@ export function SiteHeader() {
               variant="ghost"
               size="icon"
               data-nav-toggle=""
-              className="inline-flex size-11 items-center justify-center rounded-full border border-pearl/12 bg-[rgb(14_14_18/0.72)] text-pearl shadow-none backdrop-blur-xl hover:bg-elev hover:text-pearl lg:hidden"
+              className="nav-bean inline-flex size-11 items-center justify-center border border-pearl/14 bg-white/10 text-pearl shadow-none hover:bg-white/14 hover:text-pearl lg:hidden"
               aria-expanded={open}
               aria-label={open ? t.close : t.menu}
             >
-              {open ? <X className="size-4" strokeWidth={1.75} /> : <Menu className="size-4" strokeWidth={1.75} />}
+              {open ? <X className="size-4" strokeWidth={1.5} /> : <Menu className="size-4" strokeWidth={1.5} />}
             </Button>
           </SheetTrigger>
           <SheetContent
