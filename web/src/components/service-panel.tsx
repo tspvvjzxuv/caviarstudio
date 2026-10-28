@@ -26,16 +26,9 @@ function revealAfterOpen(trigger: HTMLElement | null, panel: HTMLElement) {
   panel.scrollIntoView({ block: "nearest", behavior: "auto" });
 }
 
-function measureOpenHeight(panel: HTMLElement, inner: HTMLElement) {
-  const prev = panel.style.gridTemplateRows;
-  const prevTransition = panel.style.transition;
-  panel.style.transition = "none";
-  panel.style.gridTemplateRows = "1fr";
-  const height = Math.ceil(Math.max(inner.scrollHeight, inner.getBoundingClientRect().height));
-  panel.style.gridTemplateRows = prev;
-  void panel.offsetHeight;
-  panel.style.transition = prevTransition;
-  return height;
+function measureOpenHeight(inner: HTMLElement) {
+  // shortcut: don't flash 1fr (grows the metal canvas); settle still uses 1fr
+  return Math.ceil(Math.max(inner.scrollHeight, inner.offsetHeight, 8));
 }
 
 function tweenRows(
@@ -185,7 +178,7 @@ export function ServicePanel({
     panel.style.gridTemplateRows = `${Math.max(0, Math.round(from))}px`;
     void panel.offsetHeight;
 
-    const to = open ? Math.max(8, measureOpenHeight(panel, inner)) : 0;
+    const to = open ? measureOpenHeight(inner) : 0;
     lastH.current = to;
 
     if (reducedMotion()) {
