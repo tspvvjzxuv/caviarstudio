@@ -239,7 +239,7 @@
   }
 }
 
-/* Condensed chrome on every section/product heading. color:transparent, not -webkit-text-fill-color (iPhone bitmap). */
+/* Condensed chrome on every section/product heading. Fill is on .chrome-fill so bloom is not clipped to the heading box. */
 .section-title,
 .chrome-title,
 .service-title {
@@ -254,17 +254,21 @@
   -webkit-font-smoothing: antialiased;
   color: #e8eaee;
   overflow: visible;
-}
-.section-title {
-  font-size: clamp(2.5rem, 7vw, 4rem);
-  max-width: min(100%, 20ch);
-  text-wrap: balance;
-  /* bloom room: drop-shadow is clipped by overflow:hidden / tight boxes */
-  padding: 0.28em 0.38em 0.58em;
-  margin: -0.28em -0.38em -0.58em;
+  contain: none;
+  clip-path: none;
 }
 .section-title,
-.chrome-title,
+.chrome-title {
+  position: relative;
+  isolation: auto;
+}
+.section-title {
+  width: max-content;
+  max-width: min(100%, 20ch);
+  font-size: clamp(2.5rem, 7vw, 4rem);
+  text-wrap: balance;
+}
+.chrome-fill,
 .service-title-live {
   background-image: linear-gradient(
     180deg,
@@ -278,13 +282,23 @@
   background-clip: text;
   color: transparent;
 }
-/* drop-shadow follows the clipped glyphs; text-shadow is cropped by background-clip:text */
-.section-title,
-.chrome-title {
-  filter:
-    drop-shadow(0 0 0.08em rgb(255 255 255 / 0.95))
-    drop-shadow(0 0.1em 0.32em rgb(255 255 255 / 0.55))
-    drop-shadow(0 0.2em 0.7em rgb(255 255 255 / 0.32));
+.chrome-fill {
+  position: relative;
+  display: block;
+}
+/* white copy behind the clip fill — text-shadow on a real color, so it can spill past the frame */
+.chrome-bloom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  color: #fff;
+  pointer-events: none;
+  user-select: none;
+  text-shadow:
+    0 0 0.14em #fff,
+    0 0 0.36em rgb(255 255 255 / 0.9),
+    0 0.1em 0.7em rgb(255 255 255 / 0.45);
 }
 
 .kicker {
@@ -308,18 +322,18 @@
   box-shadow: 0 0 10px rgb(61 138 255 / 55%);
 }
 
-#sluzby {
-  overflow: visible;
-}
-
+#sluzby,
 #cennik,
 #onas,
 #faq,
-#kontakt,
+#kontakt {
+  overflow: visible;
+  contain: none;
+}
+
 footer {
   content-visibility: auto;
   contain-intrinsic-size: auto 1100px;
-  overflow: visible;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -709,6 +723,8 @@ button.nav-bean[aria-expanded="true"] {
 }
 
 .js .reveal {
+  overflow: visible;
+  contain: none;
   opacity: 1;
   transform: translate3d(0, 16px, 0);
 }

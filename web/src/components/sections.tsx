@@ -40,7 +40,7 @@ import { useLanguage } from "@/lib/language";
 import { BRAND_EXAMPLES, DRONE_EXAMPLES, PHOTO_EXAMPLES, preloadWorkShots, VIDEO_EXAMPLES, WORK, type WorkItem } from "@/lib/work";
 import { Kicker, Reveal } from "@/components/reveal";
 import { HeroBackdrop } from "@/components/hero-backdrop";
-import { Section } from "@/components/section";
+import { ChromeHeading, Section } from "@/components/section";
 import { ServiceMetal } from "@/components/service-metal";
 import { ServicePanel } from "@/components/service-panel";
 import { cn } from "@/lib/utils";
@@ -253,7 +253,7 @@ export function Services() {
   return (
     <Section.Frame id="sluzby" density="compact" className="border-t border-border">
       <Section.Body>
-        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.navServices} title={t.doKicker}>
+        <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" title={t.doKicker}>
           <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.doLead}</p>
         </Section.Heading>
       </Section.Body>
@@ -521,7 +521,7 @@ export function Pricing() {
         </div>
         <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
           <Kicker>{t.dronKicker}</Kicker>
-          <h3 className="section-title">{t.dronTitle}</h3>
+          <ChromeHeading as="h3" className="section-title">{t.dronTitle}</ChromeHeading>
         </Reveal>
         <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
           {DRONE_PACKS.map((pack, idx) => (
@@ -533,7 +533,7 @@ export function Pricing() {
         </Reveal>
         <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
           <Kicker>{t.brandKicker}</Kicker>
-          <h3 className="section-title">{t.brandTitle}</h3>
+          <ChromeHeading as="h3" className="section-title">{t.brandTitle}</ChromeHeading>
         </Reveal>
         <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
           {BRAND_PACKS.map((pack, idx) => (
@@ -545,7 +545,7 @@ export function Pricing() {
         </Reveal>
         <Reveal className="mt-16 mb-10 grid gap-4 md:mt-20 md:mb-12">
           <Kicker>{t.mktKicker}</Kicker>
-          <h3 className="section-title">{t.mktTitle}</h3>
+          <ChromeHeading as="h3" className="section-title">{t.mktTitle}</ChromeHeading>
         </Reveal>
         <div className="grid items-stretch gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-3 xl:gap-10">
           {MONTHLY_PACKS.map((pack, idx) => (
@@ -622,10 +622,10 @@ function ContactIntro() {
   return (
     <Reveal>
       <Kicker>{t.contactKicker}</Kicker>
-      <h2 className="section-title mt-4">
+      <ChromeHeading as="h2" className="section-title mt-4">
         <span className="block">{t.contactLine1}</span>
         <span className="block">{t.contactLine2}</span>
-      </h2>
+      </ChromeHeading>
       <div className="mt-8 flex flex-wrap gap-3">
         <Button asChild data-magnetic="" className="metal-fill h-[52px] gap-2.5 rounded-full px-6 text-[0.72rem] tracking-[0.16em] uppercase max-md:w-full">
           <a href={`mailto:${CAVIAR.EMAIL}`}>

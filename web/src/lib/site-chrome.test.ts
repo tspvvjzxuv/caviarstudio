@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const src = dirname(fileURLToPath(import.meta.url));
 const css = readFileSync(join(src, "../index.css"), "utf8");
 const header = readFileSync(join(src, "../components/site-header.tsx"), "utf8");
+const section = readFileSync(join(src, "../components/section.tsx"), "utf8");
 const sections = readFileSync(join(src, "../components/sections.tsx"), "utf8");
 
 function rule(cssText: string, selector: string) {
@@ -27,10 +28,18 @@ describe("Čo robíme heading", () => {
 
   it("uses condensed chrome on every section title, with an unclipped white bloom", () => {
     assert.match(css, /--font-display:\s*"Saira Extra Condensed"/);
-    assert.match(css, /\.section-title[\s\S]*?background-clip:\s*text/);
+    assert.match(css, /\.chrome-fill[\s\S]*?background-clip:\s*text/);
+    assert.match(css, /\.chrome-bloom[\s\S]*?text-shadow/);
     assert.match(css, /\.section-title[\s\S]*?overflow:\s*visible/);
-    assert.match(css, /\.section-title[\s\S]*?drop-shadow/);
+    assert.match(css, /\.section-title[\s\S]*?contain:\s*none/);
+    assert.match(section, /className="chrome-bloom"/);
     assert.doesNotMatch(css, /#sluzby \.section-title/, "chrome is on .section-title, not only Čo robíme");
+  });
+
+  it("does not repeat Čo robíme as an azure eyebrow over the heading", () => {
+    const services = sections.slice(sections.indexOf("export function Services"), sections.indexOf("service-sec"));
+    assert.match(services, /title=\{t\.doKicker\}/);
+    assert.doesNotMatch(services, /kicker=\{t\.navServices\}/);
   });
 
   it("keeps the section heading outside the metal isolate", () => {

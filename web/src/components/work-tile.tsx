@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { ChromeHeading } from "@/components/section";
 import { useLanguage } from "@/lib/language";
 import { heroShouldRun } from "@/lib/hero-motion";
 import {
@@ -108,9 +109,9 @@ function TileCopy({ item }: { item: WorkItem }) {
           ))}
         </ul>
       ) : null}
-      <h3 className="chrome-title text-[clamp(1.55rem,3.4vw,2.15rem)]">
+      <ChromeHeading as="h3" className="chrome-title text-[clamp(1.55rem,3.4vw,2.15rem)]">
         {title}
-      </h3>
+      </ChromeHeading>
       {line ? <p className="max-w-[42ch] text-[0.95rem] leading-[1.5] text-platinum/85">{line}</p> : null}
     </div>
   );
