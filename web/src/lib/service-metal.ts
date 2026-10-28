@@ -4,6 +4,7 @@ import {
   DataTexture,
   LinearFilter,
   Mesh,
+  NearestFilter,
   OrthographicCamera,
   PlaneGeometry,
   RGBAFormat,
@@ -109,24 +110,17 @@ function drawInk(ctx: CanvasRenderingContext2D, sec: HTMLElement, root: DOMRect,
       const title = ink.querySelector<HTMLElement>(".service-title-live");
       if (!title) continue;
       const cs = getComputedStyle(title);
-      ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      const text = (title.textContent || "").trim();
+      if (!text) continue;
+      ctx.font = cs.font || `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
       ctx.textBaseline = "alphabetic";
-      const ascent = ctx.measureText("Hg").fontBoundingBoxAscent;
-      const range = document.createRange();
-      const walker = document.createTreeWalker(title, NodeFilter.SHOW_TEXT);
-      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-        const text = node.textContent || "";
-        for (let i = 0; i < text.length; i++) {
-          if (text[i].trim() === "") continue;
-          let end = i + 1;
-          while (end < text.length && /\p{M}/u.test(text[end])) end += 1;
-          range.setStart(node, i);
-          range.setEnd(node, end);
-          const b = range.getBoundingClientRect();
-          ctx.fillText(text.slice(i, end), b.left, b.top + ascent);
-          i = end - 1;
-        }
+      ctx.textAlign = "left";
+      if (cs.letterSpacing && cs.letterSpacing !== "normal") {
+        (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = cs.letterSpacing;
       }
+      const b = title.getBoundingClientRect();
+      const ascent = ctx.measureText(text).fontBoundingBoxAscent || Number.parseFloat(cs.fontSize) * 0.8;
+      ctx.fillText(text, b.left, b.top + ascent);
     }
   } catch {
     // shortcut: skip a torn layout frame during open/close; next syncCards redraws
@@ -164,8 +158,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   renderer.setClearColor(0x000000, 0);
   // iOS blanks the FBO when backing store is 0 (floor(css * 0.55)) or DPR < 1.
-  const dprCap = hiRes ? 2 : 1.25;
-  const dprMin = hiRes ? 1.25 : 0.75;
+  // Phone screens are 3x — a 2x ink atlas is what made Fotky/Videá look soft.
+  const dprCap = hiRes ? 3 : 1.25;
+  const dprMin = hiRes ? 2 : 0.75;
   let pixelRatio = Math.min(Math.max(dprMin, window.devicePixelRatio || 1), dprCap);
   renderer.setPixelRatio(pixelRatio);
 
@@ -178,8 +173,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const inkCtx = inkCanvas.getContext("2d");
   const inkTexture = new CanvasTexture(inkCanvas);
   inkTexture.generateMipmaps = false;
-  inkTexture.minFilter = LinearFilter;
-  inkTexture.magFilter = LinearFilter;
+  inkTexture.minFilter = NearestFilter;
+  inkTexture.magFilter = NearestFilter;
 
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -292,8 +287,8 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     const { bufW, bufH } = bufferScale(w, h);
     material.uniforms.u_resolution.value.set(bufW, bufH);
     cacheFieldBox();
-    syncCards();
-    if (sizeChanged && running) renderer.render(scene, camera);
+    syncCards(force);
+    if (sizeChanged) renderer.render(scene, camera);
   };
 
   const phoneOpen = () => mobile && anyCardOpen(sec);
@@ -327,17 +322,25 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   const onPanelTween = (event: TransitionEvent) => {
     if (event.propertyName !== "grid-template-rows") return;
-    if (panelTweening(sec)) {
-      stop();
-      return;
-    }
-    applySize();
-    if (shouldRun()) start();
-    else stop();
+    // tweenRows settles 1fr/0fr in a later listener; wait one frame so we paint the punched size.
+    requestAnimationFrame(() => {
+      applySize(true);
+      if (shouldRun()) start();
+      else stop();
+    });
   };
 
-  const syncCards = () => {
-    if (panelTweening(sec)) return;
+  const punchOpen = () => {
+    const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
+    for (let i = 0; i < MAX_CARDS; i++) {
+      const btn = buttons[i];
+      open[i] = !btn || chromeIsOpen(btn) ? 1 : 0;
+    }
+    renderer.render(scene, camera);
+  };
+
+  const syncCards = (force = false) => {
+    if (!force && panelTweening(sec)) return;
     const root = canvas.getBoundingClientRect();
     const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
     const cssW = Math.max(1, root.width);
@@ -387,13 +390,12 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
         inkCanvas.width = bufW;
         inkCanvas.height = bufH;
       }
-      inkCtx.imageSmoothingEnabled = true;
-      inkCtx.imageSmoothingQuality = "high";
+      inkCtx.imageSmoothingEnabled = false;
       drawInk(inkCtx, sec, root, sx, sy);
       inkTexture.needsUpdate = true;
       if (!sec.classList.contains("ink-gl")) sec.classList.add("ink-gl");
-      if (running) renderer.render(scene, camera);
     }
+    renderer.render(scene, camera);
   };
 
   const stop = () => {
@@ -487,11 +489,12 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     else stop();
   });
   const mo = new MutationObserver(() => {
+    cardsReady = false;
     if (panelTweening(sec)) {
+      punchOpen();
       stop();
       return;
     }
-    cardsReady = false;
     syncCards();
     if (shouldRun()) start();
     else stop();

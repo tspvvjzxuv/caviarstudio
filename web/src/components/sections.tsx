@@ -196,9 +196,6 @@ function ServiceCard({
               <Icon />
             </IconDisc>
             <span className="service-title min-w-0 flex-1 font-serif text-[clamp(1.7rem,3vw,2.3rem)] leading-[1.15] font-normal tracking-[-0.02em] text-pretty text-pearl">
-              <span className="service-title-solid" aria-hidden="true">
-                {dictText(t, item.name)}
-              </span>
               <span className="service-title-live">{dictText(t, item.name)}</span>
             </span>
             <IconDisc

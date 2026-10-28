@@ -87,6 +87,24 @@ describe("panelTweening / anyCardOpen", () => {
     assert.match(metal, /open\[i\] = chromeIsOpen\(btn\) \? 1 : 0/);
     assert.match(metal, /if \(chrome && chromeIsOpen\(chrome\)\) continue/);
   });
+
+  it("paints a punched frame even when rAF is paused", () => {
+    const metal = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "service-metal.ts"), "utf8");
+    assert.match(metal, /const punchOpen = /);
+    assert.match(metal, /open\[i\] = !btn \|\| chromeIsOpen\(btn\) \? 1 : 0/);
+    assert.doesNotMatch(metal, /if \(running\) renderer\.render/);
+    assert.match(metal, /if \(panelTweening\(sec\)\) \{\s*punchOpen\(\);/);
+    assert.match(metal, /requestAnimationFrame\(\(\) => \{\s*applySize\(true\);/);
+  });
+
+  it("rasters closed-tile titles at phone DPR, as one fillText", () => {
+    const metal = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "service-metal.ts"), "utf8");
+    assert.match(metal, /dprCap = hiRes \? 3 : 1\.25/);
+    assert.match(metal, /dprMin = hiRes \? 2 : 0\.75/);
+    assert.match(metal, /inkTexture\.magFilter = NearestFilter/);
+    assert.match(metal, /ctx\.fillText\(text, b\.left, b\.top \+ ascent\)/);
+    assert.doesNotMatch(metal, /for \(let i = 0; i < text\.length/);
+  });
 });
 
 describe("metal cycle", () => {
