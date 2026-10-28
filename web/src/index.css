@@ -1191,11 +1191,12 @@ button.nav-bean[aria-expanded="true"] {
   font-synthesis: none;
   text-rendering: geometricPrecision;
 }
-.service-title-solid {
-  display: none;
-}
 .service-title-live {
   display: block;
+}
+.service-sec.has-metal .service-panel.is-open {
+  position: relative;
+  z-index: 3;
 }
 .service-sec.has-metal .service-chrome .font-serif,
 .service-sec.has-metal .service-chrome .service-title-live {

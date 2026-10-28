@@ -62,6 +62,12 @@ describe("service tile titles", () => {
     assert.match(openInk[1], /opacity:\s*1/);
     assert.match(openInk[1], /mix-blend-mode:\s*normal/);
   });
+
+  it("keeps the open service panel above the metal canvas", () => {
+    const body = rule(css, ".service-sec.has-metal .service-panel.is-open");
+    assert.ok(body, "missing open-panel stacking rule");
+    assert.match(body, /z-index:\s*3/);
+  });
 });
 
 describe("open mobile menu chrome", () => {
