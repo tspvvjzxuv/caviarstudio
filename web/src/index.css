@@ -272,11 +272,11 @@
 .service-title-live {
   background-image: linear-gradient(
     180deg,
-    #1a1b20 0%,
-    #4a4e56 22%,
-    #8b929c 48%,
-    #d5d9e0 74%,
-    #ffffff 100%
+    #ffffff 0%,
+    #e8eaee 20%,
+    #c5cad3 48%,
+    #8b929c 76%,
+    #c5cad3 100%
   );
   -webkit-background-clip: text;
   background-clip: text;

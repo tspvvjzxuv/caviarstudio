@@ -29,6 +29,16 @@ describe("Čo robíme heading", () => {
   it("uses condensed chrome on every section title, with an unclipped white bloom", () => {
     assert.match(css, /--font-display:\s*"Saira Extra Condensed"/);
     assert.match(css, /\.chrome-fill[\s\S]*?background-clip:\s*text/);
+    assert.match(
+      css,
+      /\.chrome-fill,\s*\.service-title-live\s*\{[\s\S]*?#ffffff 0%/,
+      "upper face is silver/white, not charcoal",
+    );
+    assert.doesNotMatch(
+      css,
+      /\.chrome-fill,\s*\.service-title-live\s*\{[\s\S]*?#1a1b20 0%/,
+      "do not restore the top-dark charcoal stop",
+    );
     assert.match(css, /\.chrome-bloom[\s\S]*?text-shadow/);
     assert.match(css, /\.chrome-bloom[\s\S]*?left:\s*-1em/);
     assert.match(css, /\.chrome-bloom[\s\S]*?padding:\s*1em/);
