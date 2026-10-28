@@ -30,6 +30,9 @@ describe("Čo robíme heading", () => {
     assert.match(css, /--font-display:\s*"Saira Extra Condensed"/);
     assert.match(css, /\.chrome-fill[\s\S]*?background-clip:\s*text/);
     assert.match(css, /\.chrome-bloom[\s\S]*?text-shadow/);
+    assert.match(css, /\.chrome-bloom[\s\S]*?left:\s*-1em/);
+    assert.match(css, /\.chrome-bloom[\s\S]*?padding:\s*1em/);
+    assert.match(css, /\.js \.reveal:has\(> \.section-title\)[\s\S]*?transform:\s*none/);
     assert.match(css, /\.section-title[\s\S]*?overflow:\s*visible/);
     assert.match(css, /\.section-title[\s\S]*?contain:\s*none/);
     assert.match(section, /className="chrome-bloom"/);

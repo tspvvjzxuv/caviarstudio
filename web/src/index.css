@@ -286,19 +286,21 @@
   position: relative;
   display: block;
 }
-/* white copy behind the clip fill — text-shadow on a real color, so it can spill past the frame */
+/* Paint box is 1em larger than the glyphs so a 0.9em blur is never cut by the heading frame. */
 .chrome-bloom {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
+  left: -1em;
+  top: -1em;
+  right: -1em;
+  padding: 1em;
+  overflow: visible;
   color: #fff;
   pointer-events: none;
   user-select: none;
   text-shadow:
     0 0 0.14em #fff,
-    0 0 0.36em rgb(255 255 255 / 0.9),
-    0 0.1em 0.7em rgb(255 255 255 / 0.45);
+    0 0 0.4em rgb(255 255 255 / 0.95),
+    0 0.12em 0.9em rgb(255 255 255 / 0.5);
 }
 
 .kicker {
@@ -734,6 +736,11 @@ button.nav-bean[aria-expanded="true"] {
   transition: transform 0.7s var(--ease-out-expo);
   transition-delay: calc(var(--d, 0) * 80ms);
 }
+/* translate3d makes a compositor layer that clips descendant text-shadow to the reveal box */
+.js .reveal:has(> .section-title),
+.js .reveal:has(> .section-title).in {
+  transform: none;
+}
 .work-sec .project:nth-child(1) { transition-delay: 60ms; }
 .work-sec .project:nth-child(2) { transition-delay: 180ms; }
 .work-sec .grid .project:nth-child(1) { transition-delay: 80ms; }
@@ -784,6 +791,10 @@ button.nav-bean[aria-expanded="true"] {
   .js .reveal.in {
     transition: transform 0.35s ease-out;
     transition-delay: calc(var(--d, 0) * 40ms);
+  }
+  .js .reveal:has(> .section-title),
+  .js .reveal:has(> .section-title).in {
+    transform: none;
   }
   .kicker-dot,
   .service-chrome::before,
