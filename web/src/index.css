@@ -1160,6 +1160,7 @@ button.nav-bean[aria-expanded="true"] {
 .service-sec.has-metal .service-chrome[aria-expanded="true"] {
   z-index: 2;
   border-color: rgb(61 138 255 / 28%);
+  background-color: #0e0e12;
 }
 .service-sec.has-metal .service-chrome:active {
   transform: none;
@@ -1346,6 +1347,20 @@ button.nav-bean[aria-expanded="true"] {
   }
   .service-glow {
     inset: -70% -50%;
+  }
+  /* Hide the section-tall metal FBO while a phone tile is open so expand doesn't realloc it. */
+  .service-sec.has-metal:has(.service-chrome.is-open) .service-metal,
+  .service-sec.has-metal:has(.service-chrome[aria-expanded="true"]) .service-metal {
+    visibility: hidden;
+  }
+  .service-sec.has-metal:has(.service-chrome.is-open) .service-chrome,
+  .service-sec.has-metal:has(.service-chrome[aria-expanded="true"]) .service-chrome {
+    background-color: #0e0e12;
+  }
+  .service-sec.has-metal:has(.service-chrome.is-open) .service-chrome .service-ink,
+  .service-sec.has-metal:has(.service-chrome[aria-expanded="true"]) .service-chrome .service-ink {
+    mix-blend-mode: normal;
+    -webkit-mix-blend-mode: normal;
   }
 }
 .service-card:has(.service-chrome.is-open) .service-glow,

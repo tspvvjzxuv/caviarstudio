@@ -16,6 +16,11 @@ export function metalShouldRun({
   return !hidden && onscreen && !paused && !tweening && !phoneOpen;
 }
 
+/** Growing the metal FBO with the panel is the open-tile hitch. */
+export function metalSkipGpu({ tweening, phoneOpen }: { tweening: boolean; phoneOpen: boolean }) {
+  return tweening || phoneOpen;
+}
+
 export function panelTweening(sec: ParentNode) {
   for (const panel of sec.querySelectorAll<HTMLElement>(".service-panel")) {
     const rows = panel.style.gridTemplateRows;

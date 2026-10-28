@@ -9,7 +9,7 @@ import {
   METAL_SPIN_RAD_PER_SEC,
   PLAYGROUND_PARAMS,
 } from "./liquid-metal-playground.ts";
-import { anyCardOpen, chromeIsOpen, metalShouldRun, panelTweening } from "./service-metal-run.ts";
+import { anyCardOpen, chromeIsOpen, metalShouldRun, metalSkipGpu, panelTweening } from "./service-metal-run.ts";
 
 describe("metalShouldRun", () => {
   const ok = {
@@ -30,6 +30,12 @@ describe("metalShouldRun", () => {
 
   it("stops on a phone while a card is open", () => {
     assert.equal(metalShouldRun({ ...ok, phoneOpen: true }), false);
+  });
+
+  it("skips GPU resize while tweening or a phone card is open", () => {
+    assert.equal(metalSkipGpu({ tweening: false, phoneOpen: false }), false);
+    assert.equal(metalSkipGpu({ tweening: true, phoneOpen: false }), true);
+    assert.equal(metalSkipGpu({ tweening: false, phoneOpen: true }), true);
   });
 
   it("stops when offscreen, hidden, or paused", () => {
@@ -87,13 +93,13 @@ describe("panelTweening / anyCardOpen", () => {
     assert.match(metal, /open\[i\] = chromeIsOpen\(btn\) \? 1 : 0/);
   });
 
-  it("paints a punched frame even when rAF is paused", () => {
+  it("does not punch or resize the metal FBO on the open frame", () => {
     const metal = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "service-metal.ts"), "utf8");
-    assert.match(metal, /const punchOpen = /);
-    assert.match(metal, /open\[i\] = !btn \|\| chromeIsOpen\(btn\) \? 1 : 0/);
-    assert.doesNotMatch(metal, /if \(running\) renderer\.render/);
-    assert.match(metal, /if \(panelTweening\(sec\)\) \{\s*punchOpen\(\);/);
-    assert.match(metal, /requestAnimationFrame\(\(\) => \{\s*applySize\(true\);/);
+    const panel = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../components/service-panel.tsx"), "utf8");
+    assert.doesNotMatch(metal, /const punchOpen = /);
+    assert.match(metal, /const applySize = \(force = false\) => \{\s*if \(gpuHold\(\)\) return;/);
+    assert.match(metal, /if \(gpuHold\(\)\) \{\s*stop\(\);\s*return;/);
+    assert.match(panel, /function measureOpenHeight\(inner: HTMLElement\) \{[^}]*inner\.scrollHeight/);
   });
 
   it("keeps metal DPR capped and does not bitmap closed titles or icons", () => {

@@ -68,6 +68,21 @@ describe("service tile titles", () => {
     assert.match(openInk[1], /mix-blend-mode:\s*normal/);
   });
 
+  it("covers the open tile with CSS so metal does not need a same-frame punch", () => {
+    const open = css.match(
+      /\.service-sec\.has-metal \.service-chrome\.is-open,\s*\.service-sec\.has-metal \.service-chrome\[aria-expanded="true"\]\s*\{([^}]+)\}/,
+    );
+    assert.ok(open, "missing open-tile chrome rule");
+    assert.match(open[1], /background-color:\s*#0e0e12/);
+  });
+
+  it("hides the metal canvas on a phone while a tile is open", () => {
+    assert.match(
+      css,
+      /@media \(max-width: 767px\) \{[\s\S]*has-metal:has\(\.service-chrome\.is-open\) \.service-metal[\s\S]*visibility:\s*hidden/,
+    );
+  });
+
   it("keeps the open service panel above the metal canvas", () => {
     const body = rule(css, ".service-sec.has-metal .service-panel.is-open");
     assert.ok(body, "missing open-panel stacking rule");

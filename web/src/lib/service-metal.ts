@@ -20,7 +20,7 @@ import {
   playgroundVertex,
 } from "@/lib/liquid-metal-playground";
 import { rafNeedsKick } from "@/lib/hero-motion";
-import { anyCardOpen, chromeIsOpen, metalShouldRun, panelTweening } from "@/lib/service-metal-run";
+import { anyCardOpen, chromeIsOpen, metalShouldRun, metalSkipGpu, panelTweening } from "@/lib/service-metal-run";
 
 const MAX_CARDS = 5;
 
@@ -151,7 +151,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const applyPixelRatio = (next: number) => {
-    if (panelTweening(sec)) return;
+    if (gpuHold()) return;
     const clamped = Math.max(dprMin, Math.min(dprCap, next));
     if (Math.abs(clamped - pixelRatio) < 0.03) return;
     pixelRatio = clamped;
@@ -181,6 +181,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const applySize = (force = false) => {
+    if (gpuHold()) return;
     const { w, h } = readCssSize();
     const gl = renderer.getContext();
     const backingBad =
@@ -206,6 +207,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   };
 
   const phoneOpen = () => mobile && anyCardOpen(sec);
+  const gpuHold = () => metalSkipGpu({ tweening: panelTweening(sec), phoneOpen: phoneOpen() });
 
   const shouldRun = () =>
     metalShouldRun({
@@ -217,7 +219,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     });
 
   const resize = () => {
-    if (panelTweening(sec)) return;
+    if (gpuHold()) return;
     applySize();
   };
 
@@ -236,25 +238,19 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   const onPanelTween = (event: TransitionEvent) => {
     if (event.propertyName !== "grid-template-rows") return;
-    // tweenRows settles 1fr/0fr in a later listener; wait one frame so we paint the punched size.
     requestAnimationFrame(() => {
+      if (gpuHold()) {
+        stop();
+        return;
+      }
       applySize(true);
       if (shouldRun()) start();
       else stop();
     });
   };
 
-  const punchOpen = () => {
-    const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
-    for (let i = 0; i < MAX_CARDS; i++) {
-      const btn = buttons[i];
-      open[i] = !btn || chromeIsOpen(btn) ? 1 : 0;
-    }
-    renderer.render(scene, camera);
-  };
-
   const syncCards = (force = false) => {
-    if (!force && panelTweening(sec)) return;
+    if (!force && gpuHold()) return;
     const root = canvas.getBoundingClientRect();
     const buttons = sec.querySelectorAll<HTMLButtonElement>("button.service-chrome");
     const cssW = Math.max(1, root.width);
@@ -383,7 +379,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   });
 
   const ro = new ResizeObserver(() => {
-    if (panelTweening(sec)) {
+    if (gpuHold()) {
       stop();
       return;
     }
@@ -392,12 +388,11 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
     else stop();
   });
   const mo = new MutationObserver(() => {
-    cardsReady = false;
-    if (panelTweening(sec)) {
-      punchOpen();
+    if (gpuHold()) {
       stop();
       return;
     }
+    cardsReady = false;
     syncCards();
     if (shouldRun()) start();
     else stop();
