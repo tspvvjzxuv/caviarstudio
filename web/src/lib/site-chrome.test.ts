@@ -32,6 +32,13 @@ describe("Čo robíme heading", () => {
     assert.match(css, /\.chrome-bloom[\s\S]*?text-shadow/);
     assert.match(css, /\.chrome-bloom[\s\S]*?left:\s*-1em/);
     assert.match(css, /\.chrome-bloom[\s\S]*?padding:\s*1em/);
+    assert.match(css, /\.chrome-bloom[\s\S]*?color:\s*transparent/);
+    assert.match(
+      css,
+      /\.chrome-bloom[\s\S]*?0 0 0\.11em rgb\(255 255 255 \/ 0\.1\)/,
+      "bloom stays M6-soft; do not restore the 0.9em / 0.95 cloud",
+    );
+    assert.doesNotMatch(css, /\.chrome-bloom[\s\S]{0,400}0\.9em/);
     assert.match(css, /\.js \.reveal:has\(> \.section-title\)[\s\S]*?transform:\s*none/);
     assert.match(css, /\.section-title[\s\S]*?overflow:\s*visible/);
     assert.match(css, /\.section-title[\s\S]*?contain:\s*none/);

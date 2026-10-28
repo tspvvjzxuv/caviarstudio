@@ -286,7 +286,7 @@
   position: relative;
   display: block;
 }
-/* Paint box is 1em larger than the glyphs so a 0.9em blur is never cut by the heading frame. */
+/* Paint box stays 1em so the soft edge is never cut by the heading frame. Bloom glyphs stay transparent so they cannot rim the fill; only a M6-soft haze paints. */
 .chrome-bloom {
   position: absolute;
   left: -1em;
@@ -294,13 +294,13 @@
   right: -1em;
   padding: 1em;
   overflow: visible;
-  color: #fff;
+  color: transparent;
   pointer-events: none;
   user-select: none;
   text-shadow:
-    0 0 0.14em #fff,
-    0 0 0.4em rgb(255 255 255 / 0.95),
-    0 0.12em 0.9em rgb(255 255 255 / 0.5);
+    0 0 0.035em rgb(255 255 255 / 0.2),
+    0 0 0.11em rgb(255 255 255 / 0.1),
+    0 0.03em 0.24em rgb(255 255 255 / 0.06);
 }
 
 .kicker {
