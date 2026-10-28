@@ -221,11 +221,11 @@ export function Services() {
   const { t } = useLanguage();
   const panelId = useId();
   const isMd = usePrefersMd();
-  const frameRef = useRef<HTMLElement>(null);
+  const deckRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [open, setOpen] = useState("");
   const [shown, setShown] = useState("");
-  usePauseOffscreen(frameRef);
+  usePauseOffscreen(deckRef);
 
   useEffect(() => {
     const run = () => preloadWorkShots();
@@ -254,13 +254,16 @@ export function Services() {
   const row2Open = SERVICE_ROW_2.some((item) => item.id === open);
 
   return (
-    <Section.Frame id="sluzby" density="compact" className="service-sec border-t border-border" ref={frameRef}>
-      <div className="service-glow-field" aria-hidden="true" />
-      <ServiceMetal />
-      <Section.Body className="service-sec-body relative overflow-visible">
+    <Section.Frame id="sluzby" density="compact" className="border-t border-border">
+      <Section.Body>
         <Section.Heading className="mb-10 max-w-[38ch] md:mb-16" kicker={t.navServices} title={t.doKicker}>
           <p className="max-w-[36ch] text-[1.02rem] text-muted-foreground">{t.doLead}</p>
         </Section.Heading>
+      </Section.Body>
+      <div className="service-sec" ref={deckRef}>
+        <div className="service-glow-field" aria-hidden="true" />
+        <ServiceMetal />
+        <Section.Body className="service-sec-body relative overflow-visible">
         {isMd ? (
           <div className="service-stack">
             <div className={cn("service-row service-row-3", row1Open && "is-expanded")}>
@@ -343,7 +346,8 @@ export function Services() {
             })}
           </div>
         )}
-      </Section.Body>
+        </Section.Body>
+      </div>
     </Section.Frame>
   );
 }
