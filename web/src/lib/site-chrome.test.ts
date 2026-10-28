@@ -49,6 +49,16 @@ describe("service tile titles", () => {
     assert.match(title, /text-rendering:\s*geometricPrecision/);
   });
 
+  it("sets condensed chrome type on tile titles without a text-fill bitmap", () => {
+    assert.match(css, /--font-display:\s*"Saira Extra Condensed"/);
+    assert.match(css, /\.service-title-live[\s\S]*?background-clip:\s*text/);
+    assert.doesNotMatch(
+      css,
+      /\.service-title-live[\s\S]{0,400}-webkit-text-fill-color/,
+      "chrome titles must stay vector CSS glyphs",
+    );
+  });
+
   it("keeps closed-tile titles and icons as live CSS, not a hidden atlas", () => {
     const closedInk = css.match(/\.service-sec\.has-metal \.service-chrome \.service-ink\s*\{([^}]+)\}/);
     assert.ok(closedInk, "missing closed-tile ink rule");

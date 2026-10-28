@@ -108,7 +108,7 @@ function TileCopy({ item }: { item: WorkItem }) {
           ))}
         </ul>
       ) : null}
-      <h3 className="font-serif text-[clamp(1.55rem,3.4vw,2.15rem)] leading-[1.12] font-normal tracking-[-0.02em] text-pearl">
+      <h3 className="chrome-title text-[clamp(1.55rem,3.4vw,2.15rem)]">
         {title}
       </h3>
       {line ? <p className="max-w-[42ch] text-[0.95rem] leading-[1.5] text-platinum/85">{line}</p> : null}
