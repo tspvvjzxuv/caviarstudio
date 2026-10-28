@@ -6,7 +6,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetClose,
@@ -116,30 +115,23 @@ export function SiteHeader() {
           </SheetTrigger>
           <SheetContent
             side="top"
-            className="inset-0 z-[60] h-dvh min-h-dvh gap-0 border-0 bg-[rgb(7_7_8/0.96)] p-[clamp(1.25rem,5vw,5rem)] pt-[max(6rem,calc(5.5rem+env(safe-area-inset-top,0px)))] opacity-100 data-[side=top]:h-dvh md:items-end"
+            className="nav-sheet gap-0 opacity-100"
             showCloseButton={false}
           >
-            <SheetHeader className="p-0 md:items-end md:text-right">
-              <SheetTitle className="font-serif text-sm md:text-right">
-                <CaviarLogo className="text-[1.2rem]" />
-              </SheetTitle>
+            <SheetHeader className="sr-only p-0">
+              <SheetTitle>{t.navLabel}</SheetTitle>
             </SheetHeader>
-            <nav className="mt-8 flex flex-col gap-1 md:items-end md:text-right" aria-label={t.navLabel}>
+            <nav className="flex flex-col gap-1" aria-label={t.navLabel}>
               {NAV.map((item) => (
                 <SheetClose asChild key={item.href}>
-                  <a
-                    href={item.href}
-                    className="font-serif text-[clamp(2.2rem,9vw,3.2rem)] leading-[1.15] tracking-[-0.02em] hover:text-azure"
-                  >
+                  <a href={item.href} className="nav-sheet-link">
                     {t[item.key]}
                   </a>
                 </SheetClose>
               ))}
             </nav>
-            <Separator className="my-8 w-full" />
-            <LangSwitch className="md:self-end" />
             <SheetClose asChild>
-              <Button asChild data-magnetic="" className="metal-fill mt-6 h-[52px] w-full rounded-full px-8 text-[0.72rem] tracking-[0.16em] uppercase md:w-auto md:self-end">
+              <Button asChild data-magnetic="" className="metal-fill mt-5 h-[52px] w-full rounded-full px-8 text-[0.72rem] tracking-[0.16em] uppercase">
                 <a href="#kontakt">{t.ctaQuote}</a>
               </Button>
             </SheetClose>
