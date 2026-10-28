@@ -17,14 +17,20 @@ function rule(cssText: string, selector: string) {
 
 describe("Čo robíme heading", () => {
   it("keeps .section-title as real CSS glyphs, not a Safari text-fill bitmap", () => {
-    const body = rule(css, ".section-title");
-    assert.ok(body, "missing .section-title");
-    assert.match(body, /font-family:\s*var\(--font-sans\)/);
+    assert.match(css, /\.section-title[\s\S]*?font-family:\s*var\(--font-display\)/);
     assert.doesNotMatch(
-      body,
-      /-webkit-text-fill-color/,
+      css,
+      /\.section-title[\s\S]{0,900}-webkit-text-fill-color/,
       "fill-color rasterizes large glyphs (g) on iPhone even with background:none",
     );
+  });
+
+  it("uses condensed chrome on every section title, with an unclipped white bloom", () => {
+    assert.match(css, /--font-display:\s*"Saira Extra Condensed"/);
+    assert.match(css, /\.section-title[\s\S]*?background-clip:\s*text/);
+    assert.match(css, /\.section-title[\s\S]*?overflow:\s*visible/);
+    assert.match(css, /\.section-title[\s\S]*?drop-shadow/);
+    assert.doesNotMatch(css, /#sluzby \.section-title/, "chrome is on .section-title, not only Čo robíme");
   });
 
   it("keeps the section heading outside the metal isolate", () => {
