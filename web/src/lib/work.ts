@@ -13,7 +13,7 @@ export type WorkItem = {
   image?: string;
   /** Mobile still of the same live site. Example: "/media/work/ptra-mobile.webp" */
   imageMobile?: string;
-  /** Optional muted hover film, or the tile media when there is no still. */
+  /** Muted phone-frame scroll film. Example: "/media/work/ptra-scroll.mp4" */
   video?: string;
   title: WorkCopy;
   line?: WorkCopy;
@@ -50,6 +50,7 @@ export const WORK: WorkItem[] = [
     id: "lile-lentilka",
     image: "/media/work/lile-lentilka.webp",
     imageMobile: "/media/work/lile-lentilka-mobile.webp",
+    video: "/media/work/lile-lentilka-scroll.mp4",
     title: "LiLiLentilka",
     line: {
       sk: "E-shop pre hudbu plnú farieb a lentiliek.",
@@ -69,6 +70,7 @@ export const WORK: WorkItem[] = [
     id: "ptra",
     image: "/media/work/ptra.webp",
     imageMobile: "/media/work/ptra-mobile.webp",
+    video: "/media/work/ptra-scroll.mp4",
     title: {
       sk: "Stredoveký festival Stropkov",
       en: "Medieval festival Stropkov",
@@ -92,6 +94,7 @@ export const WORK: WorkItem[] = [
     id: "malovanienatvar2",
     image: "/media/work/malovanienatvar2.webp",
     imageMobile: "/media/work/malovanienatvar2-mobile.webp",
+    video: "/media/work/malovanie-scroll.mp4",
     title: {
       sk: "Maľovanie na tvár",
       en: "Face painting",

@@ -849,7 +849,8 @@ button.nav-bean[aria-expanded="true"] {
 .device-lid .device-screen img {
   aspect-ratio: 1440 / 900;
 }
-.device-phone .device-screen img {
+.device-phone .device-screen img,
+.device-phone .device-screen video {
   aspect-ratio: 390 / 844;
 }
 .device-sheen {
