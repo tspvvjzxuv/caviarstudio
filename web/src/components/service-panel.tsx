@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, type ComponentType, type RefObject, type SVGProps } from "react";
+import { ChromeHeading } from "@/components/section";
 import { WorkGallery } from "@/components/work-gallery";
 import { IconDisc } from "@/components/icon-disc";
 import { useLanguage } from "@/lib/language";
@@ -107,9 +108,9 @@ export function ServiceDetail({
             <Icon />
           </IconDisc>
         ) : null}
-        <h3 className="chrome-title min-w-0 text-[clamp(1.45rem,2.6vw,1.9rem)]">
+        <ChromeHeading as="h3" className="chrome-title min-w-0 text-[clamp(1.45rem,2.6vw,1.9rem)]">
           {title}
-        </h3>
+        </ChromeHeading>
       </div>
       <div className="panel-enter">
         <ServiceExamples items={examples} />

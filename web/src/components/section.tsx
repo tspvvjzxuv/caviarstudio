@@ -48,21 +48,42 @@ function Wide({ children, className }: { children: ReactNode; className?: string
   );
 }
 
+export function ChromeHeading({
+  as: Tag = "h2",
+  className,
+  children,
+}: {
+  as?: "h2" | "h3";
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <Tag className={className}>
+      <span className="chrome-bloom" aria-hidden="true">
+        {children}
+      </span>
+      <span className="chrome-fill">{children}</span>
+    </Tag>
+  );
+}
+
 function Heading({
   kicker,
   title,
   children,
   className,
 }: {
-  kicker: ReactNode;
+  kicker?: ReactNode;
   title: ReactNode;
   children?: ReactNode;
   className?: string;
 }) {
   return (
-    <Reveal className={cn("grid gap-4", className)}>
-      <Kicker>{kicker}</Kicker>
-      <h2 className="section-title">{title}</h2>
+    <Reveal className={cn("grid gap-4 overflow-visible", className)}>
+      {kicker ? <Kicker>{kicker}</Kicker> : null}
+      <ChromeHeading as="h2" className="section-title">
+        {title}
+      </ChromeHeading>
       {children}
     </Reveal>
   );
