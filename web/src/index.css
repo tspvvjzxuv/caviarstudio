@@ -782,7 +782,7 @@ button.nav-bean[aria-expanded="true"] {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 578 / 960;
+  aspect-ratio: 500 / 830;
   object-fit: cover;
   object-position: top center;
 }

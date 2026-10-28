@@ -29,8 +29,9 @@ describe("work scroll films", () => {
     for (const [, , file] of PHONE_FILMS) {
       const abs = join(media, file);
       assert.ok(existsSync(abs), `missing ${abs}`);
-      const head = readFileSync(abs).subarray(4, 8).toString("ascii");
-      assert.equal(head, "ftyp", `${file} is not an mp4`);
+      const buf = readFileSync(abs);
+      assert.equal(buf.subarray(4, 8).toString("ascii"), "ftyp", `${file} is not an mp4`);
+      assert.ok(buf.length > 1_000_000, `${file} is too small`);
     }
   });
 

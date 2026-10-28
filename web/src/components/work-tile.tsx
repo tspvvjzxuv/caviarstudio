@@ -82,8 +82,8 @@ function WorkFilm({ src, poster, priority }: { src: string; poster?: string; pri
         autoPlay
         loop
         preload={priority ? "auto" : "metadata"}
-        width={578}
-        height={960}
+        width={500}
+        height={830}
         aria-hidden="true"
         disablePictureInPicture
         disableRemotePlayback
