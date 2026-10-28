@@ -398,6 +398,20 @@ footer {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+.hero-logo .caviar-word:has(.lockup-line) {
+  background-image: none;
+  -webkit-text-fill-color: unset;
+}
+.hero-logo .lockup-line {
+  display: block;
+}
+.hero-logo .caviar-word .lockup-line {
+  background-image: linear-gradient(180deg, #ffffff 0%, #d9dee6 48%, #8f98a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 .caviar-rule {
   display: block;
   width: 72%;
@@ -742,6 +756,10 @@ button.nav-bean[aria-expanded="true"] {
   transition: transform 0.7s var(--ease-out-expo);
   transition-delay: calc(var(--d, 0) * 80ms);
 }
+.js .reveal.is-gsap,
+.js .reveal.is-gsap.in {
+  transition: none;
+}
 /* translate3d makes a compositor layer that clips descendant text-shadow to the reveal box */
 .js .reveal:has(> .section-title),
 .js .reveal:has(> .section-title).in {
@@ -766,6 +784,10 @@ button.nav-bean[aria-expanded="true"] {
   .hero-stage > * {
     animation: stage-up 1.12s var(--ease-out-expo) both;
   }
+  .hero-stage > .hero-logo {
+    animation: none;
+    opacity: 1;
+  }
   .hero-stage > *:nth-child(1) { animation-delay: 1.55s; }
   .hero-stage > *:nth-child(2) { animation-delay: 1.68s; }
   .hero-stage > *:nth-child(3) { animation-delay: 1.81s; }
@@ -782,7 +804,7 @@ button.nav-bean[aria-expanded="true"] {
   html.intro-seen .hero-cue {
     animation-delay: 0.56s;
   }
-  .hero-logo .caviar-lockup {
+  .hero-logo .caviar-lockup:not(.is-gsap) {
     animation: logo-in 1.15s var(--ease-out-expo) 0.08s both;
   }
 }
@@ -1536,6 +1558,10 @@ button.nav-bean[aria-expanded="true"] {
   }
 }
 
+.service-sec.is-flipping .service-panel,
+.service-sec.is-flipping .service-row {
+  transition: none;
+}
 .service-panel {
   --pointer-x: 50%;
   display: grid;

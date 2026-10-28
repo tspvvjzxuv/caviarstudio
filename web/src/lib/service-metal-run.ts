@@ -22,6 +22,8 @@ export function metalSkipGpu({ tweening, phoneOpen }: { tweening: boolean; phone
 }
 
 export function panelTweening(sec: ParentNode) {
+  const host = sec as ParentNode & { classList?: { contains(token: string): boolean } };
+  if (host.classList?.contains("is-flipping")) return true;
   for (const panel of sec.querySelectorAll<HTMLElement>(".service-panel")) {
     const rows = panel.style.gridTemplateRows;
     if (rows && rows.endsWith("px")) return true;

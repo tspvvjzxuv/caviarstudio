@@ -13,6 +13,7 @@ import {
 } from "@/components/sections";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { ScrollTrigger } from "@/lib/gsap";
 import { LanguageProvider, useLanguage } from "@/lib/language";
 import { syncVisibleReveals } from "@/lib/reveal-gate";
 
@@ -33,6 +34,7 @@ let didHonorHash = false;
 function jumpToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "auto", block: "start" });
   syncVisibleReveals(document.querySelectorAll(".reveal:not(.in)"), window.innerHeight);
+  ScrollTrigger.refresh();
 }
 
 function Page() {
