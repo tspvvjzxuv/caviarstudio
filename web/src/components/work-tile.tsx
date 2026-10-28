@@ -18,7 +18,7 @@ function TypePill({ label }: { label: string }) {
   );
 }
 
-function PhoneFilm({ src, poster }: { src: string; poster?: string }) {
+function WorkFilm({ src, poster, priority }: { src: string; poster?: string; priority?: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -72,106 +72,22 @@ function PhoneFilm({ src, poster }: { src: string; poster?: string }) {
   }, [src]);
 
   return (
-    <video
-      ref={ref}
-      src={src}
-      poster={poster || undefined}
-      muted
-      playsInline
-      autoPlay
-      loop
-      preload="metadata"
-      width={390}
-      height={844}
-      aria-hidden="true"
-      disablePictureInPicture
-      disableRemotePlayback
-    />
-  );
-}
-
-function Screen({
-  src,
-  videoSrc,
-  alt,
-  sizes,
-  width,
-  height,
-  decorative,
-  priority,
-}: {
-  src: string;
-  videoSrc?: string;
-  alt: string;
-  sizes: string;
-  width: number;
-  height: number;
-  decorative?: boolean;
-  priority?: boolean;
-}) {
-  return (
-    <div className="device-screen">
-      {videoSrc ? (
-        <PhoneFilm src={videoSrc} poster={src} />
-      ) : (
-        <img
-          src={src}
-          alt={decorative ? "" : alt}
-          width={width}
-          height={height}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "low"}
-          decoding="async"
-          sizes={sizes}
-          draggable={false}
-        />
-      )}
-      <span className="device-sheen" aria-hidden="true" />
-    </div>
-  );
-}
-
-function DevicePair({ item, priority }: { item: WorkItem; priority?: boolean }) {
-  const { lang } = useLanguage();
-  const title = workText(item.title, lang);
-  const alt = workText(item.alt, lang, title);
-  const desktop = workSrc(item.image);
-  const mobile = workSrc(item.imageMobile) || desktop;
-  const film = workSrc(item.video);
-  return (
-    <div className="device-stage">
-      <span className="device-glow" aria-hidden="true" />
-      <div className="device-laptop">
-        <div className="device-lid">
-          <span className="device-camera" aria-hidden="true" />
-          <Screen
-            src={desktop}
-            alt={alt}
-            sizes="(min-width: 768px) 42vw, 88vw"
-            width={1440}
-            height={900}
-            priority={priority}
-          />
-        </div>
-        <span className="device-hinge" aria-hidden="true" />
-        <span className="device-base" aria-hidden="true" />
-      </div>
-      {mobile || film ? (
-        <div className="device-phone" aria-hidden="true">
-          <span className="device-island" />
-          <Screen
-            src={mobile}
-            videoSrc={film || undefined}
-            alt=""
-            sizes="(min-width: 768px) 12vw, 38vw"
-            width={390}
-            height={844}
-            decorative
-            priority={priority}
-          />
-          <span className="device-home" />
-        </div>
-      ) : null}
+    <div className="project-film">
+      <video
+        ref={ref}
+        src={src}
+        poster={poster || undefined}
+        muted
+        playsInline
+        autoPlay
+        loop
+        preload={priority ? "auto" : "metadata"}
+        width={500}
+        height={830}
+        aria-hidden="true"
+        disablePictureInPicture
+        disableRemotePlayback
+      />
     </div>
   );
 }
@@ -205,6 +121,8 @@ export function WorkTile({ item, priority }: { item: WorkItem; priority?: boolea
   const title = workText(item.title, lang);
   const href = workPrimaryHref(item);
   const type = isTypographic(item);
+  const film = workSrc(item.video);
+  const poster = workSrc(item.imageMobile) || workSrc(item.image);
   const body = (
     <>
       {type ? (
@@ -212,9 +130,11 @@ export function WorkTile({ item, priority }: { item: WorkItem; priority?: boolea
           <TileCopy item={item} />
         </div>
       ) : (
-        <DevicePair item={item} priority={priority} />
+        <>
+          {film ? <WorkFilm src={film} poster={poster} priority={priority} /> : null}
+          <TileCopy item={item} />
+        </>
       )}
-      {type ? null : <TileCopy item={item} />}
     </>
   );
 

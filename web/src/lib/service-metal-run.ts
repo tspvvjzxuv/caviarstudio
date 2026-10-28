@@ -27,3 +27,7 @@ export function panelTweening(sec: ParentNode) {
 export function anyCardOpen(sec: ParentNode) {
   return Boolean(sec.querySelector(".service-chrome.is-open, .service-chrome[aria-expanded='true']"));
 }
+
+export function chromeIsOpen(btn: Pick<HTMLElement, "classList" | "getAttribute">) {
+  return btn.classList.contains("is-open") || btn.getAttribute("aria-expanded") === "true";
+}

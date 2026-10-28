@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import {
   inkOnMetal,
   metalCycleAt,
   METAL_SPIN_RAD_PER_SEC,
   PLAYGROUND_PARAMS,
 } from "./liquid-metal-playground.ts";
-import { anyCardOpen, metalShouldRun, panelTweening } from "./service-metal-run.ts";
+import { anyCardOpen, chromeIsOpen, metalShouldRun, panelTweening } from "./service-metal-run.ts";
 
 describe("metalShouldRun", () => {
   const ok = {
@@ -59,6 +62,30 @@ describe("panelTweening / anyCardOpen", () => {
       querySelector: () => ({}),
     } as unknown as ParentNode;
     assert.equal(anyCardOpen(sec), true);
+  });
+
+  it("treats is-open or aria-expanded as an open tile", () => {
+    const open = {
+      classList: { contains: (name: string) => name === "is-open" },
+      getAttribute: () => null,
+    };
+    const aria = {
+      classList: { contains: () => false },
+      getAttribute: (name: string) => (name === "aria-expanded" ? "true" : null),
+    };
+    const shut = {
+      classList: { contains: () => false },
+      getAttribute: () => "false",
+    };
+    assert.equal(chromeIsOpen(open), true);
+    assert.equal(chromeIsOpen(aria), true);
+    assert.equal(chromeIsOpen(shut), false);
+  });
+
+  it("clears metal and canvas ink from open tiles", () => {
+    const metal = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "service-metal.ts"), "utf8");
+    assert.match(metal, /open\[i\] = chromeIsOpen\(btn\) \? 1 : 0/);
+    assert.match(metal, /if \(chrome && chromeIsOpen\(chrome\)\) continue/);
   });
 });
 
