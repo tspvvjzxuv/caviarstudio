@@ -56,7 +56,7 @@ export function LangSwitch({ className }: { className?: string }) {
           key={code}
           value={code}
           aria-label={t[LANG_NAME[code]]}
-          className="lang-switch-item"
+          className="lang-switch-item rounded-none!"
         >
           {code}
         </ToggleGroupItem>

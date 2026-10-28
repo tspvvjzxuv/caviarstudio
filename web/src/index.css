@@ -184,7 +184,7 @@
   --metal: linear-gradient(180deg, #4c94ff 0%, #2f7bff 46%, #1d4ed8 100%);
   --metal-hover: linear-gradient(180deg, #6aa8ff 0%, #3d8aff 46%, #2f7bff 100%);
   --hair: linear-gradient(90deg, transparent, #3d8aff 18%, #ffe44d 50%, #3d8aff 82%, transparent);
-  --header-h: calc(4.75rem + env(safe-area-inset-top, 0px));
+  --header-h: calc(5rem + env(safe-area-inset-top, 0px));
   --header-gutter: clamp(1.25rem, 5vw, 5rem);
 }
 
@@ -490,18 +490,19 @@ footer {
   }
 }
 
-/* header: floating tile-radius frost, no lemon hairline */
+/* header: levitating tile-radius frost — corner gaps show the page through */
 header.glass {
-  top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
-  right: var(--header-gutter);
-  left: var(--header-gutter);
+  top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+  right: max(var(--header-gutter), env(safe-area-inset-right, 0px));
+  left: max(var(--header-gutter), env(safe-area-inset-left, 0px));
   height: 3.75rem;
+  isolation: isolate;
   overflow: hidden;
   border: 0;
   border-radius: 1.5rem;
   background-color: rgb(255 255 255 / 10%);
   background-image: none;
-  box-shadow: none;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 34%);
   pointer-events: auto;
   -webkit-backdrop-filter: blur(40px) saturate(1.9);
   backdrop-filter: blur(40px) saturate(1.9);
@@ -529,7 +530,7 @@ header.glass {
 .lang-switch[data-size="sm"] {
   border-radius: 9999px;
 }
-.lang-switch-item {
+.lang-switch .lang-switch-item {
   height: 100%;
   min-width: 2.15rem;
   padding-inline: 0.7rem;
@@ -541,11 +542,11 @@ header.glass {
   color: #c5cad3;
   background: transparent;
 }
-.lang-switch-item:hover {
+.lang-switch .lang-switch-item:hover {
   background: transparent;
   color: #f4f5f7;
 }
-.lang-switch-item[data-state="on"] {
+.lang-switch .lang-switch-item[data-state="on"] {
   background-color: rgb(29 78 216 / 88%);
   color: #f4f5f7;
 }
@@ -556,18 +557,25 @@ header.glass {
   border-radius: 0 9999px 9999px 0;
 }
 button.nav-bean {
-  border-radius: 1.45rem / 0.7rem;
+  width: 3rem;
+  height: 2.25rem;
+  border-radius: 999px;
   transition:
+    width 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 220ms cubic-bezier(0.16, 1, 0.3, 1),
     border-radius 220ms cubic-bezier(0.16, 1, 0.3, 1),
     background-color 200ms ease-out;
 }
 @media (hover: hover) and (pointer: fine) {
   button.nav-bean:hover {
-    border-radius: 1.05rem;
+    height: 2.5rem;
+    border-radius: 1.15rem;
   }
 }
 button.nav-bean[aria-expanded="true"] {
-  border-radius: 0.88rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.9rem;
 }
 @media (prefers-reduced-motion: reduce) {
   button.nav-bean {
