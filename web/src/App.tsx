@@ -14,6 +14,7 @@ import {
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { LanguageProvider, useLanguage } from "@/lib/language";
+import { syncVisibleReveals } from "@/lib/reveal-gate";
 
 function SkipLink() {
   const { t } = useLanguage();
@@ -31,6 +32,7 @@ let didHonorHash = false;
 
 function jumpToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "auto", block: "start" });
+  syncVisibleReveals(document.querySelectorAll(".reveal:not(.in)"), window.innerHeight);
 }
 
 function Page() {
