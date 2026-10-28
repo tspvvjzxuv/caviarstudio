@@ -392,6 +392,10 @@ footer {
 @media (max-width: 767px) {
   header.glass {
     z-index: 70;
+    background-color: rgb(7 7 8 / 94%);
+    background-image: none;
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    backdrop-filter: blur(18px) saturate(1.25);
   }
   [data-slot="sheet-overlay"] {
     z-index: 60;
@@ -486,22 +490,6 @@ footer {
   .glass-panel {
     background-image: none;
     background-color: rgb(14 14 18 / 94%);
-  }
-}
-
-/* header: no lemon hairline; light frost so hero chrome shows through */
-header.glass {
-  background-color: rgb(255 255 255 / 10%);
-  background-image: none;
-  border: 0;
-  box-shadow: none;
-  pointer-events: auto;
-  -webkit-backdrop-filter: blur(40px) saturate(1.9);
-  backdrop-filter: blur(40px) saturate(1.9);
-}
-@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
-  header.glass {
-    background-color: rgb(14 14 18 / 72%);
   }
 }
 
