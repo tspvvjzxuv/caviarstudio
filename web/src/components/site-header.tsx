@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -68,10 +68,33 @@ export function LangSwitch({ className }: { className?: string }) {
 
 export function SiteHeader() {
   const { t } = useLanguage();
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 8;
+        setScrolled((prev) => (prev === next ? prev : next));
+        ticking = false;
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="glass fixed inset-x-0 top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 border-0 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] shadow-none [view-transition-name:site-header]">
+    <header
+      className={cn(
+        "glass fixed inset-x-0 top-0 z-50 flex h-[var(--header-h)] items-center justify-between gap-4 px-[clamp(1.25rem,5vw,5rem)] pt-[env(safe-area-inset-top,0px)] [view-transition-name:site-header]",
+        scrolled ? "border-b border-border" : "border-b border-transparent",
+        open && "z-[70]", // above the sheet so the hamburger X can close it
+      )}
+    >
       <a href="#top" className="relative z-[52]" aria-label="Caviar">
         <CaviarLogo className="text-[1.05rem] sm:text-[1.15rem]" />
       </a>
@@ -108,7 +131,7 @@ export function SiteHeader() {
               variant="ghost"
               size="icon"
               data-nav-toggle=""
-              className="inline-flex size-11 items-center justify-center rounded-full border border-pearl/12 bg-[rgb(14_14_18/0.72)] text-pearl shadow-none backdrop-blur-xl hover:bg-elev hover:text-pearl lg:hidden"
+              className="icon-disc inline-flex size-11 items-center justify-center lg:hidden"
               aria-expanded={open}
               aria-label={open ? t.close : t.menu}
             >
