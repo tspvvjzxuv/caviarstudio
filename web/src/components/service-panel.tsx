@@ -50,14 +50,26 @@ function tweenRows(
   void panel.offsetHeight;
   panel.style.removeProperty("transition");
   panel.style.gridTemplateRows = `${Math.max(0, Math.round(to))}px`;
-  const onEnd = (event: TransitionEvent) => {
-    if (event.target !== panel || event.propertyName !== "grid-template-rows") return;
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
     panel.removeEventListener("transitionend", onEnd);
+    window.clearTimeout(timer);
     panel.style.gridTemplateRows = settle;
     onSettled?.();
   };
+  const onEnd = (event: TransitionEvent) => {
+    if (event.target !== panel || event.propertyName !== "grid-template-rows") return;
+    finish();
+  };
   panel.addEventListener("transitionend", onEnd);
-  return () => panel.removeEventListener("transitionend", onEnd);
+  // Safari often skips transitionend on grid-template-rows; px rows then stall metal + clip the panel.
+  const timer = window.setTimeout(finish, 280);
+  return () => {
+    panel.removeEventListener("transitionend", onEnd);
+    window.clearTimeout(timer);
+  };
 }
 
 function ServiceExamples({ items }: { items: readonly string[] }) {
@@ -161,54 +173,59 @@ export function ServicePanel({
     const inner = innerRef.current;
     if (!panel || !inner) return;
 
-    const trigger = followId ? buttonRefs?.current[followId] ?? null : null;
-    alignPointer(panel, trigger);
+    try {
+      const trigger = followId ? buttonRefs?.current[followId] ?? null : null;
+      alignPointer(panel, trigger);
 
-    if (skipRef.current && open) {
-      skipRef.current = false;
-      inner.classList.add("is-shown");
-      panel.style.gridTemplateRows = "1fr";
-      lastH.current = Math.max(8, Math.ceil(inner.scrollHeight), Math.ceil(panel.getBoundingClientRect().height));
-      return;
-    }
-
-    if (open) {
-      inner.classList.remove("is-shown");
-      void inner.offsetWidth;
-      inner.classList.add("is-shown");
-    } else {
-      inner.classList.remove("is-shown");
-    }
-
-    const from = lastH.current || panel.getBoundingClientRect().height;
-    panel.style.transition = "none";
-    panel.style.gridTemplateRows = `${Math.max(0, Math.round(from))}px`;
-    void panel.offsetHeight;
-
-    const to = open ? Math.max(8, measureOpenHeight(panel, inner)) : 0;
-    lastH.current = to;
-
-    if (reducedMotion()) {
-      panel.style.gridTemplateRows = open ? "1fr" : "0fr";
-      panel.style.removeProperty("transition");
-      return;
-    }
-
-    if (Math.abs(from - to) < 2) {
-      panel.style.gridTemplateRows = open ? "1fr" : "0fr";
-      panel.style.removeProperty("transition");
-      return;
-    }
-
-    const stopTween = tweenRows(panel, from, to, open ? "1fr" : "0fr", () => {
-      if (open) {
-        alignPointer(panel, trigger);
-        revealAfterOpen(trigger, panel);
+      if (skipRef.current && open) {
+        skipRef.current = false;
+        inner.classList.add("is-shown");
+        panel.style.gridTemplateRows = "1fr";
+        lastH.current = Math.max(8, Math.ceil(inner.scrollHeight), Math.ceil(panel.getBoundingClientRect().height));
+        return;
       }
-    });
-    return () => {
-      stopTween();
-    };
+
+      if (open) {
+        inner.classList.remove("is-shown");
+        void inner.offsetWidth;
+        inner.classList.add("is-shown");
+      } else {
+        inner.classList.remove("is-shown");
+      }
+
+      const from = lastH.current || panel.getBoundingClientRect().height;
+      panel.style.transition = "none";
+      panel.style.gridTemplateRows = `${Math.max(0, Math.round(from))}px`;
+      void panel.offsetHeight;
+
+      const to = open ? Math.max(8, measureOpenHeight(panel, inner)) : 0;
+      lastH.current = to;
+
+      if (reducedMotion()) {
+        panel.style.gridTemplateRows = open ? "1fr" : "0fr";
+        panel.style.removeProperty("transition");
+        return;
+      }
+
+      if (Math.abs(from - to) < 2) {
+        panel.style.gridTemplateRows = open ? "1fr" : "0fr";
+        panel.style.removeProperty("transition");
+        return;
+      }
+
+      const stopTween = tweenRows(panel, from, to, open ? "1fr" : "0fr", () => {
+        if (open) {
+          alignPointer(panel, trigger);
+          revealAfterOpen(trigger, panel);
+        }
+      });
+      return () => {
+        stopTween();
+      };
+    } catch {
+      panel.style.gridTemplateRows = open ? "1fr" : "0fr";
+      panel.style.removeProperty("transition");
+    }
   }, [open, contentKey, followId, buttonRefs]);
 
   return (

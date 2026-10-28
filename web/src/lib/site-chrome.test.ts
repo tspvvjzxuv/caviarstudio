@@ -8,6 +8,8 @@ const src = dirname(fileURLToPath(import.meta.url));
 const css = readFileSync(join(src, "../index.css"), "utf8");
 const header = readFileSync(join(src, "../components/site-header.tsx"), "utf8");
 const sections = readFileSync(join(src, "../components/sections.tsx"), "utf8");
+const metal = readFileSync(join(src, "./service-metal.ts"), "utf8");
+const panel = readFileSync(join(src, "../components/service-panel.tsx"), "utf8");
 
 function rule(cssText: string, selector: string) {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -33,6 +35,27 @@ describe("Čo robíme heading", () => {
     const deckAt = services.indexOf('className="service-sec');
     assert.ok(headingAt > 0 && deckAt > 0, "Services must render Heading and a service-sec deck");
     assert.ok(headingAt < deckAt, "Heading must sit above service-sec so WebGL isolate cannot flatten it");
+  });
+
+  it("keeps service tile titles as real CSS glyphs, not a Safari text-fill / canvas bitmap", () => {
+    assert.doesNotMatch(
+      css,
+      /\.service-title-live[\s\S]{0,280}-webkit-text-fill-color/,
+      "fill-color rasterizes Bodoni tile titles the same way it flattened .section-title",
+    );
+    assert.doesNotMatch(
+      css,
+      /\.ink-gl[\s\S]{0,160}opacity:\s*0/,
+      "hiding .service-ink leaves only the WebGL glyph texture",
+    );
+    assert.doesNotMatch(metal, /function drawInk/);
+    assert.doesNotMatch(metal, /classList\.add\("ink-gl"\)/);
+    assert.match(css, /\.service-title[\s\S]{0,180}text-rendering:\s*geometricPrecision/);
+  });
+
+  it("settles an open panel even if grid-template-rows never fires transitionend", () => {
+    assert.match(panel, /setTimeout/);
+    assert.match(panel, /gridTemplateRows = settle/);
   });
 });
 

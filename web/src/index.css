@@ -790,6 +790,24 @@ button.nav-bean[aria-expanded="true"] {
     linear-gradient(165deg, #14141a 0%, #0a0a0c 58%, #070708 100%);
 }
 
+.work-film {
+  position: relative;
+  overflow: hidden;
+  width: min(100%, 22.5rem);
+  aspect-ratio: 390 / 844;
+  border-radius: 1.5rem;
+  background: #070708;
+  border: 1px solid rgb(244 245 247 / 12%);
+}
+.work-film video,
+.work-film img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
 .device-stage {
   position: relative;
   overflow: visible;
@@ -1120,7 +1138,7 @@ button.nav-bean[aria-expanded="true"] {
 }
 .service-sec.has-metal .service-chrome {
   isolation: auto;
-  z-index: auto;
+  z-index: 2;
   background: none;
   background-color: transparent;
   background-image: none;
@@ -1155,26 +1173,26 @@ button.nav-bean[aria-expanded="true"] {
   filter: none;
   opacity: 1;
   will-change: auto;
-  mix-blend-mode: difference;
-  -webkit-mix-blend-mode: difference;
-}
-.service-sec.has-metal.ink-gl .service-chrome .service-ink {
-  opacity: 0;
+  mix-blend-mode: normal;
 }
 .service-title {
   position: relative;
   display: block;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
 }
 .service-title-solid {
   display: none;
 }
 .service-title-live {
   display: block;
+  color: #fff;
+  isolation: auto;
+  transform: none;
 }
 .service-sec.has-metal .service-chrome .font-serif,
 .service-sec.has-metal .service-chrome .service-title-live {
   color: #fff;
-  -webkit-text-fill-color: #fff;
   text-shadow: none;
   isolation: auto;
   transform: none;
@@ -1451,7 +1469,7 @@ button.nav-bean[aria-expanded="true"] {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
 }
 .service-panel .work-sec,
-.service-panel .device-stage {
+.service-panel .work-film {
   position: relative;
   z-index: 1;
   isolation: isolate;

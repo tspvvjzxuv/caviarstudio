@@ -34,11 +34,11 @@ describe("work phone scroll films", () => {
     }
   });
 
-  it("plays the film in the phone, not the laptop", () => {
+  it("shows only the phone scroll film, with no device chrome", () => {
     assert.match(tile, /function PhoneFilm/);
     assert.match(tile, /<video[\s\S]*muted[\s\S]*playsInline[\s\S]*autoPlay[\s\S]*loop/);
-    assert.match(tile, /videoSrc=\{film/);
-    const laptop = tile.slice(tile.indexOf("device-laptop"), tile.indexOf("device-phone"));
-    assert.doesNotMatch(laptop, /videoSrc/);
+    assert.match(tile, /workSrc\(item\.video\)/);
+    assert.match(tile, /className="work-film/);
+    assert.doesNotMatch(tile, /DevicePair|device-laptop|device-phone|device-stage|device-lid/);
   });
 });
