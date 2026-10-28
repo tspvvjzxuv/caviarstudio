@@ -40,9 +40,19 @@ describe("Čo robíme heading", () => {
       "do not restore the top-dark charcoal stop",
     );
     assert.match(css, /\.chrome-bloom[\s\S]*?text-shadow/);
-    assert.match(css, /\.chrome-bloom[\s\S]*?left:\s*-1em/);
-    assert.match(css, /\.chrome-bloom[\s\S]*?padding:\s*1em/);
+    assert.match(css, /\.chrome-bloom[\s\S]*?inset:\s*0/);
+    assert.match(css, /\.chrome-bloom[\s\S]*?padding:\s*inherit/);
     assert.match(css, /\.chrome-bloom[\s\S]*?color:\s*transparent/);
+    assert.match(
+      css,
+      /\.section-title,\s*\.chrome-title,\s*\.service-title\s*\{[\s\S]*?line-height:\s*1\.18/,
+      "tight 0.92 clips Č / Í in the Safari background-clip line box",
+    );
+    assert.match(
+      css,
+      /\.section-title,\s*\.chrome-title\s*\{[\s\S]*?padding:\s*0\.42em 0\.48em/,
+      "heading padding is the bloom/diacritic paint box",
+    );
     assert.match(
       css,
       /\.chrome-bloom[\s\S]*?0 0 0\.11em rgb\(255 255 255 \/ 0\.1\)/,
