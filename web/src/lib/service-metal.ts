@@ -1,10 +1,8 @@
 import {
-  CanvasTexture,
   ClampToEdgeWrapping,
   DataTexture,
   LinearFilter,
   Mesh,
-  NearestFilter,
   OrthographicCamera,
   PlaneGeometry,
   RGBAFormat,
@@ -49,84 +47,6 @@ function blankTexture() {
   return texture;
 }
 
-// iOS WebKit composites the WebGL canvas on its own layer, so CSS mix-blend-mode on the titles has no backdrop to
-// difference against and they render flat. Rasterise the tile ink (titles, icons, rings) into a mask and invert in the shader.
-function drawSvg(ctx: CanvasRenderingContext2D, svg: SVGSVGElement, x: number, y: number, w: number, h: number) {
-  const vb = svg.viewBox.baseVal;
-  const vw = vb && vb.width ? vb.width : 24;
-  const vh = vb && vb.height ? vb.height : 24;
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.scale(w / vw, h / vh);
-  ctx.lineWidth = Number.parseFloat(getComputedStyle(svg).strokeWidth) || 2;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  for (const el of svg.querySelectorAll("path,circle,rect,line,polyline,polygon,ellipse")) {
-    const a = (n: string) => Number.parseFloat(el.getAttribute(n) || "0");
-    let path: Path2D;
-    if (el.tagName === "path") path = new Path2D(el.getAttribute("d") || "");
-    else {
-      path = new Path2D();
-      if (el.tagName === "circle") path.arc(a("cx"), a("cy"), a("r"), 0, Math.PI * 2);
-      else if (el.tagName === "ellipse") path.ellipse(a("cx"), a("cy"), a("rx"), a("ry"), 0, 0, Math.PI * 2);
-      else if (el.tagName === "rect") path.roundRect(a("x"), a("y"), a("width"), a("height"), a("rx") || a("ry"));
-      else if (el.tagName === "line") {
-        path.moveTo(a("x1"), a("y1"));
-        path.lineTo(a("x2"), a("y2"));
-      } else {
-        const pts = (el.getAttribute("points") || "").trim().split(/[\s,]+/).map(Number);
-        for (let i = 0; i + 1 < pts.length; i += 2) path[i ? "lineTo" : "moveTo"](pts[i], pts[i + 1]);
-        if (el.tagName === "polygon") path.closePath();
-      }
-    }
-    ctx.stroke(path);
-  }
-  ctx.restore();
-}
-
-function drawInk(ctx: CanvasRenderingContext2D, sec: HTMLElement, root: DOMRect, sx: number, sy: number) {
-  try {
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.setTransform(sx, 0, 0, sy, -root.left * sx, -root.top * sy);
-    ctx.fillStyle = "#fff";
-    ctx.strokeStyle = "#fff";
-    const sel = "button.service-chrome .service-ink";
-    for (const ink of sec.querySelectorAll<HTMLElement>(sel)) {
-      const chrome = ink.closest<HTMLElement>("button.service-chrome");
-      if (chrome && chromeIsOpen(chrome)) continue;
-      for (const disc of ink.querySelectorAll<HTMLElement>(".icon-disc")) {
-        const b = disc.getBoundingClientRect();
-        ctx.lineWidth = Number.parseFloat(getComputedStyle(disc).borderTopWidth) || 1;
-        ctx.beginPath();
-        ctx.arc(b.left + b.width / 2, b.top + b.height / 2, b.width / 2 - ctx.lineWidth / 2, 0, Math.PI * 2);
-        ctx.stroke();
-        const svg = disc.querySelector("svg");
-        if (svg) {
-          const r = svg.getBoundingClientRect();
-          drawSvg(ctx, svg, r.left, r.top, r.width, r.height);
-        }
-      }
-      const title = ink.querySelector<HTMLElement>(".service-title-live");
-      if (!title) continue;
-      const cs = getComputedStyle(title);
-      const text = (title.textContent || "").trim();
-      if (!text) continue;
-      ctx.font = cs.font || `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-      ctx.textBaseline = "alphabetic";
-      ctx.textAlign = "left";
-      if (cs.letterSpacing && cs.letterSpacing !== "normal") {
-        (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = cs.letterSpacing;
-      }
-      const b = title.getBoundingClientRect();
-      const ascent = ctx.measureText(text).fontBoundingBoxAscent || Number.parseFloat(cs.fontSize) * 0.8;
-      ctx.fillText(text, b.left, b.top + ascent);
-    }
-  } catch {
-    // shortcut: skip a torn layout frame during open/close; next syncCards redraws
-  }
-}
-
 export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const sec = canvas.closest(".service-sec") as HTMLElement | null;
   if (saveDataOn() || !sec) {
@@ -158,9 +78,9 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   renderer.setClearColor(0x000000, 0);
   // iOS blanks the FBO when backing store is 0 (floor(css * 0.55)) or DPR < 1.
-  // Phone screens are 3x — a 2x ink atlas is what made Fotky/Videá look soft.
-  const dprCap = hiRes ? 3 : 1.25;
-  const dprMin = hiRes ? 2 : 0.75;
+  // Titles/icons stay CSS; metal can stay below native 3×.
+  const dprCap = hiRes ? 2 : 1.25;
+  const dprMin = hiRes ? 1 : 0.75;
   let pixelRatio = Math.min(Math.max(dprMin, window.devicePixelRatio || 1), dprCap);
   renderer.setPixelRatio(pixelRatio);
 
@@ -169,12 +89,6 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
   const field = new Vector4(0, 0, 1, 1);
   const texture = blankTexture();
   const initialCycle = metalCycleAt(0);
-  const inkCanvas = document.createElement("canvas");
-  const inkCtx = inkCanvas.getContext("2d");
-  const inkTexture = new CanvasTexture(inkCanvas);
-  inkTexture.generateMipmaps = false;
-  inkTexture.minFilter = NearestFilter;
-  inkTexture.magFilter = NearestFilter;
 
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -205,7 +119,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       uFocus: { value: new Vector2(initialCycle.focusX, initialCycle.focusY) },
       u_flow: { value: initialCycle.flow },
       uTileH: { value: 160 },
-      u_ink: { value: inkTexture },
+      u_ink: { value: texture },
     },
     vertexShader: playgroundVertex,
     fragmentShader: playgroundFragment,
@@ -384,17 +298,6 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
       field.set(minX * sx, (cssH - maxY) * sy, (maxX - minX) * sx, (maxY - minY) * sy);
     }
     material.uniforms.uTileH.value = tileN ? tileH / tileN : Math.max(field.w * 0.4, 1);
-    if (inkCtx) {
-      const { bufW, bufH } = bufferScale(cssW, cssH);
-      if (inkCanvas.width !== bufW || inkCanvas.height !== bufH) {
-        inkCanvas.width = bufW;
-        inkCanvas.height = bufH;
-      }
-      inkCtx.imageSmoothingEnabled = false;
-      drawInk(inkCtx, sec, root, sx, sy);
-      inkTexture.needsUpdate = true;
-      if (!sec.classList.contains("ink-gl")) sec.classList.add("ink-gl");
-    }
     renderer.render(scene, camera);
   };
 
@@ -555,8 +458,7 @@ export function mountServiceMetal(canvas: HTMLCanvasElement): () => void {
 
   return () => {
     stop();
-    sec.classList.remove("has-metal", "ink-gl");
-    inkTexture.dispose();
+    sec.classList.remove("has-metal");
     io.disconnect();
     ro.disconnect();
     mo.disconnect();

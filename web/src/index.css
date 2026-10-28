@@ -1174,14 +1174,8 @@ button.nav-bean[aria-expanded="true"] {
   mix-blend-mode: difference;
   -webkit-mix-blend-mode: difference;
 }
-.service-sec.has-metal.ink-gl .service-chrome .service-ink {
-  opacity: 0;
-}
 .service-sec.has-metal .service-chrome.is-open .service-ink,
-.service-sec.has-metal .service-chrome[aria-expanded="true"] .service-ink,
-.service-sec.has-metal.ink-gl .service-chrome.is-open .service-ink,
-.service-sec.has-metal.ink-gl .service-chrome[aria-expanded="true"] .service-ink {
-  opacity: 1;
+.service-sec.has-metal .service-chrome[aria-expanded="true"] .service-ink {
   mix-blend-mode: normal;
   -webkit-mix-blend-mode: normal;
 }
