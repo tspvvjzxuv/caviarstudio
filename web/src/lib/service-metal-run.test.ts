@@ -82,10 +82,9 @@ describe("panelTweening / anyCardOpen", () => {
     assert.equal(chromeIsOpen(shut), false);
   });
 
-  it("clears metal and canvas ink from open tiles", () => {
+  it("clears metal from open tiles", () => {
     const metal = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "service-metal.ts"), "utf8");
     assert.match(metal, /open\[i\] = chromeIsOpen\(btn\) \? 1 : 0/);
-    assert.match(metal, /if \(chrome && chromeIsOpen\(chrome\)\) continue/);
   });
 
   it("paints a punched frame even when rAF is paused", () => {
@@ -97,13 +96,15 @@ describe("panelTweening / anyCardOpen", () => {
     assert.match(metal, /requestAnimationFrame\(\(\) => \{\s*applySize\(true\);/);
   });
 
-  it("rasters closed-tile titles at phone DPR, as one fillText", () => {
+  it("keeps metal DPR capped and does not bitmap closed titles or icons", () => {
     const metal = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "service-metal.ts"), "utf8");
-    assert.match(metal, /dprCap = hiRes \? 3 : 1\.25/);
-    assert.match(metal, /dprMin = hiRes \? 2 : 0\.75/);
-    assert.match(metal, /inkTexture\.magFilter = NearestFilter/);
-    assert.match(metal, /ctx\.fillText\(text, b\.left, b\.top \+ ascent\)/);
-    assert.doesNotMatch(metal, /for \(let i = 0; i < text\.length/);
+    assert.match(metal, /dprCap = hiRes \? 2 : 1\.25/);
+    assert.match(metal, /dprMin = hiRes \? 1 : 0\.75/);
+    assert.doesNotMatch(metal, /ctx\.fillText/);
+    assert.doesNotMatch(metal, /function drawInk/);
+    assert.doesNotMatch(metal, /function drawSvg/);
+    assert.doesNotMatch(metal, /ink-gl/);
+    assert.doesNotMatch(metal, /NearestFilter/);
   });
 });
 

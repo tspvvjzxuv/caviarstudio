@@ -49,17 +49,22 @@ describe("service tile titles", () => {
     assert.match(title, /text-rendering:\s*geometricPrecision/);
   });
 
-  it("shows real CSS glyphs on an open tile", () => {
-    assert.match(
+  it("keeps closed-tile titles and icons as live CSS, not a hidden atlas", () => {
+    const closedInk = css.match(/\.service-sec\.has-metal \.service-chrome \.service-ink\s*\{([^}]+)\}/);
+    assert.ok(closedInk, "missing closed-tile ink rule");
+    assert.doesNotMatch(closedInk[1], /opacity:\s*0/, "hiding CSS ink leaves only the low-res metal bitmap");
+    assert.match(closedInk[1], /mix-blend-mode:\s*difference/);
+    assert.doesNotMatch(
       css,
-      /\.service-sec\.has-metal\.ink-gl \.service-chrome\.is-open \.service-ink/,
-      "open tiles must opt out of the canvas ink hide",
+      /\.service-sec\.has-metal(?:\.ink-gl)? \.service-chrome \.service-ink\s*\{[^}]*opacity:\s*0/,
     );
+  });
+
+  it("shows real CSS glyphs on an open tile", () => {
     const openInk = css.match(
-      /\.service-sec\.has-metal\.ink-gl \.service-chrome\.is-open \.service-ink[\s\S]*?\{([^}]+)\}/,
+      /\.service-sec\.has-metal \.service-chrome\.is-open \.service-ink[\s\S]*?\{([^}]+)\}/,
     );
     assert.ok(openInk, "missing open-tile ink rule");
-    assert.match(openInk[1], /opacity:\s*1/);
     assert.match(openInk[1], /mix-blend-mode:\s*normal/);
   });
 
