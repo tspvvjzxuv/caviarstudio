@@ -17,9 +17,19 @@ export function revealVars(opts: { reduced: boolean; desktop: boolean; skipY: bo
   };
 }
 
+/** Opacity 0 is only a from-state after the observer is watching an offscreen node. */
+export function canHideForReveal(opts: { observerReady: boolean; visible: boolean; reduced: boolean }) {
+  return opts.observerReady && !opts.visible && !opts.reduced;
+}
+
 export function flipDuration(desktop: boolean, reduced: boolean) {
   if (reduced) return 0;
   return desktop ? 0.48 : 0.36;
+}
+
+/** Flip layout-thrashes WebGL tiles on iPhone Safari; CSS grid tween is the phone path. */
+export function shouldServiceFlip(desktop: boolean, reduced: boolean) {
+  return desktop && !reduced;
 }
 
 export function lockupDelay(introSeen: boolean) {

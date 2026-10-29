@@ -1,5 +1,5 @@
 import { Flip } from "@/lib/gsap";
-import { CAVIAR_EASE, SERVICE_FLIP_TARGETS, flipDuration, prefersReducedMotion } from "@/lib/gsap-motion";
+import { CAVIAR_EASE, SERVICE_FLIP_TARGETS, flipDuration, prefersReducedMotion, shouldServiceFlip } from "@/lib/gsap-motion";
 
 export function revealAfterOpen(trigger: HTMLElement | null, panel: HTMLElement) {
   const mobile = window.matchMedia("(max-width: 767px)").matches;
@@ -28,10 +28,15 @@ export function settleServicePanels(deck: HTMLElement) {
 }
 
 export function playServiceFlip(deck: HTMLElement, state: ReturnType<typeof Flip.getState>) {
-  // useGSAP revertOnUpdate strips this; put it back before Flip.from
-  deck.classList.add("is-flipping");
   const reduced = prefersReducedMotion();
   const desktop = window.matchMedia("(min-width: 768px)").matches;
+  if (!shouldServiceFlip(desktop, reduced)) {
+    settleServicePanels(deck);
+    deck.classList.remove("is-flipping");
+    return;
+  }
+  // useGSAP revertOnUpdate strips this; put it back before Flip.from
+  deck.classList.add("is-flipping");
   const duration = flipDuration(desktop, reduced);
   if (duration === 0) {
     settleServicePanels(deck);
