@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type RefObject } from "react";
 import { useGSAP } from "@/lib/gsap";
 import { captureServiceFlip, playServiceFlip } from "@/lib/service-flip";
-import { prefersReducedMotion } from "@/lib/gsap-motion";
+import { prefersReducedMotion, shouldServiceFlip } from "@/lib/gsap-motion";
 import { usePrefersMd } from "@/hooks/use-mobile";
 import { usePauseOffscreen } from "@/hooks/use-pause-offscreen";
 import { HeroCaviarMark } from "@/components/hero-wordmark-3d";
@@ -234,6 +234,7 @@ export function Services() {
       const state = flipState.current;
       if (!deck || !state) return;
       playServiceFlip(deck, state);
+      flipState.current = null;
       return () => {
         deck.classList.remove("is-flipping");
       };
@@ -253,7 +254,12 @@ export function Services() {
 
   const toggleService = (id: string) => {
     const deck = deckRef.current;
-    if (deck && !prefersReducedMotion()) flipState.current = captureServiceFlip(deck);
+    const desktop = window.matchMedia("(min-width: 768px)").matches;
+    if (deck && shouldServiceFlip(desktop, prefersReducedMotion())) {
+      flipState.current = captureServiceFlip(deck);
+    } else {
+      flipState.current = null;
+    }
     if (open === id) {
       setOpen("");
       return;
